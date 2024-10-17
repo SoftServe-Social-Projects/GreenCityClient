@@ -51,6 +51,7 @@ export class MatSnackBarComponent {
     addedAddress: { classname: SnackbarClassName.success, key: 'snack-bar.success.added-address' },
     updatedAddress: { classname: SnackbarClassName.success, key: 'snack-bar.success.updated-address' },
     deletedAddress: { classname: SnackbarClassName.success, key: 'snack-bar.success.deleted-address' },
+    errorAddress: { classname: SnackbarClassName.error, key: 'snack-bar.error.error-address' },
     userUnauthorised: { classname: SnackbarClassName.error, key: 'snack-bar.error.unauthorised-user' },
     lessPoints: { classname: SnackbarClassName.error, key: 'snack-bar.error.not-enough-points' },
     CartValidation: { classname: SnackbarClassName.error, key: 'snack-bar.error.cartificate-not-valid' },

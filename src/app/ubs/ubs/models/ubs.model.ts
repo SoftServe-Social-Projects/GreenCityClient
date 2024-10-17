@@ -140,12 +140,13 @@ export class CAddressData {
     this.resetPlaceId();
   }
 
-  getCity(language: Language): string {
-    return language === Language.EN ? this.cityEn : this.city;
+  getCity(): string {
+    return this.languageService.getCurrentLanguage() === Language.EN ? this.cityEn : this.city;
   }
 
   setCity(place_id: string): void {
     this.setProperties('city', place_id, 'locality');
+    this.setRegion(place_id);
     this.resetPlaceId();
   }
 
@@ -246,6 +247,7 @@ export class CAddressData {
     delete data.entranceNumber;
 
     const values = Object.values(data);
+    console.log('values:', values);
     return values.every((value) => value);
   }
 
@@ -284,17 +286,22 @@ export class CAddressData {
   }
 
   //Translates values to achieve consistent view of address in different languages
-  private setProperties(propertyName: string, place_id: string, ...googleLocalityType: string[]): void {
-    this.translateProperty(propertyName, place_id, Language.UK, ...googleLocalityType);
-    this.translateProperty(propertyName + 'En', place_id, Language.EN, ...googleLocalityType);
+  private async setProperties(propertyName: string, place_id: string, ...googleLocalityType: string[]): Promise<void> {
+    await this.translateProperty(propertyName, place_id, Language.UK, ...googleLocalityType);
+    await this.translateProperty(propertyName + 'En', place_id, Language.EN, ...googleLocalityType);
+
+    this.addressChange.next(this.getValues());
   }
 
   //Translates address component by placeId to required language
-  private translateProperty(propertyName: string, placeId: string, language: Language, ...googleLocalityType: string[]): void {
-    new google.maps.Geocoder().geocode({ placeId, language }).then((response) => {
-      this[propertyName] = this.findValue(response.results[0], ...googleLocalityType)?.long_name ?? '';
-      this.addressChange.next(this.getValues());
-    });
+  private async translateProperty(
+    propertyName: string,
+    placeId: string,
+    language: Language,
+    ...googleLocalityType: string[]
+  ): Promise<void> {
+    const response = await new google.maps.Geocoder().geocode({ placeId, language });
+    this[propertyName] = this.findValue(response.results[0], ...googleLocalityType)?.long_name ?? '';
   }
 
   //Find required address component in google response by it's type

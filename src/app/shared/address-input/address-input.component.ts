@@ -120,7 +120,9 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     return this.addressForm.get('placeId') as FormControl;
   }
 
-  onChange = (address) => {};
+  onChange = (address) => {
+    console.log(address);
+  };
   onTouched = () => {};
 
   constructor(
@@ -132,6 +134,8 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   ) {}
 
   validate(control: AbstractControl): ValidationErrors {
+    console.log('data: ', this.addressData);
+    console.log('is valid: ', this.addressData.isValid());
     return (this.addressForm.valid && this.addressData.isValid()) || this.addressForm.pristine ? null : { incorrectAddress: true };
   }
 
@@ -217,7 +221,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
 
     this.addressForm = this.fb.group({
       region: [region ?? '', Validators.required],
-      city: [this.addressData.getCity(this.langService.getCurrentLanguage()) ?? '', Validators.required],
+      city: [this.addressData.getCity() ?? '', Validators.required],
       street: [this.addressData.getStreet() ?? '', Validators.required],
       district: [this.addressData.getDistrict() ?? '', Validators.required],
       houseNumber: [this.address?.houseNumber ?? '', [Validators.required, Validators.pattern(this.buildingPattern)]],
@@ -287,6 +291,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (city) {
       this.city.patchValue(city?.structured_formatting.main_text ?? '');
       this.addressData.setCity(city.place_id);
+      console.log(city);
     }
 
     this.resetStreet();

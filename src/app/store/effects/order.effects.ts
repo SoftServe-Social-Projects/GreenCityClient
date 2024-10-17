@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { catchError, finalize, map, mergeMap, tap } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
 import {
   CreateAddress,
   CreateAddressSuccess,
@@ -26,7 +26,8 @@ import {
   UpdateAddress,
   UpdateAddressSuccess,
   GetExistingOrderInfo,
-  GetExistingOrderInfoSuccess
+  GetExistingOrderInfoSuccess,
+  CreateAddressFail
 } from 'src/app/store/actions/order.actions';
 import { OrderService } from 'src/app/ubs/ubs/services/order.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
@@ -121,16 +122,22 @@ export class OrderEffects {
   createAddress = createEffect(() =>
     this.actions.pipe(
       ofType(CreateAddress),
-      tap(() => this.snackBar.openSnackBar('addedAddress')),
-      mergeMap((action: { address: AddressData }) =>
-        this.orderService.addAdress(action.address).pipe(
-          map((response) => CreateAddressSuccess({ addresses: response.addressList })),
+      mergeMap((action: { address: AddressData }) => {
+        let isSuccessful = false;
+        return this.orderService.addAdress(action.address).pipe(
+          map((response) => {
+            isSuccessful = !!response;
+            return CreateAddressSuccess({ addresses: response.addressList });
+          }),
           catchError(() => {
             this.snackBar.openSnackBar('existAddess');
-            return EMPTY;
+            return of(CreateAddressFail());
+          }),
+          finalize(() => {
+            this.snackBar.openSnackBar(isSuccessful ? 'addedAddress' : 'errorAddress');
           })
-        )
-      )
+        );
+      })
     )
   );
 

@@ -26,6 +26,7 @@ import {
   GetExistingOrderDetails,
   GetExistingOrderTariffSuccess,
   CreateAddressSuccess,
+  CreateAddressFail,
   DeleteAddressSuccess,
   GetExistingOrderInfoSuccess,
   ClearOrderData,
@@ -146,6 +147,12 @@ export const orderReducer = createReducer(
       ...state,
       addressId: null,
       addresses: action.addresses,
+      isAddressLoading: false
+    };
+  }),
+  on(CreateAddressFail, (state) => {
+    return {
+      ...state,
       isAddressLoading: false
     };
   }),
