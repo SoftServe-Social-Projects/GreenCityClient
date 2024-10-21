@@ -48,6 +48,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() addFromProfile: boolean;
   @Input() isShowCommentInput = true;
   @Input() isFromAdminPage: boolean;
+
   addressForm: FormGroup;
   currentLanguage: string;
   locations: CourierLocations;
@@ -55,6 +56,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   addressCoords: google.maps.LatLng;
   isTouched = false;
   isShowMap = false;
+  isDistrictEditable = false;
 
   mapOptions: google.maps.MapOptions = {
     center: { lat: 49.8397, lng: 24.0297 },
@@ -190,6 +192,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       .pipe(takeUntil(this.$destroy))
       .subscribe((placeId: string) => {
         this.placeId.setValue(placeId);
+
         this.onChange(this.addressData.getValues());
       });
 
@@ -291,7 +294,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (city) {
       this.city.patchValue(city?.structured_formatting.main_text ?? '');
       this.addressData.setCity(city.place_id);
-      console.log(city);
+      this.addressData.setRegion(city.place_id);
     }
 
     this.resetStreet();
@@ -322,6 +325,16 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   onDistrictSelected(): void {
     this.addressData.setDistrict(this.district.value);
     this.onChange(this.addressData.getValues());
+  }
+
+  toggleDistrictInput() {
+    this.isDistrictEditable = !this.isDistrictEditable;
+
+    if (this.isDistrictEditable) {
+      this.district.enable();
+    } else {
+      this.district.disable();
+    }
   }
 
   onHouseNumberChange(): void {
@@ -430,6 +443,10 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   private resetDistricts(): void {
     this.district.reset();
+    this.addressData.resetDistrict();
+
+    this.district.disable();
+    this.isDistrictEditable = false;
   }
 
   private resetStreet(): void {

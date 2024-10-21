@@ -98,6 +98,13 @@
       <app-ubs-input-error [formElement]="district"></app-ubs-input-error>
     </div>
   </div>
+
+  <div class="col-md-6 col-sm-6 form-group d-flex align-items-end check-box" *ngIf="addressForm.get('district').value">
+    <mat-checkbox [checked]="isDistrictEditable" (change)="toggleDistrictInput()">
+      {{ 'Was the district set incorrectly?' | translate }}
+    </mat-checkbox>
+  </div>
+
   <div *ngIf="isShowCommentInput" class="form-group comment-section">
     <label for="addressComment">{{ 'personal-info.info-address-coment' | translate }}</label>
     <textarea

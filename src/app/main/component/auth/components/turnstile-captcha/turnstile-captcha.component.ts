@@ -90,7 +90,7 @@ export class TurnstileCaptchaComponent implements OnInit, AfterViewInit, Control
     this.captchaToken = token;
   }
 
-  public clearToken(): void {
+  clearToken(): void {
     this.turnstile.reset(this.widgetId);
 
     this.captchaToken = null;

@@ -119,6 +119,10 @@ export class CAddressData {
     this.fetchAddress(coordinates);
   }
 
+  setPlaceId(placeId: string): void {
+    this.placeId = placeId;
+  }
+
   getRegion(language: Language): string {
     return language === Language.EN ? this.regionEn : this.region;
   }
@@ -146,7 +150,7 @@ export class CAddressData {
 
   setCity(place_id: string): void {
     this.setProperties('city', place_id, 'locality');
-    this.setRegion(place_id);
+    // this.setRegion(place_id);
     this.resetPlaceId();
   }
 
@@ -176,10 +180,15 @@ export class CAddressData {
     return this.languageService.getLangValue(this.district, this.districtEn);
   }
 
+  // setDistrict(place_id: string): void {
+  //   this.resetDistrict();
+
+  //   this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2');
+  // }
+
   setDistrict(place_id: string): void {
     this.resetDistrict();
-
-    this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2');
+    this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2', 'administrative_area_level_3');
   }
 
   setDistrictFromCity() {
