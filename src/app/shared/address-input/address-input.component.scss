@@ -109,6 +109,26 @@ select {
   padding-left: 6px;
 }
 
+::ng-deep .mat-mdc-select-placeholder {
+  font-size: 14px !important;
+}
+
+::ng-deep .mat-mdc-select-min-line {
+  font-size: 14px !important;
+}
+
+.mat-mdc-select {
+  border: 1px solid var(--quintynary-light-grey);
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.mat-mdc-select-disabled {
+  color: var(--ubs-quaternary-dark-grey);
+  background-color: var(--ubs-light-grey);
+}
+
 @media (max-width: 767px) {
   .secondary-global-button,
   .primary-global-button,

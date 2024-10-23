@@ -105,7 +105,7 @@ export class CAddressData {
     this.houseNumber = address.houseNumber;
     this.entranceNumber = address.entranceNumber;
     this.houseCorpus = address.houseCorpus;
-    this.placeId = address.placeId;
+    this.placeId = address.placeId || 'PLACE_ID_IS_NOT_SET';
     this.addressComment = address.addressComment;
   }
 
@@ -150,7 +150,7 @@ export class CAddressData {
 
   setCity(place_id: string): void {
     this.setProperties('city', place_id, 'locality');
-    // this.setRegion(place_id);
+    this.setRegion(place_id);
     this.resetPlaceId();
   }
 
@@ -180,15 +180,14 @@ export class CAddressData {
     return this.languageService.getLangValue(this.district, this.districtEn);
   }
 
-  // setDistrict(place_id: string): void {
-  //   this.resetDistrict();
-
-  //   this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2');
-  // }
-
-  setDistrict(place_id: string): void {
+  async setDistrict(place_id: string): Promise<void> {
     this.resetDistrict();
-    this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2', 'administrative_area_level_3');
+    await this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2');
+  }
+
+  setCustomDistrict(district: string, districtEn: string): void {
+    this.district = district;
+    this.districtEn = districtEn;
   }
 
   setDistrictFromCity() {
@@ -204,6 +203,12 @@ export class CAddressData {
 
   setHouseNumber(value: any) {
     this.houseNumber = value;
+  }
+
+  resetHouseInfo() {
+    this.houseNumber = '';
+    this.houseCorpus = '';
+    this.entranceNumber = '';
   }
 
   setHouseCorpus(value: any) {
@@ -254,6 +259,9 @@ export class CAddressData {
     delete data.addressComment;
     delete data.houseCorpus;
     delete data.entranceNumber;
+
+    // MAYBE TMP
+    delete data.placeId;
 
     const values = Object.values(data);
     console.log('values:', values);
