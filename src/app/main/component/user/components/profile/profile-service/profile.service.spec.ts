@@ -63,11 +63,11 @@ describe('ProfileService', () => {
           }
         ]
       };
-      profileService.getRandomFactOfTheDay().subscribe((info) => {
+      profileService.getRandomFactOfTheDay('').subscribe((info) => {
         expect(info.factOfTheDayTranslations[0].content).toBe('Приклад факту дня');
       });
 
-      const req = httpMock.expectOne(`${backLink}fact-of-the-day/random?lang=en`);
+      const req = httpMock.expectOne(`${backLink}fact-of-the-day/random`);
       expect(req.request.method).toBe('GET');
       req.flush(fact);
     });

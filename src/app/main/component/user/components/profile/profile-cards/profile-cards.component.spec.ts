@@ -50,15 +50,10 @@ describe('ProfileCardsComponent', () => {
   };
 
   beforeEach(waitForAsync(() => {
-    profileServiceMock = jasmine.createSpyObj('ProfileService', [
-      'getRandomFactOfTheDay',
-      'getUserProfileStatistics',
-      'getFactsOfTheDayByTags'
-    ]);
+    profileServiceMock = jasmine.createSpyObj('ProfileService', ['getRandomFactOfTheDay', 'getUserProfileStatistics']);
 
     profileServiceMock.getRandomFactOfTheDay.and.returnValue(of(factOfTheDayMock));
     profileServiceMock.getUserProfileStatistics.and.returnValue(of(profileStatisticsMock));
-    profileServiceMock.getFactsOfTheDayByTags.and.returnValue(of(factOfTheDayMock));
 
     localStorageServiceMock = jasmine.createSpyObj('LocalStorageService', [
       'getFactFromLocalStorage',

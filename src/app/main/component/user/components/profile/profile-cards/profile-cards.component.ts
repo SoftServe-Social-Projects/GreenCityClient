@@ -45,10 +45,9 @@ export class ProfileCardsComponent implements OnInit, OnDestroy {
     this.habitFactOfTheDay = this.getFactContentByLanguage(this.habitFactKey);
   }
 
-  getFactContentByLanguage(factKey: string): string | null {
+  getFactContentByLanguage(factKey: string): string {
     const factOfTheDay = this.localStorageService.getFactFromLocalStorage(factKey);
-
-    return factOfTheDay?.factOfTheDayTranslations.find((t) => t.languageCode === this.langService.getCurrentLanguage())?.content || null;
+    return factOfTheDay?.factOfTheDayTranslations.find((t) => t.languageCode === this.langService.getCurrentLanguage())?.content || '';
   }
 
   checkAndUpdateFacts(): void {
@@ -70,7 +69,7 @@ export class ProfileCardsComponent implements OnInit, OnDestroy {
 
         if (profileStats?.amountHabitsInProgress > 0) {
           if (!this.habitFactOfTheDay) {
-            this.fetchAndSaveHabitFact(currentTime);
+            this.fetchAndSaveFactOfTheDay(currentTime, this.habitFactKey, '/by-tags');
           }
         } else {
           this.clearFacts(true);
@@ -78,42 +77,36 @@ export class ProfileCardsComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateFacts(currentTime: number, hasHabits: boolean): void {
-    this.fetchAndSaveRandomFact(currentTime);
+  private fetchAndSaveFactOfTheDay(currentTime: number, key: string, url: string): void {
+    this.profileService
+      .getRandomFactOfTheDay(url)
+      .pipe(
+        catchError(() => of(null)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((fact: FactOfTheDay) => {
+        if (fact) {
+          this.localStorageService.saveFactToLocalStorage(fact, currentTime, key);
+          this.updateFactContent(key);
+        }
+      });
+  }
 
-    if (hasHabits) {
-      this.fetchAndSaveHabitFact(currentTime);
+  private updateFactContent(key: string): void {
+    const factContent = this.getFactContentByLanguage(key);
+    if (key === this.factKey) {
+      this.factOfTheDay = factContent;
+    } else if (key === this.habitFactKey) {
+      this.habitFactOfTheDay = factContent;
     }
   }
 
-  private fetchAndSaveHabitFact(currentTime: number): void {
-    this.profileService
-      .getFactsOfTheDayByTags()
-      .pipe(
-        catchError(() => of(null)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((fact: FactOfTheDay | null) => {
-        if (fact) {
-          this.localStorageService.saveFactToLocalStorage(fact, currentTime, this.habitFactKey);
-          this.habitFactOfTheDay = this.getFactContentByLanguage(this.habitFactKey);
-        }
-      });
-  }
+  updateFacts(currentTime: number, hasHabits: boolean): void {
+    this.fetchAndSaveFactOfTheDay(currentTime, this.factKey, '');
 
-  private fetchAndSaveRandomFact(currentTime: number): void {
-    this.profileService
-      .getRandomFactOfTheDay()
-      .pipe(
-        catchError(() => of(null)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((fact: FactOfTheDay | null) => {
-        if (fact) {
-          this.localStorageService.saveFactToLocalStorage(fact, currentTime, this.factKey);
-          this.factOfTheDay = this.getFactContentByLanguage(this.factKey);
-        }
-      });
+    if (hasHabits) {
+      this.fetchAndSaveFactOfTheDay(currentTime, this.habitFactKey, '/by-tags');
+    }
   }
 
   isMoreThanOneDayPassed(lastHabitFetchTime: string | null, currentTime: number, oneDay: number): boolean {
