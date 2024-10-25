@@ -98,14 +98,14 @@ export class CommentsContainerComponent implements OnInit, DoCheck {
 
   private getReplies(): void {
     this.commentsService
-      .getRepliesAmount(this.entityId, this.comment.id)
+      .getRepliesAmount(this.comment.id)
       .pipe(take(1))
       .subscribe((data: number) => {
         this.repliesCounter.emit(data);
         if (this.comment.showAllRelies) {
           if (data) {
             this.commentsService
-              .getActiveRepliesByPage(this.entityId, this.comment.id, this.config.currentPage - 1, this.config.itemsPerPage)
+              .getActiveRepliesByPage(this.comment.id, this.config.currentPage - 1, this.config.itemsPerPage)
               .subscribe((list: CommentsModel) => {
                 this.elementsList = list.page;
                 this.setData(list);

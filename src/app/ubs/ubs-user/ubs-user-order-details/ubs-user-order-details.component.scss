@@ -46,6 +46,18 @@
   }
 }
 
+.bonuses_container {
+  display: flex;
+  justify-content: end;
+  padding-right: 14px;
+
+  .refund-bonuses {
+    font-size: 14px;
+    text-align: end;
+    max-width: 270px;
+  }
+}
+
 .data_table {
   color: var(--ubs-primary-black);
 

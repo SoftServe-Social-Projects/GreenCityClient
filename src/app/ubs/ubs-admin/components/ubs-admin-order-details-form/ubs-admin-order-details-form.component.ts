@@ -253,9 +253,16 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
     if (this.showWriteOffStationField()) {
       newSum += this.writeoffAtStationSum;
     }
-    const overpayment = Math.max(this.paymentInfo.paymentTableInfoDto.paidAmount - newSum, 0);
-    const unPaid = Math.max(newSum - this.paymentInfo.paymentTableInfoDto.paidAmount, 0);
 
+    //Calculate overpayment with bonuses and certificate (check later)
+    const overpayment = Math.max(
+      this.paymentInfo.paymentTableInfoDto.paidAmount + this.bagsInfo.certificateDiscount + this.bagsInfo.bonuses - newSum,
+      0
+    );
+    const unPaid = Math.max(
+      newSum - this.paymentInfo.paymentTableInfoDto.paidAmount - this.bagsInfo.certificateDiscount - this.bagsInfo.bonuses,
+      0
+    );
     this.overpayment = overpayment || -unPaid;
 
     const isChanged =

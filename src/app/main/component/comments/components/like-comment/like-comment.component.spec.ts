@@ -1,8 +1,8 @@
-import { LocalStorageService } from '../../../../service/localstorage/local-storage.service';
-import { SharedMainModule } from '../../../shared/shared-main.module';
-import { SocketService } from '../../../../service/socket/socket.service';
+import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
+import { SharedMainModule } from '@shared/shared-main.module';
+import { SocketService } from '@global-service/socket/socket.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { CommentsService } from '../../services/comments.service';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { LikeCommentComponent } from './like-comment.component';

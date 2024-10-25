@@ -15,6 +15,12 @@ describe('ProfileCardsComponent', () => {
   let localStorageServiceMock: jasmine.SpyObj<LocalStorageService>;
   let languageSubject: BehaviorSubject<string>;
 
+  const mockProfileStats = {
+    amountHabitsInProgress: 2,
+    amountHabitsAcquired: 0,
+    amountPublishedNews: 0,
+    amountOrganizedAndAttendedEvents: 0
+  };
   const factOfTheDayMock: FactOfTheDay = { id: 1, content: 'Hello' };
   const profileStatisticsMock: ProfileStatistics = {
     amountHabitsInProgress: 1,
@@ -35,9 +41,9 @@ describe('ProfileCardsComponent', () => {
     profileServiceMock.getFactsOfTheDayByTags.and.returnValue(of(factOfTheDayMock));
 
     localStorageServiceMock = jasmine.createSpyObj('LocalStorageService', [
-      'getHabitFactFromLocalStorage',
-      'clearHabitFactFromLocalStorage',
-      'saveHabitFactToLocalStorage'
+      'getFactFromLocalStorage',
+      'clearFromLocalStorage',
+      'saveFactToLocalStorage'
     ]);
 
     languageSubject = new BehaviorSubject<string>('ua');
@@ -64,58 +70,51 @@ describe('ProfileCardsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get fact of the day on language change', () => {
-    spyOn(component, 'getFactOfTheDay').and.callThrough();
-    fixture.detectChanges();
+  it('should load facts from local storage', () => {
+    const mockFact = { content: 'Test Fact' } as FactOfTheDay;
+    const mockHabitFact = { content: 'Habit Fact' } as FactOfTheDay;
 
-    expect(component.getFactOfTheDay).toHaveBeenCalled();
+    localStorageServiceMock.getFactFromLocalStorage.and.callFake((key) => {
+      return key === component.factKey ? mockFact : mockHabitFact;
+    });
 
-    languageSubject.next('en');
-    fixture.detectChanges();
+    component.loadFactsFromLocalStorage();
 
-    expect(component.getFactOfTheDay).toHaveBeenCalledTimes(2);
+    expect(component.factOfTheDay).toEqual(mockFact);
+    expect(component.habitFactOfTheDay).toEqual(mockHabitFact);
+    expect(localStorageServiceMock.getFactFromLocalStorage).toHaveBeenCalledWith(component.factKey);
+    expect(localStorageServiceMock.getFactFromLocalStorage).toHaveBeenCalledWith(component.habitFactKey);
   });
 
-  it('should set factOfTheDay on successful response', () => {
-    profileServiceMock.getRandomFactOfTheDay.and.returnValue(of(factOfTheDayMock));
-    component.ngOnInit();
+  it('should check and update facts', () => {
+    profileServiceMock.getUserProfileStatistics.and.returnValue(of(mockProfileStats));
+    spyOn(component, 'isMoreThanOneDayPassed').and.returnValue(true);
+    spyOn(component, 'clearFacts');
+    spyOn(component, 'updateFacts');
 
-    expect(component.factOfTheDay).toEqual(factOfTheDayMock);
-    expect(component.error).toBeUndefined();
+    component.checkAndUpdateFacts();
+
+    expect(profileServiceMock.getUserProfileStatistics).toHaveBeenCalled();
+    expect(component.clearFacts).toHaveBeenCalled();
+    expect(component.updateFacts).toHaveBeenCalledWith(jasmine.any(Number), true);
   });
 
-  it('should handle error in getFactOfTheDay', () => {
-    const errorMessage = 'Error occurred';
-    profileServiceMock.getRandomFactOfTheDay.and.returnValue(throwError(() => new Error(errorMessage)));
+  it('should not clear facts if less than one day has passed', () => {
+    profileServiceMock.getUserProfileStatistics.and.returnValue(of(mockProfileStats));
+    spyOn(component, 'isMoreThanOneDayPassed').and.returnValue(false);
+    spyOn(component, 'clearFacts');
 
-    component.getFactOfTheDay();
+    component.checkAndUpdateFacts();
 
-    expect(component.error).toBe(errorMessage);
-    expect(component.factOfTheDay).toBeUndefined();
+    expect(component.clearFacts).not.toHaveBeenCalled();
   });
 
-  it('should load habit fact from local storage', () => {
-    localStorageServiceMock.getHabitFactFromLocalStorage.and.returnValue(factOfTheDayMock);
+  it('should return true if lastHabitFetchTime is null', () => {
+    const currentTime = Date.now();
+    const oneDay = localStorageServiceMock.ONE_DAY_IN_MILLIS;
 
-    component.loadHabitFactFromLocalStorage();
+    const result = component.isMoreThanOneDayPassed(null, currentTime, oneDay);
 
-    expect(component.habitFactOfTheDay).toEqual(factOfTheDayMock);
-  });
-
-  it('should update habit fact if more than one day has passed', () => {
-    const profileStatisticsMock: ProfileStatistics = {
-      amountHabitsInProgress: 1,
-      amountHabitsAcquired: 0,
-      amountPublishedNews: 0,
-      amountOrganizedAndAttendedEvents: 0
-    };
-
-    profileServiceMock.getUserProfileStatistics.and.returnValue(of(profileStatisticsMock));
-
-    spyOn(component, 'updateHabitFactIfNeeded').and.callThrough();
-
-    component.checkAndUpdateHabitFact();
-
-    expect(component.updateHabitFactIfNeeded).toHaveBeenCalled();
+    expect(result).toBeTrue();
   });
 });

@@ -6,11 +6,11 @@
         <span class="filter-header h6">{{ 'homepage.notifications.filter' | translate }}</span>
         <div class="filter-buttons filter-approach-buttons">
           <button
-            *ngFor="let approach of filterApproaches"
+            *ngFor="let approach of filterCriteriaOptions"
             class="global-tag custom-chip"
             [ngClass]="{ 'global-tag-clicked': approach.isSelected }"
-            (click)="changefilterApproach(approach.name, $event)"
-            (keydown)="changefilterApproach(approach.name, $event)"
+            (click)="changeFilterApproach(approach.name, $event)"
+            (keydown)="changeFilterApproach(approach.name, $event)"
             [appLangValue]="{ ua: approach.nameUa, en: approach.nameEn }"
           ></button>
         </div>
@@ -18,25 +18,25 @@
       <input class="notification-search" type="text" placeholder="{{ 'search.search-all-results.placeholder' | translate }}" />
     </div>
 
-    <div *ngIf="checkSelectedFilter(filterApproach.TYPE)" class="filter-buttons">
+    <div *ngIf="checkSelectedFilter(filterCriteria.TYPE)" class="filter-buttons">
       <button
-        *ngFor="let type of notificationTypesFilter"
+        *ngFor="let type of notificationCriteriaOptions"
         class="global-tag custom-chip"
         [ngClass]="{ 'global-tag-clicked': type.isSelected }"
-        (click)="changeFilter(type, filterApproach.TYPE, $event)"
-        (keydown)="changeFilter(type, filterApproach.TYPE, $event)"
+        (click)="changeFilter(type, filterCriteria.TYPE, $event)"
+        (keydown)="changeFilter(type, filterCriteria.TYPE, $event)"
         [disabled]="isFilterDisabled"
         [appLangValue]="{ ua: type.nameUa, en: type.nameEn }"
       ></button>
     </div>
 
-    <div *ngIf="checkSelectedFilter(filterApproach.ORIGIN)" class="filter-buttons">
+    <div *ngIf="checkSelectedFilter(filterCriteria.ORIGIN)" class="filter-buttons">
       <button
         *ngFor="let project of projects"
         class="global-tag custom-chip"
         [ngClass]="{ 'global-tag-clicked': project.isSelected }"
-        (click)="changeFilter(project, filterApproach.ORIGIN, $event)"
-        (keydown)="changeFilter(project, filterApproach.ORIGIN, $event)"
+        (click)="changeFilter(project, filterCriteria.ORIGIN, $event)"
+        (keydown)="changeFilter(project, filterCriteria.ORIGIN, $event)"
         [disabled]="isFilterDisabled"
       >
         {{ project.nameEn }}

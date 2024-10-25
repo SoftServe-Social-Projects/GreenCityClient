@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTimeComponent } from './date-time.component';
 import { DefaultCoordinates } from 'src/app/main/component/events/models/event-consts';
+import * as _moment from 'moment';
 
 describe('DateTimeComponent', () => {
   let component: DateTimeComponent;
@@ -72,5 +73,28 @@ describe('DateTimeComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should return { dateIncorrect: true } when date is null', () => {
+    const result = component.getDateErrors(null);
+    expect(result).toEqual({ dateIncorrect: true });
+  });
+
+  it('should return { dateInPast: true } when date is in the past', () => {
+    const pastDate = _moment().subtract(1, 'days'); // Create a past date
+    const result = component.getDateErrors(pastDate);
+    expect(result).toEqual({ dateInPast: true });
+  });
+
+  it('should return null when date is in the future', () => {
+    const futureDate = _moment().add(1, 'days'); // Create a future date
+    const result = component.getDateErrors(futureDate);
+    expect(result).toBeNull(); // Expect no errors
+  });
+
+  it('should return null when date is today', () => {
+    const today = _moment(); // Create today's date
+    const result = component.getDateErrors(today);
+    expect(result).toBeNull(); // Expect no errors
   });
 });

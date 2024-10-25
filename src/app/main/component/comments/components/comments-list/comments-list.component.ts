@@ -65,7 +65,7 @@ export class CommentsListComponent {
 
   saveEditedComment(element: CommentsDTO): void {
     this.commentsService
-      .editComment(this.entityId, element.id, this.commentHtml)
+      .editComment(element.id, this.commentHtml)
       .pipe(take(1))
       .subscribe(() => this.content.reset());
 

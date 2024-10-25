@@ -708,6 +708,22 @@
       "user-credo": "My Credo is to make small steps that leads to huge impact. Let’s change the world together.",
       "user-name": "Brandier Webb",
       "user-location": "Lviv",
+      "email-preferences": {
+        "title": "Email Notifications",
+        "system": "Receive system notifications",
+        "likes": "Receive notifications for likes",
+        "comments": "Receive notifications for comments",
+        "invites": "Receive notifications for invites",
+        "places": "Receive notifications for places"
+      },
+      "periodicity": {
+        "immediately": "immediately",
+        "twice_a_day": "twice a day",
+        "monthly": "monthly",
+        "daily": "daily",
+        "weekly": "weekly",
+        "never": "never"
+      },
       "btn": {
         "cancel": "Cancel",
         "save": "Save",
@@ -1206,8 +1222,7 @@
     "edit": "Edit Event",
     "description": "Please provide as much details as you can - place and time of event, the goal of gathering etc. You can come back and update event anytime after publishing",
     "date-error": "Past date can't be chosen",
-    "date-error-required": "This field can’t be empty",
-    "date-error-format": "Date not correct!",
+    "date-error-format": "Input correct date!",
     "content-placeholder": "e.g. Short description of event, agenda for event",
     "content-tooltip": "Must be minimum 20 and maximum 63 206 symbols",
     "counter": "You typed",

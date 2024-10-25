@@ -300,7 +300,7 @@
         font-family: var(--ubs-secondary-font);
         border-radius: 6px;
         font-weight: 700;
-        text-transform: lowercase;
+        text-transform: uppercase;
       }
 
       .main-caption {
@@ -606,6 +606,10 @@ section .main-container {
       display: flex;
       align-items: flex-end;
       margin: 15px 10px 15px 0;
+
+      button {
+        text-transform: uppercase;
+      }
 
       .link-to-shop {
         font-weight: 800;
@@ -1545,7 +1549,7 @@ section .main-container {
           }
 
           #how-works-content {
-            margin-top: 40px 0 0 0;
+            margin: 40px 0 0;
             height: 100%;
 
             button {

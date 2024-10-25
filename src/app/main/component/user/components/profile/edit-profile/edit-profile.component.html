@@ -74,6 +74,29 @@
             </li>
           </ul>
         </div>
+        <div class="email-preferences" formGroupName="emailPreferences">
+          <p class="title">{{ 'user.edit-profile.email-preferences.title' | translate }}</p>
+          <ul>
+            <li *ngFor="let pref of emailPreferencesList">
+              <div class="email-preference-item">
+                <label class="label-wrapper">
+                  <input type="checkbox" [formControlName]="pref.controlName" />
+                  <span class="checkmark"></span>
+                  {{ 'user.edit-profile.email-preferences.' + pref.translationKey | translate }}
+                </label>
+                <div class="input-blocks">
+                  <div class="input-wrapper">
+                    <mat-select class="state-select" [formControlName]="pref.periodicityControl">
+                      <mat-option class="option-state" *ngFor="let option of periodicityOptions" [value]="option.value">
+                        {{ 'user.edit-profile.periodicity.' + option.label | translate }}
+                      </mat-option>
+                    </mat-select>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
         <div class="buttons">
           <button class="secondary-global-button" type="button" (click)="cancel(checkChanges())">
             {{ 'user.edit-profile.btn.cancel' | translate }}

@@ -35,11 +35,11 @@ export class HabitService {
   }
 
   getMutualHabits(friendId: number, page: number, size: number): Observable<HabitListInterface> {
-    return this.http.get<HabitListInterface>(`${habitLink}/allMutualHabits/${friendId}?page=${page}&size=${size}`);
+    return this.http.get<HabitListInterface>(`${habitLink}/allMutualHabits/${friendId}?lang=${this.language}&page=${page}&size=${size}`);
   }
 
   getAllFriendHabits(friendId: number, page: number, size: number): Observable<HabitListInterface> {
-    return this.http.get<HabitListInterface>(`${habitLink}/all/${friendId}?page=${page}&size=${size}`);
+    return this.http.get<HabitListInterface>(`${habitLink}/all/${friendId}?lang=${this.language}&page=${page}&size=${size}`);
   }
 
   getAllHabits(page: number, size: number): Observable<HabitListInterface> {

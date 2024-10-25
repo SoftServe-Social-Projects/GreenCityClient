@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -13,6 +13,18 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ContentChange, QuillModule } from 'ngx-quill';
 import { Language } from '../../../../../../i18n/Language';
 import { CreateEventInformationComponent } from './create-event-information.component';
+
+class QuillMock {
+  selection: { index: number; length: number } | null = { index: 0, length: 0 };
+
+  getSelection() {
+    return this.selection; // Return the current selection
+  }
+
+  setSelection(index: number, length: number) {
+    this.selection = { index, length }; // Update the selection
+  }
+}
 
 describe('CreateEventInformationComponent', () => {
   let component: CreateEventInformationComponent;
@@ -28,7 +40,7 @@ describe('CreateEventInformationComponent', () => {
         MatFormFieldModule,
         MatSelectModule,
         MatChipsModule,
-        QuillModule,
+        QuillModule.forRoot(),
         MatSnackBarModule,
         MatInputModule,
         FormsModule,
@@ -36,7 +48,11 @@ describe('CreateEventInformationComponent', () => {
         MatButtonModule,
         NoopAnimationsModule
       ],
-      providers: [FormBuilder, { provide: LocalStorageService, useValue: localStorageServiceMock }],
+      providers: [
+        FormBuilder,
+        { provide: LocalStorageService, useValue: localStorageServiceMock },
+        { provide: 'Quill', useClass: QuillMock }
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
     localStorageServiceSpy = TestBed.inject(LocalStorageService) as jasmine.SpyObj<LocalStorageService>;
@@ -56,48 +72,69 @@ describe('CreateEventInformationComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    fixture.destroy();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return quillDefault if quillLength is less than 1', () => {
+  it('should return empty label when quillLength is less than 1', () => {
     component.quillLength = 0;
     localStorageServiceSpy.getCurrentLanguage.and.returnValue(Language.EN);
     expect(component.quillLabel).toBe('');
   });
 
-  it('should return quillError if quillLength is less than minLength', () => {
+  it('should return error message when quillLength is less than minLength', () => {
     component.quillLength = 15;
     localStorageServiceSpy.getCurrentLanguage.and.returnValue(Language.EN);
     expect(component.quillLabel).toBe('Not enough characters. Left: 5');
   });
 
-  it('should set description value in form', () => {
-    const content = { text: 'New description' } as ContentChange;
-    component.quillContentChanged(content);
-    expect(component.eventInfForm.get('description')?.value).toBe(content.text.trimEnd());
-  });
+  it('should set description value in form on content change', fakeAsync(() => {
+    const mockContent = {
+      text: 'Description',
+      editor: new QuillMock()
+    };
 
-  it('should return quillError with remaining characters needed when quillLength is less than minLength', () => {
+    component.eventInfForm.get('description')?.setValue('');
+    expect(component.eventInfForm.get('description')?.value).toBe('');
+    component.quillContentChanged(mockContent as any);
+    tick();
+    expect(component.eventInfForm.get('description')?.value).toBe(mockContent.text.trimEnd());
+  }));
+
+  it('should return error message with remaining characters when quillLength is less than minLength', () => {
     component.quillLength = 10;
     spyOn(component, 'getLocale').and.returnValue('Not enough characters. Left:');
     expect(component.quillLabel).toBe('Not enough characters. Left: 10');
   });
 
-  it('should return quillMaxExceeded when quillLength exceeds maxLength', () => {
+  it('should return max exceeded error message when quillLength exceeds maxLength', () => {
     component.quillLength = 63210;
     spyOn(component, 'getLocale').and.returnValue('Error: Max length exceeded by');
     expect(component.quillLabel).toBe('Error: Max length exceeded by 4');
   });
 
-  it('should update quillLength and form value on content change', () => {
-    const content = { text: 'New content here' } as ContentChange;
-    component.quillContentChanged(content);
-    expect(component.quillLength).toBe(content.text.length - 1);
-    expect(component.eventInfForm.get('description').value).toBe(content.text.trimEnd());
-  });
+  it('should update quillLength and form value on valid content change', fakeAsync(() => {
+    const mockContent = {
+      text: 'Description',
+      editor: new QuillMock()
+    };
 
-  it('should return quillDefault when quillLength is less than 1', () => {
+    component.quillLength = 0;
+    component.isQuillUnfilled = true;
+    component.eventInfForm.get('description')?.setValue('');
+
+    component.quillContentChanged(mockContent as any);
+    tick();
+    expect(component.quillLength).toBe(mockContent.text.length - 1);
+    expect(component.eventInfForm.get('description')?.value).toBe(mockContent.text);
+    expect(component.isQuillUnfilled).toBe(component.quillLength < 20);
+  }));
+
+  it('should return default label when quillLength is zero', () => {
     component.quillLength = 0;
     localStorageServiceSpy.getCurrentLanguage.and.returnValue(Language.EN);
     spyOn(component, 'getLocale').and.callThrough();
@@ -105,7 +142,7 @@ describe('CreateEventInformationComponent', () => {
     expect(component.getLocale).toHaveBeenCalledWith('quillDefault');
   });
 
-  it('should return quillError when quillLength is less than minLength', () => {
+  it('should return error message when quillLength is less than minLength', () => {
     component.quillLength = 15;
     localStorageServiceSpy.getCurrentLanguage.and.returnValue(Language.EN);
     spyOn(component, 'getLocale').and.callThrough();
@@ -113,7 +150,7 @@ describe('CreateEventInformationComponent', () => {
     expect(component.getLocale).toHaveBeenCalledWith('quillError');
   });
 
-  it('should return quillMaxExceeded when quillLength exceeds maxLength', () => {
+  it('should return max exceeded message when quillLength exceeds maxLength', () => {
     component.quillLength = 63207;
     localStorageServiceSpy.getCurrentLanguage.and.returnValue(Language.EN);
     spyOn(component, 'getLocale').and.callThrough();
@@ -121,7 +158,7 @@ describe('CreateEventInformationComponent', () => {
     expect(component.getLocale).toHaveBeenCalledWith('quillMaxExceeded');
   });
 
-  it('should return quillValid when quillLength is within valid range', () => {
+  it('should return valid label when quillLength is within valid range', () => {
     component.quillLength = 50;
     localStorageServiceSpy.getCurrentLanguage.and.returnValue(Language.EN);
     spyOn(component, 'getLocale').and.callThrough();

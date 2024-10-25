@@ -114,6 +114,7 @@
               (click)="openNotificationPopUp()"
             >
               <img [src]="headerImageList.notification" #notificationIconRef alt="Internal search button" aria-hidden="true" />
+              <div *ngIf="newMessagesCount">{{ displayMessagesCount() }}</div>
             </li>
             <!-- Search icon -->
             <li

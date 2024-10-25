@@ -17,7 +17,7 @@ export const Patterns = {
   serteficatePattern: /(?!0000)\d{4}-(?!0000)\d{4}/,
   ubsCommentPattern: /[\S\s]{0,255}/,
   ordersPattern: /^\d{10}$/,
-  orderEcoStorePattern: /^\d{4,10}$/,
+  orderEcoStorePattern: /^\d{1,8}$/,
 
   // prettier-ignore
   ubsMailPattern:
@@ -48,7 +48,7 @@ export const Patterns = {
 
 export const Masks = {
   certificateMask: '0000-0000',
-  ecoStoreMask: '0000000000',
+  ecoStoreMask: '00000000',
   servicesMask: '000',
   phoneMask: '+{38\\0} (00) 000 00 00'
 };
