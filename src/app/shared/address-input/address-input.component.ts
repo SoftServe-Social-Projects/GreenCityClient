@@ -20,7 +20,7 @@ import { LanguageService } from 'src/app/main/i18n/language.service';
 import { emptyOrValid } from 'src/app/shared/validators/empthy-or-valid.validator';
 import { addressesSelector } from 'src/app/store/selectors/order.selectors';
 import { GooglePrediction } from 'src/app/ubs/mocks/google-types';
-import { Address, CourierLocations, DistrictEnum, DistrictsDtos } from 'src/app/ubs/ubs/models/ubs.interface';
+import { Address, CourierLocations, DistrictsDtos } from 'src/app/ubs/ubs/models/ubs.interface';
 import { CAddressData } from 'src/app/ubs/ubs/models/ubs.model';
 import { addressAlreadyExistsValidator } from 'src/app/ubs/ubs/validators/address-olready-exists-validator';
 import { Patterns } from 'src/assets/patterns/patterns';
@@ -57,9 +57,8 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   addressCoords: google.maps.LatLng;
   isTouched = false;
   isShowMap = false;
-  districtChanged = false;
   districtsForKyiv = [];
-  isKyiv = false;
+  allowDistrictEdit = false;
 
   mapOptions: google.maps.MapOptions = {
     center: { lat: 49.8397, lng: 24.0297 },
@@ -125,9 +124,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     return this.addressForm.get('placeId') as FormControl;
   }
 
-  onChange = (address) => {
-    console.log(address);
-  };
+  onChange = (address) => {};
   onTouched = () => {};
 
   constructor(
@@ -140,8 +137,6 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   ) {}
 
   validate(control: AbstractControl): ValidationErrors {
-    console.log('data: ', this.addressData);
-    console.log('is valid: ', this.addressData.isValid());
     return (this.addressForm.valid && this.addressData.isValid()) || this.addressForm.pristine ? null : { incorrectAddress: true };
   }
 
@@ -183,15 +178,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.entranceNumber.disable();
       this.district.disable();
     } else {
-      this.district.disable();
-      if (this.city.value === 'Kyiv' || this.city.value === 'Київ') {
-        this.getDistricts();
-        // this.districtChanged = false;
-        this.isKyiv = true;
-        this.district.enable();
-      } else {
-        this.isKyiv = false;
-      }
+      this.updateDistrictEditState();
     }
     if (this.isFromAdminPage) {
       this.addressComment.disable();
@@ -206,7 +193,6 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       .pipe(takeUntil(this.$destroy))
       .subscribe((placeId: string) => {
         this.placeId.setValue(placeId);
-
         this.onChange(this.addressData.getValues());
       });
 
@@ -310,14 +296,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.addressData.setCity(city.place_id);
     }
 
-    if (this.city.value === 'Kyiv' || this.city.value === 'Київ') {
-      this.getDistricts();
-      // this.districtChanged = false;
-      this.isKyiv = true;
-    } else {
-      this.isKyiv = false;
-    }
-
+    this.updateDistrictEditState();
     this.resetStreet();
     this.resetDistricts();
     this.resetHouseInfo();
@@ -329,8 +308,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (street) {
       this.placeId.setValue(street.place_id);
       this.addressData.setStreet(street.place_id);
-      this.isKyiv && this.district.enable();
-      this.districtChanged = false;
+      this.allowDistrictEdit && this.district.enable();
     } else {
       this.addressData.resetStreet();
       this.district.reset();
@@ -352,9 +330,22 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   getDistricts() {
-    this.addressService.getKyivDistricts().subscribe((districts) => {
-      this.districtsForKyiv = districts;
-    });
+    this.addressService
+      .getKyivDistricts()
+      .pipe(take(1))
+      .subscribe((districts) => {
+        this.districtsForKyiv = districts;
+      });
+  }
+
+  updateDistrictEditState() {
+    if (this.hasDistricts()) {
+      this.getDistricts();
+      this.allowDistrictEdit = true;
+    } else {
+      this.allowDistrictEdit = false;
+      this.district.disable();
+    }
   }
 
   onHouseNumberChange(): void {
@@ -366,14 +357,8 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     }
   }
 
-  // TODO: REFACTOR IT
-  onDistrictChange(district: string, districtEn?: string): void {
-    this.districtChanged = true;
-    if (this.isKyiv && districtEn) {
-      this.addressData.setCustomDistrict(district, districtEn);
-    } else {
-      this.addressData.setCustomDistrict(district, district);
-    }
+  onDistrictChange(district: string, districtEn: string): void {
+    this.allowDistrictEdit && this.addressData.setCustomDistrict(district, districtEn);
 
     this.OnChangeAndTouched();
   }
@@ -391,6 +376,11 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   onCommentChange(): void {
     this.addressData.setAddressComment(this.addressComment.value);
     this.OnChangeAndTouched();
+  }
+
+  hasDistricts(): boolean {
+    const citiesWithDistricts = ['Kyiv', 'Київ'];
+    return citiesWithDistricts.includes(this.city.value);
   }
 
   onMapClick($event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) {

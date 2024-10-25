@@ -3,6 +3,7 @@ import { Address, AddressData, DistrictsDtos, ICertificateResponse } from './ubs
 import { Language } from 'src/app/main/i18n/Language';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { Subject } from 'rxjs';
+import { Coordinates } from '@global-user/models/edit-profile.model';
 
 export class CCertificate {
   get code(): string {
@@ -86,7 +87,7 @@ export class CAddressData {
   private houseCorpus: string;
   private placeId: string;
   private addressComment = '';
-  private coordinates: google.maps.LatLng;
+  private coordinates: google.maps.LatLng | Coordinates;
 
   private placeIdChange: Subject<string> = new Subject();
   private addressChange: Subject<AddressData> = new Subject();
@@ -105,7 +106,8 @@ export class CAddressData {
     this.houseNumber = address.houseNumber;
     this.entranceNumber = address.entranceNumber;
     this.houseCorpus = address.houseCorpus;
-    this.placeId = address.placeId || 'PLACE_ID_IS_NOT_SET';
+    this.placeId = address.placeId;
+    this.coordinates = address.coordinates;
     this.addressComment = address.addressComment;
   }
 
@@ -246,10 +248,13 @@ export class CAddressData {
       houseCorpus: this.houseCorpus,
       addressComment: this.addressComment,
       placeId: this.placeId,
-      coordinates: {
-        latitude: this.coordinates?.lat(),
-        longitude: this.coordinates?.lng()
-      }
+      // eslint-disable-next-line indent
+      coordinates: this.coordinates
+        ? {
+            latitude: this.coordinates instanceof google.maps.LatLng ? this.coordinates.lat() : this.coordinates.latitude,
+            longitude: this.coordinates instanceof google.maps.LatLng ? this.coordinates.lng() : this.coordinates.longitude
+          }
+        : { latitude: 0, longitude: 0 }
     };
     return addressData;
   }
@@ -259,12 +264,9 @@ export class CAddressData {
     delete data.addressComment;
     delete data.houseCorpus;
     delete data.entranceNumber;
-
-    // MAYBE TMP
     delete data.placeId;
 
     const values = Object.values(data);
-    console.log('values:', values);
     return values.every((value) => value);
   }
 

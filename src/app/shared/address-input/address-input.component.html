@@ -94,10 +94,10 @@
   <div class="col-md-6 col-sm-6 form-group">
     <label for="district">{{ 'personal-info.pop-up-district' | translate }}</label>
 
-    <input *ngIf="!isKyiv" id="district" formControlName="district" type="text" class="shadow-none form-control" />
+    <input *ngIf="!allowDistrictEdit" id="district" formControlName="district" type="text" class="shadow-none form-control" />
 
     <mat-select
-      *ngIf="isKyiv"
+      *ngIf="allowDistrictEdit"
       formControlName="district"
       class="shadow-none form-control"
       (selectionChange)="onDistrictChange($event.value.nameUa, $event.value.nameEn)"
