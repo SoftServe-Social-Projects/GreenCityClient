@@ -45,6 +45,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
   private page = 0;
   noNewsMatch = false;
   searchToggle = false;
+  private isRequestInFlight = false;
   searchNewsControl = new FormControl('', [Validators.maxLength(30), Validators.pattern(Patterns.NameInfoPattern)]);
   private searchResultSubscription: Subscription;
   econews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
@@ -226,40 +227,43 @@ export class NewsListComponent implements OnInit, OnDestroy {
   }
 
   dispatchStore(res: boolean): void {
-    if (!this.hasNext || this.page === undefined) {
+    if (!this.hasNext || this.isRequestInFlight) {
       return;
     }
 
-    //TODO: handle favorits
-    const params = this.getEventsHttpParams();
+    this.isRequestInFlight = true;
+    const params = this.getNewsHttpParams();
 
     const action = GetEcoNewsAction({ params, reset: res });
-
     this.store.dispatch(action);
+
     this.page++;
+    this.isRequestInFlight = false;
   }
 
-  private getEventsHttpParams(): HttpParams {
+  private getNewsHttpParams(): HttpParams {
     let params = new HttpParams().set('page', this.page.toString()).set('size', this.numberOfNews.toString());
 
-    const paramsToAdd = [
+    const optionalParams = [
       this.appendIfNotEmpty('user-id', this.userId?.toString()),
       this.appendIfNotEmpty('title', this.searchQuery),
       this.appendIfNotEmpty('tags', this.tagsList),
       this.appendIfNotEmpty('status', this.bookmarkSelected ? 'SAVED' : '')
     ];
 
-    paramsToAdd
-      .filter((param) => param !== null)
-      .forEach((param) => {
+    optionalParams.forEach((param) => {
+      if (param) {
         params = params.append(param.key, param.value);
-      });
-    return params;
+      }
+    });
+
+    const serializedParams = params.toString();
+    return new HttpParams({ fromString: serializedParams });
   }
 
   private appendIfNotEmpty(key: string, value: string | string[]): { key: string; value: string } | null {
-    const formattedValue = (Array.isArray(value) ? value.join(',') : value)?.toUpperCase() || '';
-    return formattedValue ? { key, value: formattedValue } : null;
+    const formattedValue = Array.isArray(value) ? value.join(',') : value;
+    return formattedValue && formattedValue.trim() ? { key, value: formattedValue.toUpperCase() } : null;
   }
 
   private checkUserSingIn(): void {

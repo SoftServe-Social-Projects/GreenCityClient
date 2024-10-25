@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { EcoNewsService } from '@eco-news-service/eco-news.service';
 import {
@@ -63,12 +63,16 @@ export class NewsEffects {
   getEcoNews = createEffect(() =>
     this.actions.pipe(
       ofType(GetEcoNewsAction),
-      mergeMap((actions: { params: HttpParams; reset: boolean }) =>
-        this.newsService.getEcoNewsList(actions.params).pipe(
-          map((ecoNews: EcoNewsDto) => GetEcoNewsSuccessAction({ ecoNews, reset: actions.reset })),
-          catchError((error) => of(ReceivedEcoNewsFailureAction(error)))
-        )
-      )
+      switchMap((actions: { params: HttpParams; reset: boolean }) => {
+        return this.newsService.getEcoNewsList(actions.params).pipe(
+          map((ecoNews: EcoNewsDto) => {
+            return GetEcoNewsSuccessAction({ ecoNews, reset: actions.reset });
+          }),
+          catchError((error) => {
+            return of(ReceivedEcoNewsFailureAction({ error }));
+          })
+        );
+      })
     )
   );
 
