@@ -53,11 +53,11 @@ export class FriendProfileDashboardComponent implements OnInit, OnDestroy {
     this.isActiveInfinityScroll = this.selectedIndex === 2 || this.selectedIndex === 3 || this.selectedIndex === 4;
     this.getAllFriends(this.userId);
     this.getAllFriendHabits();
+    this.getAllHabits(this.currentHabitPage);
     if (this.userId !== this.currentUserId) {
       this.getMutualFriends();
       this.getMutualHabits();
     }
-    this.getAllHabits(this.currentHabitPage);
   }
 
   get isHabitsPresent(): boolean {
@@ -81,36 +81,17 @@ export class FriendProfileDashboardComponent implements OnInit, OnDestroy {
           this.mutualHabitsList = res.page;
           this.scroll = false;
           this.isFetching = false;
-          this.mutualHabitsList.forEach((habit) => {
-            habit.isAssigned = true;
-          });
-
-          this.checkIfFriendsHabitAssigned();
         }
       });
-  }
-
-  private checkIfFriendsHabitAssigned() {
-    this.friendHabitsList = this.friendHabitsList.map((friendHabit) => {
-      const mutualHabit = this.mutualHabitsList.find((mutualHabit) => mutualHabit.id === friendHabit.id);
-
-      if (mutualHabit) {
-        friendHabit.isAssigned = true;
-      }
-      return friendHabit;
-    });
   }
 
   private getAllHabits(page: number): void {
     this.isFetching = true;
     this.habitService
-      .getAllHabits(page, this.currentHabitSize)
+      .getMyAllHabits(page, this.currentHabitSize)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: HabitListInterface) => {
-          res.page.forEach((habit) => {
-            habit.isAssigned = true;
-          });
           this.myAllHabitsList = [...this.myAllHabitsList, ...res.page];
           this.numberMyAllHabits = res.totalElements;
           this.scroll = false;
@@ -128,7 +109,6 @@ export class FriendProfileDashboardComponent implements OnInit, OnDestroy {
           this.friendHabitsList = res.page;
           this.scroll = false;
           this.isFetching = false;
-          this.checkIfFriendsHabitAssigned();
         }
       });
   }
