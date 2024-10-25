@@ -248,13 +248,14 @@ export class CAddressData {
       houseCorpus: this.houseCorpus,
       addressComment: this.addressComment,
       placeId: this.placeId,
-      // eslint-disable-next-line indent
+      /* eslint-disable indent */
       coordinates: this.coordinates
         ? {
             latitude: this.coordinates instanceof google.maps.LatLng ? this.coordinates.lat() : this.coordinates.latitude,
             longitude: this.coordinates instanceof google.maps.LatLng ? this.coordinates.lng() : this.coordinates.longitude
           }
         : { latitude: 0, longitude: 0 }
+      /* eslint-enable indent */
     };
     return addressData;
   }
