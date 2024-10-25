@@ -3,12 +3,17 @@ import { createAction, props } from '@ngrx/store';
 
 import { NewsDTO } from '@eco-news-models/create-news-interface';
 import { EcoNewsModel } from '@eco-news-models/eco-news-model';
+import { HttpParams } from '@angular/common/http';
 
 export enum NewsActions {
   GetEcoNewsByTags = '[News] Get news by tags',
   GetEcoNewsByTagsSuccess = '[News] Get news by tags Success',
   GetEcoNewsByPage = '[News] Get news by page',
   GetEcoNewsByPageSuccess = '[News] Get news by page Success',
+
+  GetEcoNews = '[News] Get news',
+  GetEcoNewsSuccess = '[News] Get news Success',
+
   GetEcoNewsByAuthor = '[News] Get news by author',
   GetEcoNewsByAuthorSuccess = '[News] Get news by author Success',
 
@@ -43,6 +48,10 @@ export const GetEcoNewsByPageSuccessAction = createAction(
   NewsActions.GetEcoNewsByPageSuccess,
   props<{ ecoNews: EcoNewsDto; reset: boolean }>()
 );
+
+export const GetEcoNewsAction = createAction(NewsActions.GetEcoNews, props<{ params: HttpParams; reset: boolean }>());
+
+export const GetEcoNewsSuccessAction = createAction(NewsActions.GetEcoNewsSuccess, props<{ ecoNews: EcoNewsDto; reset: boolean }>());
 
 export const GetEcoNewsByAuthorAction = createAction(
   NewsActions.GetEcoNewsByAuthor,

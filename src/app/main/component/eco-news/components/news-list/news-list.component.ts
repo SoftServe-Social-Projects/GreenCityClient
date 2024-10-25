@@ -11,12 +11,13 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
 import { IEcoNewsState } from 'src/app/store/state/ecoNews.state';
-import { GetEcoNewsByTagsAction, GetEcoNewsByPageAction } from 'src/app/store/actions/ecoNews.actions';
+import { GetEcoNewsByTagsAction, GetEcoNewsByPageAction, GetEcoNewsAction } from 'src/app/store/actions/ecoNews.actions';
 import { tagsListEcoNewsData } from '@eco-news-models/eco-news-consts';
 import { FormControl, Validators } from '@angular/forms';
 import { Patterns } from '@assets/patterns/patterns';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthModalComponent } from '@global-auth/auth-modal/auth-modal.component';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-news-list',
@@ -70,10 +71,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
     this.setLocalizedTags();
     this.localStorageService.setCurentPage('previousPage', '/news');
 
-    // if (!this.page || !this.elements?.length) {
-    //   this.dispatchStore(true);
-    // }
-
     this.econews$.subscribe((value: IEcoNewsState) => {
       this.page = value.pageNumber;
       if (value.ecoNews) {
@@ -87,58 +84,9 @@ export class NewsListComponent implements OnInit, OnDestroy {
     });
 
     this.searchNewsControl.valueChanges.subscribe((value) => {
-      if (this.searchResultSubscription) {
-        this.searchResultSubscription.unsubscribe();
-      }
-
+      this.searchQuery = value.trim();
       this.cleanNewsList();
-      if (value.trim()) {
-        this.searchNewsByTitle(value.trim());
-      } else {
-        console.log('hh');
-        this.dispatchStore(true);
-      }
-    });
-  }
-
-  private getNews() {
-    if (this.bookmarkSelected) {
-      this.getUserFavoriteNews();
-    } else {
-      const searchTitle = this.searchNewsControl.value.trim();
-
-      if (searchTitle) {
-        this.searchNewsByTitle(searchTitle);
-      } else {
-        this.dispatchStore(false);
-      }
-    }
-  }
-
-  private getNewsByPage() {
-    this.ecoNewsService.getEcoNewsListByPage(this.page, this.numberOfNews).subscribe((res) => {
-      this.isLoading = false;
-      if (res.page.length > 0) {
-        this.newsTotal = res.totalElements;
-        this.elements.push(...res.page);
-        this.hasNext = res.hasNext;
-      } else {
-        this.noNewsMatch = true;
-      }
-    });
-  }
-
-  private searchNewsByTitle(title: string) {
-    this.searchResultSubscription = this.ecoNewsService.getEcoNewsListByTitle(title, this.page, this.numberOfNews).subscribe((res) => {
-      this.isLoading = false;
-      if (res.page.length > 0) {
-        this.newsTotal = res.totalElements;
-        this.elements.push(...res.page);
-        this.hasNext = res.hasNext;
-        this.page++;
-      } else {
-        this.noNewsMatch = true;
-      }
+      this.dispatchStore(true);
     });
   }
 
@@ -162,8 +110,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
 
   onScroll(): void {
     this.scroll = true;
-    // this.dispatchStore(false);
-    this.getNews();
+    this.dispatchStore(false);
   }
 
   changeView(event: boolean): void {
@@ -188,13 +135,14 @@ export class NewsListComponent implements OnInit, OnDestroy {
   }
 
   private getUserFavoriteNews(): void {
-    this.ecoNewsService.getUserFavoriteNews(this.page, this.numberOfNews, this.userId).subscribe((res) => {
-      this.isLoading = false;
-      this.elements.push(...res.page);
-      this.page++;
-      this.newsTotal = res.totalElements;
-      this.hasNext = res.hasNext;
-    });
+    // this.ecoNewsService.getUserFavoriteNews(this.page, this.numberOfNews, this.userId).subscribe((res) => {
+    //   this.isLoading = false;
+    //   this.elements.push(...res.page);
+    //   this.page++;
+    //   this.newsTotal = res.totalElements;
+    //   this.hasNext = res.hasNext;
+    // });
+    this.dispatchStore(true);
   }
 
   changeFavouriteStatus(event: MouseEvent, data: EcoNewsModel) {
@@ -264,13 +212,8 @@ export class NewsListComponent implements OnInit, OnDestroy {
 
   showSelectedNews(): void {
     this.bookmarkSelected = !this.bookmarkSelected;
-    if (this.bookmarkSelected) {
-      this.cleanNewsList();
-      this.getUserFavoriteNews();
-    } else {
-      this.cleanNewsList();
-      this.getNews();
-    }
+    this.cleanNewsList();
+    this.dispatchStore(true);
   }
 
   private cleanNewsList(): void {
@@ -287,12 +230,36 @@ export class NewsListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const action = this.tagsList.length
-      ? GetEcoNewsByTagsAction({ currentPage: this.page, numberOfNews: this.numberOfNews, tagsList: this.tagsList, reset: res })
-      : GetEcoNewsByPageAction({ currentPage: this.page, numberOfNews: this.numberOfNews, reset: res });
+    //TODO: handle favorits
+    const params = this.getEventsHttpParams();
+
+    const action = GetEcoNewsAction({ params, reset: res });
 
     this.store.dispatch(action);
     this.page++;
+  }
+
+  private getEventsHttpParams(): HttpParams {
+    let params = new HttpParams().set('page', this.page.toString()).set('size', this.numberOfNews.toString());
+
+    const paramsToAdd = [
+      this.appendIfNotEmpty('user-id', this.userId?.toString()),
+      this.appendIfNotEmpty('title', this.searchQuery),
+      this.appendIfNotEmpty('tags', this.tagsList),
+      this.appendIfNotEmpty('status', this.bookmarkSelected ? 'SAVED' : '')
+    ];
+
+    paramsToAdd
+      .filter((param) => param !== null)
+      .forEach((param) => {
+        params = params.append(param.key, param.value);
+      });
+    return params;
+  }
+
+  private appendIfNotEmpty(key: string, value: string | string[]): { key: string; value: string } | null {
+    const formattedValue = (Array.isArray(value) ? value.join(',') : value)?.toUpperCase() || '';
+    return formattedValue ? { key, value: formattedValue } : null;
   }
 
   private checkUserSingIn(): void {
@@ -309,5 +276,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();
+    this.destroy.next(true);
+    this.destroy.complete();
   }
 }

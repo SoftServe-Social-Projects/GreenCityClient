@@ -6,13 +6,14 @@ import {
   CreateEcoNewsSuccessAction,
   EditEcoNewsSuccessAction,
   DeleteEcoNewsSuccessAction,
-  ReceivedEcoNewsFailureAction
+  ReceivedEcoNewsFailureAction,
+  GetEcoNewsSuccessAction
 } from '../actions/ecoNews.actions';
 import { initialNewsState } from '../state/ecoNews.state';
 
 export const EcoNewsReducer = createReducer(
   initialNewsState,
-  on(GetEcoNewsByPageSuccessAction, GetEcoNewsByTagsSuccessAction, (state, action) => {
+  on(GetEcoNewsByPageSuccessAction, GetEcoNewsByTagsSuccessAction, GetEcoNewsSuccessAction, (state, action) => {
     let prevLocations = state.pages;
     let prevNumber = state.pageNumber;
     if (action.reset) {

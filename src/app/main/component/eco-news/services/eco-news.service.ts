@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, Observer, ReplaySubject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { EcoNewsModel } from '../models/eco-news-model';
@@ -24,6 +24,10 @@ export class EcoNewsService implements OnDestroy {
 
   getEcoNewsListByPage(page: number, quantity: number): Observable<EcoNewsDto> {
     return this.http.get<EcoNewsDto>(`${this.backEnd}eco-news?page=${page}&size=${quantity}`);
+  }
+
+  getEcoNewsList(params: HttpParams): Observable<EcoNewsDto> {
+    return this.http.get<EcoNewsDto>(`${this.backEnd}eco-news`, { params });
   }
 
   getEcoNewsListByTitle(title: string, page: number, quantity: number): Observable<EcoNewsDto> {
