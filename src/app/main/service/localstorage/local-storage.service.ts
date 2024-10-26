@@ -174,7 +174,7 @@ export class LocalStorageService {
     localStorage.setItem('currentLocationId', String(currentLocationId));
   }
 
-  setLocations(locations: any) {
+  setLocations(locations: CourierLocations) {
     localStorage.setItem('locations', JSON.stringify(locations));
   }
 
@@ -267,7 +267,7 @@ export class LocalStorageService {
     return localStorage.getItem('UBSorderData') === 'undefined' ? false : JSON.parse(localStorage.getItem('UBSorderData'));
   }
 
-  getLocationId(): any {
+  getLocationId(): number | false {
     return localStorage.getItem('currentLocationId') === null ? false : JSON.parse(localStorage.getItem('currentLocationId'));
   }
 

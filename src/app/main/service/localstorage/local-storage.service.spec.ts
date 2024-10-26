@@ -252,7 +252,7 @@ describe('LocalStorageService', () => {
       const locations = [
         { id: 1, name: 'location1' },
         { id: 2, name: 'location2' }
-      ];
+      ] as any;
       service.setLocations(locations);
       expect(JSON.parse(localStorage.getItem('locations'))).toEqual(locations);
     });
