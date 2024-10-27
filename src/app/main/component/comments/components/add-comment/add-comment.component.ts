@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { FormBuilder, FormControl, FormGroup, Validators, ValidationErrors } from '@angular/forms';
 import { CommentsService } from '../../services/comments.service';
 import { ProfileService } from '@global-user/components/profile/profile-service/profile.service';
-import { AddedCommentDTO } from 'src/app/main/component/comments/models/comments-model';
+import { AddedCommentDTO, CommentFormData } from 'src/app/main/component/comments/models/comments-model';
 import { CommentTextareaComponent } from '../comment-textarea/comment-textarea.component';
 
 @Component({
@@ -67,9 +67,14 @@ export class AddCommentComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const imageFiles = this.commentTextareaComponent.uploadedImage.map((image) => image.file);
+    const commentData: CommentFormData = {
+      entityId: this.entityId,
+      text: this.commentHtml,
+      imageFiles: this.commentTextareaComponent.uploadedImage.map((image) => image.file),
+      parentCommentId: this.commentId
+    };
 
-    this.commentsService.addComment(this.entityId, this.commentHtml, imageFiles, this.commentId).subscribe((comment: AddedCommentDTO) => {
+    this.commentsService.addComment(commentData).subscribe((comment: AddedCommentDTO) => {
       this.updateList.emit(comment);
       this.resetForm();
     });

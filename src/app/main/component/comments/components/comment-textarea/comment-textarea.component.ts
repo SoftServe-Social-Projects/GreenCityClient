@@ -213,12 +213,6 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     });
   }
 
-  onImageLoad(): void {
-    if (this.uploadedImage.length > 0) {
-      this.isFirstImageLoaded = true;
-    }
-  }
-
   private insertTextAtCursor(text: string): void {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);

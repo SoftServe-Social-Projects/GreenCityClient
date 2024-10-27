@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '@environment/environment';
 import { CommentsService } from '../../comments/services/comments.service';
-import { AddedCommentDTO, CommentsModel } from '../../comments/models/comments-model';
+import { AddedCommentDTO, CommentFormData, CommentsModel } from '../../comments/models/comments-model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,19 +14,21 @@ export class EventsCommentsService implements CommentsService {
 
   constructor(private http: HttpClient) {}
 
-  addComment(eventId: number, text: string, imageFiles: File[], parentCommentId = 0): Observable<AddedCommentDTO> {
-    const formData = new FormData();
+  addComment(formData: CommentFormData): Observable<AddedCommentDTO> {
+    const { entityId, text, imageFiles, parentCommentId = 0 } = formData;
+    const formPayload = new FormData();
 
     const requestPayload = JSON.stringify({
       text: text,
       parentCommentId: parentCommentId
     });
-    formData.append('request', requestPayload);
+    formPayload.append('request', requestPayload);
 
-    imageFiles.forEach((imageFile, index) => {
-      formData.append(`images`, imageFile, imageFile.name);
+    imageFiles.forEach((file) => {
+      formPayload.append('images', file, file.name);
     });
-    return this.http.post<AddedCommentDTO>(`${this.backEnd}events/${eventId}/comments`, formData);
+
+    return this.http.post<AddedCommentDTO>(`${this.backEnd}events/${entityId}/comments`, formPayload);
   }
 
   getActiveCommentsByPage(eventId: number, page: number, size: number): Observable<CommentsModel> {

@@ -3,11 +3,14 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { HabitCommentsService } from './habit-comments.service';
 import { environment } from '@environment/environment';
 import { MOCK_HABIT_ADDED_COMMENT, MOCK_HABIT_COMMENTS_MODEL } from 'src/app/main/component/user/components/habit/mocks/habit-mock';
+import { CommentFormData } from '../../component/comments/models/comments-model';
 
 describe('HabitCommentsService', () => {
   let service: HabitCommentsService;
   let httpTestingController: HttpTestingController;
   const url = environment.backendLink;
+
+  const commentText = 'Test comment';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,9 +31,13 @@ describe('HabitCommentsService', () => {
   });
 
   it('should make POST request to add comment', () => {
-    const imageFiles: File[] = [];
+    const commentData: CommentFormData = {
+      entityId: 1,
+      text: commentText,
+      imageFiles: []
+    };
 
-    service.addComment(1, 'Test comment', imageFiles).subscribe((commentData) => {
+    service.addComment(commentData).subscribe((commentData) => {
       expect(commentData).toEqual(MOCK_HABIT_ADDED_COMMENT);
     });
 

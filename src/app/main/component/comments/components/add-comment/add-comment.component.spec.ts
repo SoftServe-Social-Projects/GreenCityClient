@@ -14,6 +14,7 @@ import { PlaceholderForDivDirective } from '../../directives/placeholder-for-div
 import { SocketService } from '@global-service/socket/socket.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { CommentFormData } from '../../models/comments-model';
 
 const COMMENT_MOCK = {
   author: {
@@ -112,10 +113,18 @@ describe('AddCommentComponent', () => {
       innerHTML: 'test html',
       imageFiles: []
     });
+
+    const commentData: CommentFormData = {
+      entityId: component.entityId,
+      text: 'test html',
+      imageFiles: [],
+      parentCommentId: component.commentId
+    };
+
     component.onSubmit();
 
     flush();
-    expect(commentsServiceMock.addComment).toHaveBeenCalledWith(component.entityId, 'test html', [], component.commentId);
+    expect(commentsServiceMock.addComment).toHaveBeenCalledWith(commentData);
     expect(updateListSpy).toHaveBeenCalledWith(COMMENT_MOCK);
     expect(component.addCommentForm.value.content).toBe('');
   }));

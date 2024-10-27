@@ -42,12 +42,12 @@
 
 <div class="comment-textarea-uploader" *ngIf="isImageUploaderOpen">
   <app-drag-and-drop [aspectRatio]="aspectRatio || 1" (newFile)="onImageSelected($event)"> </app-drag-and-drop>
-  <mat-icon class="cancel-btn" type="button" (click)="toggleImageUploader()">close</mat-icon>
+  <mat-icon class="cancel-btn" type="button" (click)="toggleImageUploader()" (keydown)="onCommentKeyDown($event)">close</mat-icon>
 </div>
 
 <div class="image-wrapper" *ngIf="showImageControls">
   <div class="image-preview-wrapper" *ngFor="let image of uploadedImage; let i = index">
-    <mat-icon class="cancel-btn" type="button" (click)="removeImage(i)">close</mat-icon>
+    <mat-icon class="cancel-btn" type="button" (click)="removeImage(i)" (keydown)="onCommentKeyDown($event)">close</mat-icon>
     <img [src]="image.url" alt="Uploaded {{ i + 1 }}" class="image-preview" />
   </div>
 

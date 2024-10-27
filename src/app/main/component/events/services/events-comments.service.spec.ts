@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '@environment/environment';
 import { EventsCommentsService } from './events-comments.service';
+import { CommentFormData } from '../../comments/models/comments-model';
 
 describe('EventsCommentsService', () => {
   let service: EventsCommentsService;
@@ -42,9 +43,13 @@ describe('EventsCommentsService', () => {
       modifiedDate: new Date('2021-05-27T15:37:15.661Z'),
       text: 'some cool content!'
     };
-    const imageFiles: File[] = [];
+    const commentData: CommentFormData = {
+      entityId: 1,
+      text: commentText,
+      imageFiles: []
+    };
 
-    service.addComment(1, commentText, imageFiles).subscribe((commentData: any) => {
+    service.addComment(commentData).subscribe((commentData: any) => {
       expect(commentData).toEqual(commentBody);
     });
 
@@ -65,9 +70,13 @@ describe('EventsCommentsService', () => {
       text: 'some cool content!'
     };
 
-    const imageFiles: File[] = [];
+    const commentData: CommentFormData = {
+      entityId: 1,
+      text: commentText,
+      imageFiles: []
+    };
 
-    service.addComment(1, commentText, imageFiles).subscribe((commentData: any) => {
+    service.addComment(commentData).subscribe((commentData: any) => {
       expect(commentData).toEqual(commentBody);
     });
 

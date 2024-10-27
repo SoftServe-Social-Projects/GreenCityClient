@@ -33,6 +33,13 @@ export interface AddedCommentDTO {
   text: string;
 }
 
+export interface CommentFormData {
+  entityId: number;
+  text: string;
+  imageFiles: File[];
+  parentCommentId?: number;
+}
+
 export interface SocketAmountLikes {
   id: number;
   amountLikes: number;

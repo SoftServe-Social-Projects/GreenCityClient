@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '@environment/environment';
 import { CommentsService } from 'src/app/main/component/comments/services/comments.service';
-import { AddedCommentDTO, CommentsModel } from 'src/app/main/component/comments/models/comments-model';
+import { AddedCommentDTO, CommentFormData, CommentsModel } from 'src/app/main/component/comments/models/comments-model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,20 +14,21 @@ export class HabitCommentsService implements CommentsService {
 
   constructor(private readonly http: HttpClient) {}
 
-  addComment(habitId: number, text: string, imageFiles: File[], parentCommentId = 0): Observable<AddedCommentDTO> {
-    const formData = new FormData();
+  addComment(formData: CommentFormData): Observable<AddedCommentDTO> {
+    const { entityId, text, imageFiles, parentCommentId = 0 } = formData;
+    const formPayload = new FormData();
 
     const requestPayload = JSON.stringify({
       text: text,
       parentCommentId: parentCommentId
     });
-    formData.append('request', requestPayload);
+    formPayload.append('request', requestPayload);
 
-    imageFiles.forEach((imageFile, index) => {
-      formData.append(`images`, imageFile, imageFile.name);
+    imageFiles.forEach((file) => {
+      formPayload.append('images', file, file.name);
     });
 
-    return this.http.post<AddedCommentDTO>(`${this.backEnd}habits/${habitId}/comments`, formData);
+    return this.http.post<AddedCommentDTO>(`${this.backEnd}habits/${entityId}/comments`, formPayload);
   }
 
   getActiveCommentsByPage(habitId: number, page: number, size: number): Observable<CommentsModel> {

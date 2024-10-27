@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AddedCommentDTO, CommentsModel } from '../models/comments-model';
+import { AddedCommentDTO, CommentFormData, CommentsModel } from '../models/comments-model';
 
 @Injectable({
   providedIn: 'root'
 })
 export abstract class CommentsService {
-  abstract addComment(entityId: number, text: string, imageFiles: File[], parentCommentId: number): Observable<AddedCommentDTO>;
+  abstract addComment(formData: CommentFormData): Observable<AddedCommentDTO>;
 
   abstract getActiveCommentsByPage(entityId: number, page: number, size: number): Observable<CommentsModel>;
 
