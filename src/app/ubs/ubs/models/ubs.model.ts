@@ -1,5 +1,5 @@
 import { CertificateStatus } from 'src/app/ubs/ubs/certificate-status.enum';
-import { Address, AddressData, DistrictsDtos, ICertificateResponse } from './ubs.interface';
+import { Address, AddressData, ICertificateResponse } from './ubs.interface';
 import { Language } from 'src/app/main/i18n/Language';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { Subject } from 'rxjs';
@@ -121,12 +121,8 @@ export class CAddressData {
     this.fetchAddress(coordinates);
   }
 
-  setPlaceId(placeId: string): void {
-    this.placeId = placeId;
-  }
-
-  getRegion(language: Language): string {
-    return language === Language.EN ? this.regionEn : this.region;
+  getRegion(): string {
+    return this.languageService.getCurrentLanguage() === Language.EN ? this.regionEn : this.region;
   }
 
   setRegion(place_id: string): void {
@@ -150,10 +146,14 @@ export class CAddressData {
     return this.languageService.getCurrentLanguage() === Language.EN ? this.cityEn : this.city;
   }
 
-  setCity(place_id: string): void {
-    this.setProperties('city', place_id, 'locality');
-    this.setRegion(place_id);
-    this.resetPlaceId();
+  async setCity(place_id: string): Promise<void> {
+    try {
+      await this.setProperties('city', place_id, 'locality');
+      this.setRegion(place_id);
+      this.resetPlaceId();
+    } catch (error) {
+      console.error('Error during setting city:', error);
+    }
   }
 
   resetCity(): void {
@@ -166,10 +166,14 @@ export class CAddressData {
     return this.languageService.getCurrentLanguage() === Language.EN ? this.streetEn : this.street;
   }
 
-  setStreet(place_id: string): void {
-    this.placeId = place_id;
-    this.setProperties('street', place_id, 'route');
-    this.setDistrict(place_id);
+  async setStreet(place_id: string): Promise<void> {
+    try {
+      this.placeId = place_id;
+      await this.setProperties('street', place_id, 'route');
+      await this.setDistrict(place_id);
+    } catch (error) {
+      console.error('Error during setting street:', error);
+    }
   }
 
   resetStreet(): void {
@@ -183,8 +187,12 @@ export class CAddressData {
   }
 
   async setDistrict(place_id: string): Promise<void> {
-    this.resetDistrict();
-    await this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2');
+    try {
+      this.resetDistrict();
+      await this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2');
+    } catch (error) {
+      console.error('Error during setting district:', error);
+    }
   }
 
   setCustomDistrict(district: string, districtEn: string): void {
@@ -234,7 +242,7 @@ export class CAddressData {
   }
 
   getValues(): AddressData {
-    const addressData: AddressData = {
+    return {
       regionEn: this.regionEn,
       region: this.region,
       city: this.city,
@@ -257,7 +265,6 @@ export class CAddressData {
         : { latitude: 0, longitude: 0 }
       /* eslint-enable indent */
     };
-    return addressData;
   }
 
   isValid(): boolean {
@@ -307,10 +314,14 @@ export class CAddressData {
 
   //Translates values to achieve consistent view of address in different languages
   private async setProperties(propertyName: string, place_id: string, ...googleLocalityType: string[]): Promise<void> {
-    await this.translateProperty(propertyName, place_id, Language.UK, ...googleLocalityType);
-    await this.translateProperty(propertyName + 'En', place_id, Language.EN, ...googleLocalityType);
+    try {
+      await this.translateProperty(propertyName, place_id, Language.UK, ...googleLocalityType);
+      await this.translateProperty(propertyName + 'En', place_id, Language.EN, ...googleLocalityType);
 
-    this.addressChange.next(this.getValues());
+      this.addressChange.next(this.getValues());
+    } catch (error) {
+      console.error('Error during setting properties:', error);
+    }
   }
 
   //Translates address component by placeId to required language

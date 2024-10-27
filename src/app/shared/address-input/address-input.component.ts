@@ -57,7 +57,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   addressCoords: google.maps.LatLng;
   isTouched = false;
   isShowMap = false;
-  districtsForKyiv = [];
+  districtsForKyiv: DistrictsDtos[];
   allowDistrictEdit = false;
 
   mapOptions: google.maps.MapOptions = {
@@ -128,12 +128,12 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   onTouched = () => {};
 
   constructor(
-    private fb: FormBuilder,
-    private localStorageService: LocalStorageService,
+    private readonly fb: FormBuilder,
+    private readonly localStorageService: LocalStorageService,
     public langService: LanguageService,
-    private store: Store,
-    private cdr: ChangeDetectorRef,
-    private addressService: AddressService
+    private readonly store: Store,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly addressService: AddressService
   ) {}
 
   validate(control: AbstractControl): ValidationErrors {
@@ -220,7 +220,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.setInitialValues();
     }
 
-    const region = this.addressData.getRegion(this.langService.getCurrentLanguage());
+    const region = this.addressData.getRegion();
 
     this.addressForm = this.fb.group({
       region: [region ?? '', Validators.required],
@@ -322,11 +322,6 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   onCoordinatesSelected(coordinates: Coordinates) {
     this.addressData.setCoordinates(new google.maps.LatLng(coordinates.latitude, coordinates.longitude));
     this.OnChangeAndTouched();
-  }
-
-  onDistrictSelected(): void {
-    this.addressData.setDistrict(this.district.value);
-    this.onChange(this.addressData.getValues());
   }
 
   getDistricts() {

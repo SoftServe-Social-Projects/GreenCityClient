@@ -130,7 +130,7 @@ export class OrderEffects {
             return CreateAddressSuccess({ addresses: response.addressList });
           }),
           catchError(() => {
-            this.snackBar.openSnackBar('existAddess');
+            this.snackBar.openSnackBar('existAddress');
             return of(CreateAddressFail());
           }),
           finalize(() => {
@@ -149,7 +149,7 @@ export class OrderEffects {
         this.orderService.updateAdress(action.address).pipe(
           map((response) => UpdateAddressSuccess({ addresses: response.addressList })),
           catchError(() => {
-            this.snackBar.openSnackBar('existAddess');
+            this.snackBar.openSnackBar('existAddress');
             return EMPTY;
           })
         )
