@@ -158,7 +158,7 @@ export class EventsService implements OnDestroy {
   }
 
   getAllAttendees(eventId: number): Observable<EventAttender[]> {
-    return this.http.get<any>(`${this.backEnd}events/${eventId}/attenders`);
+    return this.http.get<EventAttender[]>(`${this.backEnd}events/${eventId}/attenders`);
   }
 
   getFormattedAddress(coordinates: LocationResponse): string {

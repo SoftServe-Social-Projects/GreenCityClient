@@ -5,7 +5,7 @@ import { EventDetailsComponent } from './event-details.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { EventsService } from '../../services/events.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -37,6 +37,7 @@ describe('EventDetailsComponent', () => {
   let component: EventDetailsComponent;
   let fixture: ComponentFixture<EventDetailsComponent>;
   let dialogSpy: jasmine.SpyObj<MatDialog>;
+
   const storeMock = jasmine.createSpyObj('store', ['select', 'dispatch']);
   storeMock.select = () => of(eventStateMock);
   const snackBarMock = jasmine.createSpyObj('MatSnackBarComponent', ['openSnackBar']);

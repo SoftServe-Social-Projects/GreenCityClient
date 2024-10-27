@@ -138,7 +138,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   }
 
   onLikeEvent(): void {
-    const updatedLikes = this.isLiked ? this.event.likes - 1 : this.event.likes + 1;
+    const updatedLikes = this.event.likes + (this.isLiked ? -1 : 1);
     this.isLiked = !this.isLiked;
     this.postToggleEventLike(updatedLikes);
   }
