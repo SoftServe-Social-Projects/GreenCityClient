@@ -40,7 +40,6 @@ export class CreateEventInformationComponent implements OnInit {
   }
 
   quillContentChanged(content: ContentChange): void {
-    // No form update here, just capturing typing behavior
     this.quillLength = content.text.length - 1;
     this.isQuillUnfilled = this.quillLength < this.minLength;
   }
