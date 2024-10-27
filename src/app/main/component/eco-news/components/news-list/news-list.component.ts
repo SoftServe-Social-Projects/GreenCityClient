@@ -135,17 +135,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
     this.searchToggle = !this.searchToggle;
   }
 
-  private getUserFavoriteNews(): void {
-    // this.ecoNewsService.getUserFavoriteNews(this.page, this.numberOfNews, this.userId).subscribe((res) => {
-    //   this.isLoading = false;
-    //   this.elements.push(...res.page);
-    //   this.page++;
-    //   this.newsTotal = res.totalElements;
-    //   this.hasNext = res.hasNext;
-    // });
-    this.dispatchStore(true);
-  }
-
   changeFavouriteStatus(event: MouseEvent, data: EcoNewsModel) {
     event.preventDefault();
     event.stopPropagation();
@@ -229,6 +218,9 @@ export class NewsListComponent implements OnInit, OnDestroy {
   dispatchStore(res: boolean): void {
     if (!this.hasNext || this.isRequestInFlight) {
       return;
+    }
+    if (res) {
+      this.cleanNewsList();
     }
 
     this.isRequestInFlight = true;
