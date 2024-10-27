@@ -22,7 +22,6 @@ describe('FriendItemComponent', () => {
   let component: FriendItemComponent;
   let fixture: ComponentFixture<FriendItemComponent>;
   let router: Router;
-  let matDialog: jasmine.SpyObj<MatDialog>;
   let mockRoute: ActivatedRoute;
 
   const localStorageServiceMock = jasmine.createSpyObj('LocalStorageService', [
@@ -91,7 +90,6 @@ describe('FriendItemComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     }).compileComponents();
 
-    matDialog = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
     router = TestBed.inject(Router);
     mockRoute = TestBed.inject(ActivatedRoute);
   }));
