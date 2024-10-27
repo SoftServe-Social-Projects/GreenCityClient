@@ -398,7 +398,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
     const paramsToAdd = [
       this.appendIfNotEmpty('user-id', this.userId.toString()),
       this.appendIfNotEmpty('title', title),
-      this.appendIfNotEmpty('type', this.getTypeFilter(this.selectedLocationFiltersList)),
+      this.appendIfNotEmpty('type', this.getTypeFilter()),
       this.appendIfNotEmpty(
         'cities',
         this.selectedLocationFiltersList.filter((city) => city !== 'Online' && city !== 'Select All' && city !== 'Обрати всі')
@@ -423,9 +423,9 @@ export class EventsListComponent implements OnInit, OnDestroy {
     return params;
   }
 
-  private getTypeFilter(list: string[]): string {
-    const isOnline = list.find((city) => city === 'Online');
-    const isOffline = list.find((city) => city !== 'Online' && city !== 'Select All' && city !== 'Обрати всі');
+  private getTypeFilter(): string {
+    const isOnline = this.selectedLocationFiltersList.find((city) => city === 'Online');
+    const isOffline = this.selectedLocationFiltersList.find((city) => city !== 'Online' && city !== 'Select All' && city !== 'Обрати всі');
 
     if (isOffline && isOnline) {
       return 'ONLINE_OFFLINE';
