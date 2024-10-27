@@ -232,7 +232,6 @@ export interface ActiveLocationsDtos {
 }
 
 export interface AllLocationsDtos {
-  allActiveLocationsDtos: ActiveLocationsDtos[] | null;
   tariffsForLocationDto: CourierLocations | null;
   orderIsPresent: boolean;
 }
