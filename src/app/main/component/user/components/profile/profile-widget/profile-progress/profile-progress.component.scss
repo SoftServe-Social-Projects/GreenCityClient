@@ -35,6 +35,11 @@ p {
       color: var(--quaternary-grey);
     }
   }
+
+  @media (max-width: 360px) {
+    column-gap: 2px;
+    padding: 0;
+  }
 }
 
 @include responsiveMobileFirst(sm) {
