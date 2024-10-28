@@ -8,6 +8,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { CommonService } from './chat/service/common/common.service';
+import { MetaService } from './shared/services/meta/meta.service';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -23,6 +24,7 @@ describe('AppComponent', () => {
   localStorageMock.languageBehaviourSubject = new BehaviorSubject('ua');
   const chatsServiceMock = jasmine.createSpyObj('ChatsService', ['isSupportChat$']);
   chatsServiceMock.isSupportChat$ = new BehaviorSubject(true);
+  const metaServiceMock = jasmine.createSpyObj('MetaService', ['setMetaOnRouteChange']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -31,7 +33,8 @@ describe('AppComponent', () => {
         provideMockStore(),
         { provide: ChatsService, useValue: chatsServiceMock },
         { provide: CommonService, useValue: {} },
-        { provide: LocalStorageService, useValue: localStorageMock }
+        { provide: LocalStorageService, useValue: localStorageMock },
+        { provide: MetaService, useValue: metaServiceMock }
       ],
       declarations: [AppComponent]
     }).compileComponents();

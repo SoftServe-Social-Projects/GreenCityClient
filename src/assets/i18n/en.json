@@ -1,4 +1,110 @@
 {
+  "meta": {
+    "default": {
+      "title": "GreenCity — Eco Service to Save the Planet",
+      "description": "GreenCity helps people change the world for the better by forming sustainable habits through simple daily actions."
+    },
+    "ubs": {
+      "title": "Convenient Pick-Up Service by UBS — Fast Recycling Aid",
+      "description": "Easily sort your waste! Find out what we accept, prepare your bags, and order a fast waste collection service in Kyiv and nearby areas."
+    },
+    "greenCity": {
+      "title": "GreenCity — Build Eco-Friendly Habits Today",
+      "description": "Every bag and cup matters! Learn how easy it is to switch from disposables to save the environment and care for the future."
+    },
+    "news": {
+      "title": "Eco News — Latest Updates from the Eco World",
+      "description": "Stay updated on the latest environmental news, discoveries, and achievements in the world of sustainable development."
+    },
+    "oneNewsArticle": {
+      "title": "{{title}} — Eco News",
+      "description": "Read the article about eco news and environmental updates."
+    },
+    "events": {
+      "title": "Events — Eco-Friendly Events in Your City",
+      "description": "Discover upcoming eco-friendly events and join the movement for a cleaner, greener environment."
+    },
+    "oneEventArticle": {
+      "title": "{{title}} — Eco Event",
+      "description": "Learn about the eco event and join the movement for a cleaner, greener environment."
+    },
+    "places": {
+      "title": "Eco Places — Discover Popular Eco-Friendly Spots",
+      "description": "Find stores, restaurants, recycling points, and much more that support an eco-friendly lifestyle."
+    },
+    "about": {
+      "title": "About GreenCity — Together for a Better Future",
+      "description": "GreenCity helps people change the world for the better by forming sustainable habits through simple daily actions."
+    },
+    "userAgreement": {
+      "title": "User Agreement",
+      "description": "Review the terms of using our service."
+    },
+    "profile": {
+      "title": "My Profile — My Achievements and Eco Habits",
+      "description": "Track your eco-habits, achievements, news, and events in your personal profile."
+    },
+    "allHabits": {
+      "title": "All Habits — Add New Habits",
+      "description": "Track your progress in forming eco-friendly habits. Choose new habits to cultivate."
+    },
+    "createHabit": {
+      "title": "Create Habit — Add New Habits",
+      "description": "Create a new habit to form an eco-friendly lifestyle. Choose the type, description, and frequency."
+    },
+    "order": {
+      "title": "Order — Quick and Convenient Processing",
+      "description": "Easily place orders for recycling services from UBS. Choose the best option for your business."
+    },
+    "notifications": {
+      "title": "My Notifications — Stay Updated",
+      "description": "Receive timely notifications about your orders and important service updates."
+    },
+    "userOrders": {
+      "title": "My Orders — View Your Orders",
+      "description": "Review all your orders for recycling services and get real-time statuses."
+    },
+    "userProfile": {
+      "title": "User Data — Complete Your Profile",
+      "description": "Please complete your profile to make the ordering process as fast and convenient as possible. Name, contacts, delivery addresses, and more."
+    },
+    "userBonuses": {
+      "title": "User Bonuses — Your Bonuses",
+      "description": "View and use your accumulated bonuses for discounts or additional services."
+    },
+    "userMessages": {
+      "title": "My Messages — Stay in Touch",
+      "description": "Stay in touch with your friends and the community. Share news, events, and eco-tips."
+    },
+    "adminEmployees": {
+      "title": "Employees — Team Management",
+      "description": "Manage employees, view their profiles, and monitor performance."
+    },
+    "adminOrders": {
+      "title": "Orders List — Manage Client Orders",
+      "description": "View and manage client orders to ensure service quality."
+    },
+    "adminCertificates": {
+      "title": "Certificates — Issuance and Verification",
+      "description": "View, issue, and verify certificates for services."
+    },
+    "adminCustomers": {
+      "title": "Customers — List of Customers",
+      "description": "View and manage the list of customers, their profiles, and orders."
+    },
+    "adminTariffs": {
+      "title": "Tariffs — Manage Tariffs",
+      "description": "Manage tariffs, review available options, and update conditions."
+    },
+    "adminNotifications": {
+      "title": "Notifications — Notification System",
+      "description": "Configure and manage notifications to improve client communication."
+    },
+    "adminUserAgreement": {
+      "title": "User Agreement — Terms and Conditions",
+      "description": "View and edit the terms and conditions of the user agreement."
+    }
+  },
   "top-bar": {
     "text-before": "Hello! It is a tracker of eco habits. Please ",
     "sign-up": "Sign up ",

@@ -24,6 +24,7 @@ import { EventsListItemModalComponent } from '@shared/components/events-list-ite
 import { ofType } from '@ngrx/effects';
 import { ICONS } from '../../models/event-consts';
 import { WarningPopUpComponent } from '@shared/components';
+import { MetaService } from 'src/app/shared/services/meta/meta.service';
 
 @Component({
   selector: 'app-event-details',
@@ -100,7 +101,8 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     private actionsSubj: ActionsSubject,
     private jwtService: JwtService,
     private snackBar: MatSnackBarComponent,
-    private modalService: BsModalService
+    private readonly modalService: BsModalService,
+    private readonly metaService: MetaService
   ) {}
 
   ngOnInit(): void {
@@ -183,6 +185,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   getEventById(): void {
     this.eventService.getEventById(this.eventId).subscribe((res: EventResponse) => {
       this.event = res;
+      this.metaService.setMeta('oneEventArticle', { title: res.title, description: res.description.slice(0, 150) });
       this.organizerName = this.event.organizer.name;
       this.locationLink = this.event.dates[this.event.dates.length - 1].onlineLink;
       this.locationCoordinates = this.event.dates[this.event.dates.length - 1].coordinates;
