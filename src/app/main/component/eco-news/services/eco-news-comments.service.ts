@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '@environment/environment';
 import { CommentsService } from '../../comments/services/comments.service';
 import { AddedCommentDTO, CommentFormData, CommentsModel } from '../../comments/models/comments-model';
+import { CommentService } from '@global-service/comment/comment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,23 +13,14 @@ import { AddedCommentDTO, CommentFormData, CommentsModel } from '../../comments/
 export class EcoNewsCommentsService implements CommentsService {
   private backEnd = environment.backendLink;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private commentService: CommentService
+  ) {}
 
   addComment(formData: CommentFormData): Observable<AddedCommentDTO> {
-    const { entityId, text, imageFiles, parentCommentId = 0 } = formData;
-    const formPayload = new FormData();
-
-    const requestPayload = JSON.stringify({
-      text: text,
-      parentCommentId: parentCommentId
-    });
-    formPayload.append('request', requestPayload);
-
-    imageFiles.forEach((file) => {
-      formPayload.append('images', file, file.name);
-    });
-
-    return this.http.post<AddedCommentDTO>(`${this.backEnd}eco-news/${entityId}/comments`, formPayload);
+    const entityUrl = `${this.backEnd}eco-news/${formData.entityId}/comments`;
+    return this.commentService.addCommentByEntityId(entityUrl, formData);
   }
 
   getActiveCommentsByPage(ecoNewsId: number, page: number, size: number): Observable<CommentsModel> {
