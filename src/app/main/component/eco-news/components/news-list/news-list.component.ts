@@ -47,7 +47,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
   searchToggle = false;
   private isRequestInFlight = false;
   searchNewsControl = new FormControl('', [Validators.maxLength(30), Validators.pattern(Patterns.NameInfoPattern)]);
-  private searchResultSubscription: Subscription;
   econews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
   searchQuery: string;
 
@@ -86,7 +85,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
 
     this.searchNewsControl.valueChanges.subscribe((value) => {
       this.searchQuery = value.trim();
-      this.cleanNewsList();
       this.dispatchStore(true);
     });
   }
@@ -110,6 +108,9 @@ export class NewsListComponent implements OnInit, OnDestroy {
   }
 
   onScroll(): void {
+    if (!this.elements.length) {
+      return;
+    }
     this.scroll = true;
     this.dispatchStore(false);
   }
@@ -122,8 +123,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
     if (this.tagsList !== value) {
       this.tagsList = value;
     }
-    this.hasNext = true;
-    this.page = 0;
     this.dispatchStore(true);
   }
 
@@ -202,7 +201,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
 
   showSelectedNews(): void {
     this.bookmarkSelected = !this.bookmarkSelected;
-    this.cleanNewsList();
     this.dispatchStore(true);
   }
 
@@ -216,11 +214,12 @@ export class NewsListComponent implements OnInit, OnDestroy {
   }
 
   dispatchStore(res: boolean): void {
-    if (!this.hasNext || this.isRequestInFlight) {
-      return;
-    }
     if (res) {
       this.cleanNewsList();
+    }
+
+    if (!this.hasNext || this.isRequestInFlight) {
+      return;
     }
 
     this.isRequestInFlight = true;
