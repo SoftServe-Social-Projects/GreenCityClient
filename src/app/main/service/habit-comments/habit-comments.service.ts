@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '@environment/environment';
 import { CommentsService } from 'src/app/main/component/comments/services/comments.service';
-import { AddedCommentDTO, CommentsModel } from 'src/app/main/component/comments/models/comments-model';
+import { AddedCommentDTO, CommentFormData, CommentsModel } from 'src/app/main/component/comments/models/comments-model';
+import { CommentService } from '@global-service/comment/comment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,17 +13,14 @@ import { AddedCommentDTO, CommentsModel } from 'src/app/main/component/comments/
 export class HabitCommentsService implements CommentsService {
   private readonly backEnd = environment.backendLink;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly commentService: CommentService
+  ) {}
 
-  addComment(habitId: number, text: string, parentCommentId = 0): Observable<AddedCommentDTO> {
-    const formData = new FormData();
-    const requestPayload = {
-      text: text,
-      parentCommentId: parentCommentId
-    };
-
-    formData.append('request', JSON.stringify(requestPayload));
-    return this.http.post<AddedCommentDTO>(`${this.backEnd}habits/${habitId}/comments`, formData);
+  addComment(formData: CommentFormData): Observable<AddedCommentDTO> {
+    const entityUrl = `${this.backEnd}habits/${formData.entityId}/comments`;
+    return this.commentService.addCommentByEntityId(entityUrl, formData);
   }
 
   getActiveCommentsByPage(habitId: number, page: number, size: number): Observable<CommentsModel> {

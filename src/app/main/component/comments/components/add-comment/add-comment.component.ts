@@ -1,9 +1,9 @@
-import { take } from 'rxjs/operators';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators, ValidationErrors } from '@angular/forms';
 import { CommentsService } from '../../services/comments.service';
 import { ProfileService } from '@global-user/components/profile/profile-service/profile.service';
-import { AddedCommentDTO } from 'src/app/main/component/comments/models/comments-model';
+import { AddedCommentDTO, CommentFormData } from 'src/app/main/component/comments/models/comments-model';
+import { CommentTextareaComponent } from '../comment-textarea/comment-textarea.component';
 
 @Component({
   selector: 'app-add-comment',
@@ -11,11 +11,17 @@ import { AddedCommentDTO } from 'src/app/main/component/comments/models/comments
   styleUrls: ['./add-comment.component.scss']
 })
 export class AddCommentComponent implements OnInit {
+  @Input() public isImageUploaderOpen = false;
   @Input() public entityId: number;
   @Input() public commentId: number;
+  @Output() public imageUploaderStatus = new EventEmitter<boolean>();
   @Output() public updateList = new EventEmitter<AddedCommentDTO>();
+  @ViewChild(CommentTextareaComponent) commentTextareaComponent: CommentTextareaComponent;
+
   avatarImage: string;
   firstName: string;
+  uploadedImage: File | null = null;
+  showImageControls = true;
   addCommentForm: FormGroup = this.fb.group({
     content: ['', [Validators.required, Validators.maxLength(8000), this.noSpaceValidator]]
   });
@@ -42,20 +48,35 @@ export class AddCommentComponent implements OnInit {
     });
   }
 
-  setContent(data: { text: string; innerHTML: string }) {
+  resetForm(): void {
+    this.addCommentForm.reset();
+    this.addCommentForm.controls.content.setValue('');
+    this.commentHtml = '';
+    this.uploadedImage = null;
+    this.imageUploaderStatus.emit(false);
+    this.commentTextareaComponent.onCancelImage();
+  }
+
+  setContent(data: { text: string; innerHTML: string; imageFiles?: File[] }) {
     this.addCommentForm.controls.content.setValue(data.text);
     this.commentHtml = data.innerHTML;
+    if (data?.imageFiles?.length) {
+      this.uploadedImage = data.imageFiles[0];
+      this.showImageControls = true;
+    }
   }
 
   onSubmit(): void {
-    this.commentsService
-      .addComment(this.entityId, this.commentHtml, this.commentId)
-      .pipe(take(1))
-      .subscribe((comment: AddedCommentDTO) => {
-        this.updateList.emit(comment);
-        this.addCommentForm.reset();
-        this.addCommentForm.controls.content.setValue('');
-        this.commentHtml = '';
-      });
+    const commentData: CommentFormData = {
+      entityId: this.entityId,
+      text: this.commentHtml,
+      imageFiles: this.commentTextareaComponent.uploadedImage.map((image) => image.file),
+      parentCommentId: this.commentId
+    };
+
+    this.commentsService.addComment(commentData).subscribe((comment: AddedCommentDTO) => {
+      this.updateList.emit(comment);
+      this.resetForm();
+    });
   }
 }

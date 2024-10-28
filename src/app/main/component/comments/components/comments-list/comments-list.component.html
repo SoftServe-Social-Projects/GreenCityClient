@@ -31,10 +31,15 @@
   </div>
   <div class="comment-main-text">
     <div class="comment-text" [ngClass]="{ hide: comment.isEdit }" [appLinkify]="comment.text" (click)="onCommentClick($event)"></div>
+    <div class="comment-images">
+      <div *ngIf="comment.additionalImages && comment.additionalImages.length">
+        <img *ngFor="let image of comment.additionalImages" [src]="image" alt="comment" class="comment-image" />
+      </div>
+    </div>
     <div class="comment-edit-text" *ngIf="comment.isEdit">
       <app-comment-textarea
         [commentTextToEdit]="comment.text"
-        (commentText)="setCommentText($event)"
+        (comment)="setCommentText($event)"
         [placeholder]="'homepage.eco-news.comment.placeholder.new-comment'"
         class="edit-text-input"
       >

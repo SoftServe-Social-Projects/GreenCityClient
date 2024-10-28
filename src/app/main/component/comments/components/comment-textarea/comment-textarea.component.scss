@@ -3,6 +3,64 @@
   width: 100%;
 }
 
+::ng-deep .comment-textarea-uploader {
+  .cropper-block,
+  .cropper-buttons {
+    display: none !important;
+  }
+}
+
+.comment-textarea-uploader {
+  position: relative;
+  width: 100%;
+
+  .cancel-btn {
+    font-size: 18px;
+    position: absolute;
+    top: 0;
+    right: -15px;
+    cursor: pointer;
+    color: var(--tertiary-dark-grey);
+  }
+}
+
+.image-preview-wrapper {
+  padding-left: 9px;
+  max-width: calc(33.33% - 16px);
+  width: 100%;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+
+  .cancel-btn {
+    font-size: 18px;
+    position: absolute;
+    width: 19px;
+    height: 19px;
+    cursor: pointer;
+    color: var(--tertiary-dark-grey);
+    background-color: var(--shadow-dark-grey);
+  }
+}
+
+.image-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.add-more-images {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+  margin-left: 8px;
+  background: url('/assets/icons/habits/plus-circle-green.svg') no-repeat center;
+}
+
 .comment-textarea-wrapper {
   width: 100%;
 
