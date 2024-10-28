@@ -510,6 +510,32 @@
   gap: 24px;
 }
 
+.like-wr {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+
+  .event-like {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    bottom: 4px;
+  }
+
+  .numerosity-likes {
+    font-family: var(--primary-font);
+    font-size: 16px;
+    color: var(--secondary-grey);
+    opacity: 0.6;
+    margin-left: 10px;
+  }
+
+  .disable {
+    cursor: default;
+  }
+}
+
 @media screen and (max-width: 575px) {
   .edit-buttons,
   .m-btn {

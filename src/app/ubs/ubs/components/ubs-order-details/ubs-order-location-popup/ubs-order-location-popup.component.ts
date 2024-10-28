@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { Subject, Observable, of, iif } from 'rxjs';
 import { takeUntil, startWith, map, mergeMap } from 'rxjs/operators';
-import { CourierLocations, AllLocationsDtos, LocationsName } from '../../../models/ubs.interface';
+import { CourierLocations, AllLocationsDtos, LocationsName, AllActiveLocationsDtosResponse } from '../../../models/ubs.interface';
 import { OrderService } from '../../../services/order.service';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Store } from '@ngrx/store';
@@ -84,7 +84,7 @@ export class UbsOrderLocationPopupComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         mergeMap(() => iif(() => this.data, of(this.data), this.orderService.getLocations(this.courierUBS.courierId, true)))
       )
-      .subscribe((res: AllLocationsDtos) => {
+      .subscribe((res: AllActiveLocationsDtosResponse) => {
         this.isFetching = false;
         this.cities = res.allActiveLocationsDtos.reduce(
           (acc, region) => [

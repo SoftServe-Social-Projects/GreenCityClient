@@ -174,15 +174,54 @@ export interface CourierLocations {
   max: number;
 }
 
+export interface DistrictsDtos {
+  nameUa: string;
+  nameEn: string;
+}
+
+export type CourierLimit = 'LIMIT_BY_AMOUNT_OF_BAG' | 'LIMIT_BY_SUM_OF_ORDER';
+
+export interface CourierDto {
+  courierId: number;
+  courierStatus: string;
+  nameEn: string;
+  nameUk: string;
+  createDate: string;
+  createdBy: string;
+}
+
+export interface TariffInfoDto {
+  tariffInfoId: number;
+  min: number;
+  max: number;
+  courierLimit: CourierLimit;
+  courierDto: CourierDto;
+  limitDescription: string;
+}
+
+export interface LocationWithTariffInfoDto {
+  locationId: number;
+  nameEn: string;
+  nameUk: string;
+  tariffInfoDto: TariffInfoDto;
+}
+
+export interface ActiveRegionDto {
+  locations: LocationWithTariffInfoDto[];
+  nameEn: string;
+  nameUk: string;
+  regionId: number;
+}
+
+export interface AllActiveLocationsDtosResponse {
+  allActiveLocationsDtos: ActiveRegionDto[] | null;
+  orderIsPresent: boolean;
+}
+
 export interface ActiveLocations {
   locationId: number;
   nameEn: string;
   nameUk: string;
-}
-
-export interface DistrictsDtos {
-  nameUa: string;
-  nameEn: string;
 }
 
 export interface ActiveLocationsDtos {
@@ -193,7 +232,6 @@ export interface ActiveLocationsDtos {
 }
 
 export interface AllLocationsDtos {
-  allActiveLocationsDtos: ActiveLocationsDtos[] | null;
   tariffsForLocationDto: CourierLocations | null;
   orderIsPresent: boolean;
 }

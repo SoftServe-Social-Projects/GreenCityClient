@@ -5,6 +5,7 @@ import { FactOfTheDay } from '@global-user/models/factOfTheDay';
 import { ProfileService } from '../profile-service/profile.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ProfileStatistics } from '@global-user/models/profile-statistiscs';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 
 @Component({
   selector: 'app-profile-cards',
@@ -15,13 +16,15 @@ export class ProfileCardsComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<void> = new Subject<void>();
   factKey = 'factOfTheDay';
   habitFactKey = 'habitFactOfTheDay';
-  factOfTheDay: FactOfTheDay;
-  habitFactOfTheDay: FactOfTheDay;
+  currentLang = '';
+  factOfTheDay: string;
+  habitFactOfTheDay: string;
   error: string;
 
   constructor(
     private readonly profileService: ProfileService,
-    private readonly localStorageService: LocalStorageService
+    private readonly localStorageService: LocalStorageService,
+    private readonly langService: LanguageService
   ) {}
 
   ngOnInit() {
@@ -38,8 +41,13 @@ export class ProfileCardsComponent implements OnInit, OnDestroy {
   }
 
   loadFactsFromLocalStorage(): void {
-    this.factOfTheDay = this.localStorageService.getFactFromLocalStorage(this.factKey);
-    this.habitFactOfTheDay = this.localStorageService.getFactFromLocalStorage(this.habitFactKey);
+    this.factOfTheDay = this.getFactContentByLanguage(this.factKey);
+    this.habitFactOfTheDay = this.getFactContentByLanguage(this.habitFactKey);
+  }
+
+  getFactContentByLanguage(factKey: string): string {
+    const factOfTheDay = this.localStorageService.getFactFromLocalStorage(factKey);
+    return factOfTheDay?.factOfTheDayTranslations.find((t) => t.languageCode === this.langService.getCurrentLanguage())?.content || '';
   }
 
   checkAndUpdateFacts(): void {
@@ -61,7 +69,7 @@ export class ProfileCardsComponent implements OnInit, OnDestroy {
 
         if (profileStats?.amountHabitsInProgress > 0) {
           if (!this.habitFactOfTheDay) {
-            this.fetchAndSaveHabitFact(currentTime);
+            this.fetchAndSaveFactOfTheDay(currentTime, this.habitFactKey, '/by-tags');
           }
         } else {
           this.clearFacts(true);
@@ -69,42 +77,36 @@ export class ProfileCardsComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateFacts(currentTime: number, hasHabits: boolean): void {
-    this.fetchAndSaveRandomFact(currentTime);
+  private fetchAndSaveFactOfTheDay(currentTime: number, key: string, url: string): void {
+    this.profileService
+      .getRandomFactOfTheDay(url)
+      .pipe(
+        catchError(() => of(null)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((fact: FactOfTheDay) => {
+        if (fact) {
+          this.localStorageService.saveFactToLocalStorage(fact, currentTime, key);
+          this.updateFactContent(key);
+        }
+      });
+  }
 
-    if (hasHabits) {
-      this.fetchAndSaveHabitFact(currentTime);
+  private updateFactContent(key: string): void {
+    const factContent = this.getFactContentByLanguage(key);
+    if (key === this.factKey) {
+      this.factOfTheDay = factContent;
+    } else if (key === this.habitFactKey) {
+      this.habitFactOfTheDay = factContent;
     }
   }
 
-  private fetchAndSaveHabitFact(currentTime: number): void {
-    this.profileService
-      .getFactsOfTheDayByTags()
-      .pipe(
-        catchError(() => of(null)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((fact: FactOfTheDay | null) => {
-        if (fact) {
-          this.habitFactOfTheDay = fact;
-          this.localStorageService.saveFactToLocalStorage(fact, currentTime, this.habitFactKey);
-        }
-      });
-  }
+  updateFacts(currentTime: number, hasHabits: boolean): void {
+    this.fetchAndSaveFactOfTheDay(currentTime, this.factKey, '');
 
-  private fetchAndSaveRandomFact(currentTime: number): void {
-    this.profileService
-      .getRandomFactOfTheDay()
-      .pipe(
-        catchError(() => of(null)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((fact: FactOfTheDay | null) => {
-        if (fact) {
-          this.factOfTheDay = fact;
-          this.localStorageService.saveFactToLocalStorage(fact, currentTime, this.factKey);
-        }
-      });
+    if (hasHabits) {
+      this.fetchAndSaveFactOfTheDay(currentTime, this.habitFactKey, '/by-tags');
+    }
   }
 
   isMoreThanOneDayPassed(lastHabitFetchTime: string | null, currentTime: number, oneDay: number): boolean {

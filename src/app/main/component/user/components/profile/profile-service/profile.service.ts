@@ -41,14 +41,8 @@ export class ProfileService {
     this.localStorageService.userIdBehaviourSubject.subscribe((userId) => (this.userId = userId));
   }
 
-  getRandomFactOfTheDay(): Observable<FactOfTheDay> {
-    const currentLang = this.languageService.getCurrentLanguage();
-    return this.http.get<FactOfTheDay>(`${mainLink}fact-of-the-day/random?lang=${currentLang}`);
-  }
-
-  getFactsOfTheDayByTags(): Observable<FactOfTheDay> {
-    const currentLang = this.languageService.getCurrentLanguage();
-    return this.http.get<FactOfTheDay>(`${mainLink}fact-of-the-day/random/by-tags?lang=${currentLang}`);
+  getRandomFactOfTheDay(url: string): Observable<FactOfTheDay> {
+    return this.http.get<FactOfTheDay>(`${mainLink}fact-of-the-day/random${url}`);
   }
 
   getUserInfo(): Observable<EditProfileModel> {

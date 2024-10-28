@@ -66,8 +66,10 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
       .subscribe((data: TaggedUser[]) => {
         if (data.length) {
           this.suggestedUsers = data.filter((el) => el.userName.toLowerCase().includes(this.searchQuery.toLowerCase()));
-          this.menuTrigger.openMenu();
-          this.refocusTextarea();
+          if (document.activeElement === this.commentTextarea.nativeElement) {
+            this.menuTrigger.openMenu();
+            this.refocusTextarea();
+          }
         } else {
           this.menuTrigger.closeMenu();
           this.suggestedUsers = [];

@@ -6,6 +6,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { ProfileService } from './profile.service';
 import { environment } from '@environment/environment';
+import { FactOfTheDay } from '@global-user/models/factOfTheDay';
 
 describe('ProfileService', () => {
   const backUserLink = environment.backendUserLink;
@@ -49,12 +50,24 @@ describe('ProfileService', () => {
 
   describe('test for method which get facts for today', () => {
     it('should return fact of the day', () => {
-      const fact = { id: 1, content: 'Great day!' };
-      profileService.getRandomFactOfTheDay().subscribe((info) => {
-        expect(info.content).toBe('Great day!');
+      const fact: FactOfTheDay = {
+        id: 1,
+        factOfTheDayTranslations: [
+          {
+            languageCode: 'ua',
+            content: 'Приклад факту дня'
+          },
+          {
+            languageCode: 'en',
+            content: 'Sample fact of the day'
+          }
+        ]
+      };
+      profileService.getRandomFactOfTheDay('').subscribe((info) => {
+        expect(info.factOfTheDayTranslations[0].content).toBe('Приклад факту дня');
       });
 
-      const req = httpMock.expectOne(`${backLink}fact-of-the-day/random?lang=en`);
+      const req = httpMock.expectOne(`${backLink}fact-of-the-day/random`);
       expect(req.request.method).toBe('GET');
       req.flush(fact);
     });

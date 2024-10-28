@@ -1,4 +1,7 @@
 export interface FactOfTheDay {
   id: number;
-  content: string;
+  factOfTheDayTranslations: {
+    content: string;
+    languageCode: string;
+  }[];
 }

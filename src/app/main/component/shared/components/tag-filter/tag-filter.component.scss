@@ -17,8 +17,11 @@
   }
 
   .text {
+    color: var(--quaternary-grey);
     line-height: 20px;
     font-size: 14px;
+    font-family: var(--tertiary-font);
+    font-weight: 400;
   }
 }
 
@@ -35,7 +38,7 @@
     padding: 0;
     background: none;
 
-    .global-tag-clicked {
+    .global-tag-clicked .text {
       color: var(--primary-white);
     }
 

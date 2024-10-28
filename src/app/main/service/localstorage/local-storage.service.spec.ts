@@ -59,7 +59,16 @@ describe('LocalStorageService', () => {
 
   const factMock: FactOfTheDay = {
     id: 1,
-    content: 'Mock Fact of the Day'
+    factOfTheDayTranslations: [
+      {
+        languageCode: 'ua',
+        content: 'Приклад факту дня'
+      },
+      {
+        languageCode: 'en',
+        content: 'Sample fact of the day'
+      }
+    ]
   };
   const factKey = 'factOfTheDay';
   const currentTime = Date.now();
@@ -252,7 +261,7 @@ describe('LocalStorageService', () => {
       const locations = [
         { id: 1, name: 'location1' },
         { id: 2, name: 'location2' }
-      ];
+      ] as any;
       service.setLocations(locations);
       expect(JSON.parse(localStorage.getItem('locations'))).toEqual(locations);
     });

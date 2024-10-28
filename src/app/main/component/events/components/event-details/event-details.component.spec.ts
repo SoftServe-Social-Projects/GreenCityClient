@@ -17,6 +17,7 @@ import { EventStoreService } from '../../services/event-store.service';
 import { LangValueDirective } from 'src/app/shared/directives/lang-value/lang-value.directive';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { eventMock, eventStateMock } from '@assets/mocks/events/mock-events';
+import { EventResponse } from '../../models/events.interface';
 
 export function mockPipe(options: Pipe): Pipe {
   const metadata: Pipe = {
@@ -39,6 +40,7 @@ describe('EventDetailsComponent', () => {
 
   const storeMock = jasmine.createSpyObj('store', ['select', 'dispatch']);
   storeMock.select = () => of(eventStateMock);
+  const snackBarMock = jasmine.createSpyObj('MatSnackBarComponent', ['openSnackBar']);
 
   const EventsServiceMock = jasmine.createSpyObj('eventService', [
     'getEventById ',
@@ -49,7 +51,9 @@ describe('EventDetailsComponent', () => {
     'getForm',
     'getLangValue',
     'setBackFromPreview',
-    'setSubmitFromPreview'
+    'setSubmitFromPreview',
+    'postToggleLike',
+    'getIsLikedByUser'
   ]);
   EventsServiceMock.getEventById = () => of(eventMock);
   EventsServiceMock.deleteEvent = () => of(true);
@@ -104,7 +108,7 @@ describe('EventDetailsComponent', () => {
   const languageServiceMock = jasmine.createSpyObj('LanguageService', ['getLangValue', 'getCurrentLangObs']);
   languageServiceMock.getLangValue = (valUa: string, valEn: string) => valUa;
   languageServiceMock.getCurrentLangObs = () => of('ua');
-
+  EventsServiceMock.getIsLikedByUser.and.returnValue(of(true));
   const actionSub: ActionsSubject = new ActionsSubject();
 
   beforeEach(waitForAsync(() => {
@@ -215,5 +219,39 @@ describe('EventDetailsComponent', () => {
     dialogRefSpy.afterClosed().subscribe(() => {
       expect(component.submitEventCancelling).toHaveBeenCalled();
     });
+  });
+
+  it('should update likes and not revert isLiked if postToggleLike succeeds', () => {
+    component.isLiked = false;
+    component.event = { likes: 10 } as EventResponse;
+    component.eventId = 2;
+
+    EventsServiceMock.postToggleLike.and.returnValue(of(true));
+
+    component.onLikeEvent();
+
+    expect(snackBarMock.openSnackBar).not.toHaveBeenCalled();
+    expect(component.isLiked).toBe(true);
+  });
+
+  it('should correctly toggle likes and isLiked based on the current state', () => {
+    component.event = { likes: 10 } as EventResponse;
+    component.eventId = 2;
+    component.isLiked = false;
+    EventsServiceMock.postToggleLike.and.returnValue(of(true));
+
+    component.onLikeEvent();
+
+    expect(snackBarMock.openSnackBar).not.toHaveBeenCalled();
+    expect(component.isLiked).toBe(true);
+    expect(component.event.likes).toBe(11);
+
+    component.isLiked = true;
+    EventsServiceMock.postToggleLike.and.returnValue(of(true));
+
+    component.onLikeEvent();
+
+    expect(component.isLiked).toBe(false);
+    expect(component.event.likes).toBe(10);
   });
 });

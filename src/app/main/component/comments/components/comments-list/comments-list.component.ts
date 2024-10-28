@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { CommentsService } from '../../services/comments.service';
-import { AddedCommentDTO, CommentsDTO, dataTypes, PaginationConfig } from '../../models/comments-model';
+import { AddedCommentDTO, CommentsDTO, CommentsModel, dataTypes, PaginationConfig } from '../../models/comments-model';
 import { take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -57,6 +57,17 @@ export class CommentsListComponent {
 
   deleteComment($event): void {
     this.changedList.emit($event);
+    this.getRepliesAfterDelete($event);
+  }
+
+  private getRepliesAfterDelete(commentId: number): void {
+    this.commentsService
+      .getActiveRepliesByPage(commentId, this.config.currentPage - 1, this.config.itemsPerPage)
+      .pipe(take(1))
+      .subscribe((list: CommentsModel) => {
+        this.elementsList = list.page;
+        this.elementsList.forEach((reply) => (reply.showAllRelies = true));
+      });
   }
 
   isCommentEdited(element: CommentsDTO): boolean {
