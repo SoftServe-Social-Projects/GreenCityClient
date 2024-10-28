@@ -6,7 +6,15 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil, finalize, tap, concatMap, switchMap } from 'rxjs/operators';
 import { ubsMainPageImages } from '../../../../main/image-pathes/ubs-main-page-images';
-import { AllLocationsDtos, CourierLocations, Bag, OrderDetails, ActiveLocations, ActiveCourierDto } from '../../models/ubs.interface';
+import {
+  AllLocationsDtos,
+  CourierLocations,
+  Bag,
+  OrderDetails,
+  LocationsDtosList,
+  ActiveCourierDto,
+  AllActiveLocationsDtosResponse
+} from '../../models/ubs.interface';
 import { OrderService } from '../../services/order.service';
 import { UbsOrderLocationPopupComponent } from '../ubs-order-details/ubs-order-location-popup/ubs-order-location-popup.component';
 import { JwtService } from '@global-service/jwt/jwt.service';
@@ -40,8 +48,8 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
   private userId: number;
   permissions$ = this.store.select((state: IAppState): Array<string> => state.employees.employeesPermissions);
   bags: Bag[];
-  locationsToShowBags: ActiveLocations[];
-  locationToShow: ActiveLocations;
+  locationsToShowBags: LocationsDtosList[];
+  locationToShow: LocationsDtosList;
   isTarriffLoading = true;
 
   perPackageTitle = 'ubs-homepage.ubs-courier.price.price-title';
@@ -251,7 +259,7 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
       );
   }
 
-  private getActiveLocationsToShow(): Observable<AllLocationsDtos> {
+  private getActiveLocationsToShow(): Observable<AllActiveLocationsDtosResponse> {
     const courier = this.findCourierByName(this.ubsCourierName);
     return this.orderService.getLocations(courier.courierId, true).pipe(
       takeUntil(this.destroy),

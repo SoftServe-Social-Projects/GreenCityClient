@@ -11,7 +11,7 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { FormControl } from '@angular/forms';
 import { OrderService } from '../../ubs/services/order.service';
 import { UbsOrderLocationPopupComponent } from '../../ubs/components/ubs-order-details/ubs-order-location-popup/ubs-order-location-popup.component';
-import { AllLocationsDtos } from '../../ubs/models/ubs.interface';
+import { AllActiveLocationsDtosResponse } from '../../ubs/models/ubs.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 
@@ -101,7 +101,7 @@ export class UbsUserOrdersComponent implements OnInit, OnDestroy {
     this.orderService
       .getLocations(courier.courierId)
       .pipe(takeUntil(this.destroy))
-      .subscribe((res: any) => {
+      .subscribe((res: AllActiveLocationsDtosResponse) => {
         if (res.orderIsPresent) {
           this.saveLocation(res);
           this.router.navigate(['ubs', 'order']);
@@ -111,15 +111,14 @@ export class UbsUserOrdersComponent implements OnInit, OnDestroy {
       });
   }
 
-  saveLocation(locationsData: AllLocationsDtos): void {
+  saveLocation(allLocations: AllActiveLocationsDtosResponse): void {
     this.orderService.completedLocation(true);
-    this.localStorageService.setLocationId(locationsData.tariffsForLocationDto.locationsDtosList[0].locationId);
-    this.localStorageService.setTariffId(locationsData.tariffsForLocationDto.tariffInfoId);
-    this.localStorageService.setLocations(locationsData.tariffsForLocationDto);
-    this.orderService.setLocationData(locationsData.tariffsForLocationDto.locationsDtosList[0].nameEn);
+    this.localStorageService.setLocationId(allLocations.allActiveLocationsDtos[0].locations[0].locationId);
+    this.localStorageService.setTariffId(allLocations.allActiveLocationsDtos[0].locations[0].tariffInfoDto.tariffInfoId);
+    this.orderService.setLocationData(allLocations.allActiveLocationsDtos[0].locations[0].nameEn);
   }
 
-  openLocationDialog(locationsData: AllLocationsDtos) {
+  openLocationDialog(locationsData: AllActiveLocationsDtosResponse) {
     const dialogRef = this.dialog.open(UbsOrderLocationPopupComponent, {
       hasBackdrop: true,
       disableClose: false,
