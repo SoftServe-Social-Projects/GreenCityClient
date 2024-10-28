@@ -14,18 +14,6 @@ import { ContentChange, QuillModule } from 'ngx-quill';
 import { Language } from '../../../../../../i18n/Language';
 import { CreateEventInformationComponent } from './create-event-information.component';
 
-class QuillMock {
-  selection: { index: number; length: number } | null = { index: 0, length: 0 };
-
-  getSelection() {
-    return this.selection; // Return the current selection
-  }
-
-  setSelection(index: number, length: number) {
-    this.selection = { index, length }; // Update the selection
-  }
-}
-
 describe('CreateEventInformationComponent', () => {
   let component: CreateEventInformationComponent;
   let fixture: ComponentFixture<CreateEventInformationComponent>;
@@ -48,11 +36,7 @@ describe('CreateEventInformationComponent', () => {
         MatButtonModule,
         NoopAnimationsModule
       ],
-      providers: [
-        FormBuilder,
-        { provide: LocalStorageService, useValue: localStorageServiceMock },
-        { provide: 'Quill', useClass: QuillMock }
-      ],
+      providers: [FormBuilder, { provide: LocalStorageService, useValue: localStorageServiceMock }],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
     localStorageServiceSpy = TestBed.inject(LocalStorageService) as jasmine.SpyObj<LocalStorageService>;
@@ -92,17 +76,19 @@ describe('CreateEventInformationComponent', () => {
     expect(component.quillLabel).toBe('Not enough characters. Left: 5');
   });
 
-  it('should set description value in form on content change', fakeAsync(() => {
+  it('should set description value in form on blur', fakeAsync(() => {
     const mockContent = {
-      text: 'Description',
-      editor: new QuillMock()
+      text: 'Description'
     };
 
-    component.eventInfForm.get('description')?.setValue('');
-    expect(component.eventInfForm.get('description')?.value).toBe('');
-    component.quillContentChanged(mockContent as any);
+    const text = 'Description   ';
+
+    component.eventInfForm.get('description')?.setValue(text);
+    expect(component.eventInfForm.get('description')?.value).toBe(text);
+    component.updateDescriptionOnBlur();
     tick();
-    expect(component.eventInfForm.get('description')?.value).toBe(mockContent.text.trimEnd());
+    fixture.detectChanges();
+    expect(component.eventInfForm.get('description')?.value).toBe(text.trimEnd());
   }));
 
   it('should return error message with remaining characters when quillLength is less than minLength', () => {
@@ -117,21 +103,26 @@ describe('CreateEventInformationComponent', () => {
     expect(component.quillLabel).toBe('Error: Max length exceeded by 4');
   });
 
-  it('should update quillLength and form value on valid content change', fakeAsync(() => {
+  it('should update quillLength and form value on valid content change and blur', fakeAsync(() => {
     const mockContent = {
-      text: 'Description',
-      editor: new QuillMock()
+      text: 'Description    '
     };
 
     component.quillLength = 0;
     component.isQuillUnfilled = true;
-    component.eventInfForm.get('description')?.setValue('');
+    component.eventInfForm.get('description')?.setValue(mockContent.text);
 
+    //updates length
     component.quillContentChanged(mockContent as any);
     tick();
     expect(component.quillLength).toBe(mockContent.text.length - 1);
     expect(component.eventInfForm.get('description')?.value).toBe(mockContent.text);
     expect(component.isQuillUnfilled).toBe(component.quillLength < 20);
+
+    component.updateDescriptionOnBlur();
+    tick();
+    expect(component.quillLength).toBe(mockContent.text.trimEnd().length - 1);
+    expect(component.eventInfForm.get('description')?.value).toBe(mockContent.text.trimEnd());
   }));
 
   it('should return default label when quillLength is zero', () => {
