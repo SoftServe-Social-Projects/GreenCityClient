@@ -76,3 +76,16 @@ $font-family: lato, sans-serif;
   height: 180px;
   overflow: auto;
 }
+
+a.custom-chip {
+  font-family: var(--tertiary-font);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+  color: var(--quaternary-grey);
+}
+
+a.custom-chip.global-tag-clicked {
+  color: var(--primary-white);
+}
