@@ -55,6 +55,7 @@ export enum OrderActions {
 
   UpdateAddress = '[Order] Update Address',
   UpdateAddressSuccess = '[Order] Update Address Success',
+  UpdateAddressFail = '[Order] Update Address Fail',
 
   DeleteAddress = '[Order] Delete Address',
   DeleteAddressSuccess = '[Order] Delete Address Success',
@@ -125,6 +126,7 @@ export const CreateAddressFail = createAction(OrderActions.CreateAddressFail);
 
 export const UpdateAddress = createAction(OrderActions.UpdateAddress, props<{ address: Address }>());
 export const UpdateAddressSuccess = createAction(OrderActions.UpdateAddressSuccess, props<{ addresses: Address[] }>());
+export const UpdateAddressFail = createAction(OrderActions.CreateAddressFail);
 
 export const DeleteAddress = createAction(OrderActions.DeleteAddress, props<{ address: Address }>());
 export const DeleteAddressSuccess = createAction(OrderActions.DeleteAddressSuccess, props<{ addresses: Address[] }>());

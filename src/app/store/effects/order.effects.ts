@@ -27,7 +27,8 @@ import {
   UpdateAddressSuccess,
   GetExistingOrderInfo,
   GetExistingOrderInfoSuccess,
-  CreateAddressFail
+  CreateAddressFail,
+  UpdateAddressFail
 } from 'src/app/store/actions/order.actions';
 import { OrderService } from 'src/app/ubs/ubs/services/order.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
@@ -123,18 +124,18 @@ export class OrderEffects {
     this.actions.pipe(
       ofType(CreateAddress),
       mergeMap((action: { address: AddressData }) => {
-        let isSuccessful = false;
         return this.orderService.addAdress(action.address).pipe(
           map((response) => {
-            isSuccessful = !!response;
+            this.snackBar.openSnackBar('addedAddress');
             return CreateAddressSuccess({ addresses: response.addressList });
           }),
-          catchError(() => {
-            this.snackBar.openSnackBar('existAddress');
+          catchError((error) => {
+            if (error.status === 400) {
+              this.snackBar.openSnackBar('errorCreateAddress');
+            } else {
+              this.snackBar.openSnackBar('existAddress');
+            }
             return of(CreateAddressFail());
-          }),
-          finalize(() => {
-            this.snackBar.openSnackBar(isSuccessful ? 'addedAddress' : 'errorAddress');
           })
         );
       })
@@ -144,16 +145,22 @@ export class OrderEffects {
   updateAddress = createEffect(() =>
     this.actions.pipe(
       ofType(UpdateAddress),
-      tap(() => this.snackBar.openSnackBar('updatedAddress')),
-      mergeMap((action: { address: Address }) =>
-        this.orderService.updateAdress(action.address).pipe(
-          map((response) => UpdateAddressSuccess({ addresses: response.addressList })),
-          catchError(() => {
-            this.snackBar.openSnackBar('existAddress');
-            return EMPTY;
+      mergeMap((action: { address: Address }) => {
+        return this.orderService.updateAdress(action.address).pipe(
+          map((response) => {
+            this.snackBar.openSnackBar('updatedAddress');
+            return UpdateAddressSuccess({ addresses: response.addressList });
+          }),
+          catchError((error) => {
+            if (error.status === 400) {
+              this.snackBar.openSnackBar('errorEditAddress');
+            } else {
+              this.snackBar.openSnackBar('existAddress');
+            }
+            return of(UpdateAddressFail());
           })
-        )
-      )
+        );
+      })
     )
   );
 
