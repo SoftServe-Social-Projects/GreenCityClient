@@ -101,7 +101,6 @@ export class EventsListComponent implements OnInit, OnDestroy {
     if (this.bookmarkSelected) {
       this.getUserFavoriteEvents();
     } else {
-      const searchTitle = this.searchEventControl.value.trim();
       this.searchEventsByTitle();
     }
     this.page++;
