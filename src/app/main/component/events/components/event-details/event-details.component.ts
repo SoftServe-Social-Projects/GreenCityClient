@@ -46,6 +46,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   attendees: EventAttender[] = [];
   attendeesAvatars = [];
   organizerName: string;
+  isLiked: boolean;
   event: EventResponse | PagePreviewDTO;
   locationLink: string;
   locationCoordinates: LocationResponse;
@@ -56,6 +57,10 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   currentDate = new Date();
   max = 5;
   rate: number;
+  likesType = {
+    like: 'assets/img/comments/like.png',
+    liked: 'assets/img/comments/liked.png'
+  };
   deleteDialogData = {
     popupTitle: 'homepage.events.delete-title-admin',
     popupConfirm: 'homepage.events.delete-yes',
@@ -82,7 +87,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     isUbsOrderSubmit: false,
     isHabit: false
   };
-  private userId: number;
+  userId: number;
   private destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -111,6 +116,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
 
       this.routedFromProfile = this.localStorageService.getPreviousPage() === '/profile';
       this.backRoute = this.localStorageService.getPreviousPage();
+      this.getIsLiked();
     } else {
       this.event = this.eventService.getForm() as PagePreviewDTO;
       this.locationLink = this.event.dates[this.event.dates.length - 1].onlineLink;
@@ -120,6 +126,36 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       this.bindUserName();
       this.setGoogleMapLink();
     }
+  }
+
+  private getIsLiked(): void {
+    this.eventService
+      .getIsLikedByUser(this.eventId)
+      .pipe(take(1))
+      .subscribe((isLiked: boolean) => {
+        this.isLiked = isLiked;
+      });
+  }
+
+  onLikeEvent(): void {
+    const updatedLikes = this.event.likes + (this.isLiked ? -1 : 1);
+    this.isLiked = !this.isLiked;
+    this.postToggleEventLike(updatedLikes);
+  }
+
+  private postToggleEventLike(updatedLikes: number): void {
+    this.eventService
+      .postToggleLike(this.eventId)
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          this.event.likes = updatedLikes;
+        },
+        error: () => {
+          this.snackBar.openSnackBar('errorLiked');
+          this.isLiked = !this.isLiked;
+        }
+      });
   }
 
   navigateBackOnEventDeleteListener(): void {

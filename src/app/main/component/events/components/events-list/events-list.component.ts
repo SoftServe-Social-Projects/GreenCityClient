@@ -396,7 +396,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
     let params = new HttpParams().append('page', this.page.toString()).append('size', this.eventsPerPage.toString());
 
     const paramsToAdd = [
-      this.appendIfNotEmpty('user-id', this.userId.toString()),
+      this.appendIfNotEmpty('user-id', this.userId?.toString()),
       this.appendIfNotEmpty('title', title),
       this.appendIfNotEmpty('type', this.getTypeFilter()),
       this.appendIfNotEmpty(
