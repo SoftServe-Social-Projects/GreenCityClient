@@ -23,15 +23,19 @@ import { IAppState } from 'src/app/store/state/app.state';
 export class AuthEffects {
   private readonly BACKEND_ERRORS = {
     Unauthorized: 'user.auth.sign-in.account-has-been-deleted',
-    'You should verify the email first, check your email box!': 'user.auth.sign-in.not-verified-email'
+    'You should verify the email first, check your email box!': 'user.auth.sign-in.not-verified-email',
+    'Wrong captcha': 'user.auth.sign-in.wrong-captcha',
+    'Bad password': 'user.auth.sign-in.bad-password',
+    'User account is blocked due to too many failed login attempts. Try again in 15 minutes': 'user.auth.sign-in.account-blocked',
+    'User is not activated': 'user.auth.sign-in.user-not-activated'
   };
   private readonly DEFAULT_ERROR = 'user.auth.sign-in.bad-email-or-password';
 
-  private actions: Actions = inject(Actions);
-  private router: Router = inject(Router);
-  private store: Store<IAppState> = inject(Store);
-  private authService: AuthService = inject(AuthService);
-  private jwtService: JwtService = inject(JwtService);
+  private readonly actions: Actions = inject(Actions);
+  private readonly router: Router = inject(Router);
+  private readonly store: Store<IAppState> = inject(Store);
+  private readonly authService: AuthService = inject(AuthService);
+  private readonly jwtService: JwtService = inject(JwtService);
 
   $getCurrentUser = createEffect(() => {
     return this.actions.pipe(
@@ -51,7 +55,7 @@ export class AuthEffects {
       mergeMap((action: { data: ISignIn }) => {
         return this.authService.signIn(action.data).pipe(
           map((response: ISignInResponse) => SignInSuccessAction({ data: response })),
-          catchError((error) => of(SignInFailureAction({ error: this.BACKEND_ERRORS[error.message] || this.DEFAULT_ERROR })))
+          catchError((error) => of(SignInFailureAction({ error: this.BACKEND_ERRORS[error.error.message] || this.DEFAULT_ERROR })))
         );
       })
     );
