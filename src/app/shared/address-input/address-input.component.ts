@@ -20,10 +20,11 @@ import { LanguageService } from 'src/app/main/i18n/language.service';
 import { emptyOrValid } from 'src/app/shared/validators/empthy-or-valid.validator';
 import { addressesSelector } from 'src/app/store/selectors/order.selectors';
 import { GooglePrediction } from 'src/app/ubs/mocks/google-types';
-import { Address, CourierLocations, DistrictEnum, DistrictsDtos } from 'src/app/ubs/ubs/models/ubs.interface';
+import { Address, CourierLocations, DistrictsDtos } from 'src/app/ubs/ubs/models/ubs.interface';
 import { CAddressData } from 'src/app/ubs/ubs/models/ubs.model';
 import { addressAlreadyExistsValidator } from 'src/app/ubs/ubs/validators/address-olready-exists-validator';
 import { Patterns } from 'src/assets/patterns/patterns';
+import { AddressService } from '../services/address/address.service';
 
 @Component({
   selector: 'app-address-input',
@@ -48,6 +49,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() addFromProfile: boolean;
   @Input() isShowCommentInput = true;
   @Input() isFromAdminPage: boolean;
+
   addressForm: FormGroup;
   currentLanguage: string;
   locations: CourierLocations;
@@ -55,6 +57,8 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   addressCoords: google.maps.LatLng;
   isTouched = false;
   isShowMap = false;
+  districtsForKyiv: DistrictsDtos[];
+  allowDistrictEdit = false;
 
   mapOptions: google.maps.MapOptions = {
     center: { lat: 49.8397, lng: 24.0297 },
@@ -124,11 +128,12 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   onTouched = () => {};
 
   constructor(
-    private fb: FormBuilder,
-    private localStorageService: LocalStorageService,
+    private readonly fb: FormBuilder,
+    private readonly localStorageService: LocalStorageService,
     public langService: LanguageService,
-    private store: Store,
-    private cdr: ChangeDetectorRef
+    private readonly store: Store,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly addressService: AddressService
   ) {}
 
   validate(control: AbstractControl): ValidationErrors {
@@ -172,6 +177,8 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.houseCorpus.disable();
       this.entranceNumber.disable();
       this.district.disable();
+    } else {
+      this.updateDistrictEditState();
     }
     if (this.isFromAdminPage) {
       this.addressComment.disable();
@@ -213,11 +220,11 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.setInitialValues();
     }
 
-    const region = this.addressData.getRegion(this.langService.getCurrentLanguage());
+    const region = this.addressData.getRegion();
 
     this.addressForm = this.fb.group({
       region: [region ?? '', Validators.required],
-      city: [this.addressData.getCity(this.langService.getCurrentLanguage()) ?? '', Validators.required],
+      city: [this.addressData.getCity() ?? '', Validators.required],
       street: [this.addressData.getStreet() ?? '', Validators.required],
       district: [this.addressData.getDistrict() ?? '', Validators.required],
       houseNumber: [this.address?.houseNumber ?? '', [Validators.required, Validators.pattern(this.buildingPattern)]],
@@ -226,7 +233,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
         this.address?.entranceNumber ?? '',
         emptyOrValid([Validators.maxLength(2), Validators.pattern(this.buildingPattern)])
       ],
-      placeId: [this.address?.placeId ?? '', Validators.required],
+      placeId: [this.address?.placeId ?? ''],
       addressComment: [this.address?.addressComment ?? '']
     });
 
@@ -289,6 +296,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       this.addressData.setCity(city.place_id);
     }
 
+    this.updateDistrictEditState();
     this.resetStreet();
     this.resetDistricts();
     this.resetHouseInfo();
@@ -300,8 +308,10 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (street) {
       this.placeId.setValue(street.place_id);
       this.addressData.setStreet(street.place_id);
+      this.allowDistrictEdit && this.district.enable();
     } else {
       this.addressData.resetStreet();
+      this.district.reset();
     }
 
     this.resetHouseInfo();
@@ -314,9 +324,23 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.OnChangeAndTouched();
   }
 
-  onDistrictSelected(): void {
-    this.addressData.setDistrict(this.district.value);
-    this.onChange(this.addressData.getValues());
+  getDistricts() {
+    this.addressService
+      .getKyivDistricts()
+      .pipe(take(1))
+      .subscribe((districts) => {
+        this.districtsForKyiv = districts;
+      });
+  }
+
+  updateDistrictEditState() {
+    if (this.hasDistricts()) {
+      this.getDistricts();
+      this.allowDistrictEdit = true;
+    } else {
+      this.allowDistrictEdit = false;
+      this.district.disable();
+    }
   }
 
   onHouseNumberChange(): void {
@@ -326,6 +350,12 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (!this.district.value) {
       this.addressData.setDistrictFromCity();
     }
+  }
+
+  onDistrictChange(district: string, districtEn: string): void {
+    this.allowDistrictEdit && this.addressData.setCustomDistrict(district, districtEn);
+
+    this.OnChangeAndTouched();
   }
 
   onHouseCorpusChange(): void {
@@ -341,6 +371,11 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   onCommentChange(): void {
     this.addressData.setAddressComment(this.addressComment.value);
     this.OnChangeAndTouched();
+  }
+
+  hasDistricts(): boolean {
+    const citiesWithDistricts = ['Kyiv', 'Київ'];
+    return citiesWithDistricts.includes(this.city.value);
   }
 
   onMapClick($event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) {
@@ -421,10 +456,13 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.houseNumber.reset();
     this.houseCorpus.reset();
     this.entranceNumber.reset();
+    this.addressData.resetHouseInfo();
   }
 
   private resetDistricts(): void {
     this.district.reset();
+    this.addressData.resetDistrict();
+    this.district.disable();
   }
 
   private resetStreet(): void {

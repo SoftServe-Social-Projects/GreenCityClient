@@ -35,8 +35,8 @@ export class UserLocationDto {
 }
 
 export class Coordinates {
-  latitude: number | null;
-  longitude: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface NotificationPreference {

@@ -121,20 +121,16 @@ export class EcoNewsDetailComponent implements OnInit, OnDestroy {
   }
 
   private postToggleLike(updatedLikes: number): void {
-    let isPermit = false;
     this.ecoNewsService
       .postToggleLike(this.newsId)
       .pipe(take(1))
       .subscribe({
         next: () => {
-          isPermit = true;
           this.newsItem.likes = updatedLikes;
         },
-        complete: () => {
-          if (!isPermit) {
-            this.snackBar.openSnackBar('errorLiked');
-            this.isLiked = !this.isLiked;
-          }
+        error: () => {
+          this.snackBar.openSnackBar('errorLiked');
+          this.isLiked = !this.isLiked;
         }
       });
   }
