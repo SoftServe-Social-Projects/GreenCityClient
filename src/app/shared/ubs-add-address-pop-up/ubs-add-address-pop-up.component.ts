@@ -67,7 +67,7 @@ export class UBSAddAddressPopUpComponent implements OnInit {
     this.dialogRef.close('Deleted');
   }
 
-  addAdress(): void {
+  addAddress(): void {
     this.data.edit
       ? this.store.dispatch(UpdateAddress({ address: { ...this.data.address, ...this.address.value } }))
       : this.store.dispatch(CreateAddress({ address: this.address.value }));

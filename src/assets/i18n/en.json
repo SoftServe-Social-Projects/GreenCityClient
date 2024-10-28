@@ -508,7 +508,9 @@
       "exist-address": "This address has already been added",
       "certificate-duration": "The duration of the certificate cant be more than 12 months",
       "friend-request": "You cannot add this friend",
-      "friend-already-added": "This friend has been already added"
+      "friend-already-added": "This friend has been already added",
+      "error-create-address": "Oops, An error occurred while creating the address. Please try again.",
+      "error-edit-address": "Oops, An error occurred while edititng the address. Please try again."
     },
     "attention": {
       "default": "Attention message. The action cannot be performed, because conditions weren’t met.",

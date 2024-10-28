@@ -1,8 +1,9 @@
 import { CertificateStatus } from 'src/app/ubs/ubs/certificate-status.enum';
-import { Address, AddressData, DistrictsDtos, ICertificateResponse } from './ubs.interface';
+import { Address, AddressData, ICertificateResponse } from './ubs.interface';
 import { Language } from 'src/app/main/i18n/Language';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { Subject } from 'rxjs';
+import { Coordinates } from '@global-user/models/edit-profile.model';
 
 export class CCertificate {
   get code(): string {
@@ -86,7 +87,7 @@ export class CAddressData {
   private houseCorpus: string;
   private placeId: string;
   private addressComment = '';
-  private coordinates: google.maps.LatLng;
+  private coordinates: google.maps.LatLng | Coordinates;
 
   private placeIdChange: Subject<string> = new Subject();
   private addressChange: Subject<AddressData> = new Subject();
@@ -106,6 +107,7 @@ export class CAddressData {
     this.entranceNumber = address.entranceNumber;
     this.houseCorpus = address.houseCorpus;
     this.placeId = address.placeId;
+    this.coordinates = address.coordinates;
     this.addressComment = address.addressComment;
   }
 
@@ -119,8 +121,8 @@ export class CAddressData {
     this.fetchAddress(coordinates);
   }
 
-  getRegion(language: Language): string {
-    return language === Language.EN ? this.regionEn : this.region;
+  getRegion(): string {
+    return this.languageService.getCurrentLanguage() === Language.EN ? this.regionEn : this.region;
   }
 
   setRegion(place_id: string): void {
@@ -140,13 +142,18 @@ export class CAddressData {
     this.resetPlaceId();
   }
 
-  getCity(language: Language): string {
-    return language === Language.EN ? this.cityEn : this.city;
+  getCity(): string {
+    return this.languageService.getCurrentLanguage() === Language.EN ? this.cityEn : this.city;
   }
 
-  setCity(place_id: string): void {
-    this.setProperties('city', place_id, 'locality');
-    this.resetPlaceId();
+  async setCity(place_id: string): Promise<void> {
+    try {
+      await this.setProperties('city', place_id, 'locality');
+      this.setRegion(place_id);
+      this.resetPlaceId();
+    } catch (error) {
+      console.error('Error during setting city:', error);
+    }
   }
 
   resetCity(): void {
@@ -159,10 +166,14 @@ export class CAddressData {
     return this.languageService.getCurrentLanguage() === Language.EN ? this.streetEn : this.street;
   }
 
-  setStreet(place_id: string): void {
-    this.placeId = place_id;
-    this.setProperties('street', place_id, 'route');
-    this.setDistrict(place_id);
+  async setStreet(place_id: string): Promise<void> {
+    try {
+      this.placeId = place_id;
+      await this.setProperties('street', place_id, 'route');
+      await this.setDistrict(place_id);
+    } catch (error) {
+      console.error('Error during setting street:', error);
+    }
   }
 
   resetStreet(): void {
@@ -175,10 +186,18 @@ export class CAddressData {
     return this.languageService.getLangValue(this.district, this.districtEn);
   }
 
-  setDistrict(place_id: string): void {
-    this.resetDistrict();
+  async setDistrict(place_id: string): Promise<void> {
+    try {
+      this.resetDistrict();
+      await this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2');
+    } catch (error) {
+      console.error('Error during setting district:', error);
+    }
+  }
 
-    this.setProperties('district', place_id, 'sublocality', 'administrative_area_level_2');
+  setCustomDistrict(district: string, districtEn: string): void {
+    this.district = district;
+    this.districtEn = districtEn;
   }
 
   setDistrictFromCity() {
@@ -194,6 +213,12 @@ export class CAddressData {
 
   setHouseNumber(value: any) {
     this.houseNumber = value;
+  }
+
+  resetHouseInfo() {
+    this.houseNumber = '';
+    this.houseCorpus = '';
+    this.entranceNumber = '';
   }
 
   setHouseCorpus(value: any) {
@@ -217,7 +242,7 @@ export class CAddressData {
   }
 
   getValues(): AddressData {
-    const addressData: AddressData = {
+    return {
       regionEn: this.regionEn,
       region: this.region,
       city: this.city,
@@ -231,12 +256,15 @@ export class CAddressData {
       houseCorpus: this.houseCorpus,
       addressComment: this.addressComment,
       placeId: this.placeId,
-      coordinates: {
-        latitude: this.coordinates?.lat(),
-        longitude: this.coordinates?.lng()
-      }
+      /* eslint-disable indent */
+      coordinates: this.coordinates
+        ? {
+            latitude: this.coordinates instanceof google.maps.LatLng ? this.coordinates.lat() : this.coordinates.latitude,
+            longitude: this.coordinates instanceof google.maps.LatLng ? this.coordinates.lng() : this.coordinates.longitude
+          }
+        : { latitude: 0, longitude: 0 }
+      /* eslint-enable indent */
     };
-    return addressData;
   }
 
   isValid(): boolean {
@@ -244,6 +272,7 @@ export class CAddressData {
     delete data.addressComment;
     delete data.houseCorpus;
     delete data.entranceNumber;
+    delete data.placeId;
 
     const values = Object.values(data);
     return values.every((value) => value);
@@ -284,17 +313,26 @@ export class CAddressData {
   }
 
   //Translates values to achieve consistent view of address in different languages
-  private setProperties(propertyName: string, place_id: string, ...googleLocalityType: string[]): void {
-    this.translateProperty(propertyName, place_id, Language.UK, ...googleLocalityType);
-    this.translateProperty(propertyName + 'En', place_id, Language.EN, ...googleLocalityType);
+  private async setProperties(propertyName: string, place_id: string, ...googleLocalityType: string[]): Promise<void> {
+    try {
+      await this.translateProperty(propertyName, place_id, Language.UK, ...googleLocalityType);
+      await this.translateProperty(propertyName + 'En', place_id, Language.EN, ...googleLocalityType);
+
+      this.addressChange.next(this.getValues());
+    } catch (error) {
+      console.error('Error during setting properties:', error);
+    }
   }
 
   //Translates address component by placeId to required language
-  private translateProperty(propertyName: string, placeId: string, language: Language, ...googleLocalityType: string[]): void {
-    new google.maps.Geocoder().geocode({ placeId, language }).then((response) => {
-      this[propertyName] = this.findValue(response.results[0], ...googleLocalityType)?.long_name ?? '';
-      this.addressChange.next(this.getValues());
-    });
+  private async translateProperty(
+    propertyName: string,
+    placeId: string,
+    language: Language,
+    ...googleLocalityType: string[]
+  ): Promise<void> {
+    const response = await new google.maps.Geocoder().geocode({ placeId, language });
+    this[propertyName] = this.findValue(response.results[0], ...googleLocalityType)?.long_name ?? '';
   }
 
   //Find required address component in google response by it's type

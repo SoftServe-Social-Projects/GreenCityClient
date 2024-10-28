@@ -145,18 +145,19 @@ export class FriendshipButtonsComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   private addFriend(): void {
-    let isSend = false;
     this.userFriendsService
       .addFriend(this.userAsFriend.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          isSend = true;
+          this.snackBar.openSnackBar('addFriend');
           this.userAsFriend.friendStatus = FriendStatusValues.REQUEST;
           this.userAsFriend.requesterId = this.currentUserId;
           this.updateConditions();
         },
-        complete: () => this.snackBar.openSnackBar(isSend ? 'addFriend' : 'friendValidation')
+        error: () => {
+          this.snackBar.openSnackBar('friendValidation');
+        }
       });
   }
 
