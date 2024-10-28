@@ -10,7 +10,8 @@ import {
   OrderDetails,
   DistrictsDtos,
   IProcessOrderResponse,
-  Order
+  Order,
+  AllActiveLocationsDtosResponse
 } from '../models/ubs.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -58,7 +59,7 @@ export class OrderService {
 
     return locationId
       ? of(locationId)
-      : this.getLocations(courierId, false).pipe(map((locations) => locations.tariffsForLocationDto.locationsDtosList[0].locationId));
+      : this.getLocations(courierId, false).pipe(map((allLocations) => allLocations[0].locations[0].locationId));
   }
 
   getExistingOrderDetails(orderId: number): Observable<OrderDetails> {
@@ -150,10 +151,10 @@ export class OrderService {
     return this.http.get(`${this.url}/getFondyStatus/${orderId}`);
   }
 
-  getLocations(courierId: number, changeLoc?: boolean): Observable<AllLocationsDtos> {
+  getLocations(courierId: number, changeLoc?: boolean): Observable<AllActiveLocationsDtosResponse> {
     const changeLocAttr = changeLoc ? '?changeLoc=changeLocation' : '';
 
-    return this.http.get<AllLocationsDtos>(`${this.url}/locations/${courierId}${changeLocAttr}`);
+    return this.http.get<AllActiveLocationsDtosResponse>(`${this.url}/locations/${courierId}${changeLocAttr}`);
   }
 
   getAllActiveCouriers(): Observable<ActiveCourierDto[]> {

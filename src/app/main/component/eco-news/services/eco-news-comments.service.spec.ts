@@ -127,49 +127,49 @@ xdescribe('EcoNewsCommentsService', () => {
       totalPages: 0
     };
 
-    service.getActiveRepliesByPage(1, 2, 3, 4).subscribe((commentData: any) => {
+    service.getActiveRepliesByPage(2, 3, 4).subscribe((commentData: any) => {
       expect(commentData).toEqual(commentBody);
     });
 
-    const req = httpTestingController.expectOne(`${url}eco-news/1/comments/2/replies/active?statuses=ORIGINAL,EDITED&page=3&size=4`);
+    const req = httpTestingController.expectOne(`${url}eco-news/comments/2/replies/active?statuses=ORIGINAL,EDITED&page=3&size=4`);
     expect(req.request.method).toEqual('GET');
     req.flush(commentBody);
   });
 
   it('should make DELETE request to deleteComments', () => {
-    service.deleteComments(1, 2).subscribe((deleted) => {
+    service.deleteComments(2).subscribe((deleted) => {
       expect(deleted).toBe(true);
     });
 
-    const req = httpTestingController.expectOne(`${url}eco-news/comments/1`);
+    const req = httpTestingController.expectOne(`${url}eco-news/comments/2`);
     expect(req.request.method).toEqual('DELETE');
     req.flush({});
   });
 
   it('should make GET request to get comment likes', () => {
     const commentLikes = 5;
-    service.getCommentLikes(1, 1).subscribe((commentData: number) => {
+    service.getCommentLikes(1).subscribe((commentData: number) => {
       expect(commentData).toEqual(commentLikes);
     });
 
-    const req = httpTestingController.expectOne(`${url}eco-news/1/comments/1/likes/count`);
+    const req = httpTestingController.expectOne(`${url}eco-news/comments/1/likes/count`);
     expect(req.request.method).toEqual('GET');
     req.flush(commentLikes);
   });
 
   it('should make GET request to get replies amount', () => {
     const commentReplies = 5;
-    service.getRepliesAmount(1, 2).subscribe((commentData: number) => {
+    service.getRepliesAmount(2).subscribe((commentData: number) => {
       expect(commentData).toEqual(commentReplies);
     });
 
-    const req = httpTestingController.expectOne(`${url}eco-news/1/comments/2/replies/active/count`);
+    const req = httpTestingController.expectOne(`${url}eco-news/comments/2/replies/active/count`);
     expect(req.request.method).toEqual('GET');
     req.flush(commentReplies);
   });
 
   it('should make POST request to post Like', () => {
-    service.postLike(1, 1).subscribe((commentData: any) => {
+    service.postLike(1).subscribe((commentData: any) => {
       expect(commentData).toEqual({});
     });
 
@@ -179,7 +179,7 @@ xdescribe('EcoNewsCommentsService', () => {
   });
 
   it('should make PATCH request to edit comment', () => {
-    service.editComment(1, 2, commentText).subscribe((commentData: any) => {
+    service.editComment(2, commentText).subscribe((commentData: any) => {
       expect(commentData).toEqual({});
     });
 

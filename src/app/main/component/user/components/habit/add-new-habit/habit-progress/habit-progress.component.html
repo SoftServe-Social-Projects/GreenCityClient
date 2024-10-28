@@ -1,4 +1,4 @@
-<div class="progress-habit">
+<div class="progress-habit" *ngIf="habit">
   <div class="progress-text">{{ 'user.habit.progress-title' | translate }}</div>
   <div class="mark-done" [ngSwitch]="habitMark">
     <ng-template ngSwitchCase="undone">
@@ -16,7 +16,7 @@
   </div>
 </div>
 <div class="calendar">
-  <app-calendar class="calendar-container" *ngIf="isDesktopWidth; else mobileView"></app-calendar>
+  <app-calendar [isHabit]="true" class="calendar-container" *ngIf="isDesktopWidth; else mobileView"></app-calendar>
   <ng-template #mobileView>
     <app-calendar-week class="app-calendar-week"></app-calendar-week>
   </ng-template>

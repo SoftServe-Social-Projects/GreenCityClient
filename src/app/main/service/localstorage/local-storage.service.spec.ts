@@ -4,6 +4,7 @@ import { LocalStorageService } from './local-storage.service';
 import { Subject } from 'rxjs';
 import { EventResponse } from '../../component/events/models/events.interface';
 import { CourierLocations } from 'src/app/ubs/ubs/models/ubs.interface';
+import { FactOfTheDay } from '@global-user/models/factOfTheDay';
 
 describe('LocalStorageService', () => {
   let service: LocalStorageService;
@@ -55,6 +56,22 @@ describe('LocalStorageService', () => {
     isOrganizedByFriend: false,
     eventRate: 0
   };
+
+  const factMock: FactOfTheDay = {
+    id: 1,
+    factOfTheDayTranslations: [
+      {
+        languageCode: 'ua',
+        content: 'Приклад факту дня'
+      },
+      {
+        languageCode: 'en',
+        content: 'Sample fact of the day'
+      }
+    ]
+  };
+  const factKey = 'factOfTheDay';
+  const currentTime = Date.now();
 
   const fakeLanguageSubject: Subject<string> = new Subject<string>();
 
@@ -244,7 +261,7 @@ describe('LocalStorageService', () => {
       const locations = [
         { id: 1, name: 'location1' },
         { id: 2, name: 'location2' }
-      ];
+      ] as any;
       service.setLocations(locations);
       expect(JSON.parse(localStorage.getItem('locations'))).toEqual(locations);
     });
@@ -608,5 +625,91 @@ describe('LocalStorageService', () => {
     const tariffId = 567;
     localStorage.setItem('currentTariffId', String(tariffId));
     expect(service.getTariffId()).toEqual(tariffId);
+  });
+
+  describe('Fact of the day', () => {
+    it('should save fact and current time to localStorage', () => {
+      spyOn(localStorage, 'setItem');
+
+      service.saveFactToLocalStorage(factMock, currentTime, factKey);
+
+      expect(localStorage.setItem).toHaveBeenCalledWith(factKey, JSON.stringify(factMock));
+      expect(localStorage.setItem).toHaveBeenCalledWith('lastFetchTime', currentTime.toString());
+    });
+
+    it('should return fact if it exists and is within one day', () => {
+      spyOn(localStorage, 'getItem').and.callFake((key: string) => {
+        if (key === factKey) {
+          return JSON.stringify(factMock);
+        }
+        if (key === 'lastFetchTime') {
+          return currentTime.toString();
+        }
+        return null;
+      });
+
+      const result = service.getFactFromLocalStorage(factKey);
+
+      expect(result).toEqual(factMock);
+    });
+
+    it('should return null if fact is not present', () => {
+      spyOn(localStorage, 'getItem').and.returnValue(null);
+
+      const result = service.getFactFromLocalStorage(factKey);
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null if lastFetchTime is not present', () => {
+      spyOn(localStorage, 'getItem').and.callFake((key: string) => {
+        if (key === factKey) {
+          return JSON.stringify(factMock);
+        }
+        if (key === 'lastFetchTime') {
+          return null;
+        }
+        return null;
+      });
+
+      const result = service.getFactFromLocalStorage(factKey);
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null if more than one day has passed', () => {
+      const oldTime = currentTime - service.ONE_DAY_IN_MILLIS - 1;
+      spyOn(localStorage, 'getItem').and.callFake((key: string) => {
+        if (key === factKey) {
+          return JSON.stringify(factMock);
+        }
+        if (key === 'lastFetchTime') {
+          return oldTime.toString();
+        }
+        return null;
+      });
+
+      const result = service.getFactFromLocalStorage(factKey);
+
+      expect(result).toBeNull();
+    });
+
+    it('should clear fact and lastFetchTime from localStorage when isHabit is false', () => {
+      spyOn(localStorage, 'removeItem');
+
+      service.clearFromLocalStorage(factKey, false);
+
+      expect(localStorage.removeItem).toHaveBeenCalledWith(factKey);
+      expect(localStorage.removeItem).toHaveBeenCalledWith('lastFetchTime');
+    });
+
+    it('should clear only fact from localStorage when isHabit is true', () => {
+      spyOn(localStorage, 'removeItem');
+
+      service.clearFromLocalStorage(factKey, true);
+
+      expect(localStorage.removeItem).toHaveBeenCalledWith(factKey);
+      expect(localStorage.removeItem).not.toHaveBeenCalledWith('lastFetchTime');
+    });
   });
 });

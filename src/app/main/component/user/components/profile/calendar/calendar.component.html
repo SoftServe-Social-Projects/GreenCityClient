@@ -1,4 +1,4 @@
-<div class="calendar">
+<div class="calendar" [ngClass]="isHabit && 'habit'">
   <div class="top">
     <div class="month-year">
       <button (click)="monthView ? previousMonth() : previousYear()">

@@ -30,7 +30,7 @@ export class TurnstileCaptchaComponent implements OnInit, AfterViewInit, Control
   private onChange = (token: string | null) => {};
   private onTouched = () => {};
 
-  constructor(private languageService: LanguageService) {}
+  constructor(private readonly languageService: LanguageService) {}
 
   ngOnInit() {
     this.languageService.getCurrentLangObs().subscribe((selectedLanguage: Language) => {

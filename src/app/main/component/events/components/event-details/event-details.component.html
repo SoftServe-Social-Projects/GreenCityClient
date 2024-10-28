@@ -45,6 +45,17 @@
             <div>{{ event.dates[0]['startDate'] | dateLocalisation }}</div>
             <div>|</div>
             <div>{{ 'homepage.events.author' | translate }} {{ organizerName }}</div>
+            <div class="like-wr">
+              <img *ngIf="!userId" class="event-like disable" [src]="likesType.like" alt="like" />
+              <img
+                *ngIf="userId"
+                (click)="onLikeEvent()"
+                class="event-like"
+                [src]="isLiked ? likesType.liked : likesType.like"
+                alt="like"
+              />
+              <span class="numerosity-likes">{{ event.likes }}</span>
+            </div>
           </div>
         </div>
         <div class="right-side">

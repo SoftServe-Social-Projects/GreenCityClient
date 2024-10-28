@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { SubscriptionService } from '@global-service/subscription/subscription.service';
 import { take } from 'rxjs/operators';
 import { Patterns } from 'src/assets/patterns/patterns';

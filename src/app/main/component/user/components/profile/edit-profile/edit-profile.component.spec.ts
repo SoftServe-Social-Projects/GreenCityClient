@@ -7,7 +7,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { EditProfileFormBuilder } from '@global-user/components/profile/edit-profile/edit-profile-form-builder';
@@ -19,6 +19,7 @@ import { SocialNetworksComponent } from '@global-user/components';
 import { Router } from '@angular/router';
 import { SharedMainModule } from '@shared/shared-main.module';
 import { InputGoogleAutocompleteComponent } from '@shared/components/input-google-autocomplete/input-google-autocomplete.component';
+import { MatSelectModule } from '@angular/material/select';
 
 class Test {}
 
@@ -26,6 +27,8 @@ describe('EditProfileComponent', () => {
   let component: EditProfileComponent;
   let fixture: ComponentFixture<EditProfileComponent>;
   let router: Router;
+  let formBuilder: EditProfileFormBuilder;
+  let form: FormGroup;
   const previousGoogle = (window as any).google;
 
   beforeEach(waitForAsync(() => {
@@ -51,6 +54,7 @@ describe('EditProfileComponent', () => {
         ReactiveFormsModule,
         MatAutocompleteModule,
         MatDialogModule,
+        MatSelectModule,
         MatSnackBarModule,
         BrowserAnimationsModule,
         RouterTestingModule.withRoutes([{ path: '**', component: Test }]),
@@ -74,6 +78,20 @@ describe('EditProfileComponent', () => {
     fixture = TestBed.createComponent(EditProfileComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    formBuilder = TestBed.inject(EditProfileFormBuilder);
+
+    form = formBuilder.getProfileForm();
+    component.emailPreferencesList = [
+      { controlName: 'system', translationKey: 'system', periodicityControl: 'periodicitySystem' },
+      { controlName: 'likes', translationKey: 'likes', periodicityControl: 'periodicityLikes' }
+    ];
+    component.periodicityOptions = [
+      { value: 'IMMEDIATELY', label: 'immediately' },
+      { value: 'DAILY', label: 'daily' },
+      { value: 'WEEKLY', label: 'weekly' },
+      { value: 'NEVER', label: 'never' }
+    ];
+
     spyOn(router, 'navigate');
     fixture.detectChanges();
   });
@@ -84,6 +102,80 @@ describe('EditProfileComponent', () => {
 
   it('should create EditProfileComponent', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('getSelectedEmailPreferences', () => {
+    it('should return selected preferences with periodicity', () => {
+      const emailPrefsGroup = form.get('emailPreferences') as FormGroup;
+      emailPrefsGroup.get('likes')?.setValue(true);
+      emailPrefsGroup.get('periodicityLikes')?.setValue('IMMEDIATELY');
+      emailPrefsGroup.get('comments')?.setValue(false);
+
+      const selectedPrefs = formBuilder.getSelectedEmailPreferences(form);
+
+      expect(selectedPrefs).toEqual([
+        { emailPreference: 'SYSTEM', periodicity: 'NEVER' },
+        { emailPreference: 'LIKES', periodicity: 'IMMEDIATELY' },
+        { emailPreference: 'COMMENTS', periodicity: 'NEVER' },
+        { emailPreference: 'INVITES', periodicity: 'NEVER' },
+        { emailPreference: 'PLACES', periodicity: 'NEVER' }
+      ]);
+    });
+  });
+
+  describe('Email Preferences Tests', () => {
+    it('should initialize email preferences with correct default values', () => {
+      const emailPreferencesForm = component.editProfileForm.get('emailPreferences');
+      expect(emailPreferencesForm.get('system').value).toBe(false);
+      expect(emailPreferencesForm.get('periodicitySystem').value).toBe('NEVER');
+      expect(emailPreferencesForm.get('likes').value).toBe(false);
+      expect(emailPreferencesForm.get('periodicityLikes').value).toBe('NEVER');
+    });
+
+    it('should populate email preferences correctly from existing data', () => {
+      const preferences = [
+        { emailPreference: 'SYSTEM', periodicity: 'WEEKLY' },
+        { emailPreference: 'LIKES', periodicity: 'NEVER' }
+      ];
+      component.populateEmailPreferences(preferences);
+
+      const emailPreferencesForm = component.editProfileForm.get('emailPreferences');
+      expect(emailPreferencesForm.get('system').value).toBe(true);
+      expect(emailPreferencesForm.get('periodicitySystem').value).toBe('WEEKLY');
+      expect(emailPreferencesForm.get('likes').value).toBe(false);
+      expect(emailPreferencesForm.get('periodicityLikes').value).toBe('NEVER');
+    });
+
+    it('should return correct email preferences when form is submitted', () => {
+      const emailPreferencesForm = component.editProfileForm.get('emailPreferences');
+
+      emailPreferencesForm.get('system').setValue(true);
+      emailPreferencesForm.get('periodicitySystem').setValue('DAILY');
+
+      emailPreferencesForm.get('likes').setValue(true);
+      emailPreferencesForm.get('periodicityLikes').setValue('NEVER');
+
+      emailPreferencesForm.get('comments').setValue(true);
+      emailPreferencesForm.get('periodicityComments').setValue('DAILY');
+
+      emailPreferencesForm.get('invites').setValue(true);
+      emailPreferencesForm.get('periodicityInvites').setValue('NEVER');
+
+      emailPreferencesForm.get('places').setValue(true);
+      emailPreferencesForm.get('periodicityPlaces').setValue('NEVER');
+
+      const selectedPrefs = component.builder.getSelectedEmailPreferences(component.editProfileForm);
+
+      const expectedPrefs = [
+        { emailPreference: 'SYSTEM', periodicity: 'DAILY' },
+        { emailPreference: 'LIKES', periodicity: 'NEVER' },
+        { emailPreference: 'COMMENTS', periodicity: 'DAILY' },
+        { emailPreference: 'INVITES', periodicity: 'NEVER' },
+        { emailPreference: 'PLACES', periodicity: 'NEVER' }
+      ];
+
+      expect(selectedPrefs).toEqual(expectedPrefs);
+    });
   });
 
   describe('Testing of warnings in cases of user leaves the page', () => {

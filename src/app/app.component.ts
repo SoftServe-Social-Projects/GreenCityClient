@@ -7,6 +7,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs';
 import { ChatsService } from './chat/service/chats/chats.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
+import { MetaService } from 'src/app/shared/services/meta/meta.service';
 
 @Component({
   selector: 'app-root',
@@ -20,10 +21,12 @@ export class AppComponent implements OnInit {
   commonChatSevice: CommonService = inject(CommonService);
   router: Router = inject(Router);
   chatsService: ChatsService = inject(ChatsService);
+  metaService: MetaService = inject(MetaService);
 
   offline: boolean;
 
   ngOnInit(): void {
+    this.metaService.setMetaOnRouteChange();
     this.onNetworkStatusChange();
     window.addEventListener('online', this.onNetworkStatusChange.bind(this));
     window.addEventListener('offline', this.onNetworkStatusChange.bind(this));

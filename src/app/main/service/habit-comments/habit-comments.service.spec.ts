@@ -58,7 +58,7 @@ describe('HabitCommentsService', () => {
   });
 
   it('should make DELETE request to delete comment', () => {
-    service.deleteComments(1, 2).subscribe((result) => {
+    service.deleteComments(2).subscribe((result) => {
       expect(result).toBeTrue();
     });
 
@@ -68,7 +68,7 @@ describe('HabitCommentsService', () => {
   });
 
   it('should make GET request to get replies amount', () => {
-    service.getRepliesAmount(1, 2).subscribe((data) => {
+    service.getRepliesAmount(2).subscribe((data) => {
       expect(data).toEqual(5);
     });
 
@@ -80,7 +80,7 @@ describe('HabitCommentsService', () => {
   it('should make PATCH request to edit a comment', () => {
     const updatedText = 'Updated comment';
 
-    service.editComment(1, 2, updatedText).subscribe(() => {});
+    service.editComment(2, updatedText).subscribe(() => {});
 
     const req = httpTestingController.expectOne(`${url}habits/comments?id=2`);
     expect(req.request.method).toEqual('PATCH');
@@ -89,7 +89,7 @@ describe('HabitCommentsService', () => {
   });
 
   it('should make GET request to get active replies by page', () => {
-    service.getActiveRepliesByPage(1, 1, 0, 5).subscribe((data) => {
+    service.getActiveRepliesByPage(1, 0, 5).subscribe((data) => {
       expect(data).toEqual(MOCK_HABIT_COMMENTS_MODEL);
     });
 
@@ -99,8 +99,7 @@ describe('HabitCommentsService', () => {
   });
 
   it('should make POST request to like a comment', () => {
-    service.postLike(1, 1).subscribe(() => {});
-
+    service.postLike(1).subscribe(() => {});
     const req = httpTestingController.expectOne(`${url}habits/comments/like?commentId=1`);
     expect(req.request.method).toEqual('POST');
     req.flush({});
@@ -109,22 +108,12 @@ describe('HabitCommentsService', () => {
   it('should make GET request to get comment likes count', () => {
     const likesCount = 15;
 
-    service.getCommentLikes(1, 1).subscribe((data) => {
+    service.getCommentLikes(1).subscribe((data) => {
       expect(data).toEqual(likesCount);
     });
 
     const req = httpTestingController.expectOne(`${url}habits/comments/1/likes/count`);
     expect(req.request.method).toEqual('GET');
     req.flush(likesCount);
-  });
-
-  it('should make GET request to get comment by id', () => {
-    service.getCommentById(1, 1).subscribe((data) => {
-      expect(data).toEqual(MOCK_HABIT_COMMENTS_MODEL);
-    });
-
-    const req = httpTestingController.expectOne(`${url}habits/comments/1`);
-    expect(req.request.method).toEqual('GET');
-    req.flush(MOCK_HABIT_COMMENTS_MODEL);
   });
 });

@@ -1,29 +1,31 @@
-.checkmark {
-  border: 1px solid var(--quaternary-grey);
-  border-radius: 3px;
-  height: 16px;
-  width: 16px;
-  margin-right: 8px;
-}
+.checkbox-container {
+  .checkmark {
+    border: 1px solid var(--quaternary-grey);
+    border-radius: 3px;
+    height: 16px;
+    width: 16px;
+    margin-right: 8px;
+  }
 
-input[type='checkbox'] {
-  height: 0;
-  opacity: 0;
-  width: 0;
-}
+  input[type='checkbox'] {
+    height: 0;
+    opacity: 0;
+    width: 0;
+  }
 
-input:checked ~ .checkmark {
-  background-color: var(--primary-green);
-  border: var(--primary-green);
-}
+  input:checked ~ .checkmark {
+    background-color: var(--primary-green);
+    border: var(--primary-green);
+  }
 
-input:checked ~ .checkmark::after {
-  content: '';
-  display: block;
-  width: 11px;
-  height: 8px;
-  margin: 4px auto 0;
-  background-image: url('/assets/img/profile/icons/checkmark.svg');
+  input:checked ~ .checkmark::after {
+    content: '';
+    display: block;
+    width: 11px;
+    height: 8px;
+    margin: 4px auto 0;
+    background-image: url('/assets/img/profile/icons/checkmark.svg');
+  }
 }
 
 .edit_prof-container {
@@ -143,7 +145,10 @@ h2 {
   letter-spacing: 0.2px;
 }
 
-.privacy-wrapper {
+.privacy-wrapper,
+.email-preferences {
+  @extend .checkbox-container;
+
   border-bottom: 1px solid #e1e5e3;
   margin-top: 40px;
   padding-bottom: 34px;
@@ -183,6 +188,53 @@ h2 {
         align-items: center;
       }
     }
+  }
+}
+
+.state-select {
+  text-overflow: ellipsis;
+  padding: 5px 30px 0 15px;
+}
+
+.input-wrapper {
+  height: 36px;
+  border: 1px solid var(--ubs-primary-light-grey);
+  border-radius: 4px;
+  margin-right: 16px;
+  width: 80%;
+  position: relative;
+}
+
+.input-wrapper input {
+  padding: 0 34px 0 15px;
+  margin: 0;
+  width: 60%;
+  height: 10%;
+  color: var(--ubs-primary-light-grey);
+  text-overflow: ellipsis;
+}
+
+.input-wrapper input::placeholder,
+:host::ng-deep .mat-select-placeholder {
+  color: var(--ubs-primary-light-grey);
+  font-size: 14px;
+  font-family: var(--ubs-quaternary-font);
+}
+
+.email-preference-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 55px;
+  max-height: 21px;
+
+  .label-wrapper {
+    flex: 1;
+  }
+
+  .input-blocks {
+    flex-shrink: 0;
+    width: 200px;
   }
 }
 

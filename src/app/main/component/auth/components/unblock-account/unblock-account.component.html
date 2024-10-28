@@ -1,0 +1,20 @@
+<div class="main-container cdk-overlay-dark-backdrop">
+  <div class="wrapper">
+    <div class="left-side">
+      <img class="main-picture" [src]="images.mainImage" alt="sign-in image" />
+    </div>
+    <div class="right-side">
+      <a class="close-modal-window">
+        <img class="cross-btn" [src]="icons.closeButton" (click)="closeModal()" alt="close button" />
+      </a>
+      <div class="unblock-account-container">
+        <h1>{{ 'user.auth.unblock-account.title' | translate }}</h1>
+        <h2>{{ 'user.auth.unblock-account.description' | translate }}</h2>
+
+        <button [ngClass]="isUbs ? 'ubsStyle' : 'greenStyle'" type="button" (click)="onButtonClick()">
+          {{ 'user.auth.unblock-account.unblock' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

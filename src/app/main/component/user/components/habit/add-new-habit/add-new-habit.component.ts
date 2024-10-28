@@ -404,7 +404,7 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
   }
 
   onChange(): void {
-    this.isPrivate = this.scope === 'private';
-    this.scope = this.isPrivate ? 'public' : 'private';
+    this.isPrivate = !this.isPrivate;
+    this.scope = this.isPrivate ? 'private' : 'public';
   }
 }

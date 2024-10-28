@@ -24,6 +24,7 @@ import { EventsListItemModalComponent } from '@shared/components/events-list-ite
 import { ofType } from '@ngrx/effects';
 import { ICONS } from '../../models/event-consts';
 import { WarningPopUpComponent } from '@shared/components';
+import { MetaService } from 'src/app/shared/services/meta/meta.service';
 
 @Component({
   selector: 'app-event-details',
@@ -46,6 +47,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   attendees: EventAttender[] = [];
   attendeesAvatars = [];
   organizerName: string;
+  isLiked: boolean;
   event: EventResponse | PagePreviewDTO;
   locationLink: string;
   locationCoordinates: LocationResponse;
@@ -56,6 +58,10 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   currentDate = new Date();
   max = 5;
   rate: number;
+  likesType = {
+    like: 'assets/img/comments/like.png',
+    liked: 'assets/img/comments/liked.png'
+  };
   deleteDialogData = {
     popupTitle: 'homepage.events.delete-title-admin',
     popupConfirm: 'homepage.events.delete-yes',
@@ -82,7 +88,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     isUbsOrderSubmit: false,
     isHabit: false
   };
-  private userId: number;
+  userId: number;
   private destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -95,7 +101,8 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     private actionsSubj: ActionsSubject,
     private jwtService: JwtService,
     private snackBar: MatSnackBarComponent,
-    private modalService: BsModalService
+    private readonly modalService: BsModalService,
+    private readonly metaService: MetaService
   ) {}
 
   ngOnInit(): void {
@@ -111,6 +118,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
 
       this.routedFromProfile = this.localStorageService.getPreviousPage() === '/profile';
       this.backRoute = this.localStorageService.getPreviousPage();
+      this.getIsLiked();
     } else {
       this.event = this.eventService.getForm() as PagePreviewDTO;
       this.locationLink = this.event.dates[this.event.dates.length - 1].onlineLink;
@@ -120,6 +128,36 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       this.bindUserName();
       this.setGoogleMapLink();
     }
+  }
+
+  private getIsLiked(): void {
+    this.eventService
+      .getIsLikedByUser(this.eventId)
+      .pipe(take(1))
+      .subscribe((isLiked: boolean) => {
+        this.isLiked = isLiked;
+      });
+  }
+
+  onLikeEvent(): void {
+    const updatedLikes = this.event.likes + (this.isLiked ? -1 : 1);
+    this.isLiked = !this.isLiked;
+    this.postToggleEventLike(updatedLikes);
+  }
+
+  private postToggleEventLike(updatedLikes: number): void {
+    this.eventService
+      .postToggleLike(this.eventId)
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          this.event.likes = updatedLikes;
+        },
+        error: () => {
+          this.snackBar.openSnackBar('errorLiked');
+          this.isLiked = !this.isLiked;
+        }
+      });
   }
 
   navigateBackOnEventDeleteListener(): void {
@@ -147,6 +185,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   getEventById(): void {
     this.eventService.getEventById(this.eventId).subscribe((res: EventResponse) => {
       this.event = res;
+      this.metaService.setMeta('oneEventArticle', { title: res.title, description: res.description.slice(0, 150) });
       this.organizerName = this.event.organizer.name;
       this.locationLink = this.event.dates[this.event.dates.length - 1].onlineLink;
       this.locationCoordinates = this.event.dates[this.event.dates.length - 1].coordinates;

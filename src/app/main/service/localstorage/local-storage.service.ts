@@ -174,7 +174,7 @@ export class LocalStorageService {
     localStorage.setItem('currentLocationId', String(currentLocationId));
   }
 
-  setLocations(locations: any) {
+  setLocations(locations: CourierLocations) {
     localStorage.setItem('locations', JSON.stringify(locations));
   }
 
@@ -267,7 +267,7 @@ export class LocalStorageService {
     return localStorage.getItem('UBSorderData') === 'undefined' ? false : JSON.parse(localStorage.getItem('UBSorderData'));
   }
 
-  getLocationId(): any {
+  getLocationId(): number | false {
     return localStorage.getItem('currentLocationId') === null ? false : JSON.parse(localStorage.getItem('currentLocationId'));
   }
 
@@ -388,29 +388,29 @@ export class LocalStorageService {
     return localStorage.getItem(this.NAME);
   }
 
-  saveHabitFactToLocalStorage(fact: FactOfTheDay, currentTime: number): void {
-    localStorage.setItem('habitFactOfTheDay', JSON.stringify(fact));
-    localStorage.setItem('lastHabitFetchTime', currentTime.toString());
+  saveFactToLocalStorage(fact: FactOfTheDay, currentTime: number, factKey: string): void {
+    localStorage.setItem(factKey, JSON.stringify(fact));
+    localStorage.setItem('lastFetchTime', currentTime.toString());
   }
 
-  getHabitFactFromLocalStorage(): FactOfTheDay | null {
-    const savedHabitFact = localStorage.getItem('habitFactOfTheDay');
-    const lastHabitFetchTime = localStorage.getItem('lastHabitFetchTime');
+  getFactFromLocalStorage(factKey: string): FactOfTheDay | null {
+    const savedFact = localStorage.getItem(factKey);
+    const lastFetchTime = localStorage.getItem('lastFetchTime');
     const currentTime = Date.now();
 
-    const isHabitFactPresent = !!savedHabitFact;
-    const isLastFetchTimePresent = !!lastHabitFetchTime;
-    const isWithinOneDay = currentTime - Number(lastHabitFetchTime) < this.ONE_DAY_IN_MILLIS;
+    const isFactPresent = !!savedFact;
+    const isLastFetchTimePresent = !!lastFetchTime;
+    const isWithinOneDay = currentTime - Number(lastFetchTime) < this.ONE_DAY_IN_MILLIS;
 
-    if (isHabitFactPresent && isLastFetchTimePresent && isWithinOneDay) {
-      return JSON.parse(savedHabitFact);
+    if (isFactPresent && isLastFetchTimePresent && isWithinOneDay) {
+      return JSON.parse(savedFact);
     }
 
     return null;
   }
 
-  clearHabitFactFromLocalStorage(): void {
-    localStorage.removeItem('habitFactOfTheDay');
-    localStorage.removeItem('lastHabitFetchTime');
+  clearFromLocalStorage(factKey: string, isHabit: boolean = false): void {
+    localStorage.removeItem(factKey);
+    !isHabit && localStorage.removeItem('lastFetchTime');
   }
 }

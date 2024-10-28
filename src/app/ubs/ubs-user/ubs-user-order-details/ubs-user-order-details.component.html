@@ -40,15 +40,17 @@
       <td colspan="4">{{ 'user-orders.details.amount-due' | translate }}</td>
       <td>{{ order.amountBeforePayment | localizedCurrency }}</td>
     </tr>
-    <tr *ngIf="order.refundedBonuses > 0" class="optional_row additional_info">
-      <td colspan="4">{{ 'user-orders.details.refunded-bonuses' | translate }}</td>
-      <td>{{ order.refundedBonuses | localizedCurrency }}</td>
-    </tr>
     <tr *ngIf="order.refundedMoney > 0" class="optional_row additional_info">
       <td colspan="4">{{ 'user-orders.details.refunded-money' | translate }}</td>
       <td>{{ order.refundedMoney | localizedCurrency }}</td>
     </tr>
   </table>
+  <div class="bonuses_container">
+    <span *ngIf="order.refundedBonuses > 0" class="text-danger refund-bonuses">
+      {{ 'order-details.bonuses-value' | translate: { bonusesValue: order.refundedBonuses } }}
+    </span>
+  </div>
+
   <div class="recipient">
     <div *ngIf="order.additionalOrders.length > 0">
       <h6 class="bold_text">{{ 'user-orders.details.delivery' | translate }}</h6>

@@ -1,4 +1,4 @@
-<div class="friend-item-wrapper" (click)="clickHandler($event)">
+<div class="friend-item-wrapper" [ngClass]="{ 'no-buttons': friend.id === currentUserId }" (click)="clickHandler($event)">
   <div class="friend-item-left">
     <div class="photo-column">
       <app-user-profile-image
@@ -46,5 +46,5 @@
       </p>
     </div>
   </div>
-  <app-friendship-buttons [userAsFriend]="userDataAsFriend"></app-friendship-buttons>
+  <app-friendship-buttons [userAsFriend]="userDataAsFriend" *ngIf="friend.id !== currentUserId" class="buttons"></app-friendship-buttons>
 </div>

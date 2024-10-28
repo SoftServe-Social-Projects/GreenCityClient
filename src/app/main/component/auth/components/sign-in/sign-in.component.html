@@ -74,12 +74,8 @@
         [size]="'flexible'"
         (captchaError)="onCaptchaError()"
       ></app-turnstile-captcha>
-      <button
-        [ngClass]="isUbs ? 'ubsStyle' : 'greenStyle'"
-        [disabled]="((email.invalid || !password.touched) && password.invalid) || signInForm.invalid"
-        type="submit"
-      >
-        <span *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <button [ngClass]="isUbs ? 'ubsStyle' : 'greenStyle'" [disabled]="signInForm.invalid" type="submit">
+        <output *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm" aria-hidden="true"></output>
         {{ 'user.auth.sign-in.sign-in' | translate }}
       </button>
 

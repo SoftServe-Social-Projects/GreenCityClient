@@ -15,6 +15,7 @@ export const updateAccessTokenLink = userOwnSecurityLink + 'updateAccessToken';
 export const updatePasswordLink = userOwnSecurityLink + 'updatePassword';
 export const verifyEmailLink = userOwnSecurityLink + 'verifyEmail';
 export const restorePasswordLink = userOwnSecurityLink + 'restorePassword';
+export const unblockAccountLink = userOwnSecurityLink + 'unblockAccount';
 
 // Google Security Controller
 export const googleSecurityLink = mainUserLink + 'googleSecurity';

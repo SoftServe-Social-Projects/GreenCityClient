@@ -341,15 +341,44 @@ header {
     position: relative;
     height: 80%;
     flex: 0;
+    align-items: center;
 
     .header_navigation-menu-right-list {
+      li {
+        height: fit-content;
+      }
+
       .search-icon,
       .bookmark-icon,
       .notification-icon {
+        position: relative;
+
         img {
           height: 11px;
           width: 16px;
           cursor: pointer;
+        }
+
+        div {
+          height: 11px;
+          min-width: 11px;
+          padding: 2px 1px;
+          margin: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 8px;
+          font-weight: 500;
+          line-height: 1;
+          vertical-align: middle;
+          background-color: var(--attention-yellow);
+          color: var(--quaternary-dark-grey);
+          border: 1px solid $white-color;
+          border-radius: 50%;
+          position: absolute;
+          top: 0;
+          right: 0;
+          transform: translate(30%, -60%);
         }
       }
 

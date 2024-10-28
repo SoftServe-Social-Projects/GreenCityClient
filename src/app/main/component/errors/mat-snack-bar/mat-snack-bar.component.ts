@@ -22,6 +22,11 @@ export class MatSnackBarComponent {
     },
     successRestorePassword: { classname: SnackbarClassName.success, key: 'snack-bar.success.restore-password' },
     successRestorePasswordUbs: { classname: SnackbarClassName.successUbs, key: 'snack-bar.success.restore-password' },
+    exitConfirmUnblockAccount: {
+      classname: SnackbarClassName.attention,
+      key: 'snack-bar.attention.exit-confirm-unblock-account'
+    },
+    successUnblockAccount: { classname: SnackbarClassName.success, key: 'snack-bar.success.confirm-unblock-account' },
     successConfirmPassword: { classname: SnackbarClassName.success, key: 'snack-bar.success.confirm-restore-password' },
     successConfirmPasswordUbs: {
       classname: SnackbarClassName.successUbs,
@@ -46,6 +51,7 @@ export class MatSnackBarComponent {
     habitAcquired: { classname: SnackbarClassName.success, key: 'user.habit.all-habits.habit-acquired' },
     errorMessage: { classname: SnackbarClassName.error },
     sendNewLetter: { classname: SnackbarClassName.error, key: 'snack-bar.error.restore-password-again' },
+    sendNewUnblockLetter: { classname: SnackbarClassName.error, key: 'snack-bar.error.unblock-account-again' },
     changesSaved: { classname: SnackbarClassName.success, key: 'user.edit-profile.profile-changes-saved' },
     existAddress: { classname: SnackbarClassName.error, key: 'snack-bar.error.exist-address' },
     addedAddress: { classname: SnackbarClassName.success, key: 'snack-bar.success.added-address' },

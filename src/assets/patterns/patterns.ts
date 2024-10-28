@@ -17,11 +17,11 @@ export const Patterns = {
   serteficatePattern: /(?!0000)\d{4}-(?!0000)\d{4}/,
   ubsCommentPattern: /[\S\s]{0,255}/,
   ordersPattern: /^\d{10}$/,
-  orderEcoStorePattern: /^\d{4,10}$/,
+  orderEcoStorePattern: /^\d{1,8}$/,
 
   // prettier-ignore
   ubsMailPattern:
-    /^[\w.-]+@[a-zA-Z-]+(\.[a-zA-Z]{2,})+$/,
+    /^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
   paymentAmountPattern: '^[0-9]+(.[0-9]{1,2})?$',
   certificateMonthCount: '^[0-9]{1,2}$',
   certificateInitialValue: '^[0-9]{1,4}$',
@@ -48,7 +48,7 @@ export const Patterns = {
 
 export const Masks = {
   certificateMask: '0000-0000',
-  ecoStoreMask: '0000000000',
+  ecoStoreMask: '00000000',
   servicesMask: '000',
   phoneMask: '+{38\\0} (00) 000 00 00'
 };

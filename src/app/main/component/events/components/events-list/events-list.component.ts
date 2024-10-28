@@ -396,9 +396,9 @@ export class EventsListComponent implements OnInit, OnDestroy {
     let params = new HttpParams().append('page', this.page.toString()).append('size', this.eventsPerPage.toString());
 
     const paramsToAdd = [
-      this.appendIfNotEmpty('user-id', this.userId.toString()),
+      this.appendIfNotEmpty('user-id', this.userId?.toString()),
       this.appendIfNotEmpty('title', title),
-      this.appendIfNotEmpty('type', this.selectedLocationFiltersList.find((city) => city === 'Online') || ''),
+      this.appendIfNotEmpty('type', this.getTypeFilter()),
       this.appendIfNotEmpty(
         'cities',
         this.selectedLocationFiltersList.filter((city) => city !== 'Online' && city !== 'Select All' && city !== 'Обрати всі')
@@ -421,6 +421,19 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
     paramsToAdd.filter((param) => param !== null).forEach((param) => (params = params.append(param.key, param.value)));
     return params;
+  }
+
+  private getTypeFilter(): string {
+    const isOnline = this.selectedLocationFiltersList.find((city) => city === 'Online');
+    const isOffline = this.selectedLocationFiltersList.find((city) => city !== 'Online' && city !== 'Select All' && city !== 'Обрати всі');
+
+    if (isOffline && isOnline) {
+      return 'ONLINE_OFFLINE';
+    } else if (isOnline) {
+      return 'ONLINE';
+    } else {
+      return '';
+    }
   }
 
   private appendIfNotEmpty(key: string, value: string | string[]): { key: string; value: string } | null {

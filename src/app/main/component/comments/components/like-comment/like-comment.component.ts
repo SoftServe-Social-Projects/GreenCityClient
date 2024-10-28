@@ -69,7 +69,7 @@ export class LikeCommentComponent implements OnInit {
   }
 
   pressLike(): void {
-    this.commentsService.postLike(this.entityId, this.comment.id).subscribe(() => {
+    this.commentsService.postLike(this.comment.id).subscribe(() => {
       this.getUserId();
       this.socketService.send(this.socketService.connection.greenCity, this.socketMessageToSend, {
         id: this.comment.id,

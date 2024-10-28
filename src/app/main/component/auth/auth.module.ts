@@ -11,20 +11,22 @@ import { AuthModalComponent } from './components/auth-modal/auth-modal.component
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TurnstileCaptchaComponent } from './components/turnstile-captcha/turnstile-captcha.component';
+import { UnblockAccountComponent } from './components/unblock-account/unblock-account.component';
 
 @NgModule({
   declarations: [
-    SignUpComponent,
-    SignInComponent,
-    RestorePasswordComponent,
-    InputcolorDirective,
-    SubmitEmailComponent,
-    RestoreComponent,
+    AuthModalComponent,
     ConfirmRestorePasswordComponent,
     ErrorComponent,
     GoogleBtnComponent,
-    AuthModalComponent,
-    TurnstileCaptchaComponent
+    InputcolorDirective,
+    RestoreComponent,
+    RestorePasswordComponent,
+    SignInComponent,
+    SignUpComponent,
+    SubmitEmailComponent,
+    TurnstileCaptchaComponent,
+    UnblockAccountComponent
   ],
   imports: [CoreModule, SharedMainModule, SharedModule, ReactiveFormsModule],
   exports: [InputcolorDirective],
