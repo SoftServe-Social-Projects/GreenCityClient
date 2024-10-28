@@ -1,5 +1,5 @@
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { ProfileService } from '@global-user/components/profile/profile-service/profile.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
@@ -7,6 +7,7 @@ import { ProfileCardsComponent } from '@global-user/components';
 import { FactOfTheDay } from '@global-user/models/factOfTheDay';
 import { ProfileStatistics } from '@global-user/models/profile-statistiscs';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 
 describe('ProfileCardsComponent', () => {
   let component: ProfileCardsComponent;
@@ -21,7 +22,7 @@ describe('ProfileCardsComponent', () => {
     amountPublishedNews: 0,
     amountOrganizedAndAttendedEvents: 0
   };
-  const factOfTheDayMock: FactOfTheDay = { id: 1, content: 'Hello' };
+
   const profileStatisticsMock: ProfileStatistics = {
     amountHabitsInProgress: 1,
     amountHabitsAcquired: 0,
@@ -29,16 +30,30 @@ describe('ProfileCardsComponent', () => {
     amountOrganizedAndAttendedEvents: 0
   };
 
+  const factOfTheDayMock: FactOfTheDay = {
+    id: 1,
+    factOfTheDayTranslations: [
+      {
+        languageCode: 'ua',
+        content: 'Приклад факту дня'
+      },
+      {
+        languageCode: 'en',
+        content: 'Sample fact of the day'
+      }
+    ]
+  };
+
+  const languageServiceMock = {
+    getCurrentLanguage: jasmine.createSpy('getCurrentLanguage').and.returnValue('en'),
+    getCurrentLangObs: jasmine.createSpy('getCurrentLangObs').and.returnValue(of('en'))
+  };
+
   beforeEach(waitForAsync(() => {
-    profileServiceMock = jasmine.createSpyObj('ProfileService', [
-      'getRandomFactOfTheDay',
-      'getUserProfileStatistics',
-      'getFactsOfTheDayByTags'
-    ]);
+    profileServiceMock = jasmine.createSpyObj('ProfileService', ['getRandomFactOfTheDay', 'getUserProfileStatistics']);
 
     profileServiceMock.getRandomFactOfTheDay.and.returnValue(of(factOfTheDayMock));
     profileServiceMock.getUserProfileStatistics.and.returnValue(of(profileStatisticsMock));
-    profileServiceMock.getFactsOfTheDayByTags.and.returnValue(of(factOfTheDayMock));
 
     localStorageServiceMock = jasmine.createSpyObj('LocalStorageService', [
       'getFactFromLocalStorage',
@@ -54,7 +69,8 @@ describe('ProfileCardsComponent', () => {
       imports: [HttpClientModule, TranslateModule.forRoot()],
       providers: [
         { provide: ProfileService, useValue: profileServiceMock },
-        { provide: LocalStorageService, useValue: localStorageServiceMock }
+        { provide: LocalStorageService, useValue: localStorageServiceMock },
+        { provide: LanguageService, useValue: languageServiceMock }
       ]
     }).compileComponents();
 
@@ -71,19 +87,46 @@ describe('ProfileCardsComponent', () => {
   });
 
   it('should load facts from local storage', () => {
-    const mockFact = { content: 'Test Fact' } as FactOfTheDay;
-    const mockHabitFact = { content: 'Habit Fact' } as FactOfTheDay;
+    const mockFact: FactOfTheDay = {
+      id: 1,
+      factOfTheDayTranslations: [{ content: 'Test Fact', languageCode: 'en' }]
+    };
 
-    localStorageServiceMock.getFactFromLocalStorage.and.callFake((key) => {
+    const mockHabitFact: FactOfTheDay = {
+      id: 2,
+      factOfTheDayTranslations: [{ content: 'Habit Fact', languageCode: 'en' }]
+    };
+
+    localStorageServiceMock.getFactFromLocalStorage.and.callFake((key: string) => {
       return key === component.factKey ? mockFact : mockHabitFact;
     });
 
     component.loadFactsFromLocalStorage();
 
-    expect(component.factOfTheDay).toEqual(mockFact);
-    expect(component.habitFactOfTheDay).toEqual(mockHabitFact);
     expect(localStorageServiceMock.getFactFromLocalStorage).toHaveBeenCalledWith(component.factKey);
     expect(localStorageServiceMock.getFactFromLocalStorage).toHaveBeenCalledWith(component.habitFactKey);
+  });
+
+  it('should return the content for the current language from local storage', () => {
+    const factKey = 'factOfTheDay';
+    const mockFact: FactOfTheDay = {
+      id: 19,
+      factOfTheDayTranslations: [
+        { content: 'Test Fact in English', languageCode: 'en' },
+        { content: 'Факт українською', languageCode: 'ua' }
+      ]
+    };
+
+    const currentLang = 'ua';
+
+    localStorageServiceMock.getFactFromLocalStorage.and.returnValue(mockFact);
+    languageServiceMock.getCurrentLanguage.and.returnValue(currentLang);
+
+    const result = component.getFactContentByLanguage(factKey);
+
+    expect(localStorageServiceMock.getFactFromLocalStorage).toHaveBeenCalledWith(factKey);
+    expect(languageServiceMock.getCurrentLanguage).toHaveBeenCalled();
+    expect(result).toEqual('Факт українською');
   });
 
   it('should check and update facts', () => {

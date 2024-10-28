@@ -59,7 +59,16 @@ describe('LocalStorageService', () => {
 
   const factMock: FactOfTheDay = {
     id: 1,
-    content: 'Mock Fact of the Day'
+    factOfTheDayTranslations: [
+      {
+        languageCode: 'ua',
+        content: 'Приклад факту дня'
+      },
+      {
+        languageCode: 'en',
+        content: 'Sample fact of the day'
+      }
+    ]
   };
   const factKey = 'factOfTheDay';
   const currentTime = Date.now();
