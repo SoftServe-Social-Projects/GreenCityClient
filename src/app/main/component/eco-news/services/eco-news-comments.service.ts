@@ -14,8 +14,8 @@ export class EcoNewsCommentsService implements CommentsService {
   private backEnd = environment.backendLink;
 
   constructor(
-    private http: HttpClient,
-    private commentService: CommentService
+    private readonly http: HttpClient,
+    private readonly commentService: CommentService
   ) {}
 
   addComment(formData: CommentFormData): Observable<AddedCommentDTO> {

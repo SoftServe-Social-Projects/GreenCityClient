@@ -15,7 +15,7 @@ export class HabitCommentsService implements CommentsService {
 
   constructor(
     private readonly http: HttpClient,
-    private commentService: CommentService
+    private readonly commentService: CommentService
   ) {}
 
   addComment(formData: CommentFormData): Observable<AddedCommentDTO> {
