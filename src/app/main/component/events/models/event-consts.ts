@@ -27,7 +27,7 @@ export const ROLES = {
 };
 
 export const timeStatusFiltersData: FilterItem[] = [
-  { type: 'eventTimeStatus', nameEn: 'Future', nameUa: 'Майбутні' },
+  { type: 'eventTimeStatus', nameEn: 'Upcoming', nameUa: 'Майбутні' },
   { type: 'eventTimeStatus', nameEn: 'Past', nameUa: 'Завершені' }
 ];
 

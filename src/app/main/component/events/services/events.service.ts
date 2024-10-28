@@ -114,6 +114,9 @@ export class EventsService implements OnDestroy {
   }
 
   getEvents(requestParams: HttpParams): Observable<EventResponseDto> {
+    if (requestParams.has('time') && requestParams.get('time') === 'UPCOMING') {
+      requestParams = requestParams.set('time', 'FUTURE');
+    }
     return this.http.get<EventResponseDto>(`${this.backEnd}events`, { params: requestParams });
   }
 

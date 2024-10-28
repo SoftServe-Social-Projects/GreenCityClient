@@ -12,6 +12,7 @@ import {
   mockHttpParams,
   mockParams
 } from '@assets/mocks/events/mock-events';
+import { HttpParams } from '@angular/common/http';
 
 describe('EventsService', () => {
   let service: EventsService;
@@ -77,6 +78,26 @@ describe('EventsService', () => {
     });
     const req = httpTestingController.expectOne(`${url}events?page=0&size=1&type=ONLINE`);
     expect(req.request.method).toEqual('GET');
+    req.flush(mockEventResponse);
+  });
+
+  it('should update time parameter from UPCOMING to FUTURE', () => {
+    const requestParams = new HttpParams().set('time', 'UPCOMING');
+
+    service.getEvents(requestParams).subscribe();
+
+    const req = httpTestingController.expectOne(`${url}events?time=FUTURE`);
+    expect(req.request.params.get('time')).toBe('FUTURE');
+    req.flush(mockEventResponse);
+  });
+
+  it('should not change time parameter if it is not UPCOMING', () => {
+    const requestParams = new HttpParams().set('time', 'PAST');
+
+    service.getEvents(requestParams).subscribe();
+
+    const req = httpTestingController.expectOne(`${url}events?time=PAST`);
+    expect(req.request.params.get('time')).toBe('PAST');
     req.flush(mockEventResponse);
   });
 
