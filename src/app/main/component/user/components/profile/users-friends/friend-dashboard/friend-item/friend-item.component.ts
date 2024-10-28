@@ -55,6 +55,12 @@ export class FriendItemComponent implements OnInit {
   }
 
   private toUsersInfo(tab = UserDashboardTab.allHabits): void {
+    if (this.currentUserId === this.friend.id) {
+      this.router.navigate(['profile', this.currentUserId], {
+        queryParams: { tab }
+      });
+      return;
+    }
     if (this.userId) {
       this.router.navigate(['profile', this.currentUserId, 'users', this.friend.name, this.friend.id], {
         queryParams: { tab }
