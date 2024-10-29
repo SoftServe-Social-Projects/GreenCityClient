@@ -49,6 +49,7 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   favoriteEventsPage = 0;
   totalEvents = 0;
   totalNews = 0;
+  loadingEvents = false;
   eventType = '';
   isFavoriteBtnClicked = false;
   userLatitude = 0;
@@ -105,14 +106,10 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  onCheckboxChange(EventTypeChecked?: string) {
-    if (EventTypeChecked === EventType.ONLINE) {
-      this.isOfflineChecked = false;
-    } else {
-      this.isOnlineChecked = false;
-    }
-
-    if (this.isOnlineChecked) {
+  onCheckboxChange() {
+    if (this.isOfflineChecked && this.isOnlineChecked) {
+      this.eventType = EventType.ONLINE_OFFLINE;
+    } else if (this.isOnlineChecked) {
       this.eventType = EventType.ONLINE;
     } else if (this.isOfflineChecked) {
       this.eventType = EventType.OFFLINE;
@@ -121,57 +118,85 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     }
 
     this.eventsList = [];
+    this.favouriteEvents = [];
     this.eventsPage = 0;
+    this.favoriteEventsPage = 0;
     this.hasNextPageOfEvents = true;
-    this.getUserEvents();
+    this.hasNextPageOfFavoriteEvents = true;
+    this.isFavoriteBtnClicked ? this.getUserFavouriteEvents() : this.getUserEvents();
+  }
+
+  cleanState() {
+    this.isOfflineChecked = false;
+    this.isOnlineChecked = false;
+
+    this.eventType = '';
+    this.eventsPage = 0;
+    this.favoriteEventsPage = 0;
+    this.hasNextPageOfEvents = true;
+    this.hasNextPageOfFavoriteEvents = true;
   }
 
   escapeFromFavorites(): void {
     this.isFavoriteBtnClicked = !this.isFavoriteBtnClicked;
     this.isActiveEventsScroll = true;
     this.isActiveFavoriteEventsScroll = false;
+
+    this.cleanState();
   }
 
   goToFavorites(): void {
     this.isFavoriteBtnClicked = true;
     this.isActiveEventsScroll = false;
     this.isActiveFavoriteEventsScroll = true;
+
+    this.cleanState();
+
     this.getUserFavouriteEvents();
   }
 
-  initGetUserEvents(eventType?: string): void {
+  initGetUserEvents(): void {
     this.eventService
-      .getEvents(this.getHttpParams(0, eventType))
+      .getEvents(this.getHttpParams(0))
       .pipe(take(1))
       .subscribe((res: EventResponseDto) => {
         this.eventsList = res.page;
         this.totalEvents = res.totalElements;
         this.hasNextPageOfEvents = res.hasNext;
+        this.isActiveEventsScroll = res.hasNext;
         this.cdr.detectChanges();
       });
   }
 
-  private getHttpParams(page: number, eventType?: string): HttpParams {
+  private getHttpParams(page: number): HttpParams {
     let params = new HttpParams()
       .append('page', page.toString())
       .append('size', this.eventsPerPage.toString())
-      .append('statuses', 'CREATED,JOINED')
+      .append('statuses', this.isFavoriteBtnClicked ? 'SAVED' : 'CREATED,JOINED')
       .append('user-id', this.localStorageService.getUserId());
-    if (eventType) {
-      params = params.append('type', eventType);
+    if (this.eventType) {
+      params = params.append('type', this.eventType);
     }
     return params;
   }
 
   getUserFavouriteEvents(): void {
-    if (this.favoriteEventsPage !== undefined && this.hasNextPageOfFavoriteEvents) {
+    if (this.hasNextPageOfFavoriteEvents && !this.loadingEvents) {
+      this.loadingEvents = true;
       this.eventService
-        .getUserFavoriteEvents(this.favoriteEventsPage, this.eventsPerPage, this.userId)
+        .getEvents(this.getHttpParams(this.favoriteEventsPage))
         .pipe(take(1))
-        .subscribe((res: EventResponseDto) => {
-          this.favouriteEvents.push(...res.page);
-          this.favoriteEventsPage++;
-          this.hasNextPageOfFavoriteEvents = res.hasNext;
+        .subscribe({
+          next: (res: EventResponseDto) => {
+            this.favouriteEvents.push(...res.page);
+
+            this.favoriteEventsPage++;
+            this.hasNextPageOfFavoriteEvents = res.hasNext;
+            this.isActiveFavoriteEventsScroll = res.hasNext;
+          },
+          complete: () => {
+            this.loadingEvents = false;
+          }
         });
     }
   }
@@ -181,14 +206,21 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   }
 
   getUserEvents(): void {
-    if (this.eventsPage !== undefined && this.hasNextPageOfEvents) {
+    if (this.hasNextPageOfEvents && !this.loadingEvents) {
+      this.loadingEvents = true;
       this.eventService
-        .getEvents(this.getHttpParams(this.eventsPage, this.eventType))
+        .getEvents(this.getHttpParams(this.eventsPage))
         .pipe(take(1))
-        .subscribe((res: EventResponseDto) => {
-          this.eventsList.push(...res.page);
-          this.eventsPage++;
-          this.hasNextPageOfEvents = res.hasNext;
+        .subscribe({
+          next: (res: EventResponseDto) => {
+            this.eventsList.push(...res.page);
+            this.eventsPage++;
+            this.hasNextPageOfEvents = res.hasNext;
+            this.isActiveEventsScroll = res.hasNext;
+          },
+          complete: () => {
+            this.loadingEvents = false;
+          }
         });
     }
   }

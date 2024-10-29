@@ -102,6 +102,16 @@ a {
   }
 }
 
+.end-page-txt {
+  font-family: var(--primary-font);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0.2px;
+  text-align: center;
+  margin: 0 auto 2rem;
+}
+
 .news-list {
   list-style: none;
   padding-left: 0;
