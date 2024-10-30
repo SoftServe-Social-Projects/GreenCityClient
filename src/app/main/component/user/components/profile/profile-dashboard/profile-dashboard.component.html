@@ -137,35 +137,12 @@
             (scrolled)="getUserEvents()"
             [infiniteScrollDisabled]="!isActiveEventsScroll"
           >
-            <ul class="news-list" *ngIf="totalEvents && !isFavoriteBtnClicked">
+            <ul class="news-list" *ngIf="totalEvents">
               <li *ngFor="let eventItem of eventsList">
                 <app-events-list-item [event]="eventItem" [userId]="userId" [isUserAssignList]="true"></app-events-list-item>
               </li>
             </ul>
-            <p class="end-page-txt" *ngIf="!eventsList.length && !this.isFavoriteBtnClicked && !this.loadingEvents">
-              {{ 'homepage.events.no-matching-left' | translate }}
-            </p>
-          </div>
-          <div
-            *ngIf="isFavoriteBtnClicked"
-            class="scrolling"
-            infinite-scroll
-            [infiniteScrollDistance]="1"
-            [infiniteScrollThrottle]="100"
-            (scrolled)="getUserFavouriteEvents()"
-            [infiniteScrollDisabled]="!isActiveFavoriteEventsScroll"
-          >
-            <ul class="news-list">
-              <li *ngFor="let eventItem of favouriteEvents">
-                <app-events-list-item
-                  [event]="eventItem"
-                  [userId]="userId"
-                  [isUserAssignList]="true"
-                  (idOfUnFavouriteEvent)="removeUnFavouriteEvent($event)"
-                ></app-events-list-item>
-              </li>
-            </ul>
-            <p class="end-page-txt" *ngIf="!favouriteEvents.length && this.isFavoriteBtnClicked && !this.loadingEvents">
+            <p class="end-page-txt" *ngIf="!eventsList.length && !this.loadingEvents">
               {{ 'homepage.events.no-matching-left' | translate }}
             </p>
           </div>

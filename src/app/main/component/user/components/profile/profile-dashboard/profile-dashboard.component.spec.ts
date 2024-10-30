@@ -216,9 +216,9 @@ describe('ProfileDashboardComponent', () => {
   });
 
   it('should remove unfavourite event from array', () => {
-    component.favouriteEvents = mockFavouriteEvents;
+    component.eventsList = mockFavouriteEvents;
     component.removeUnFavouriteEvent(14);
-    expect(component.favouriteEvents.length).toEqual(1);
+    expect(component.eventsList.length).toEqual(1);
   });
 
   it('should toggle isFavoriteBtnClicked property on escapeFromFavorites method', () => {
@@ -229,17 +229,17 @@ describe('ProfileDashboardComponent', () => {
     expect(component.isFavoriteBtnClicked).toBeFalse();
   });
 
-  it('should set isFavoriteBtnClicked to true and call getUserFavouriteEvents when goToFavorites is called', () => {
-    spyOn(component, 'getUserFavouriteEvents');
+  it('should set isFavoriteBtnClicked to true and call getUserEvents when goToFavorites is called', () => {
+    spyOn(component, 'getUserEvents');
     component.goToFavorites();
     expect(component.isFavoriteBtnClicked).toBeTrue();
-    expect(component.getUserFavouriteEvents).toHaveBeenCalled();
+    expect(component.getUserEvents).toHaveBeenCalled();
   });
 
   it('should call getUserFavoriteEvents and set favouriteEvents when getUserFavouriteEvents is called', waitForAsync(() => {
     const spy = spyOn(eventsServiceMock, 'getEvents').and.returnValue(of(mockEvent));
-    component.getUserFavouriteEvents();
+    component.getUserEvents();
     expect(spy).toHaveBeenCalled();
-    expect(component.favouriteEvents).toEqual(mockEvent.page);
+    expect(component.eventsList).toEqual(mockEvent.page);
   }));
 });

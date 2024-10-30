@@ -37,13 +37,11 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   };
   isActiveNewsScroll = false;
   isActiveEventsScroll = false;
-  isActiveFavoriteEventsScroll = false;
   userId: number;
   news: EcoNewsModel[];
   isOnlineChecked = false;
   isOfflineChecked = false;
   eventsList: EventResponse[] = [];
-  favouriteEvents: EventResponse[] = [];
   eventsPerPage = 6;
   eventsPage = 1;
   favoriteEventsPage = 0;
@@ -59,7 +57,6 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   private hasNext = true;
   private hasNextPageOfEvents = true;
-  private hasNextPageOfFavoriteEvents = true;
   private currentPage: number;
   private newsCount = 5;
 
@@ -118,12 +115,9 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     }
 
     this.eventsList = [];
-    this.favouriteEvents = [];
     this.eventsPage = 0;
-    this.favoriteEventsPage = 0;
     this.hasNextPageOfEvents = true;
-    this.hasNextPageOfFavoriteEvents = true;
-    this.isFavoriteBtnClicked ? this.getUserFavouriteEvents() : this.getUserEvents();
+    this.getUserEvents();
   }
 
   cleanState() {
@@ -132,27 +126,23 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
 
     this.eventType = '';
     this.eventsPage = 0;
-    this.favoriteEventsPage = 0;
+
+    this.eventsList = [];
     this.hasNextPageOfEvents = true;
-    this.hasNextPageOfFavoriteEvents = true;
   }
 
   escapeFromFavorites(): void {
     this.isFavoriteBtnClicked = !this.isFavoriteBtnClicked;
-    this.isActiveEventsScroll = true;
-    this.isActiveFavoriteEventsScroll = false;
 
     this.cleanState();
+    this.getUserEvents();
   }
 
   goToFavorites(): void {
     this.isFavoriteBtnClicked = true;
-    this.isActiveEventsScroll = false;
-    this.isActiveFavoriteEventsScroll = true;
 
     this.cleanState();
-
-    this.getUserFavouriteEvents();
+    this.getUserEvents();
   }
 
   initGetUserEvents(): void {
@@ -180,29 +170,8 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     return params;
   }
 
-  getUserFavouriteEvents(): void {
-    if (this.hasNextPageOfFavoriteEvents && !this.loadingEvents) {
-      this.loadingEvents = true;
-      this.eventService
-        .getEvents(this.getHttpParams(this.favoriteEventsPage))
-        .pipe(take(1))
-        .subscribe({
-          next: (res: EventResponseDto) => {
-            this.favouriteEvents.push(...res.page);
-
-            this.favoriteEventsPage++;
-            this.hasNextPageOfFavoriteEvents = res.hasNext;
-            this.isActiveFavoriteEventsScroll = res.hasNext;
-          },
-          complete: () => {
-            this.loadingEvents = false;
-          }
-        });
-    }
-  }
-
   removeUnFavouriteEvent(id: number): void {
-    this.favouriteEvents = this.favouriteEvents.filter((event) => event.id !== id);
+    this.eventsList = this.eventsList.filter((event) => event.id !== id);
   }
 
   getUserEvents(): void {
@@ -280,8 +249,7 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
 
   tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.isActiveNewsScroll = tabChangeEvent.index === 1;
-    this.isActiveEventsScroll = tabChangeEvent.index === 2 && !this.isFavoriteBtnClicked;
-    this.isActiveFavoriteEventsScroll = tabChangeEvent.index === 2 && this.isFavoriteBtnClicked;
+    this.isActiveEventsScroll = tabChangeEvent.index === 2;
   }
 
   onScroll(): void {
