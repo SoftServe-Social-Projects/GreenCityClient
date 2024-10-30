@@ -11,13 +11,13 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class UserMessagesService implements OnDestroy {
   url = environment.backendUbsLink;
-  private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
-  countOfNoReadeMessages: any;
+  private readonly destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
+  countOfNoReadMessages: any;
   language: string;
 
   constructor(
-    private http: HttpClient,
-    private localStorageService: LocalStorageService
+    private readonly http: HttpClient,
+    private readonly localStorageService: LocalStorageService
   ) {
     localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$)).subscribe((language) => (this.language = language));
   }
@@ -30,8 +30,12 @@ export class UserMessagesService implements OnDestroy {
     return this.http.get<number>(`${this.url}/notifications/quantityUnreadenNotifications`);
   }
 
-  setReadNotification(id: number): Observable<any> {
-    return this.http.post(`${this.url}/notifications/${id}?lang=${this.language}`, {});
+  setReadNotification(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.url}/notifications/${id}/viewNotification`, {});
+  }
+
+  deleteNotification(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/notifications/${id}`);
   }
 
   ngOnDestroy() {

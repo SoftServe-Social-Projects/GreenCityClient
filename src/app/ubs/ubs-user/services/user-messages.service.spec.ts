@@ -56,17 +56,19 @@ describe('UserMessagesService', () => {
     expect(req.request.method).toBe('GET');
   });
 
-  it('should return current notification', () => {
-    service.setReadNotification(IDMock).subscribe((data) => {
-      expect(data).toBeDefined();
-    });
-    const req = httpMock.expectOne(`${mainUbsLink}/notifications/${IDMock}?lang=en`);
-    expect(req.request.method).toBe('POST');
+  it('should call the correct URL and method for setReadNotification', () => {
+    const notificationId = 1;
+
+    service.setReadNotification(notificationId).subscribe();
+    const req = httpMock.expectOne(`${service.url}/notifications/${notificationId}/viewNotification`);
+    expect(req.request.method).toBe('PATCH');
   });
 
-  it('onDestroy should be called', () => {
-    const spy = spyOn(service, 'ngOnDestroy');
-    service.ngOnDestroy();
-    expect(spy).toHaveBeenCalledTimes(1);
+  it('should call the correct URL and method for deleteNotification', () => {
+    const notificationId = 1;
+
+    service.deleteNotification(notificationId).subscribe();
+    const req = httpMock.expectOne(`${service.url}/notifications/${notificationId}`);
+    expect(req.request.method).toBe('DELETE');
   });
 });

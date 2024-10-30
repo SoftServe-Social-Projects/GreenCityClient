@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserMessagesService } from '../services/user-messages.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
+import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import { NotificationBody } from '../../ubs-admin/models/ubs-user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
@@ -21,11 +22,11 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
   count = 0;
   pageSize = 10;
   isLoadSpinner: boolean;
-  isLoadSmallSpinner: boolean;
   isLoadBar: boolean;
+  hasNextPage: boolean;
   images = [];
   countOfMessages: number;
-  private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
+  private readonly destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   destroy: Subject<boolean> = new Subject<boolean>();
   localization = {
     title: 'ubs-user-notification.title',
@@ -35,11 +36,12 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private userMessagesService: UserMessagesService,
-    private localStorageService: LocalStorageService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private dialog: MatDialog
+    private readonly userMessagesService: UserMessagesService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly matSnackBar: MatSnackBarComponent,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -58,47 +60,53 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
     this.userMessagesService
       .getNotification(this.page - 1, this.pageSize)
       .pipe(takeUntil(this.destroy))
-      .subscribe(
-        (response) => {
+      .subscribe({
+        next: (response) => {
           this.notifications = response.page;
           this.count = response.totalElements;
           this.isAnyMessages = this.notifications.length > 0;
           this.isLoadSpinner = this.isLoadBar = false;
+
+          this.hasNextPage = response.currentPage !== response.totalPages - 1;
         },
-        (error) => {
+        error: (error) => {
           console.log(error);
         }
-      );
+      });
   }
 
-  setRead(notificationId: number, isRead: boolean) {
-    let isGetNotificationBody = true;
-    const notificationItem: NotificationBody = this.notifications.find((item) => item.id === notificationId);
-    if (notificationItem.body) {
-      isGetNotificationBody = false;
-    }
-    if (!notificationItem.read) {
-      this.userMessagesService.countOfNoReadeMessages--;
-    }
-    if (isGetNotificationBody) {
-      this.notifications.forEach((item) => {
-        if (item.id === notificationId) {
-          item.read = true;
-        }
-      });
-      this.isLoadSmallSpinner = true;
+  setRead(notification: NotificationBody) {
+    if (notification && !notification.read) {
+      this.userMessagesService.countOfNoReadMessages >= 0 && this.userMessagesService.countOfNoReadMessages--;
       this.userMessagesService
-        .setReadNotification(notificationId)
+        .setReadNotification(notification.id)
         .pipe(takeUntil(this.destroy))
-        .subscribe((response) => {
-          const findNotification = this.notifications.find((item) => item.id === notificationId);
-          findNotification.body = response.body;
-          findNotification.images = response.images;
-          findNotification.isOpen = true;
-          this.isLoadSmallSpinner = false;
-          if (findNotification.images) {
-            const images = response.images.map((url) => ({ src: url, label: null, name: null }));
-            this.images.splice(0, response.images.length, ...images);
+        .subscribe(() => {
+          this.notifications.find((el) => el.id === notification.id).read = true;
+        });
+    }
+  }
+
+  deleteNotification(event: Event, notification: NotificationBody): void {
+    if (event instanceof MouseEvent || (event instanceof KeyboardEvent && event.key === 'Enter')) {
+      event.stopPropagation();
+      this.userMessagesService
+        .deleteNotification(notification.id)
+        .pipe(takeUntil(this.destroy))
+        .subscribe({
+          next: () => {
+            this.notifications = this.notifications.filter((el) => el.id !== notification.id);
+            !notification.read && this.userMessagesService.countOfNoReadMessages--;
+            if (this.notifications.length < this.pageSize && this.hasNextPage) {
+              this.fetchNotification();
+            } else if (this.notifications.length === 0) {
+              this.page--;
+              this.fetchNotification();
+            }
+            this.matSnackBar.openSnackBar('deletedNotification');
+          },
+          error: () => {
+            this.matSnackBar.openSnackBar('error');
           }
         });
     }
