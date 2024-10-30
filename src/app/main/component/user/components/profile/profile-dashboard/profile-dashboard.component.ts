@@ -69,8 +69,8 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     private store: Store,
     private eventService: EventsService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef,
-    private translate: TranslateService
+    private readonly cdr: ChangeDetectorRef,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit() {
