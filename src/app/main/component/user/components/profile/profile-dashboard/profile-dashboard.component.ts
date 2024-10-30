@@ -17,6 +17,7 @@ import { HabitAssignInterface } from '@global-user/components/habit/models/inter
 import { EventType } from 'src/app/ubs/ubs/services/event-type.enum';
 import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
 import { HttpParams } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile-dashboard',
@@ -68,10 +69,12 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     private store: Store,
     private eventService: EventsService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
+    this.bindLang(this.localStorageService.getCurrentLanguage());
     this.subscribeToLangChange();
     this.getUserId();
 
@@ -265,8 +268,18 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.userId = this.localStorageService.getUserId();
   }
 
-  private subscribeToLangChange() {
-    this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$)).subscribe(() => this.executeRequests());
+  private bindLang(lang: string): void {
+    if (lang && this.translate.currentLang !== lang) {
+      this.translate.setDefaultLang(lang);
+      this.translate.use(lang);
+    }
+  }
+
+  private subscribeToLangChange(): void {
+    this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$)).subscribe((lang: string) => {
+      this.bindLang(lang);
+      this.executeRequests();
+    });
   }
 
   private sortHabitsData(habitsArray: HabitAssignInterface[]): Array<HabitAssignInterface> {
