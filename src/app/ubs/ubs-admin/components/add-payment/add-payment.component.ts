@@ -207,16 +207,16 @@ export class AddPaymentComponent implements OnInit, OnDestroy {
         ),
         takeUntil(this.destroySub)
       )
-      .subscribe(
-        (data: IPaymentInfoDto) => {
+      .subscribe({
+        next: (data: IPaymentInfoDto) => {
           data.amount /= 100;
           this.dialogRef.close(data);
         },
-        (err) => {
+        error: (err) => {
           console.error('error', err);
           this.isUploading = false;
         }
-      );
+      });
   }
 
   filesDropped(files: FileHandle[]): void {
@@ -342,14 +342,14 @@ export class AddPaymentComponent implements OnInit, OnDestroy {
           this.orderService
             .deleteManualPayment(this.payment.id)
             .pipe(takeUntil(this.destroySub))
-            .subscribe(
-              () => {
+            .subscribe({
+              next: () => {
                 this.dialogRef.close(this.payment.id);
               },
-              () => {
+              error: () => {
                 this.isDeleting = false;
               }
-            );
+            });
         }
       });
   }

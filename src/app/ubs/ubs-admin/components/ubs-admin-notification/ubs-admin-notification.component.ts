@@ -86,12 +86,12 @@ export class UbsAdminNotificationComponent implements OnInit, OnDestroy {
     this.notificationsService
       .getNotificationTemplate(id)
       .pipe(take(1))
-      .subscribe(
-        (notification: NotificationTemplate) => {
+      .subscribe({
+        next: (notification: NotificationTemplate) => {
           this.notification = formatUnixCron(notification);
         },
-        () => this.navigateToNotificationList()
-      );
+        error: () => this.navigateToNotificationList()
+      });
   }
 
   navigateToNotificationList(): void {

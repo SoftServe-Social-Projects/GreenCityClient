@@ -78,15 +78,15 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   inviteFriends(event: Event) {
     event.preventDefault();
     if (this.habitId && this.selectedFriends.length) {
-      this.userFriendsService.inviteFriendsToHabit(this.habitId, this.selectedFriends).subscribe(
-        () => {
+      this.userFriendsService.inviteFriendsToHabit(this.habitId, this.selectedFriends).subscribe({
+        next: () => {
           this.invitationSent = true;
           this.setAddedFriends();
         },
-        (error) => {
+        error: (error) => {
           this.snackBar.openSnackBar('snack-bar.error.default');
         }
-      );
+      });
     }
   }
 

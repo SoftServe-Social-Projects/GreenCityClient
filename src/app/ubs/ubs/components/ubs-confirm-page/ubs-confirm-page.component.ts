@@ -59,20 +59,20 @@ export class UbsConfirmPageComponent implements OnInit, OnDestroy {
         this.orderService
           .getUbsOrderStatus()
           .pipe(takeUntil(this.destroy$))
-          .subscribe(
-            (response) => {
+          .subscribe({
+            next: (response) => {
               this.orderResponseError = response?.result === 'error';
               this.orderStatusDone = !this.orderResponseError;
               this.orderId = response.order_id ? response.order_id.split('_')[0] : this.localStorageService.getUbsPaymentOrderId();
               this.renderView();
               this.isSpinner = false;
             },
-            (error) => {
+            error: (error) => {
               this.orderResponseError = true;
               this.isSpinner = false;
               console.log(error);
             }
-          );
+          });
       }
     });
   }

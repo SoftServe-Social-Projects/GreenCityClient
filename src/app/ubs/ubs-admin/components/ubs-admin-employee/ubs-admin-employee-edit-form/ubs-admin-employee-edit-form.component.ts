@@ -133,12 +133,12 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.employeeService.getAllPositions().subscribe(
-      (roles) => {
+    this.employeeService.getAllPositions().subscribe({
+      next: (roles) => {
         this.roles = roles;
       },
-      (error) => console.error('Observer for role got an error: ' + error)
-    );
+      error: (error) => console.error('Observer for role got an error: ' + error)
+    });
     this.store
       .select((state: IAppState): Employees => state.employees.employees)
       .pipe(skip(1))

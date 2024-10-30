@@ -58,17 +58,17 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
     this.userMessagesService
       .getNotification(this.page - 1, this.pageSize)
       .pipe(takeUntil(this.destroy))
-      .subscribe(
-        (response) => {
+      .subscribe({
+        next: (response) => {
           this.notifications = response.page;
           this.count = response.totalElements;
           this.isAnyMessages = this.notifications.length > 0;
           this.isLoadSpinner = this.isLoadBar = false;
         },
-        (error) => {
+        error: (error) => {
           console.log(error);
         }
-      );
+      });
   }
 
   setRead(notificationId: number, isRead: boolean) {
