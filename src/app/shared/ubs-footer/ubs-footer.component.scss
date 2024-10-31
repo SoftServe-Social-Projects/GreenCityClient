@@ -2,7 +2,6 @@
   width: 100%;
   padding: 12px 0;
   display: flex;
-  padding-left: 80px;
   background-color: var(--ubs-secondary-dark-green);
   font-family: var(--ubs-secondary-font);
 
@@ -15,7 +14,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 0 150px;
+    margin: 0 auto;
+    width: 1140px;
 
     &_main {
       display: flex;
@@ -37,7 +37,7 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      gap: 20px;
+      gap: 15px;
       padding: 0;
       margin: 0;
 
@@ -45,7 +45,9 @@
       .route-link {
         display: flex;
         font-weight: 600;
+        font-size: 14px;
         color: var(--ubs-primary-white);
+        text-transform: uppercase;
       }
 
       li {
@@ -79,27 +81,66 @@
   }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (min-width: 1023px) and (max-width: 1439px) {
   .footer {
     &-menu {
+      padding: 0 17px;
+      width: 100%;
+    }
+
+    .route-link {
+      font-size: 12px;
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .footer {
+    &-logo img {
+      width: 45px;
+    }
+
+    &-menu {
+      padding: 0 11px;
       margin: 0;
+      width: 100%;
+
+      &_main {
+        margin-left: 0;
+      }
+
+      &_social-media {
+        img {
+          width: 34px;
+          height: 34px;
+        }
+      }
     }
 
     &-bottom-part {
       margin: 22px 0 0 0;
+    }
+
+    .route-link {
+      font-size: 10px;
     }
   }
 }
 
 @media (min-width: 576px) and (max-width: 768px) {
   .footer {
-    padding-left: 50px;
+    .container-fluid {
+      gap: 23px;
+    }
 
     &-menu {
       margin: 0;
+      width: 100%;
 
       &_main {
-        margin-left: 40px;
+        margin-left: 0px;
+        justify-content: space-between;
+        width: 100%;
       }
 
       &_social-media {
@@ -131,6 +172,24 @@
         font-size: 9px;
       }
     }
+
+    &-logo {
+      display: none;
+    }
+
+    &-bottom-part {
+      margin: 0;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &-logo_mobile {
+      display: block;
+
+      .footer-logo-bottom {
+        width: 50px;
+      }
+    }
   }
 }
 
@@ -146,6 +205,7 @@
 
     &-menu {
       margin: 0;
+      width: 100%;
 
       &_social-media {
         justify-content: space-around;
