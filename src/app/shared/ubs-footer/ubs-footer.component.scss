@@ -5,6 +5,10 @@
   background-color: var(--ubs-secondary-dark-green);
   font-family: var(--ubs-secondary-font);
 
+  .container-fluid {
+    padding: 40px 15px;
+  }
+
   &-logo img {
     width: 90px;
   }
@@ -97,7 +101,7 @@
 @media (min-width: 768px) and (max-width: 1024px) {
   .footer {
     &-logo img {
-      width: 45px;
+      width: 90px;
     }
 
     &-menu {
@@ -106,7 +110,7 @@
       width: 100%;
 
       &_main {
-        margin-left: 0;
+        margin-left: 40px;
       }
 
       &_social-media {
@@ -122,7 +126,7 @@
     }
 
     .route-link {
-      font-size: 10px;
+      font-size: 12px;
     }
   }
 }
@@ -131,6 +135,7 @@
   .footer {
     .container-fluid {
       gap: 23px;
+      padding: 16px 15px 40px;
     }
 
     &-menu {
@@ -201,6 +206,7 @@
 
     .container-fluid {
       gap: 23px;
+      padding: 16px 15px 40px;
     }
 
     &-menu {
