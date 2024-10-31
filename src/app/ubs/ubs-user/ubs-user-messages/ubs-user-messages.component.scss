@@ -51,11 +51,12 @@
   }
 
   .time {
-    padding-left: 0px !important;
+    padding-left: 0;
   }
 
   .theme {
-    padding-right: 0px !important;
+    padding-right: 0;
+    padding-left: 10px;
   }
 }
 
@@ -263,6 +264,20 @@
 @media (max-width: 575px) {
   .header-list {
     padding-left: 25px;
+    gap: 0;
+
+    .time {
+      padding-left: 0;
+    }
+
+    .theme {
+      padding-left: 5px;
+    }
+
+    .id {
+      padding-left: 28px;
+      padding-right: 2px;
+    }
   }
 
   .panel-title,
@@ -297,6 +312,21 @@
       line-height: 20px;
       letter-spacing: 0.1px;
       text-align: left;
+    }
+
+    .time {
+      margin-left: -15px;
+    }
+
+    .theme {
+      padding-left: 0px;
+      padding-right: 15px;
+    }
+
+    .id {
+      padding-left: 40px;
+      padding-right: 5px;
+      margin-right: 16px;
     }
   }
 
@@ -333,6 +363,12 @@
 @media (max-width: 420px) {
   .my-pagination {
     margin-top: 3%;
+  }
+
+  .header-list {
+    .theme {
+      padding-left: 5px;
+    }
   }
 }
 
