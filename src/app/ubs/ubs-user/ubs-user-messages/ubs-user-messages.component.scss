@@ -35,6 +35,8 @@
   display: flex;
   margin: -32px 0 5px 0;
   padding-left: 48px;
+  gap: 16px;
+  width: 92%;
 
   div {
     color: var(--ubs-primary-grey);
@@ -46,6 +48,14 @@
     text-align: left;
     text-overflow: ellipsis;
     overflow: hidden;
+  }
+
+  .time {
+    padding-left: 0px !important;
+  }
+
+  .theme {
+    padding-right: 0px !important;
   }
 }
 
@@ -137,14 +147,6 @@
   line-height: 20px;
   letter-spacing: 0.1px;
   text-align: left;
-}
-
-.time {
-  margin-left: -40px;
-}
-
-.theme {
-  margin-left: -11px;
 }
 
 .my-pagination::ng-deep .ngx-pagination {
@@ -250,18 +252,6 @@
   }
 }
 
-@media (max-width: 1600px) {
-  .time {
-    margin-left: -21px;
-  }
-}
-
-@media (max-width: 1200px) {
-  .time {
-    margin-left: -10px;
-  }
-}
-
 @media (max-width: 768px) {
   .description {
     max-width: 100%;
@@ -281,10 +271,6 @@
     padding: 5px;
     display: flex;
     align-items: center;
-  }
-
-  .time {
-    margin-left: 0;
   }
 }
 
