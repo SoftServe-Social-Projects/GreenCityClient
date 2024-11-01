@@ -42,14 +42,14 @@ export class UbsConfirmPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const orderIdWithoutPayment = this.localStorageService.getUbsOrderId();
+    const orderIdWithoutPayment = this.localStorageService.getUbsPaymentOrderId();
     this.ubsOrderFormService.orderId.pipe(takeUntil(this.destroy$)).subscribe((oderID) => {
       if (!oderID && this.localStorageService.getUbsBonusesOrderId()) {
         oderID = this.localStorageService.getUbsBonusesOrderId();
         this.pageReloaded = true;
       }
       if (oderID || orderIdWithoutPayment) {
-        this.orderId = oderID || this.localStorageService.getUbsOrderId();
+        this.orderId = oderID || this.localStorageService.getUbsPaymentOrderId();
         this.orderResponseError = !this.pageReloaded ? this.ubsOrderFormService.getOrderResponseErrorStatus() : !this.pageReloaded;
         this.orderStatusDone = !this.pageReloaded ? this.ubsOrderFormService.getOrderStatus() : this.pageReloaded;
         this.checkPaymentStatus();
@@ -59,20 +59,20 @@ export class UbsConfirmPageComponent implements OnInit, OnDestroy {
         this.orderService
           .getUbsOrderStatus()
           .pipe(takeUntil(this.destroy$))
-          .subscribe(
-            (response) => {
+          .subscribe({
+            next: (response) => {
               this.orderResponseError = response?.result === 'error';
               this.orderStatusDone = !this.orderResponseError;
               this.orderId = response.order_id ? response.order_id.split('_')[0] : this.localStorageService.getUbsPaymentOrderId();
               this.renderView();
               this.isSpinner = false;
             },
-            (error) => {
+            error: (error) => {
               this.orderResponseError = true;
               this.isSpinner = false;
               console.log(error);
             }
-          );
+          });
       }
     });
   }
