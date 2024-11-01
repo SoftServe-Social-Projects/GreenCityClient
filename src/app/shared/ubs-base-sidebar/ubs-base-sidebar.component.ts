@@ -69,7 +69,7 @@ export class UbsBaseSidebarComponent implements AfterViewInit, AfterViewChecked,
     }
   }
 
-  getIcon(listItem): string {
+  getIcon(listItem: listElements): string {
     return listItem.link === this.bellsNoneNotification && this.serviceUserMessages.countOfNoReadMessages
       ? this.bellsNotification
       : listItem.link;

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserMessagesService } from '../services/user-messages.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
-import { NotificationBody } from '../../ubs-admin/models/ubs-user.model';
+import { NotificationBody } from '@ubs/ubs-admin/models/ubs-user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -25,7 +25,7 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
   isLoadBar: boolean;
   hasNextPage: boolean;
   images = [];
-  countOfMessages: number;
+  currLang: string;
   private readonly destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   destroy: Subject<boolean> = new Subject<boolean>();
   localization = {
@@ -52,13 +52,16 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToLangChange() {
-    this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$)).subscribe(() => this.fetchNotification());
+    this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$)).subscribe((language) => {
+      this.currLang = language;
+      this.fetchNotification(language);
+    });
   }
 
-  fetchNotification(): void {
+  fetchNotification(lang: string): void {
     this.isLoadBar = true;
     this.userMessagesService
-      .getNotification(this.page - 1, this.pageSize)
+      .getNotification(this.page - 1, this.pageSize, lang)
       .pipe(takeUntil(this.destroy))
       .subscribe({
         next: (response) => {
@@ -79,7 +82,7 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
     if (notification && !notification.read) {
       this.userMessagesService.countOfNoReadMessages >= 0 && this.userMessagesService.countOfNoReadMessages--;
       this.userMessagesService
-        .setReadNotification(notification.id)
+        .markNotificationAsRead(notification.id)
         .pipe(takeUntil(this.destroy))
         .subscribe(() => {
           this.notifications.find((el) => el.id === notification.id).read = true;
@@ -98,10 +101,10 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
             this.notifications = this.notifications.filter((el) => el.id !== notification.id);
             !notification.read && this.userMessagesService.countOfNoReadMessages--;
             if (this.notifications.length < this.pageSize && this.hasNextPage) {
-              this.fetchNotification();
+              this.fetchNotification(this.currLang);
             } else if (this.notifications.length === 0) {
               this.page--;
-              this.fetchNotification();
+              this.fetchNotification(this.currLang);
             }
             this.matSnackBar.openSnackBar('deletedNotification');
           },

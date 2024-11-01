@@ -5,7 +5,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import { of, throwError } from 'rxjs';
-import { NotificationBody, Notifications } from '../../ubs-admin/models/ubs-user.model';
+import { NotificationBody, Notifications } from '@ubs/ubs-admin/models/ubs-user.model';
 import { UserMessagesService } from '../services/user-messages.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
@@ -39,7 +39,7 @@ describe('UbsUserMessagesComponent', () => {
 
   const userMessageServiceMock = jasmine.createSpyObj('UserMessagesService', [
     'getNotification',
-    'setReadNotification',
+    'markNotificationAsRead',
     'deleteNotification',
     'fetchNotification'
   ]);
@@ -67,7 +67,7 @@ describe('UbsUserMessagesComponent', () => {
   });
 
   afterEach(() => {
-    userMessageServiceMock.setReadNotification.calls.reset();
+    userMessageServiceMock.markNotificationAsRead.calls.reset();
     userMessageServiceMock.deleteNotification.calls.reset();
     userMessageServiceMock.countOfNoReadMessages = 1;
     component.notifications = [{ ...fakeNotificationBody, read: false }];
@@ -85,7 +85,7 @@ describe('UbsUserMessagesComponent', () => {
   });
 
   it(`should initialize the notification body`, () => {
-    component.fetchNotification();
+    component.fetchNotification('en');
 
     expect(component.notifications).toEqual([fakeNotificationBody]);
   });
@@ -97,28 +97,28 @@ describe('UbsUserMessagesComponent', () => {
     expect(spy).toHaveBeenCalled();
   }));
 
-  describe('setRead', () => {
+  describe('markAsRead', () => {
     beforeEach(() => {
       userMessageServiceMock.countOfNoReadMessages = 1;
     });
 
     it('should set notification as read and decrease unread message count', () => {
       const notification = component.notifications[0];
-      userMessageServiceMock.setReadNotification.and.returnValue(of(undefined));
+      userMessageServiceMock.markNotificationAsRead.and.returnValue(of(undefined));
 
       component.setRead(notification);
 
-      expect(userMessageServiceMock.setReadNotification).toHaveBeenCalledWith(notification.id);
+      expect(userMessageServiceMock.markNotificationAsRead).toHaveBeenCalledWith(notification.id);
       expect(notification.read).toBeTrue();
       expect(userMessageServiceMock.countOfNoReadMessages).toBe(0);
     });
 
-    it('should not call setReadNotification if notification is already read', () => {
+    it('should not call markNotificationAsRead if notification is already read', () => {
       const notification = component.notifications[1];
 
       component.setRead(notification);
 
-      expect(userMessageServiceMock.setReadNotification).not.toHaveBeenCalled();
+      expect(userMessageServiceMock.markNotificationAsRead).not.toHaveBeenCalled();
     });
   });
   describe('deleteNotification', () => {
