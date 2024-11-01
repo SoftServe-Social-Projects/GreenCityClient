@@ -178,9 +178,10 @@ p {
     display: flex;
 
     .achievements {
-      padding-top: 30px;
       width: 100%;
-      margin: 0 16px;
+      margin: 0;
+      padding: 0 16px;
+      border-top: 0px;
     }
   }
 }
@@ -189,7 +190,9 @@ p {
   .outer {
     .achievements {
       width: 100%;
-      margin: 0 16px;
+      margin: 0;
+      padding: 0 16px;
+      border-top: 0px;
     }
   }
 }
