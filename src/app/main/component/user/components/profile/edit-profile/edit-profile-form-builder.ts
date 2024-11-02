@@ -19,7 +19,7 @@ export class EditProfileFormBuilder {
       credo: ['', Validators.maxLength(170)],
       showLocation: [false],
       showEcoPlace: [false],
-      showShoppingList: [false],
+      showToDoList: [false],
       socialNetworks: [''],
       emailPreferences: this.createEmailPreferencesGroup(null)
     });
@@ -94,7 +94,7 @@ export class EditProfileFormBuilder {
       credo: [editForm.userCredo, Validators.maxLength(170)],
       showLocation: [editForm.showLocation],
       showEcoPlace: [editForm.showEcoPlace],
-      showShoppingList: [editForm.showShoppingList],
+      showToDoList: [editForm.showToDoList],
       socialNetworks: [editForm.socialNetworks],
       emailPreferences: this.createEmailPreferencesGroup(editForm.notificationPreferences)
     });

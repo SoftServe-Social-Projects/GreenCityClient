@@ -1,36 +1,36 @@
-import { AllShoppingLists, CustomShoppingItem, HabitUpdateShopList, ShoppingList } from '@user-models/shoppinglist.interface';
+import { AllToDoLists, CustomToDoItem, HabitUpdateToDoList, ToDoList } from '@global-user/models/to-do-list.interface';
 import { TodoStatus } from '../models/todo-status.enum';
 import { HabitListInterface } from '@global-user/components/habit/models/interfaces/habit.interface';
 import { CustomHabit, CustomHabitDtoRequest } from '@global-user/components/habit/models/interfaces/custom-habit.interface';
 import { FriendProfilePicturesArrayModel } from '@user-models/friend.model';
 
-export const SHOPLISTITEMONE: ShoppingList = {
+export const TODOLISTITEMONE: ToDoList = {
   id: 1,
   text: 'Reusable stainless steel water bottle',
   status: TodoStatus.active
 };
 
-export const SHOPLISTITEMTWO: ShoppingList = {
+export const TODOLISTITEMTWO: ToDoList = {
   id: 2,
   text: 'Collapsible Silicone Water Bottle',
   status: TodoStatus.inprogress
 };
 
-export const SHOPLIST: ShoppingList[] = [SHOPLISTITEMONE, SHOPLISTITEMTWO];
+export const TODOLIST: ToDoList[] = [TODOLISTITEMONE, TODOLISTITEMTWO];
 
-export const ALLUSERSHOPLISTS: AllShoppingLists = {
-  userShoppingListItemDto: [SHOPLISTITEMONE],
-  customShoppingListItemDto: [SHOPLISTITEMTWO]
+export const ALLUSERTODOLISTS: AllToDoLists = {
+  userToDoListItemDto: [TODOLISTITEMONE],
+  customToDoListItemDto: [TODOLISTITEMTWO]
 };
 
-export const UPDATEHABITSHOPLIST: HabitUpdateShopList = {
+export const UPDATEHABITTODOLIST: HabitUpdateToDoList = {
   habitAssignId: 2,
-  standardShopList: [SHOPLISTITEMONE],
-  customShopList: [SHOPLISTITEMTWO],
+  standardToDoList: [TODOLISTITEMONE],
+  customToDoList: [TODOLISTITEMTWO],
   lang: 'ua'
 };
 
-export const CUSTOMSHOPITEM: CustomShoppingItem = {
+export const CUSTOMTODOITEM: CustomToDoItem = {
   text: 'New item'
 };
 
@@ -57,8 +57,8 @@ export const MOCK_HABITS: HabitListInterface = {
       habitAssignStatus: 'testStatus',
       isCustomHabit: true,
       usersIdWhoCreatedCustomHabit: 1,
-      customShoppingListItems: [],
-      shoppingListItems: [],
+      customToDoListItems: [],
+      toDoListItems: [],
       tags: ['tag1', 'tag2']
     }
   ],
@@ -73,7 +73,7 @@ export const MOCK_CUSTOM_HABIT: CustomHabit = {
   duration: 30,
   tagIds: [1, 2],
   image: 'testImage',
-  shopList: ALLUSERSHOPLISTS.customShoppingListItemDto
+  toDoList: ALLUSERTODOLISTS.customToDoListItemDto
 };
 
 export const MOCK_CUSTOM_HABIT_RESPONSE: CustomHabitDtoRequest = {
@@ -92,7 +92,7 @@ export const MOCK_CUSTOM_HABIT_RESPONSE: CustomHabitDtoRequest = {
   defaultDuration: MOCK_CUSTOM_HABIT.duration,
   image: MOCK_CUSTOM_HABIT.image,
   tagIds: MOCK_CUSTOM_HABIT.tagIds,
-  customShoppingListItemDto: MOCK_CUSTOM_HABIT.shopList
+  customToDoListItemDto: MOCK_CUSTOM_HABIT.toDoList
 };
 
 export const MOCK_FRIEND_PROFILE_PICTURES: FriendProfilePicturesArrayModel[] = [

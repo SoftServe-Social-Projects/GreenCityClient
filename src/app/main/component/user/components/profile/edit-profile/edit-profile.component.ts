@@ -110,7 +110,7 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
       userCredo: this.editProfileForm.value.credo === null ? '' : this.editProfileForm.value.credo,
       showLocation: this.editProfileForm.value.showLocation,
       showEcoPlace: this.editProfileForm.value.showEcoPlace,
-      showShoppingList: this.editProfileForm.value.showShoppingList,
+      showToDoList: this.editProfileForm.value.showToDoList,
       socialNetworks: this.socialNetworksToServer
     };
   }
@@ -133,7 +133,7 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
       },
       showLocation: data.showLocation,
       showEcoPlace: data.showEcoPlace,
-      showShoppingList: data.showShoppingList,
+      showToDoList: data.showToDoList,
       socialNetworks: data.socialNetworks.map((network) => network.url)
     };
     this.editProfileForm.markAllAsTouched();
@@ -197,7 +197,7 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
       userCredo: form.value.credo,
       showLocation: !!form.value.showLocation,
       showEcoPlace: !!form.value.showEcoPlace,
-      showShoppingList: !!form.value.showShoppingList,
+      showToDoList: !!form.value.showToDoList,
       socialNetworks: this.socialNetworksToServer,
       emailPreferences: emailPreferences.length > 0 ? emailPreferences : null
     };

@@ -84,7 +84,7 @@ describe('AllHabitsComponent', () => {
     rating: null,
     showEcoPlace: true,
     showLocation: true,
-    showShoppingList: true,
+    showToDoList: true,
     socialNetworks: [{ id: 1, url: defaultImagePath }]
   } as EditProfileModel;
 

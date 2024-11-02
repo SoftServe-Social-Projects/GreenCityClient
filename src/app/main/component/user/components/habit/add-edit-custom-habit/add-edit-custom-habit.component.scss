@@ -80,14 +80,14 @@
         }
       }
 
-      .duration-shoping {
+      .duration-to-do {
         display: flex;
         width: 100%;
         justify-content: space-between;
         gap: 32px;
 
         .duration,
-        .shopping {
+        .to-do {
           width: calc(50% - 16px);
           background: var(--secondary-light-grey);
           border-radius: 8px;
@@ -352,13 +352,13 @@ input[type='radio'] + img {
       padding: 0;
       gap: 24px;
 
-      .duration-shoping {
+      .duration-to-do {
         flex-direction: column;
         height: auto;
         gap: 24px;
 
         .duration,
-        .shopping {
+        .to-do {
           width: 100%;
         }
       }

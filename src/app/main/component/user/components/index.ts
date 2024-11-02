@@ -23,5 +23,5 @@ export { OneHabitComponent } from './profile/profile-dashboard/one-habit/one-hab
 export { ProfileWidgetComponent } from './profile/profile-widget/profile-widget.component';
 export { ProfileHeaderComponent } from './profile/profile-widget/profile-header/profile-header.component';
 export { ProfileProgressComponent } from './profile/profile-widget/profile-progress/profile-progress.component';
-export { ShoppingListComponent } from './profile/shopping-list/shopping-list.component';
+export { ToDoListComponent } from './profile/to-do-list/to-do-list.component';
 export { UserSettingComponent } from './user-setting/user-setting.component';

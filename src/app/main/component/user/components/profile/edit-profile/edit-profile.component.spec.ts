@@ -186,7 +186,7 @@ describe('EditProfileComponent', () => {
         userCredo: '',
         showLocation: '',
         showEcoPlace: '',
-        showShoppingList: '',
+        showToDoList: '',
         socialNetworks: []
       };
       component.editProfileForm.value.city = '';
@@ -194,7 +194,7 @@ describe('EditProfileComponent', () => {
       component.editProfileForm.value.credo = '';
       component.editProfileForm.value.showLocation = '';
       component.editProfileForm.value.showEcoPlace = '';
-      component.editProfileForm.value.showShoppingList = '';
+      component.editProfileForm.value.showToDoList = '';
       component.socialNetworksToServer = [];
     });
 
@@ -264,7 +264,7 @@ describe('EditProfileComponent', () => {
         rating: 658,
         showEcoPlace: true,
         showLocation: true,
-        showShoppingList: true,
+        showToDoList: true,
         socialNetworks: [{ id: 220, url: 'http://instagram.com/profile' }]
       } as EditProfileModel;
     });

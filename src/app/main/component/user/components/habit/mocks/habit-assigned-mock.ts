@@ -26,7 +26,7 @@ export const DEFAULTHABIT: HabitInterface = {
   id: 1,
   usersIdWhoCreatedCustomHabit: 33,
   image: 'https://www.testgreencity.ga/assets/img/habits/man.svg',
-  shoppingListItems: [],
+  toDoListItems: [],
   tags: [],
   isCustomHabit: false,
   isAssigned: false
@@ -49,7 +49,7 @@ export const CUSTOMHABIT: HabitInterface = {
   id: 2,
   usersIdWhoCreatedCustomHabit: 50,
   image: '',
-  shoppingListItems: [],
+  toDoListItems: [],
   tags: [],
   isCustomHabit: true,
   isAssigned: false
@@ -70,7 +70,7 @@ export const DEFAULTFULLINFOHABIT: HabitAssignInterface = {
     { enrollDate: '2023-04-14', id: 2 },
     { enrollDate: '2023-04-10', id: 3 }
   ],
-  shoppingListItems: [
+  toDoListItems: [
     {
       id: 6,
       status: TodoStatus.active,
@@ -95,7 +95,7 @@ export const CUSTOMFULLINFOHABIT: HabitAssignInterface = {
     { enrollDate: 'monday', id: 2 },
     { enrollDate: 'wednesday', id: 3 }
   ],
-  shoppingListItems: [
+  toDoListItems: [
     {
       id: 6,
       status: TodoStatus.active,
@@ -172,7 +172,7 @@ export const DEFAULTFULLINFOHABIT_2: HabitAssignInterface = {
     { enrollDate: '2023-04-14', id: 2 },
     { enrollDate: '2023-04-10', id: 3 }
   ],
-  shoppingListItems: [
+  toDoListItems: [
     {
       id: 6,
       status: TodoStatus.active,

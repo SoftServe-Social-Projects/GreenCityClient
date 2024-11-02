@@ -1,0 +1,40 @@
+<div class="outer">
+  <div class="to-do-list-block">
+    <div class="header-position to-do-list-content">
+      <div class="header">
+        {{ 'profile.to-do-list' | translate }}
+        <div class="items-count">
+          <br />{{ toDoList?.length }} {{ 'profile.elements' | correctUnit: toDoList?.length : currentLang | translate }}
+        </div>
+      </div>
+      <a *ngIf="toDoList.length > 3" class="btn-see-all" (click)="openCloseList()">{{
+        (toggle ? 'user.habit.btn.see-less' : 'user.habit.btn.see-all') | translate
+      }}</a>
+    </div>
+    <div *ngIf="!toDoList">
+      <mat-spinner color="grey" diameter="70" class="loading"></mat-spinner>
+    </div>
+    <div *ngIf="toDoList.length">
+      <div class="to-do-list-content">
+        <ul class="to-do-list" [ngClass]="{ 'to-do-list-max': toggle, 'to-do-list-min': !toggle }">
+          <li [ngClass]="checkbox.checked ? 'item-striked' : 'item'" *ngFor="let toDoItem of toDoList">
+            <span ngbPopover="{{ toDoItem.text }}" triggers="mouseenter:mouseleave" placement="right">
+              <a href="{{ toDoItem.text }}" target="_blank" rel="noopener" *ngIf="isValidURL(toDoItem.text)">{{ toDoItem.text }}</a>
+              <span *ngIf="!isValidURL(toDoItem.text)">{{ toDoItem.text }}</span>
+            </span>
+            <mat-checkbox
+              #checkbox
+              [(ngModel)]="toDoItem.selected"
+              class="checkbox"
+              color="primary"
+              (click)="toggleDone(toDoItem)"
+            ></mat-checkbox>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div *ngIf="profileSubscription && !toDoList.length">
+      <p class="empty-list">{{ 'profile.empty-list' | translate }}</p>
+    </div>
+  </div>
+</div>
