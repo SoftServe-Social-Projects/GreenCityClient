@@ -23,15 +23,15 @@ export class UserLogComponent implements OnInit {
 
   ngOnInit() {
     this.retrieveUserLog();
-    this.habitStatisticService.habitStatistics.subscribe(
-      () => {
+    this.habitStatisticService.habitStatistics.subscribe({
+      next: () => {
         this.retrieveUserLog();
       },
-      (error) => {
+      error: (error) => {
         this.hasStatistic = false;
         console.log('Error!', error);
       }
-    );
+    });
   }
 
   nowDate() {
