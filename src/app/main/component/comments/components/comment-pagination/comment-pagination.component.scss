@@ -12,28 +12,26 @@
     align-items: center;
 
     .page-number {
-      margin: 0 40px 0 0;
+      margin: 0 24px 0 0;
     }
 
     .page-number.current {
-      height: 28px;
-      min-width: 32px;
       background: var(--primary-green) !important;
       border-radius: 4px;
     }
 
     .page-number a {
       display: block;
-      height: 28px;
       font-family: var(--primary-font);
-      font-size: 21px;
-      line-height: 28px;
-      color: var(--primary-dark-grey);
+      font-size: 16px;
+      color: var(--quaternary-dark-grey);
       cursor: pointer;
+      padding: 4px 8px;
+      line-height: 24px;
+      text-align: center;
     }
 
     .page-number.current a {
-      padding: 0 9px;
       color: #fff;
     }
 
