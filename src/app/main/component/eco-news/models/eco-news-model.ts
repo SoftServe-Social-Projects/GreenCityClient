@@ -16,5 +16,5 @@ export interface EcoNewsModel {
   tagsUa: Array<string>;
   title: string;
   countOfEcoNews?: number;
-  isFavourite?: boolean;
+  favorite?: boolean;
 }

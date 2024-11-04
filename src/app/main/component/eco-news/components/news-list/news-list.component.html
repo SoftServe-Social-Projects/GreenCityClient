@@ -53,8 +53,8 @@
             <app-news-list-gallery-view *ngIf="view" [ecoNewsModel]="data"> </app-news-list-gallery-view>
             <app-news-list-list-view *ngIf="!view" [ecoNewsModel]="data"> </app-news-list-list-view>
 
-            <div class="news-flags favourite-button" (click)="changeFavouriteStatus($event, data)" (mousedown)="handleMouseDown($event)">
-              <span [ngClass]="data.isFavourite ? 'flag-active' : 'flag'"></span>
+            <div class="news-flags favourite-button" (click)="changeFavoriteStatus($event, data)">
+              <span [ngClass]="data.favorite ? 'flag-active' : 'flag'"></span>
             </div>
           </a>
         </li>

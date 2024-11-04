@@ -134,12 +134,12 @@ export class NewsListComponent implements OnInit, OnDestroy {
     this.searchToggle = !this.searchToggle;
   }
 
-  changeFavouriteStatus(event: MouseEvent, data: EcoNewsModel) {
+  changeFavoriteStatus(event: MouseEvent, data: EcoNewsModel) {
     event.preventDefault();
     event.stopPropagation();
 
     let isRegistered = !!this.userId;
-    let isFavorite = data.isFavourite;
+    let isFavorite = data.favorite;
 
     if (!isRegistered) {
       this.openAuthModalWindow('sign-in');
@@ -149,7 +149,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
         .subscribe((result) => {
           isRegistered = !!result;
           if (isRegistered) {
-            this.changeFavouriteStatus(event, data);
+            this.changeFavoriteStatus(event, data);
           }
         });
     } else {
@@ -159,6 +159,9 @@ export class NewsListComponent implements OnInit, OnDestroy {
           .addNewsToFavourites(data.id)
           .pipe(takeUntil(this.destroy))
           .subscribe({
+            next: () => {
+              isFavorite = true;
+            },
             error: () => {
               this.snackBar.openSnackBar('error');
               isFavorite = false;
@@ -170,9 +173,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.destroy))
           .subscribe({
             next: () => {
-              // if (this.isUserAssignList) {
-              //   this.idOfUnFavouriteEvent.emit(this.ecoNewsModel.id);
-              // }
+              isFavorite = false;
             },
             error: () => {
               this.snackBar.openSnackBar('error');
@@ -181,11 +182,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
           });
       }
     }
-  }
-
-  handleMouseDown(event: MouseEvent): void {
-    event.preventDefault(); // Prevents the default action (navigation in this case)
-    event.stopPropagation(); // Stops the event from bubbling up to the routerLink
   }
 
   openAuthModalWindow(page: string): void {
@@ -239,7 +235,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
       this.appendIfNotEmpty('user-id', this.userId?.toString()),
       this.appendIfNotEmpty('title', this.searchQuery),
       this.appendIfNotEmpty('tags', this.tagsList),
-      this.appendIfNotEmpty('status', this.bookmarkSelected ? 'SAVED' : '')
+      this.bookmarkSelected ? { key: 'favorite', value: this.bookmarkSelected ? 'true' : '' } : null
     ];
 
     optionalParams.forEach((param) => {
