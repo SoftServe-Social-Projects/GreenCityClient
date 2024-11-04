@@ -23,9 +23,15 @@ describe('ProfileDashboardComponent', () => {
   const HabitAssignServiceMock = jasmine.createSpyObj('habitAssignService', ['getAssignedHabits']);
   HabitAssignServiceMock.getAssignedHabits = () => of([{ id: 1 }]);
 
-  const LocalStorageServiceMock = jasmine.createSpyObj('localStorageService', ['getUserId', 'languageBehaviourSubject', 'setCurentPage']);
+  const LocalStorageServiceMock = jasmine.createSpyObj('localStorageService', [
+    'getUserId',
+    'languageBehaviourSubject',
+    'setCurentPage',
+    'getCurrentLanguage'
+  ]);
   LocalStorageServiceMock.languageBehaviourSubject = new BehaviorSubject('ua');
   LocalStorageServiceMock.setCurrentPage = () => of('previousPage', '/profile');
+  LocalStorageServiceMock.getCurrentLanguage = () => of('ua');
 
   const storeMock = jasmine.createSpyObj('store', ['select', 'dispatch']);
   storeMock.select = () =>
