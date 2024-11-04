@@ -5,7 +5,7 @@ import { IMask } from 'angular-imask';
 import * as _moment from 'moment';
 import 'moment/locale/uk';
 import { LanguageService } from '../../../../../../../../i18n/language.service';
-import { MomentDateAdapter } from './moment-date-adapter/moment-date-adapter';
+import { MomentDateAdapter } from './moment-date-adapter';
 
 export const MY_FORMATS = {
   parse: {
@@ -116,6 +116,12 @@ export class DateTimeComponent implements OnInit, AfterViewInit {
     this.endTime.valueChanges.subscribe((value: string) => {
       this._handleTimeChange(value, 'end');
     });
+
+    // Subscribe to date value changes
+    this.date.valueChanges.subscribe((newDate) => {
+      this._updateNeighboringDates();
+      this.date.setErrors(this.getDateErrors(newDate));
+    });
   }
 
   ngAfterViewInit() {
@@ -123,6 +129,18 @@ export class DateTimeComponent implements OnInit, AfterViewInit {
     // IMask(this.dateRef.nativeElement, this.dateMask);
     IMask(this.startTimeRef.nativeElement, this.timeMask);
     IMask(this.endTimeRef.nativeElement, this.timeMask);
+  }
+
+  getDateErrors(date: _moment.Moment | null) {
+    if (!date) {
+      return { dateIncorrect: true };
+    }
+
+    if (date.isBefore(_moment(), 'day')) {
+      return { dateInPast: true };
+    }
+
+    return null;
   }
 
   private _updateNeighboringDates(): void {

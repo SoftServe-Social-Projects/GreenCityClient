@@ -69,8 +69,8 @@ export class UbsBaseSidebarComponent implements AfterViewInit, AfterViewChecked,
     }
   }
 
-  getIcon(listItem): string {
-    return listItem.link === this.bellsNoneNotification && this.serviceUserMessages.countOfNoReadeMessages
+  getIcon(listItem: listElements): string {
+    return listItem.link === this.bellsNoneNotification && this.serviceUserMessages.countOfNoReadMessages
       ? this.bellsNotification
       : listItem.link;
   }
@@ -93,7 +93,7 @@ export class UbsBaseSidebarComponent implements AfterViewInit, AfterViewChecked,
           .getCountUnreadNotification()
           .pipe(takeUntil(this.destroy))
           .subscribe((response) => {
-            this.serviceUserMessages.countOfNoReadeMessages = response;
+            this.serviceUserMessages.countOfNoReadMessages = response;
           });
       } else {
         this.isAdmin = true;

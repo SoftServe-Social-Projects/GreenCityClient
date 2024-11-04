@@ -11,8 +11,9 @@
     <app-comment-textarea
       class="comment-width"
       placeholder="homepage.eco-news.comment.placeholder.add-a-comment"
-      (commentText)="setContent($event)"
+      (comment)="setContent($event)"
       [commentHtml]="commentHtml"
+      (imageUploaderStatus)="isImageUploaderOpen = $event"
     ></app-comment-textarea>
     <button class="primary-global-button" [disabled]="!addCommentForm.valid">
       {{ 'homepage.eco-news.comment.comment' | translate }}
@@ -24,8 +25,9 @@
         <app-comment-textarea
           class="reply-width"
           placeholder="homepage.eco-news.comment.placeholder.add-a-reply"
-          (commentText)="setContent($event)"
+          (comment)="setContent($event)"
           [commentHtml]="commentHtml"
+          (imageUploaderStatus)="isImageUploaderOpen = $event"
         ></app-comment-textarea>
       </div>
 

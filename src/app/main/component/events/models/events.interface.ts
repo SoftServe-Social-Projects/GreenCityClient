@@ -197,6 +197,7 @@ export interface PagePreviewDTO {
   open: boolean;
   isRelevant?: boolean;
   id?: number;
+  likes?: number;
   editorText: string;
   organizer?: OrganizerInfo;
   dates: Dates[];

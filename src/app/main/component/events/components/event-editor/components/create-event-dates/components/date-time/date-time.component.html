@@ -8,7 +8,6 @@
     <mat-datepicker #dp></mat-datepicker>
 
     <mat-error *ngIf="date.hasError('dateIncorrect')">{{ 'create-event.date-error-format' | translate }}</mat-error>
-    <mat-error *ngIf="date.hasError('isRequired')">{{ 'create-event.date-error-required' | translate }}</mat-error>
     <mat-error *ngIf="date.hasError('dateInPast')">{{ 'create-event.date-error' | translate }}</mat-error>
   </mat-form-field>
 

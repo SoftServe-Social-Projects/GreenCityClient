@@ -8,16 +8,16 @@ import { CustomHabit } from '@global-user/components/habit/models/interfaces/cus
 import { CustomHabitDtoRequest } from '@global-user/components/habit/models/interfaces/custom-habit.interface';
 import { TodoStatus } from '../models/todo-status.enum';
 import { HttpParams } from '@angular/common/http';
-import { HabitAddedCommentDTO, HabitCommentsModel } from '@global-user/components/habit/models/habits-comments.model';
+import { AddedCommentDTO, CommentsModel } from '../../../../comments/models/comments-model';
 
-export const MOCK_HABIT_ADDED_COMMENT: HabitAddedCommentDTO = {
+export const MOCK_HABIT_ADDED_COMMENT: AddedCommentDTO = {
   author: { id: 1, name: 'User', userProfilePicturePath: null },
   id: 2,
   text: 'Test comment',
   modifiedDate: new Date().toISOString()
 };
 
-export const MOCK_HABIT_COMMENTS_MODEL: HabitCommentsModel = {
+export const MOCK_HABIT_COMMENTS_MODEL: CommentsModel = {
   currentPage: 0,
   page: [
     {

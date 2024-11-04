@@ -12,6 +12,7 @@ import { DialogPopUpComponent } from 'src/app/shared/dialog-pop-up/dialog-pop-up
 import { Store } from '@ngrx/store';
 import { DeleteEcoNewsAction } from 'src/app/store/actions/ecoNews.actions';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
+import { MetaService } from 'src/app/shared/services/meta/meta.service';
 
 @Component({
   selector: 'app-eco-news-detail',
@@ -52,7 +53,8 @@ export class EcoNewsDetailComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBarComponent,
     private dialog: MatDialog,
     private store: Store,
-    private router: Router
+    private readonly router: Router,
+    private readonly metaService: MetaService
   ) {}
 
   ngOnInit() {
@@ -79,6 +81,7 @@ export class EcoNewsDetailComponent implements OnInit, OnDestroy {
         if (res) {
           this.newsItem = res;
           this.tags = this.getAllTags();
+          this.metaService.setMeta('oneNewsArticle', { title: res.title });
         } else {
           this.snackBar.openSnackBar('errorNotFound');
           this.router.navigate(['/news']);
@@ -118,20 +121,16 @@ export class EcoNewsDetailComponent implements OnInit, OnDestroy {
   }
 
   private postToggleLike(updatedLikes: number): void {
-    let isPermit = false;
     this.ecoNewsService
       .postToggleLike(this.newsId)
       .pipe(take(1))
       .subscribe({
         next: () => {
-          isPermit = true;
           this.newsItem.likes = updatedLikes;
         },
-        complete: () => {
-          if (!isPermit) {
-            this.snackBar.openSnackBar('errorLiked');
-            this.isLiked = !this.isLiked;
-          }
+        error: () => {
+          this.snackBar.openSnackBar('errorLiked');
+          this.isLiked = !this.isLiked;
         }
       });
   }

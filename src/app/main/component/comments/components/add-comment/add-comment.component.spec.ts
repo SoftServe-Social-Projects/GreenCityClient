@@ -13,6 +13,8 @@ import { CommentTextareaComponent } from '../comment-textarea/comment-textarea.c
 import { PlaceholderForDivDirective } from '../../directives/placeholder-for-div.directive';
 import { SocketService } from '@global-service/socket/socket.service';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { CommentFormData } from '../../models/comments-model';
 
 const COMMENT_MOCK = {
   author: {
@@ -65,7 +67,7 @@ describe('AddCommentComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AddCommentComponent, UserProfileImageComponent, CommentTextareaComponent, PlaceholderForDivDirective],
-      imports: [FormsModule, ReactiveFormsModule, TranslateModule.forRoot(), HttpClientTestingModule, MatMenuModule],
+      imports: [FormsModule, ReactiveFormsModule, TranslateModule.forRoot(), HttpClientTestingModule, MatMenuModule, MatIconModule],
       providers: [
         { provide: ProfileService, useValue: profileServiceMock },
         { provide: CommentsService, useValue: commentsServiceMock },
@@ -108,13 +110,32 @@ describe('AddCommentComponent', () => {
     const updateListSpy = spyOn(component.updateList, 'emit');
     component.setContent({
       text: 'test text',
-      innerHTML: 'test html'
+      innerHTML: 'test html',
+      imageFiles: []
     });
+
+    const commentData: CommentFormData = {
+      entityId: component.entityId,
+      text: 'test html',
+      imageFiles: [],
+      parentCommentId: component.commentId
+    };
+
     component.onSubmit();
 
     flush();
-    expect(commentsServiceMock.addComment).toHaveBeenCalledWith(component.entityId, 'test html', component.commentId);
+    expect(commentsServiceMock.addComment).toHaveBeenCalledWith(commentData);
     expect(updateListSpy).toHaveBeenCalledWith(COMMENT_MOCK);
     expect(component.addCommentForm.value.content).toBe('');
   }));
+
+  it('should update content and uploaded image in setContent', () => {
+    const mockData = { text: 'Test Comment', innerHTML: '<p>Test Comment</p>', imageFiles: [new File([], 'test.jpg')] };
+    component.setContent(mockData);
+
+    expect(component.addCommentForm.controls.content.value).toBe('Test Comment');
+    expect(component.commentHtml).toBe('<p>Test Comment</p>');
+    expect(component.uploadedImage).toEqual(mockData.imageFiles[0]);
+    expect(component.showImageControls).toBeTrue();
+  });
 });

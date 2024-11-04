@@ -76,6 +76,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private userOwnAuthService: UserOwnAuthService;
   private headerService: HeaderService;
   private orderService: OrderService;
+  newMessagesCount: number;
   permissions$ = this.store.select((state: IAppState): Array<string> => state.employees.employeesPermissions);
   constructor(
     private dialog: MatDialog,
@@ -145,9 +146,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
         if (!msg && !this.isUBS) {
           this.notificationIconRef.nativeElement.srcset = this.headerImageList.notification;
         }
+        this.newMessagesCount = msg;
       });
 
     this.socketService.send(this.socketService.connection.greenCity, '/app/notifications', { userId: this.userId });
+  }
+
+  displayMessagesCount(): string {
+    return this.newMessagesCount > 99 ? '99+' : this.newMessagesCount.toString();
   }
 
   defineAuthorities() {

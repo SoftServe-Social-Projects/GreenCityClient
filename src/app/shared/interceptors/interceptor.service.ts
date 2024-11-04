@@ -72,7 +72,7 @@ export class InterceptorService implements HttpInterceptor {
             if (error.status === 0) {
               this.openErrorWindow('Error');
             }
-            return throwError(error);
+            return throwError(() => error);
           })
         );
       }
@@ -88,7 +88,7 @@ export class InterceptorService implements HttpInterceptor {
             if (error.status === 400 && error.error.includes(`The certificate has been used before or is not activated.`)) {
               this.openErrorWindow('snack-bar.error.cartificate-not-valid');
             }
-            return throwError(error);
+            return throwError(() => error);
           })
         );
       }
@@ -110,7 +110,7 @@ export class InterceptorService implements HttpInterceptor {
               }
 
               this.openErrorWindow(message);
-              return throwError(error);
+              return throwError(() => error);
             }
             return this.handleUnauthorized(req, next);
           })
@@ -129,19 +129,19 @@ export class InterceptorService implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 400 && error.error?.message.includes(`Tariff or location is deactivated.`)) {
-          return throwError(error);
+          return throwError(() => error);
         }
 
         if (this.checkIfErrorStatusIs(error.status, [BAD_REQUEST, FORBIDDEN])) {
           const noErrorErrorMessage = error.message ?? 'Error';
           const message = error.error?.message ?? noErrorErrorMessage;
           this.openErrorWindow(message);
-          return EMPTY;
+          return throwError(() => error);
         }
         if (this.checkIfErrorStatusIs(error.status, [UNAUTHORIZED])) {
           return this.handleUnauthorized(req, next);
         }
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }

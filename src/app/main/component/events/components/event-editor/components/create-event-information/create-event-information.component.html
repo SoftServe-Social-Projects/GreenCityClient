@@ -62,6 +62,7 @@
     </span>
     <quill-editor
       (onContentChanged)="quillContentChanged($event)"
+      (onBlur)="updateDescriptionOnBlur()"
       [maxLength]="maxLength"
       [minLength]="minLength"
       [modules]="quillModules"

@@ -39,11 +39,11 @@
             <img [src]="getIcon(listItem)" class="sidebar-list-item-icon" alt="{{ listItem.name | translate }} icon" />
             <span *ngIf="isExpanded" class="sidebar-list-item-desc">{{ listItem.name | translate }}</span>
             <span
-              *ngIf="listItem.name === 'ubs-user.messages' && serviceUserMessages.countOfNoReadeMessages && isExpanded"
+              *ngIf="listItem.name === 'ubs-user.messages' && serviceUserMessages.countOfNoReadMessages && isExpanded"
               class="count-unread-messages"
               aria-live="polite"
             >
-              ({{ serviceUserMessages.countOfNoReadeMessages }})
+              ({{ serviceUserMessages.countOfNoReadMessages }})
             </span>
           </a>
         </li>

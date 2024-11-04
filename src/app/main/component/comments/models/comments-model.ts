@@ -23,6 +23,7 @@ export interface CommentsDTO {
   showRelyButton?: boolean;
   showAllRelies?: boolean;
   numberOfLikes?: number;
+  additionalImages?: string[];
 }
 
 export interface AddedCommentDTO {
@@ -30,6 +31,13 @@ export interface AddedCommentDTO {
   id: number;
   modifiedDate: string;
   text: string;
+}
+
+export interface CommentFormData {
+  entityId: number;
+  text: string;
+  imageFiles: File[];
+  parentCommentId?: number;
 }
 
 export interface SocketAmountLikes {

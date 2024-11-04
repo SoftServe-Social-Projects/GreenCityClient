@@ -6,10 +6,9 @@ p {
 
 .stat {
   display: grid;
-  grid-template-rows: 58px;
   grid-template-columns: repeat(4, auto);
   column-gap: 16px;
-  padding: 0 16px;
+  padding: 0 0 24px;
 
   .chain {
     font-family: var(--tertiary-font);
@@ -34,6 +33,11 @@ p {
       line-height: 16px;
       color: var(--quaternary-grey);
     }
+  }
+
+  @media (max-width: 360px) {
+    column-gap: 2px;
+    padding: 0;
   }
 }
 
@@ -93,7 +97,7 @@ p {
 @include responsivePCFirst(sm) {
   .stat {
     .chain {
-      padding: 0 16px;
+      padding: 0 16px 16px;
 
       p:first-child {
         font-size: 24px;

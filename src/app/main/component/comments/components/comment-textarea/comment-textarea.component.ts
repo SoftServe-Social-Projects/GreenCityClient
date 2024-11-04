@@ -4,22 +4,22 @@ import {
   OnInit,
   ElementRef,
   ViewChild,
-  ViewChildren,
-  QueryList,
   Output,
   Input,
   EventEmitter,
   AfterViewInit,
   OnChanges,
   SimpleChanges,
-  OnDestroy
+  OnDestroy,
+  SecurityContext
 } from '@angular/core';
 import { TaggedUser } from '../../models/comments-model';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { MatOption } from '@angular/material/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { CHAT_ICONS } from 'src/app/chat/chat-icons';
 
 @Component({
   selector: 'app-comment-textarea',
@@ -27,11 +27,17 @@ import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
   styleUrls: ['./comment-textarea.component.scss']
 })
 export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
+  chatIcons = CHAT_ICONS;
   private userId: number;
   private searchQuery = '';
   private lastTagCharIndex: number;
   private charToTagUsers = ['@', '#'];
   private range: Range;
+  aspectRatio: number;
+  isImageUploaderOpen = false;
+  showImageControls = false;
+  isFirstImageLoaded = false;
+  uploadedImage: { url: string; file: File }[] = [];
 
   content: FormControl = new FormControl('', [Validators.required, this.innerHtmlMaxLengthValidator(8000)]);
   suggestedUsers: TaggedUser[] = [];
@@ -45,7 +51,8 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   @ViewChild('dropdown') dropdown;
   @ViewChild('menuTrigger') menuTrigger;
 
-  @Output() commentText = new EventEmitter<{ text: string; innerHTML: string }>();
+  @Output() comment = new EventEmitter<{ text: string; innerHTML: string; imageFiles?: File[] }>();
+  @Output() imageUploaderStatus = new EventEmitter<boolean>();
   @Input() commentTextToEdit: string;
   @Input() commentHtml: string;
   @Input() placeholder: string;
@@ -53,7 +60,8 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   constructor(
     public socketService: SocketService,
     private localStorageService: LocalStorageService,
-    public elementRef: ElementRef
+    public elementRef: ElementRef,
+    private readonly sanitizer: DomSanitizer
   ) {
     this.socketService.initiateConnection(this.socketService.connection.greenCity);
   }
@@ -66,8 +74,10 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
       .subscribe((data: TaggedUser[]) => {
         if (data.length) {
           this.suggestedUsers = data.filter((el) => el.userName.toLowerCase().includes(this.searchQuery.toLowerCase()));
-          this.menuTrigger.openMenu();
-          this.refocusTextarea();
+          if (document.activeElement === this.commentTextarea.nativeElement) {
+            this.menuTrigger.openMenu();
+            this.refocusTextarea();
+          }
         } else {
           this.menuTrigger.closeMenu();
           this.suggestedUsers = [];
@@ -85,7 +95,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
         debounceTime(300),
         tap(() => {
           this.content.setValue(this.commentTextarea.nativeElement.textContent);
-          this.emitCommentText();
+          this.emitComment();
           const textContent = this.commentTextarea.nativeElement.textContent;
           const hasTagCharacter = this.charToTagUsers.some((char) => textContent.includes(char));
           if (!hasTagCharacter) {
@@ -120,6 +130,9 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.commentHtml?.currentValue === '') {
       this.commentTextarea.nativeElement.innerHTML = '';
+    }
+    if (changes.isImageUploaderOpen) {
+      this.toggleImageUploaderVisibility(changes.isImageUploaderOpen.currentValue);
     }
   }
 
@@ -158,7 +171,48 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     const text = event.clipboardData?.getData('text/plain');
     this.insertTextAtCursor(text);
     this.content.setValue(this.commentTextarea.nativeElement.textContent);
-    this.emitCommentText();
+    this.emitComment();
+  }
+
+  toggleImageUploaderVisibility(isOpen: boolean): void {
+    this.isImageUploaderOpen = isOpen;
+    this.showImageControls = !isOpen;
+    this.imageUploaderStatus.emit(isOpen);
+  }
+
+  toggleImageUploader(): void {
+    if (this.uploadedImage.length < 5) {
+      this.isImageUploaderOpen = !this.isImageUploaderOpen;
+      this.imageUploaderStatus.emit(this.isImageUploaderOpen);
+    }
+  }
+
+  onImageSelected(fileHandle: { url: SafeUrl; file: File }): void {
+    if (this.uploadedImage.length < 5) {
+      this.uploadedImage.push({
+        url: this.sanitizer.sanitize(SecurityContext.URL, fileHandle.url) || '',
+        file: fileHandle.file
+      });
+    }
+    this.isImageUploaderOpen = false;
+    this.showImageControls = true;
+    this.emitComment();
+  }
+
+  removeImage(index: number): void {
+    this.uploadedImage.splice(index, 1);
+  }
+
+  onCancelImage(): void {
+    this.uploadedImage = [];
+    this.showImageControls = false;
+    this.isImageUploaderOpen = false;
+    this.commentTextarea.nativeElement.innerHTML = '';
+    this.comment.emit({
+      text: this.content.value,
+      innerHTML: this.commentTextarea.nativeElement.innerHTML,
+      imageFiles: null
+    });
   }
 
   private insertTextAtCursor(text: string): void {
@@ -233,14 +287,15 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     this.insertNodeAtCursor(user, tagChar);
     this.setFocusCommentTextarea();
     this.content.setValue(this.commentTextarea.nativeElement.textContent);
-    this.emitCommentText();
+    this.emitComment();
     this.refocusTextarea();
   }
 
-  private emitCommentText(): void {
-    this.commentText.emit({
+  private emitComment(): void {
+    this.comment.emit({
       text: this.commentTextarea.nativeElement.textContent,
-      innerHTML: this.commentTextarea.nativeElement.innerHTML.replace('&nbsp;', ' ')
+      innerHTML: this.commentTextarea.nativeElement.innerHTML,
+      imageFiles: this.uploadedImage.map((image) => image.file)
     });
   }
 

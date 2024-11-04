@@ -16,7 +16,29 @@ describe('CommentsListComponent', () => {
   let component: CommentsListComponent;
   let fixture: ComponentFixture<CommentsListComponent>;
 
-  const commentsServiceMock: CommentsService = jasmine.createSpyObj('CommentsService', ['editComment']);
+  const commentsServiceMock: any = {
+    editComment: jasmine.createSpy('editComment').and.returnValue(of()),
+
+    getActiveRepliesByPage: jasmine.createSpy('getActiveRepliesByPage').and.returnValue(
+      of({
+        currentPage: 1,
+        page: [
+          {
+            author: { id: 1, name: 'Test', userProfilePicturePath: null },
+            currentUserLiked: false,
+            id: 1,
+            likes: 5,
+            modifiedDate: '2022-01-01',
+            replies: 2,
+            status: 'ACTIVE',
+            text: 'Test reply',
+            showAllRelies: true
+          }
+        ],
+        totalElements: 1
+      })
+    )
+  };
   commentsServiceMock.editComment = () => of();
   const matDialogMock = {
     open() {

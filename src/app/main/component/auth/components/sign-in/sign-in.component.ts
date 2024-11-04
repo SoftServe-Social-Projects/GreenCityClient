@@ -25,14 +25,14 @@ declare let google: any;
   styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit, OnDestroy {
-  @Output() private pageName = new EventEmitter();
+  @Output() private readonly pageName = new EventEmitter();
   @Input() isUbs: boolean;
   @ViewChild(TurnstileCaptchaComponent) captchaComponent!: TurnstileCaptchaComponent;
 
-  private store: Store = inject(Store);
-  private actions: Actions = inject(Actions);
-  private userOwnSignInService = inject(UserOwnSignInService);
-  private destroy$: Subject<void> = new Subject();
+  private readonly store: Store = inject(Store);
+  private readonly actions: Actions = inject(Actions);
+  private readonly userOwnSignInService = inject(UserOwnSignInService);
+  private readonly destroy$: Subject<void> = new Subject();
 
   isLoading$: Observable<boolean> = this.store.select(isLoadingSelector);
   error$: Observable<string> = this.store.select(errorSelector);
@@ -51,9 +51,9 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private matDialogRef: MatDialogRef<SignInComponent>,
-    private googleService: GoogleSignInService,
-    private userOwnAuthService: UserOwnAuthService
+    private readonly matDialogRef: MatDialogRef<SignInComponent>,
+    private readonly googleService: GoogleSignInService,
+    private readonly userOwnAuthService: UserOwnAuthService
   ) {}
 
   ngOnInit(): void {

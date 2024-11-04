@@ -28,7 +28,6 @@ export class SubscribeComponent {
   }
 
   subscribeToNewsletter(): void {
-    let isSubscribed = false;
     if (this.emailValid) {
       this.subscriptionService
         .subscribeToNewsletter(this.email)
@@ -38,9 +37,11 @@ export class SubscribeComponent {
             this.emailTouched = false;
             this.emailValid = false;
             this.email = '';
-            isSubscribed = true;
+            this.snackBar.openSnackBar('subscribedToNewsletter');
           },
-          complete: () => this.snackBar.openSnackBar(isSubscribed ? 'subscribedToNewsletter' : 'errorAlreadySubscribed')
+          error: () => {
+            this.snackBar.openSnackBar('errorAlreadySubscribed');
+          }
         });
     } else {
       this.emailTouched = true;

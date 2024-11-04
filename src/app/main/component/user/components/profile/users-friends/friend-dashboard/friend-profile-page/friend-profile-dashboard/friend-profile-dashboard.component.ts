@@ -88,7 +88,7 @@ export class FriendProfileDashboardComponent implements OnInit, OnDestroy {
   private getAllHabits(page: number): void {
     this.isFetching = true;
     this.habitService
-      .getAllHabits(page, this.currentHabitSize)
+      .getMyAllHabits(page, this.currentHabitSize)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: HabitListInterface) => {

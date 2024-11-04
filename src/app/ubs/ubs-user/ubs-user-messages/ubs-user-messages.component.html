@@ -2,9 +2,9 @@
   <div class="content">
     <div class="main_header">{{ localization.title | translate }}</div>
     <div class="header-list">
-      <div class="col-2 pl-4 id">{{ localization.id | translate }}</div>
-      <div class="col-5 pl-3 theme">{{ localization.themeMessages | translate }}</div>
-      <div class="col-2 time">{{ localization.time | translate }}</div>
+      <div class="pl-4 id">{{ localization.id | translate }}</div>
+      <div class="pl-3 theme">{{ localization.themeMessages | translate }}</div>
+      <div class="pl-3 time">{{ localization.time | translate }}</div>
     </div>
     <div class="under-line"></div>
     <div class="load-spinner" *ngIf="isLoadSpinner">
@@ -27,7 +27,7 @@
                     totalItems: count
                   }
           "
-          (click)="setRead(notification.id, notification.read)"
+          (click)="setRead(notification)"
           (opened)="panelOpenState = true"
           (closed)="panelOpenState = false"
         >
@@ -38,14 +38,21 @@
             <mat-panel-description class="col-5 panel-description" [ngClass]="{ textColorTitle: !notification.read }">
               {{ notification.title }}
             </mat-panel-description>
-            <mat-panel-description class="date col-4" [ngClass]="{ textColorTitle: !notification.read }">
+            <mat-panel-description class="date col-2" [ngClass]="{ textColorTitle: !notification.read }">
               {{ notification.notificationTime | date: 'HH:mm dd.MM.yyyy' }}
             </mat-panel-description>
+            <mat-panel-description class="col-2 panel-delete">
+              <button
+                mat-icon-button
+                class="delete-icon"
+                (click)="deleteNotification($event, notification)"
+                (keydown)="deleteNotification($event, notification)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-panel-description>
           </mat-expansion-panel-header>
-          <div class="load-spinner small" *ngIf="isLoadSmallSpinner && !notification.isOpen">
-            <mat-spinner class="custom-spinner" diameter="60"></mat-spinner>
-          </div>
-          <div class="description" *ngIf="!isLoadSmallSpinner">
+          <div class="description">
             <app-notification-body [body]="notification.body" [orderId]="notification.orderId"> </app-notification-body>
           </div>
           <div *ngIf="notification.images?.length" class="description title-img">

@@ -26,6 +26,7 @@ import {
   GetExistingOrderDetails,
   GetExistingOrderTariffSuccess,
   CreateAddressSuccess,
+  CreateAddressFail,
   DeleteAddressSuccess,
   GetExistingOrderInfoSuccess,
   ClearOrderData,
@@ -35,7 +36,8 @@ import {
   DeleteAddress,
   CreateAddress,
   SetSecondFormStatus,
-  SetCurrentStep
+  SetCurrentStep,
+  UpdateAddressFail
 } from '../actions/order.actions';
 import { createReducer, on } from '@ngrx/store';
 
@@ -149,6 +151,12 @@ export const orderReducer = createReducer(
       isAddressLoading: false
     };
   }),
+  on(CreateAddressFail, (state) => {
+    return {
+      ...state,
+      isAddressLoading: false
+    };
+  }),
   on(UpdateAddress, (state, action) => {
     return {
       ...state,
@@ -160,6 +168,12 @@ export const orderReducer = createReducer(
       ...state,
       addressId: null,
       addresses: action.addresses,
+      isAddressLoading: false
+    };
+  }),
+  on(UpdateAddressFail, (state) => {
+    return {
+      ...state,
       isAddressLoading: false
     };
   }),

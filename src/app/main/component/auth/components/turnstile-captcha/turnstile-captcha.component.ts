@@ -30,7 +30,7 @@ export class TurnstileCaptchaComponent implements OnInit, AfterViewInit, Control
   private onChange = (token: string | null) => {};
   private onTouched = () => {};
 
-  constructor(private languageService: LanguageService) {}
+  constructor(private readonly languageService: LanguageService) {}
 
   ngOnInit() {
     this.languageService.getCurrentLangObs().subscribe((selectedLanguage: Language) => {
@@ -90,7 +90,7 @@ export class TurnstileCaptchaComponent implements OnInit, AfterViewInit, Control
     this.captchaToken = token;
   }
 
-  public clearToken(): void {
+  clearToken(): void {
     this.turnstile.reset(this.widgetId);
 
     this.captchaToken = null;

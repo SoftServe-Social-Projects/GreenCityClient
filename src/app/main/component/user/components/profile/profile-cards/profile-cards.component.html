@@ -1,7 +1,7 @@
 <div class="right-cards" *ngIf="!error">
   <div class="card" *ngIf="factOfTheDay">
     <p class="cart-title">{{ 'profile.fact-of-the-day' | translate }}</p>
-    <p class="card-description">{{ factOfTheDay.content }}</p>
+    <p class="card-description">{{ factOfTheDay }}</p>
     <div class="shape-img">
       <img src="assets/img/wave_shape.png" alt="wave-background" />
     </div>
@@ -9,7 +9,7 @@
 
   <div class="card habit-card" *ngIf="habitFactOfTheDay">
     <p class="cart-title">{{ 'profile.fact-of-the-day' | translate }}</p>
-    <p class="card-description">{{ habitFactOfTheDay?.content }}</p>
+    <p class="card-description">{{ habitFactOfTheDay }}</p>
     <div class="shape-img">
       <img src="assets/img/wave_shape.png" alt="wave-background" />
     </div>

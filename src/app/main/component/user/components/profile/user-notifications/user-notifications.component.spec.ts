@@ -7,13 +7,14 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { Language } from 'src/app/main/i18n/Language';
 import { PipeTransform, Pipe, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
-import { FilterApproach, NotificationType } from '@global-user/models/notification.model';
+import { FilterCriteria, NotificationFilter } from '@global-user/models/notification.model';
 import { Router } from '@angular/router';
 import { UserNotificationService } from '@global-user/services/user-notification.service';
-import { By } from '@angular/platform-browser';
+
 import { UserService } from '@global-service/user/user.service';
 import { LocalizedDatePipe } from 'src/app/shared/localized-date-pipe/localized-date.pipe';
 import { RelativeDatePipe } from 'src/app/shared/relative-date.pipe';
+import { By } from '@angular/platform-browser';
 
 @Pipe({ name: 'translate' })
 class TranslatePipeMock implements PipeTransform {
@@ -22,7 +23,7 @@ class TranslatePipeMock implements PipeTransform {
   }
 }
 
-xdescribe('UserNotificationsComponent', () => {
+describe('UserNotificationsComponent', () => {
   let component: UserNotificationsComponent;
   let fixture: ComponentFixture<UserNotificationsComponent>;
   let matSnackBarMock: jasmine.SpyObj<MatSnackBarComponent>;
@@ -60,12 +61,6 @@ xdescribe('UserNotificationsComponent', () => {
     }
   ];
 
-  const notificationTypesFilter = [
-    { name: 'All', nameEn: 'All', nameUa: 'Усі', isSelected: false },
-    { name: NotificationType.ECONEWS_LIKE, nameEn: ' News Like', nameUa: 'Вподобання новини', isSelected: false },
-    { name: NotificationType.ECONEWS_CREATED, nameEn: ' News Created', nameUa: 'Створення новини', isSelected: true }
-  ];
-
   const translateMock = {
     use() {
       return of();
@@ -87,23 +82,25 @@ xdescribe('UserNotificationsComponent', () => {
   const routerMock = jasmine.createSpyObj('router', ['navigate']);
 
   const userNotificationServiceMock = jasmine.createSpyObj('userNotificationService', [
-    'getAllNotification',
+    'getAllNotifications',
     'readNotification',
     'unReadNotification',
     'deleteNotification',
-    'acceptRequest',
-    'declineRequest'
+    'getUBSNotification'
   ]);
-  userNotificationServiceMock.getAllNotification = () => of({ page: notifications });
+  userNotificationServiceMock.getAllNotifications = () => of({ page: notifications });
+  userNotificationServiceMock.getUBSNotification = jasmine
+    .createSpy('getUBSNotification')
+    .and.returnValue(of({ page: notifications, currentPage: 1 }));
 
   userNotificationServiceMock.readNotification = () => of();
   userNotificationServiceMock.unReadNotification = () => of();
   userNotificationServiceMock.deleteNotification = () => of();
 
-  const filterApproaches = [
-    { name: FilterApproach.ALL, isSelected: true, nameUa: 'Усі', nameEn: 'All' },
-    { name: FilterApproach.TYPE, isSelected: false, nameUa: 'Типом', nameEn: 'Type' },
-    { name: FilterApproach.ORIGIN, isSelected: false, nameUa: 'Джерелом', nameEn: 'Origin' }
+  const filterCriteriaOptions = [
+    { name: FilterCriteria.ALL, isSelected: true, nameUa: 'Усі', nameEn: 'All' },
+    { name: FilterCriteria.TYPE, isSelected: false, nameUa: 'Типом', nameEn: 'Type' },
+    { name: FilterCriteria.ORIGIN, isSelected: false, nameUa: 'Джерелом', nameEn: 'Origin' }
   ];
 
   beforeEach(waitForAsync(() => {
@@ -133,19 +130,19 @@ xdescribe('UserNotificationsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should change filter aproach', () => {
+  it('should change filter approach', () => {
     const eventKeyboard = new KeyboardEvent('keydown', { key: 'Enter' });
     const eventClick = new MouseEvent('click');
-    component.filterApproaches = filterApproaches;
-    component.changefilterApproach(FilterApproach.TYPE, eventKeyboard);
-    expect(component.filterApproaches.find((el) => el.name === FilterApproach.TYPE).isSelected).toBeTruthy();
-    component.changefilterApproach(FilterApproach.ORIGIN, eventClick);
-    expect(component.filterApproaches.find((el) => el.name === FilterApproach.TYPE).isSelected).toBeFalsy();
+    component.changeFilterApproach(FilterCriteria.TYPE, eventKeyboard);
+    expect(component.filterCriteriaOptions.find((el) => el.name === FilterCriteria.TYPE).isSelected).toBeTrue();
+    component.changeFilterApproach(FilterCriteria.ORIGIN, eventClick);
+    expect(component.filterCriteriaOptions.find((el) => el.name === FilterCriteria.TYPE).isSelected).toBeFalse();
+    expect(component.filterCriteriaOptions.find((el) => el.name === FilterCriteria.ORIGIN).isSelected).toBeTrue();
   });
 
   it('should return checkSelectedFilter', () => {
-    component.filterApproaches = filterApproaches;
-    expect(component.checkSelectedFilter(FilterApproach.TYPE)).toBeFalsy();
+    component.filterCriteriaOptions = filterCriteriaOptions;
+    expect(component.checkSelectedFilter(FilterCriteria.TYPE)).toBeFalsy();
   });
 
   it('should call declineRequest', fakeAsync(() => {
@@ -187,13 +184,6 @@ xdescribe('UserNotificationsComponent', () => {
     expect(completeSpy).toHaveBeenCalled();
   });
 
-  it('should handle declineRequest error', () => {
-    const userId = 1;
-    userNotificationServiceMock.declineRequest.and.returnValue(throwError(() => new Error()));
-    component.declineRequest(userId);
-    expect(matSnackBarMock.openSnackBar).not.toHaveBeenCalled();
-  });
-
   it('should load more notifications on scroll if there is a next page', () => {
     spyOn(component, 'getNotification');
     component.hasNextPage = true;
@@ -213,24 +203,23 @@ xdescribe('UserNotificationsComponent', () => {
 
   it('should not change filter approach when event is not a mouse or enter key event', () => {
     const mockEvent = new Event('click');
-    component.filterApproaches = [...filterApproaches];
-    component.changefilterApproach('ALL', mockEvent);
-    expect(component.filterApproaches).toEqual(filterApproaches);
+    component.filterCriteriaOptions = [...filterCriteriaOptions];
+    component.changeFilterApproach('ALL', mockEvent);
+    expect(component.filterCriteriaOptions).toEqual(filterCriteriaOptions);
   });
 
   it('should change filter approach correctly when changeFilterApproach is called', () => {
     const mockEvent = new MouseEvent('click');
-    component.filterApproaches = [...filterApproaches];
-    component['filterAll'] = 'ALL';
-    component.changefilterApproach('ALL', mockEvent);
-    expect(component.notificationTypesFilter.every((el) => el.isSelected)).toBeTrue();
-    expect(component.projects.every((el) => el.isSelected)).toBeTrue();
+    spyOn(component, 'getNotification').and.callFake(() => {});
+    component.changeFilterApproach(FilterCriteria.ALL, mockEvent);
+    expect(component.filterCriteriaOptions.every((el) => (el.name === FilterCriteria.ALL ? el.isSelected : !el.isSelected))).toBeTrue();
+    expect(component.notifications).toEqual([]);
   });
 
   it('should not change filter approach when event is not a mouse or enter key event', () => {
     const mockEvent = new Event('click');
-    component.filterApproaches = [...filterApproaches];
-    component.changefilterApproach('ALL', mockEvent);
-    expect(component.filterApproaches).toEqual(filterApproaches);
+    component.filterCriteriaOptions = [...filterCriteriaOptions];
+    component.changeFilterApproach('ALL', mockEvent);
+    expect(component.filterCriteriaOptions).toEqual(filterCriteriaOptions);
   });
 });

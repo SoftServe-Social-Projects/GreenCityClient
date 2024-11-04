@@ -8,6 +8,7 @@ export class EditProfileModel {
   showLocation: boolean;
   showShoppingList: boolean;
   socialNetworks: Array<{ id: number; url: string }>;
+  notificationPreferences: NotificationPreference[];
 }
 
 export class EditProfileDto {
@@ -18,6 +19,7 @@ export class EditProfileDto {
   showLocation: boolean;
   showShoppingList: boolean;
   socialNetworks: Array<string>;
+  emailPreferences: NotificationPreference[];
 }
 
 export class UserLocationDto {
@@ -33,6 +35,11 @@ export class UserLocationDto {
 }
 
 export class Coordinates {
-  latitude: number | null;
-  longitude: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
+export interface NotificationPreference {
+  emailPreference: string;
+  periodicity: string;
 }

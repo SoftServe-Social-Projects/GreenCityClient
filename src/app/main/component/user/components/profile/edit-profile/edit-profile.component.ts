@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -7,13 +7,20 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { PlaceService } from '@global-service/place/place.service';
 import { EditProfileFormBuilder } from '@global-user/components/profile/edit-profile/edit-profile-form-builder';
 import { ProfileService } from '@global-user/components/profile/profile-service/profile.service';
-import { Coordinates, EditProfileDto, EditProfileModel, UserLocationDto } from '@global-user/models/edit-profile.model';
+import {
+  Coordinates,
+  EditProfileDto,
+  EditProfileModel,
+  NotificationPreference,
+  UserLocationDto
+} from '@global-user/models/edit-profile.model';
 import { EditProfileService } from '@global-user/services/edit-profile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FormBaseComponent } from '@shared/components/form-base/form-base.component';
 import { Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { Patterns } from 'src/assets/patterns/patterns';
+import { emailPreferencesList, periodicityOptions } from '@global-user/models/edit-profile-const';
 
 @Component({
   selector: 'app-edit-profile',
@@ -31,6 +38,8 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
   namePattern: RegExp = Patterns.NamePattern;
   builder: EditProfileFormBuilder;
   placeService: PlaceService;
+  emailPreferencesList = emailPreferencesList;
+  periodicityOptions = periodicityOptions;
   private editProfileService: EditProfileService;
   private profileService: ProfileService;
   private snackBar: MatSnackBarComponent;
@@ -74,7 +83,8 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
   constructor(
     private injector: Injector,
     public dialog: MatDialog,
-    public router: Router
+    public router: Router,
+    private readonly cdr: ChangeDetectorRef
   ) {
     super(router, dialog);
     this.builder = injector.get(EditProfileFormBuilder);
@@ -135,6 +145,7 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
 
   private initForm(): void {
     this.editProfileForm = this.builder.getProfileForm();
+    this.cdr.detectChanges();
   }
 
   getInitialValue(): void {
@@ -148,8 +159,29 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
         this.socialNetworksToServer = data.socialNetworks.map((sn) => sn.url);
         this.coordinates.latitude = data.userLocationDto?.latitude || null;
         this.coordinates.longitude = data.userLocationDto?.longitude || null;
+        this.populateEmailPreferences(data.notificationPreferences);
         this.getFormInitialValues(data);
       });
+  }
+
+  populateEmailPreferences(preferences: NotificationPreference[]): void {
+    if (!preferences) {
+      return;
+    }
+    const emailPrefGroup = this.editProfileForm.get('emailPreferences') as FormGroup;
+
+    emailPreferencesList.forEach(({ controlName, periodicityControl }) => {
+      const matchingPref = preferences.find((p) => p.emailPreference === controlName.toUpperCase());
+
+      if (matchingPref) {
+        const isNever = matchingPref.periodicity === 'NEVER';
+        emailPrefGroup.get(controlName)?.setValue(!isNever);
+        emailPrefGroup.get(periodicityControl)?.setValue(matchingPref.periodicity);
+      } else {
+        emailPrefGroup.get(controlName)?.setValue(false);
+        emailPrefGroup.get(periodicityControl)?.setValue('NEVER');
+      }
+    });
   }
 
   onSubmit(): void {
@@ -158,6 +190,7 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
   }
 
   sendFormData(form: FormGroup): void {
+    const emailPreferences = this.builder.getSelectedEmailPreferences(form);
     const body: EditProfileDto = {
       coordinates: { longitude: this.coordinates.longitude, latitude: this.coordinates.latitude },
       name: form.value.name,
@@ -165,7 +198,8 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
       showLocation: !!form.value.showLocation,
       showEcoPlace: !!form.value.showEcoPlace,
       showShoppingList: !!form.value.showShoppingList,
-      socialNetworks: this.socialNetworksToServer
+      socialNetworks: this.socialNetworksToServer,
+      emailPreferences: emailPreferences.length > 0 ? emailPreferences : null
     };
 
     this.editProfileService.postDataUserProfile(JSON.stringify(body)).subscribe({

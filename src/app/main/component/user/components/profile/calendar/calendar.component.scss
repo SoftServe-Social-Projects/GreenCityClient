@@ -58,6 +58,48 @@
     }
   }
 
+  &.habit {
+    .top {
+      .days {
+        grid-template-columns: repeat(7, 58px);
+        font-size: 13px;
+        padding: 10px 0;
+
+        .days-name {
+          font-size: 13px;
+        }
+      }
+
+      .month-year {
+        .monthAndYear {
+          font-size: 16px;
+          font-weight: 600;
+          font-family: var(--secondary-font);
+        }
+
+        .arrow-next,
+        .arrow-previous {
+          margin-top: 18px;
+          height: 12px;
+        }
+      }
+    }
+
+    .calendar-grid-day {
+      font-size: 16px;
+    }
+
+    .middle {
+      .calendar-grid {
+        grid-template-columns: repeat(7, 30px);
+        grid-auto-rows: 30px;
+        grid-row-gap: 12px;
+        margin: 15px 0 0;
+        padding: 0 3px;
+      }
+    }
+  }
+
   .disabled {
     cursor: none;
     pointer-events: none;
