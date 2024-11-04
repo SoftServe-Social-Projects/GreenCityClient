@@ -12,6 +12,7 @@
   .left-column {
     width: 100%;
     box-shadow: 4px 0 8px -4px var(--quintynary-dark-grey);
+    background-color: var(--primary-white);
 
     .app-users-achievements,
     .app-users-friends,
@@ -41,6 +42,7 @@
       order: 1;
       width: 100vw;
       min-height: 323px;
+      background-color: transparent;
     }
 
     .app-users-friends,
