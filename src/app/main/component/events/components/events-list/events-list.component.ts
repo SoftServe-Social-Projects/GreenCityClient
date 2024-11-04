@@ -58,6 +58,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
   private page = 0;
   private eventsPerPage = 6;
   private searchResultSubscription: Subscription;
+  private searchQuery: string;
 
   constructor(
     private store: Store,
@@ -91,7 +92,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
         this.searchResultSubscription.unsubscribe();
       }
       this.cleanEventList();
-      value.trim() !== '' ? this.searchEventsByTitle(value.trim()) : this.getEvents();
+      this.searchQuery = value.trim();
+      value.trim() !== '' ? this.searchEventsByTitle() : this.getEvents();
     });
   }
 
@@ -99,8 +101,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
     if (this.bookmarkSelected) {
       this.getUserFavoriteEvents();
     } else {
-      const searchTitle = this.searchEventControl.value.trim();
-      this.searchEventsByTitle(searchTitle);
+      this.searchEventsByTitle();
     }
     this.page++;
   }
@@ -329,12 +330,12 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  private searchEventsByTitle(searchTitle: string): void {
+  private searchEventsByTitle(): void {
     if (this.searchResultSubscription) {
       this.searchResultSubscription.unsubscribe();
     }
 
-    this.searchResultSubscription = this.eventService.getEvents(this.getEventsHttpParams(searchTitle)).subscribe((res) => {
+    this.searchResultSubscription = this.eventService.getEvents(this.getEventsHttpParams()).subscribe((res) => {
       this.isLoading = false;
       if (res.page.length > 0) {
         this.countOfEvents = res.totalElements;
@@ -347,7 +348,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
   }
 
   private getUserFavoriteEvents(): void {
-    this.eventService.getUserFavoriteEvents(this.page, this.eventsPerPage, this.userId).subscribe((res) => {
+    this.eventService.getEvents(this.getEventsHttpParams()).subscribe((res) => {
       this.isLoading = false;
       this.eventsList.push(...res.page);
       this.page++;
@@ -392,12 +393,12 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.countOfEvents = 0;
   }
 
-  private getEventsHttpParams(title: string): HttpParams {
+  private getEventsHttpParams(): HttpParams {
     let params = new HttpParams().append('page', this.page.toString()).append('size', this.eventsPerPage.toString());
 
     const paramsToAdd = [
       this.appendIfNotEmpty('user-id', this.userId?.toString()),
-      this.appendIfNotEmpty('title', title),
+      this.appendIfNotEmpty('title', this.searchQuery),
       this.appendIfNotEmpty('type', this.getTypeFilter()),
       this.appendIfNotEmpty(
         'cities',
@@ -411,7 +412,9 @@ export class EventsListComponent implements OnInit, OnDestroy {
       ),
       this.appendIfNotEmpty(
         'statuses',
-        this.selectedStatusFiltersList.filter((status) => status !== 'Any status' && status !== 'Будь-який статус')
+        this.selectedStatusFiltersList
+          .filter((status) => status !== 'Any status' && status !== 'Будь-який статус')
+          .concat(this.bookmarkSelected ? ['SAVED'] : [])
       ),
       this.appendIfNotEmpty(
         'tags',

@@ -17,6 +17,7 @@ import { HabitAssignInterface } from '@global-user/components/habit/models/inter
 import { EventType } from 'src/app/ubs/ubs/services/event-type.enum';
 import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
 import { HttpParams } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile-dashboard',
@@ -37,18 +38,17 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   };
   isActiveNewsScroll = false;
   isActiveEventsScroll = false;
-  isActiveFavoriteEventsScroll = false;
   userId: number;
   news: EcoNewsModel[];
   isOnlineChecked = false;
   isOfflineChecked = false;
   eventsList: EventResponse[] = [];
-  favouriteEvents: EventResponse[] = [];
   eventsPerPage = 6;
   eventsPage = 1;
   favoriteEventsPage = 0;
   totalEvents = 0;
   totalNews = 0;
+  loadingEvents = false;
   eventType = '';
   isFavoriteBtnClicked = false;
   userLatitude = 0;
@@ -58,7 +58,6 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   private hasNext = true;
   private hasNextPageOfEvents = true;
-  private hasNextPageOfFavoriteEvents = true;
   private currentPage: number;
   private newsCount = 5;
 
@@ -68,10 +67,12 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     private store: Store,
     private eventService: EventsService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit() {
+    this.bindLang(this.localStorageService.getCurrentLanguage());
     this.subscribeToLangChange();
     this.getUserId();
 
@@ -105,14 +106,10 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  onCheckboxChange(EventTypeChecked?: string) {
-    if (EventTypeChecked === EventType.ONLINE) {
-      this.isOfflineChecked = false;
-    } else {
-      this.isOnlineChecked = false;
-    }
-
-    if (this.isOnlineChecked) {
+  onCheckboxChange() {
+    if (this.isOfflineChecked && this.isOnlineChecked) {
+      this.eventType = EventType.ONLINE_OFFLINE;
+    } else if (this.isOnlineChecked) {
       this.eventType = EventType.ONLINE;
     } else if (this.isOfflineChecked) {
       this.eventType = EventType.OFFLINE;
@@ -126,69 +123,76 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.getUserEvents();
   }
 
+  cleanState() {
+    this.isOfflineChecked = false;
+    this.isOnlineChecked = false;
+
+    this.eventType = '';
+    this.eventsPage = 0;
+
+    this.eventsList = [];
+    this.hasNextPageOfEvents = true;
+  }
+
   escapeFromFavorites(): void {
     this.isFavoriteBtnClicked = !this.isFavoriteBtnClicked;
-    this.isActiveEventsScroll = true;
-    this.isActiveFavoriteEventsScroll = false;
+
+    this.cleanState();
+    this.getUserEvents();
   }
 
   goToFavorites(): void {
     this.isFavoriteBtnClicked = true;
-    this.isActiveEventsScroll = false;
-    this.isActiveFavoriteEventsScroll = true;
-    this.getUserFavouriteEvents();
+
+    this.cleanState();
+    this.getUserEvents();
   }
 
-  initGetUserEvents(eventType?: string): void {
+  initGetUserEvents(): void {
     this.eventService
-      .getEvents(this.getHttpParams(0, eventType))
+      .getEvents(this.getHttpParams(0))
       .pipe(take(1))
       .subscribe((res: EventResponseDto) => {
         this.eventsList = res.page;
         this.totalEvents = res.totalElements;
         this.hasNextPageOfEvents = res.hasNext;
+        this.isActiveEventsScroll = res.hasNext;
         this.cdr.detectChanges();
       });
   }
 
-  private getHttpParams(page: number, eventType?: string): HttpParams {
+  private getHttpParams(page: number): HttpParams {
     let params = new HttpParams()
       .append('page', page.toString())
       .append('size', this.eventsPerPage.toString())
-      .append('statuses', 'CREATED,JOINED')
+      .append('statuses', this.isFavoriteBtnClicked ? 'SAVED' : 'CREATED,JOINED')
       .append('user-id', this.localStorageService.getUserId());
-    if (eventType) {
-      params = params.append('type', eventType);
+    if (this.eventType) {
+      params = params.append('type', this.eventType);
     }
     return params;
   }
 
-  getUserFavouriteEvents(): void {
-    if (this.favoriteEventsPage !== undefined && this.hasNextPageOfFavoriteEvents) {
-      this.eventService
-        .getUserFavoriteEvents(this.favoriteEventsPage, this.eventsPerPage, this.userId)
-        .pipe(take(1))
-        .subscribe((res: EventResponseDto) => {
-          this.favouriteEvents.push(...res.page);
-          this.favoriteEventsPage++;
-          this.hasNextPageOfFavoriteEvents = res.hasNext;
-        });
-    }
-  }
-
   removeUnFavouriteEvent(id: number): void {
-    this.favouriteEvents = this.favouriteEvents.filter((event) => event.id !== id);
+    this.eventsList = this.eventsList.filter((event) => event.id !== id);
   }
 
   getUserEvents(): void {
-    if (this.eventsPage !== undefined && this.hasNextPageOfEvents) {
+    if (this.hasNextPageOfEvents && !this.loadingEvents) {
+      this.loadingEvents = true;
       this.eventService
-        .getEvents(this.getHttpParams(this.eventsPage, this.eventType))
+        .getEvents(this.getHttpParams(this.eventsPage))
         .pipe(take(1))
-        .subscribe((res: EventResponseDto) => {
-          this.eventsList.push(...res.page);
-          this.eventsPage++;
-          this.hasNextPageOfEvents = res.hasNext;
+        .subscribe({
+          next: (res: EventResponseDto) => {
+            this.eventsList.push(...res.page);
+            this.eventsPage++;
+            this.hasNextPageOfEvents = res.hasNext;
+            this.isActiveEventsScroll = res.hasNext;
+          },
+          complete: () => {
+            this.loadingEvents = false;
+          }
         });
     }
   }
@@ -248,8 +252,7 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
 
   tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.isActiveNewsScroll = tabChangeEvent.index === 1;
-    this.isActiveEventsScroll = tabChangeEvent.index === 2 && !this.isFavoriteBtnClicked;
-    this.isActiveFavoriteEventsScroll = tabChangeEvent.index === 2 && this.isFavoriteBtnClicked;
+    this.isActiveEventsScroll = tabChangeEvent.index === 2;
   }
 
   onScroll(): void {
@@ -265,8 +268,18 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.userId = this.localStorageService.getUserId();
   }
 
-  private subscribeToLangChange() {
-    this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$)).subscribe(() => this.executeRequests());
+  private bindLang(lang: string): void {
+    if (lang && this.translate.currentLang !== lang) {
+      this.translate.setDefaultLang(lang);
+      this.translate.use(lang);
+    }
+  }
+
+  private subscribeToLangChange(): void {
+    this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$)).subscribe((lang: string) => {
+      this.bindLang(lang);
+      this.executeRequests();
+    });
   }
 
   private sortHabitsData(habitsArray: HabitAssignInterface[]): Array<HabitAssignInterface> {
