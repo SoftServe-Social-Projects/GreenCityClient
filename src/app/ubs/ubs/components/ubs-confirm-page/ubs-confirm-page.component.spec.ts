@@ -22,7 +22,7 @@ describe('UbsConfirmPageComponent', () => {
   const fakeLocalStorageService = jasmine.createSpyObj('localStorageService', [
     'getFinalSumOfOrder',
     'clearPaymentInfo',
-    'getUbsOrderId',
+    'getUbsPaymentOrderId',
     'setUbsOrderId',
     'getOrderWithoutPayment',
     'removeOrderWithoutPayment',
