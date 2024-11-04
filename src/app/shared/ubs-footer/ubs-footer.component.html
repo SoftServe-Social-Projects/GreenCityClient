@@ -8,7 +8,7 @@
       </div>
       <div class="footer-menu_main">
         <ul class="footer-menu_links">
-          <a class="pick-up-service" (click)="openAboutServicePopUp()">{{ 'user.lower-nav-bar.about-us' | translate }}</a>
+          <a class="pick-up-service route-link" (click)="openAboutServicePopUp()">{{ 'user.lower-nav-bar.about-us' | translate }}</a>
           <li *ngFor="let link of ubsNavLinks" tabindex="0" role="listitem">
             <a [href]="link.route" target="_blank" rel="noopener" class="route-link">
               {{ link.name | translate }}
