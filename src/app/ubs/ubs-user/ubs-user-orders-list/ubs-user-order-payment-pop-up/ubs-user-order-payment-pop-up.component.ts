@@ -132,8 +132,8 @@ export class UbsUserOrderPaymentPopUpComponent implements OnInit {
   calculateCertificate(certificate: FormControl | AbstractControl): void {
     this.userCertificate.certificateSum = 0;
     this.userCertificate.certificateStatusActive = false;
-    this.orderService.processCertificate(certificate.value.certificateCode).subscribe(
-      (response: ICertificateResponse) => {
+    this.orderService.processCertificate(certificate.value.certificateCode).subscribe({
+      next: (response: ICertificateResponse) => {
         if (response.certificateStatus === 'ACTIVE') {
           this.userCertificate.certificateSum = response.points;
           certificate.value.certificateSum = response.points;
@@ -155,7 +155,7 @@ export class UbsUserOrderPaymentPopUpComponent implements OnInit {
         this.userCertificate.dateOfUse.push(this.certificateDateTreat(response.dateOfUse));
         certificate.value.certificateStatus = response.certificateStatus;
       },
-      (error) => {
+      error: (error) => {
         if (error.status === 404) {
           this.userCertificate.certificateError = true;
         }
@@ -163,7 +163,7 @@ export class UbsUserOrderPaymentPopUpComponent implements OnInit {
         this.userCertificate.expirationDate.push(null);
         this.userCertificate.dateOfUse.push(null);
       }
-    );
+    });
   }
 
   private calculateUserOrderSumWithCertificate(certificateSum: number): void {
@@ -265,8 +265,8 @@ export class UbsUserOrderPaymentPopUpComponent implements OnInit {
     this.localStorageService.setUserPagePayment(true);
 
     if (this.formPaymentSystem.value === 'Liqpay') {
-      this.orderService.processOrderFondyFromUserOrderList(this.orderClientDto).subscribe(
-        (response: ResponceOrderFondyModel) => {
+      this.orderService.processOrderFondyFromUserOrderList(this.orderClientDto).subscribe({
+        next: (response: ResponceOrderFondyModel) => {
           if (response.link) {
             this.processWayForPay(response);
           } else {
@@ -274,10 +274,10 @@ export class UbsUserOrderPaymentPopUpComponent implements OnInit {
             this.dialogRef.close();
           }
         },
-        () => {
+        error: () => {
           this.dataLoadingLiqPay = false;
         }
-      );
+      });
     }
   }
 

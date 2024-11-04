@@ -34,23 +34,23 @@ export class HabitStatisticService implements OnLogout {
   }
 
   loadHabitStatistics(language: string) {
-    this.http.get<HabitDto[]>(`${userLink}/${this.userId}/habits?language=${language}`).subscribe(
-      (data) => {
+    this.http.get<HabitDto[]>(`${userLink}/${this.userId}/habits?language=${language}`).subscribe({
+      next: (data) => {
         this.dataStore.habitStatistics = data;
         this.$habitStatistics.next({ ...this.dataStore }.habitStatistics);
       },
-      () => console.log('Can not load habit statistic.')
-    );
+      error: () => console.log('Can not load habit statistic.')
+    });
   }
 
   loadAvailableHabits(language: string) {
-    this.http.get<AvailableHabitDto[]>(`${userLink}/${this.userId}/habit-dictionary/available?language=${language}`).subscribe(
-      (data) => {
+    this.http.get<AvailableHabitDto[]>(`${userLink}/${this.userId}/habit-dictionary/available?language=${language}`).subscribe({
+      next: (data) => {
         this.dataStore.availableHabits = data;
         this.$availableHabits.next({ ...this.dataStore }.availableHabits);
       },
-      () => console.log('Can not load available habits.')
-    );
+      error: () => console.log('Can not load available habits.')
+    });
   }
 
   setNewHabitsState(args) {
@@ -62,27 +62,27 @@ export class HabitStatisticService implements OnLogout {
   }
 
   createHabits(language: string) {
-    this.http.post<any>(`${userLink}/${this.userId}/habit?language=${language}`, this.dataStore.newHabits).subscribe(
-      () => {
+    this.http.post<any>(`${userLink}/${this.userId}/habit?language=${language}`, this.dataStore.newHabits).subscribe({
+      next: () => {
         this.clearDataStore(language);
       },
-      () => console.log('Can not assign new habit for this user')
-    );
+      error: () => console.log('Can not assign new habit for this user')
+    });
   }
 
   deleteHabit(habitId: number, language: string) {
-    this.http.delete<any>(`${userLink}/${this.userId}/habit/${habitId}`).subscribe(
-      () => {
+    this.http.delete<any>(`${userLink}/${this.userId}/habit/${habitId}`).subscribe({
+      next: () => {
         this.loadAvailableHabits(language);
         this.loadHabitStatistics(language);
       },
-      () => console.log('Can not remove habit for this user')
-    );
+      error: () => console.log('Can not remove habit for this user')
+    });
   }
 
   updateHabitStatistic(habitStatisticDto: HabitStatisticsDto) {
-    this.http.patch<HabitStatisticsDto>(`${habitStatisticLink}${habitStatisticDto.id}`, habitStatisticDto).subscribe(
-      (data) => {
+    this.http.patch<HabitStatisticsDto>(`${habitStatisticLink}${habitStatisticDto.id}`, habitStatisticDto).subscribe({
+      next: (data) => {
         let index: number;
 
         this.dataStore.habitStatistics.forEach((item, i) => {
@@ -100,15 +100,15 @@ export class HabitStatisticService implements OnLogout {
           }
         });
       },
-      () => console.log('Can not update habit statistic')
-    );
+      error: () => console.log('Can not update habit statistic')
+    });
   }
 
   createHabitStatistic(habitStatistics: HabitStatisticsDto) {
     const toSend: any = habitStatistics;
     toSend.createdOn = new Date().toISOString();
-    this.http.post<HabitStatisticsDto>(`${habitStatisticLink}`, toSend).subscribe(
-      (data) => {
+    this.http.post<HabitStatisticsDto>(`${habitStatisticLink}`, toSend).subscribe({
+      next: (data) => {
         this.dataStore.habitStatistics.forEach((habit, habitIndex) => {
           if (habit.id === habitStatistics.habitId) {
             habit.habitStatistics.forEach((stat, statIndex) => {
@@ -126,8 +126,8 @@ export class HabitStatisticService implements OnLogout {
           }
         });
       },
-      () => console.log('Can not create habit statistic')
-    );
+      error: () => console.log('Can not create habit statistic')
+    });
   }
 
   getUserLog(): Observable<any> {

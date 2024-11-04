@@ -68,19 +68,19 @@ export class AllFriendsComponent implements OnInit, OnDestroy {
       this.userFriendsService
         .getFriendsByName(value)
         .pipe(takeUntil(this.destroy$))
-        .subscribe(
-          (data: FriendArrayModel) => {
+        .subscribe({
+          next: (data: FriendArrayModel) => {
             this.emptySearchList = !data.page.length;
             this.friends = data.page;
             this.isFetching = false;
             this.searchMode = false;
           },
-          (error) => {
+          error: (error) => {
             this.matSnackBar.openSnackBar('snack-bar.error.default');
             this.isFetching = false;
             this.searchMode = false;
           }
-        );
+        });
     } else {
       this.searchMode = false;
       this.emptySearchList = false;

@@ -143,17 +143,17 @@ export class UbsAdminEmployeePermissionsFormComponent implements OnInit, OnDestr
       .filter(([, selected]) => selected)
       .map(([perm]) => perm);
 
-    this.employeeService.updatePermissions(this.employee.email, selectedPermissions).subscribe(
-      () => {
+    this.employeeService.updatePermissions(this.employee.email, selectedPermissions).subscribe({
+      next: () => {
         this.isUpdating = false;
         this.snackBar.openSnackBar('successUpdateUbsData');
         this.dialogRef.close(true);
       },
-      (error) => {
+      error: (error) => {
         this.snackBar.openSnackBar('error', error);
         this.dialogRef.close(false);
       }
-    );
+    });
   }
 
   managePermissionSettings(actionType: string): void {
