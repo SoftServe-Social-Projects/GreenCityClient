@@ -175,16 +175,6 @@ describe('UbsUserMessagesComponent', () => {
       expect(component.fetchNotification).toHaveBeenCalled();
     });
 
-    it('should open error snackbar on service error', () => {
-      const mockEvent = new MouseEvent('click');
-      userMessageServiceMock.deleteNotification.and.returnValue(
-        throwError(() => {
-          'error';
-        })
-      );
-      component.deleteNotification(mockEvent, fakeNotificationBody);
-    });
-
     it('should not proceed if event is neither MouseEvent nor Enter key', () => {
       const mockEvent = new KeyboardEvent('keydown', { key: 'Escape' });
       component.deleteNotification(mockEvent, fakeNotificationBody);

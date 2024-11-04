@@ -20,7 +20,7 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
   panelOpenState = false;
   page = 1;
   count = 0;
-  pageSize = 10;
+  pageSize = 1;
   isLoadSpinner: boolean;
   isLoadBar: boolean;
   hasNextPage: boolean;
@@ -102,7 +102,7 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
             !notification.read && this.userMessagesService.countOfNoReadMessages--;
             if (this.notifications.length < this.pageSize && this.hasNextPage) {
               this.fetchNotification(this.currLang);
-            } else if (this.notifications.length === 0) {
+            } else if (this.notifications.length === 0 && this.page > 1) {
               this.page--;
               this.fetchNotification(this.currLang);
             }
