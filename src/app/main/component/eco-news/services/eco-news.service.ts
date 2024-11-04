@@ -79,11 +79,11 @@ export class EcoNewsService implements OnDestroy {
     return this.http.delete(`${this.backEnd}eco-news/${id}`);
   }
 
-  addNewsToFavourites(id: number) {
+  addNewsToFavorites(id: number) {
     return this.http.post(`${this.backEnd}eco-news/${id}/favorites`, {});
   }
 
-  removeNewsFromFavourites(id: number) {
+  removeNewsFromFavorites(id: number) {
     return this.http.delete(`${this.backEnd}eco-news/${id}/favorites`, {});
   }
 

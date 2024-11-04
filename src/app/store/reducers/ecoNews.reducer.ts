@@ -1,19 +1,18 @@
 import { createReducer, on } from '@ngrx/store';
 import {
-  GetEcoNewsByPageSuccessAction,
-  GetEcoNewsByTagsSuccessAction,
   GetEcoNewsByAuthorSuccessAction,
   CreateEcoNewsSuccessAction,
   EditEcoNewsSuccessAction,
   DeleteEcoNewsSuccessAction,
   ReceivedEcoNewsFailureAction,
-  GetEcoNewsSuccessAction
+  GetEcoNewsSuccessAction,
+  ChangeEcoNewsFavoriteStatusSuccessAction
 } from '../actions/ecoNews.actions';
 import { initialNewsState } from '../state/ecoNews.state';
 
 export const EcoNewsReducer = createReducer(
   initialNewsState,
-  on(GetEcoNewsByPageSuccessAction, GetEcoNewsByTagsSuccessAction, GetEcoNewsSuccessAction, (state, action) => {
+  on(GetEcoNewsSuccessAction, (state, action) => {
     let prevLocations = state.pages;
     let prevNumber = state.pageNumber;
     if (action.reset) {
@@ -87,5 +86,27 @@ export const EcoNewsReducer = createReducer(
   on(ReceivedEcoNewsFailureAction, (state, action) => ({
     ...state,
     error: action.error
-  }))
+  })),
+
+  on(ChangeEcoNewsFavoriteStatusSuccessAction, (state, action) => {
+    const updateFavoriteStatus = (newsArray: any[]) => {
+      if (action.isFavoritesPage) {
+        return newsArray.filter((news) => news.id !== action.id);
+      } else {
+        return newsArray.map((news) => (news.id === action.id ? { ...news, favorite: action.favorite } : news));
+      }
+    };
+    const totalElements = state.ecoNews.totalElements;
+    const newTotal = action.isFavoritesPage ? totalElements - 1 : totalElements;
+
+    return {
+      ...state,
+      pages: updateFavoriteStatus(state.pages),
+      authorNews: updateFavoriteStatus(state.authorNews),
+      ecoNews: {
+        ...state.ecoNews,
+        totalElements: newTotal
+      }
+    };
+  })
 );

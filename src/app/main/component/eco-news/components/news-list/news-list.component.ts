@@ -1,6 +1,6 @@
 import { Breakpoints } from '../../../../config/breakpoints.constants';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ReplaySubject, Subject, Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { EcoNewsService } from '@eco-news-service/eco-news.service';
 import { EcoNewsModel } from '@eco-news-models/eco-news-model';
@@ -11,7 +11,7 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
 import { IEcoNewsState } from 'src/app/store/state/ecoNews.state';
-import { GetEcoNewsByTagsAction, GetEcoNewsByPageAction, GetEcoNewsAction } from 'src/app/store/actions/ecoNews.actions';
+import { GetEcoNewsAction, ChangeEcoNewsFavoriteStatusAction } from 'src/app/store/actions/ecoNews.actions';
 import { tagsListEcoNewsData } from '@eco-news-models/eco-news-consts';
 import { FormControl, Validators } from '@angular/forms';
 import { Patterns } from '@assets/patterns/patterns';
@@ -59,7 +59,8 @@ export class NewsListComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBarComponent,
     private localStorageService: LocalStorageService,
     private store: Store,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -139,7 +140,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
     event.stopPropagation();
 
     let isRegistered = !!this.userId;
-    let isFavorite = data.favorite;
 
     if (!isRegistered) {
       this.openAuthModalWindow('sign-in');
@@ -153,34 +153,8 @@ export class NewsListComponent implements OnInit, OnDestroy {
           }
         });
     } else {
-      isFavorite = !isFavorite;
-      if (isFavorite) {
-        this.ecoNewsService
-          .addNewsToFavourites(data.id)
-          .pipe(takeUntil(this.destroy))
-          .subscribe({
-            next: () => {
-              isFavorite = true;
-            },
-            error: () => {
-              this.snackBar.openSnackBar('error');
-              isFavorite = false;
-            }
-          });
-      } else {
-        this.ecoNewsService
-          .removeNewsFromFavourites(data.id)
-          .pipe(takeUntil(this.destroy))
-          .subscribe({
-            next: () => {
-              isFavorite = false;
-            },
-            error: () => {
-              this.snackBar.openSnackBar('error');
-              isFavorite = true;
-            }
-          });
-      }
+      const action = ChangeEcoNewsFavoriteStatusAction({ id: data.id, favorite: !data.favorite, isFavoritesPage: this.bookmarkSelected });
+      this.store.dispatch(action);
     }
   }
 
