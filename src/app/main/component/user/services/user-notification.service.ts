@@ -12,7 +12,7 @@ export class UserNotificationService {
   url: string = environment.backendLink;
   pickUpUrl: string = environment.backendUbsLink + '/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   getAllNotifications(params: HttpParams): Observable<NotificationArrayModel> {
     return this.http.get<NotificationArrayModel>(`${this.url}notifications`, { params });
@@ -23,13 +23,17 @@ export class UserNotificationService {
   }
 
   readNotification(id: number, isPickUp: boolean): Observable<void> {
-    const url = isPickUp ? this.pickUpUrl : this.url;
-    return this.http.post<void>(`${url}notifications/${id}/viewNotification`, {});
+    if (isPickUp) {
+      return this.http.patch<void>(`${this.pickUpUrl}notifications/${id}/viewNotification`, {});
+    }
+    return this.http.post<void>(`${this.url}notifications/${id}/viewNotification`, {});
   }
 
   unReadNotification(id: number, isPickUp: boolean): Observable<void> {
-    const url = isPickUp ? this.pickUpUrl : this.url;
-    return this.http.post<void>(`${url}notifications/${id}/unreadNotification`, {});
+    if (isPickUp) {
+      return this.http.patch<void>(`${this.pickUpUrl}notifications/${id}/unreadNotification`, {});
+    }
+    return this.http.post<void>(`${this.url}notifications/${id}/unreadNotification`, {});
   }
 
   deleteNotification(id: number, isPickUp: boolean): Observable<void> {

@@ -62,7 +62,7 @@ describe('UbsBaseSidebarComponent', () => {
     fixture = TestBed.createComponent(UbsBaseSidebarComponent);
     component = fixture.componentInstance;
     spyOn(global, 'setTimeout');
-    userMessagesService.countOfNoReadeMessages = 0;
+    userMessagesService.countOfNoReadMessages = 0;
     fixture.detectChanges();
   });
 
@@ -76,7 +76,7 @@ describe('UbsBaseSidebarComponent', () => {
   });
 
   it('should return default icon link', () => {
-    userMessagesService.countOfNoReadeMessages = 1;
+    userMessagesService.countOfNoReadMessages = 1;
     listItem.link = component.bellsNoneNotification;
     expect(component.getIcon(listItem)).toBe(component.bellsNotification);
   });

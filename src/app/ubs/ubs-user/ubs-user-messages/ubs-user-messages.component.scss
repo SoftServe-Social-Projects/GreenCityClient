@@ -32,9 +32,12 @@
 }
 
 .header-list {
-  display: flex;
-  margin: -32px 0 5px;
-  padding-left: 35px;
+  display: grid;
+  grid-template-columns: 2fr 4fr 4fr 3fr;
+  align-items: center;
+  width: 100%;
+  gap: 40px;
+  padding: 0 95px 0 32px;
 
   div {
     color: var(--ubs-primary-grey);
@@ -139,10 +142,6 @@
   text-align: left;
 }
 
-.time {
-  margin-left: -32px;
-}
-
 .my-pagination::ng-deep .ngx-pagination {
   font-family: var(--primary-font);
   font-size: 16px;
@@ -215,6 +214,12 @@
 
 .small {
   margin-top: 0;
+}
+
+.delete-icon mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 :host ::ng-deep .custom-spinner circle {
