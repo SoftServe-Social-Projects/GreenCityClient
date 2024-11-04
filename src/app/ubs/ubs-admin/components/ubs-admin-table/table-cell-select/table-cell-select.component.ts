@@ -9,6 +9,7 @@ import { AddOrderCancellationReasonComponent } from '../../add-order-cancellatio
 import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
 import { UbsAdminSeveralOrdersPopUpComponent } from '../../ubs-admin-several-orders-pop-up/ubs-admin-several-orders-pop-up.component';
 import { MatSelect } from '@angular/material/select';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-table-cell-select',
@@ -48,8 +49,8 @@ export class TableCellSelectComponent implements OnInit {
   @ViewChild('select') select: MatSelect;
 
   constructor(
-    private adminTableService: AdminTableService,
-    private orderService: OrderService,
+    private readonly adminTableService: AdminTableService,
+    private readonly orderService: OrderService,
     public dialog: MatDialog
   ) {}
 
@@ -62,7 +63,6 @@ export class TableCellSelectComponent implements OnInit {
     if (this.isLocked) {
       return;
     }
-
     this.lockOrder();
   }
 
@@ -94,7 +94,7 @@ export class TableCellSelectComponent implements OnInit {
 
   save(): void {
     const newValueObj = this.findKeyForNewOption();
-    if (newValueObj === -1) {
+    if (newValueObj === -1 && this.id) {
       this.typeOfChange = this.adminTableService.howChangeCell(this.isAllChecked, this.ordersToChange, this.id);
       this.cancelEdit.emit(this.typeOfChange);
     } else {
@@ -105,7 +105,6 @@ export class TableCellSelectComponent implements OnInit {
       };
       this.editCellSelect.emit(newSelectValue);
       this.newOption = '';
-      this.cancelEdit.emit(this.typeOfChange);
     }
   }
 
@@ -135,9 +134,10 @@ export class TableCellSelectComponent implements OnInit {
     this.newOption = '';
   }
 
-  chosenOption(e: any): void {
-    this.newOption = e.target.value;
+  chosenOption(e: MatSelectChange): void {
+    this.newOption = e.value;
     this.checkStatus = this.filterStatusesForPopUp();
+    this.saveClick();
   }
 
   openCancelPopUp(): void {

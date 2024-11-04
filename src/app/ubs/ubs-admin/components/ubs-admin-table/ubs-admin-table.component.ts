@@ -108,7 +108,7 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   mouseEvents = MouseEvents;
   cancellationReason: string;
   cancellationComment: string;
-  @ViewChild(MatTable, { read: ElementRef }) private matTableRef: ElementRef;
+  @ViewChild(MatTable, { read: ElementRef }) private readonly matTableRef: ElementRef;
   defaultColumnWidth = 120; // In px
   minColumnWidth = 100;
   columnsWidthPreference: Map<string, number>;
