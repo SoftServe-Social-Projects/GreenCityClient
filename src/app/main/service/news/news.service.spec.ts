@@ -1,4 +1,4 @@
-import { LanguageService } from './../../i18n/language.service';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NewsService } from './news.service';

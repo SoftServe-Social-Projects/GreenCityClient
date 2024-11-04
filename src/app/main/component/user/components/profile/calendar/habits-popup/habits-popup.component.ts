@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { calendarIcons } from 'src/app/main/image-pathes/calendar-icons';
 import { HabitPopupInterface, HabitPopUpRoutes } from '../habit-popup-interface';
 import { HabitAssignService } from '@global-service/habit-assign/habit-assign.service';
-import { LanguageService } from '../../../../../../i18n/language.service';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 import { DatePipe } from '@angular/common';
 import {
   HabitAssignInterface,

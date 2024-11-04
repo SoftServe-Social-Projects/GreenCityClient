@@ -11,7 +11,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { ContentChange, QuillModule } from 'ngx-quill';
-import { Language } from '../../../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { CreateEventInformationComponent } from './create-event-information.component';
 
 describe('CreateEventInformationComponent', () => {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { mainLink } from '../../../../../../links';
+import { mainLink } from 'src/app/main/links';
 import { AllShoppingLists, HabitUpdateShopList, ShoppingList } from '@user-models/shoppinglist.interface';
 
 @Injectable({

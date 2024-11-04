@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { HabitAssignService } from '@global-service/habit-assign/habit-assign.service';
 import { FriendsHabitPopupModel } from '@global-user/components/habit/models/interfaces/habit-assign.interface';
-import { habitImages } from '../../../../../../image-pathes/habits-images';
+import { habitImages } from 'src/app/main/image-pathes/habits-images';
 
 @Component({
   selector: 'app-friends-list-pop-up',

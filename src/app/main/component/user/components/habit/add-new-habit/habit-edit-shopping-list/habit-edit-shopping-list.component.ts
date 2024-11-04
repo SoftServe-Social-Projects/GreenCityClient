@@ -3,7 +3,7 @@ import { Subject, Subscription } from 'rxjs';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ShoppingList } from '../../../../models/shoppinglist.interface';
+import { ShoppingList } from 'src/app/main/component/user/models/shoppinglist.interface';
 import { TodoStatus } from '../../models/todo-status.enum';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import { FIELD_SYMBOLS_LIMIT, HABIT_SHOPPING_LIST_CHECK, SHOPPING_ITEM_NAME_LIMIT } from '../../const/data.const';

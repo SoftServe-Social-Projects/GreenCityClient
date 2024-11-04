@@ -1,4 +1,4 @@
-import { SignInIcons } from './../../../../image-pathes/sign-in-icons';
+import { SignInIcons } from 'src/app/main/image-pathes/sign-in-icons';
 import { Component, Input } from '@angular/core';
 
 @Component({

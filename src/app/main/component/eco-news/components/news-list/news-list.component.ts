@@ -1,4 +1,4 @@
-import { Breakpoints } from '../../../../config/breakpoints.constants';
+import { Breakpoints } from 'src/app/main/config/breakpoints.constants';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

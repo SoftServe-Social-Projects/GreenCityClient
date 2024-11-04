@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { UserService } from './user.service';
-import { LanguageService } from './../../i18n/language.service';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 import { habitStatisticLink, userLink } from '../../links';
 import { LISTOFUSERS, USERCHANGESTATUS, USERCHANGEROLE, GETUSERPAGEBLE, GETUPDATEUSER, HABITITEMS } from '../../mocks/user-service-mock';
 
