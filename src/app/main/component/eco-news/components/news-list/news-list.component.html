@@ -6,12 +6,19 @@
         <div class="create-container">
           <div class="container-input" *ngIf="searchToggle">
             <input type="text" *ngIf="searchToggle" class="place-input" [formControl]="searchNewsControl" placeholder="Search" />
-            <img src="assets/img/smallCross.svg" class="cross-position" (click)="cancelSearch()" alt="cancel search" />
+            <img
+              src="assets/img/smallCross.svg"
+              class="cross-position"
+              (click)="cancelSearch()"
+              tabindex="0"
+              (keydown.enter)="cancelSearch()"
+              alt="cancel search"
+            />
           </div>
-          <div class="container-img" (click)="search()" *ngIf="!searchToggle">
+          <div class="container-img" (click)="search()" tabindex="0" (keydown.enter)="search()" *ngIf="!searchToggle">
             <span class="search-img" [ngClass]="{ 'search-img-active': searchToggle }"></span>
           </div>
-          <div class="container-img" (click)="showSelectedNews()">
+          <div class="container-img" (click)="showSelectedNews()" tabindex="0" (keydown.enter)="showSelectedNews()">
             <span class="bookmark-img" [ngClass]="{ 'bookmark-img-active': bookmarkSelected }"></span>
           </div>
           <div class="container-img">
@@ -53,7 +60,12 @@
             <app-news-list-gallery-view *ngIf="view" [ecoNewsModel]="data"> </app-news-list-gallery-view>
             <app-news-list-list-view *ngIf="!view" [ecoNewsModel]="data"> </app-news-list-list-view>
 
-            <div class="news-flags favourite-button" (click)="changeFavoriteStatus($event, data)">
+            <div
+              class="news-flags favourite-button"
+              (click)="changeFavoriteStatus($event, data)"
+              tabindex="0"
+              (keydown.enter)="changeFavoriteStatus($event, data)"
+            >
               <span [ngClass]="data.favorite ? 'flag-active' : 'flag'"></span>
             </div>
           </a>

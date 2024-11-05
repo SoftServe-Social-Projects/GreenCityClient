@@ -48,14 +48,14 @@ export class NewsListComponent implements OnInit, OnDestroy {
   econews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
   searchQuery: string;
 
-  private destroy: Subject<boolean> = new Subject<boolean>();
+  private readonly destroy: Subject<boolean> = new Subject<boolean>();
   private dialogRef: MatDialogRef<unknown>;
 
   constructor(
     private userOwnAuthService: UserOwnAuthService,
     private localStorageService: LocalStorageService,
     private store: Store,
-    private dialog: MatDialog
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -89,6 +89,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
     this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$));
   }
 
+  do() {}
   onResize(): void {
     this.getSessionStorageView();
     this.windowSize = window.innerWidth;
@@ -123,14 +124,18 @@ export class NewsListComponent implements OnInit, OnDestroy {
   }
 
   cancelSearch(): void {
-    this.searchNewsControl.value.trim() === '' ? (this.searchToggle = false) : this.searchNewsControl.setValue('');
+    if (this.searchNewsControl.value.trim() === '') {
+      this.searchToggle = false;
+    } else {
+      this.searchNewsControl.setValue('');
+    }
   }
 
   search(): void {
     this.searchToggle = !this.searchToggle;
   }
 
-  changeFavoriteStatus(event: MouseEvent, data: EcoNewsModel) {
+  changeFavoriteStatus(event: Event, data: EcoNewsModel) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -143,7 +148,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
         .pipe(take(1))
         .subscribe((result) => {
           isRegistered = !!result;
-          return;
         });
     } else {
       const action = ChangeEcoNewsFavoriteStatusAction({ id: data.id, favorite: !data.favorite, isFavoritesPage: this.bookmarkSelected });
@@ -172,7 +176,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
         .pipe(take(1))
         .subscribe((result) => {
           isRegistered = !!result;
-          return;
         });
     } else {
       this.bookmarkSelected = !this.bookmarkSelected;
@@ -230,7 +233,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
 
   private appendIfNotEmpty(key: string, value: string | string[]): { key: string; value: string } | null {
     const formattedValue = Array.isArray(value) ? value.join(',') : value;
-    return formattedValue && formattedValue.trim() ? { key, value: formattedValue.toUpperCase() } : null;
+    return formattedValue?.trim() ? { key, value: formattedValue.toUpperCase() } : null;
   }
 
   private checkUserSingIn(): void {
