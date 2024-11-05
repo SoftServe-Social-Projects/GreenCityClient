@@ -30,20 +30,8 @@ export class EcoNewsService implements OnDestroy {
     return this.http.get<EcoNewsDto>(`${this.backEnd}eco-news`, { params });
   }
 
-  getEcoNewsListByTitle(title: string, page: number, quantity: number): Observable<EcoNewsDto> {
-    return this.http.get<EcoNewsDto>(`${this.backEnd}eco-news?title=${title}&page=${page}&size=${quantity}`);
-  }
-
   getEcoNewsListByAutorId(authorId: number, page: number, quantity: number) {
     return this.http.get(`${this.backEnd}eco-news?author-id=${authorId}&page=${page}&size=${quantity}`);
-  }
-
-  getNewsListByTags(page: number, quantity: number, tags: Array<string>) {
-    return this.http.get(`${this.backEnd}eco-news?tags=${tags}&page=${page}&size=${quantity}`);
-  }
-
-  getUserFavoriteNews(page: number, quantity: number, userId: number): Observable<EcoNewsDto> {
-    return this.http.get<EcoNewsDto>(`${this.backEnd}eco-news?page=${page}&size=${quantity}&statuses=SAVED&user-id=${userId}`);
   }
 
   getNewsList(): Observable<any> {

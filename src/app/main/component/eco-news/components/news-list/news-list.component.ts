@@ -1,12 +1,10 @@
 import { Breakpoints } from '../../../../config/breakpoints.constants';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import { EcoNewsService } from '@eco-news-service/eco-news.service';
 import { EcoNewsModel } from '@eco-news-models/eco-news-model';
 import { FilterModel } from '@shared/components/tag-filter/tag-filter.model';
 import { UserOwnAuthService } from '@auth-service/user-own-auth.service';
-import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
@@ -54,13 +52,10 @@ export class NewsListComponent implements OnInit, OnDestroy {
   private dialogRef: MatDialogRef<unknown>;
 
   constructor(
-    private ecoNewsService: EcoNewsService,
     private userOwnAuthService: UserOwnAuthService,
-    private snackBar: MatSnackBarComponent,
     private localStorageService: LocalStorageService,
     private store: Store,
-    private dialog: MatDialog,
-    private cdr: ChangeDetectorRef
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -148,9 +143,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
         .pipe(take(1))
         .subscribe((result) => {
           isRegistered = !!result;
-          if (isRegistered) {
-            this.changeFavoriteStatus(event, data);
-          }
+          return;
         });
     } else {
       const action = ChangeEcoNewsFavoriteStatusAction({ id: data.id, favorite: !data.favorite, isFavoritesPage: this.bookmarkSelected });
@@ -170,8 +163,21 @@ export class NewsListComponent implements OnInit, OnDestroy {
   }
 
   showSelectedNews(): void {
-    this.bookmarkSelected = !this.bookmarkSelected;
-    this.dispatchStore(true);
+    let isRegistered = !!this.userId;
+
+    if (!isRegistered) {
+      this.openAuthModalWindow('sign-in');
+      this.dialogRef
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe((result) => {
+          isRegistered = !!result;
+          return;
+        });
+    } else {
+      this.bookmarkSelected = !this.bookmarkSelected;
+      this.dispatchStore(true);
+    }
   }
 
   private cleanNewsList(): void {
