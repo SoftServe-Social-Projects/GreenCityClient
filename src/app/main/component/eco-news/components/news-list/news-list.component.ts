@@ -89,7 +89,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
     this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$));
   }
 
-  do() {}
   onResize(): void {
     this.getSessionStorageView();
     this.windowSize = window.innerWidth;
