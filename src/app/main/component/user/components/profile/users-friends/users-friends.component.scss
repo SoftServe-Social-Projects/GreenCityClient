@@ -20,7 +20,7 @@ p {
   }
 
   .friends-text {
-    padding-top: 7px;
+    padding-top: 24px;
   }
 
   .text-main-content {
@@ -228,11 +228,13 @@ p {
 
 @include responsivePCFirst(sm) {
   .outer {
-    display: flex;
+    display: block;
 
     .friends {
       width: 100%;
-      margin: 0 16px;
+      margin: 0;
+      padding: 0 16px;
+      border-top: 0;
     }
   }
 }
@@ -241,7 +243,9 @@ p {
   .outer {
     .friends {
       width: 100%;
-      margin: 0 16px;
+      margin: 0;
+      padding: 0 16px;
+      border-top: 0;
     }
   }
 }

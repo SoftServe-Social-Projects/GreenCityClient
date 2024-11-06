@@ -40,19 +40,19 @@ export class UbsUserBonusesComponent implements OnInit, OnDestroy {
     this.bonusesService
       .getUserBonusesWithPaymentHistory()
       .pipe(takeUntil(this.destroy))
-      .subscribe(
-        (res: BonusesModel) => {
+      .subscribe({
+        next: (res: BonusesModel) => {
           this.bonusesList = res.ubsUserBonuses;
           this.dataSource.data = res.ubsUserBonuses;
           this.totalBonuses = res.userBonuses;
           this.isLoading = false;
         },
-        (error) => {
+        error: (error) => {
           this.isLoading = false;
           this.snackBar.openSnackBar('error');
           return throwError(error);
         }
-      );
+      });
   }
 
   sortData(sort: Sort) {

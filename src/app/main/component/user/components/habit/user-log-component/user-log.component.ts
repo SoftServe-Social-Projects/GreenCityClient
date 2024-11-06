@@ -23,15 +23,15 @@ export class UserLogComponent implements OnInit {
 
   ngOnInit() {
     this.retrieveUserLog();
-    this.habitStatisticService.habitStatistics.subscribe(
-      () => {
+    this.habitStatisticService.habitStatistics.subscribe({
+      next: () => {
         this.retrieveUserLog();
       },
-      (error) => {
+      error: (error) => {
         this.hasStatistic = false;
         console.log('Error!', error);
       }
-    );
+    });
   }
 
   nowDate() {
@@ -57,17 +57,17 @@ export class UserLogComponent implements OnInit {
   }
 
   private retrieveUserLog() {
-    this.$userLog = this.habitStatisticService.getUserLog().subscribe(
-      (data) => {
+    this.$userLog = this.habitStatisticService.getUserLog().subscribe({
+      next: (data) => {
         this.hasStatistic = true;
         this.$creationDate = data.creationDate;
         this.initializeNotTakenItemsStatistics(data);
       },
-      (error) => {
+      error: (error) => {
         this.hasStatistic = false;
         console.log('Error!', error);
       }
-    );
+    });
   }
 
   private initializeNotTakenItemsStatistics(data: any) {

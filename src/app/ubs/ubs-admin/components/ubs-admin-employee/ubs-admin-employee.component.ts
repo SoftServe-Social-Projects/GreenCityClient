@@ -202,15 +202,15 @@ export class UbsAdminEmployeeComponent implements OnInit, OnDestroy {
     this.ubsAdminEmployeeService
       .getAllPositions()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (roles) => {
+      .subscribe({
+        next: (roles) => {
           this.employeePositions = roles;
           this.positionName = this.employeePositions.map((position: EmployeePositions) =>
             this.languageService.getLangValue(position.name, position.nameEn)
           );
         },
-        (error) => console.error('Observer for role got an error: ' + error)
-      );
+        error: (error) => console.error('Observer for role got an error: ' + error)
+      });
   }
 
   getContacts(): void {

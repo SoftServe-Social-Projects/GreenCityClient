@@ -95,14 +95,14 @@ export class UbsOrderCertificateComponent implements OnInit, OnDestroy {
     this.orderService
       .processCertificate(code)
       .pipe(take(1))
-      .subscribe(
-        (response: ICertificateResponse) => {
+      .subscribe({
+        next: (response: ICertificateResponse) => {
           this.store.dispatch(AddCertificate({ certificate: CCertificate.ofResponse(response) }));
         },
-        () => {
+        error: () => {
           this.store.dispatch(AddCertificate({ certificate: CCertificate.ofError(code) }));
         }
-      );
+      });
   }
 
   addNewCertificate(): void {

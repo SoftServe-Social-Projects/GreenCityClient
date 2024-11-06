@@ -280,10 +280,14 @@ p {
 
 @include responsivePCFirst(md) {
   .profile {
-    max-width: 544px;
-    margin: 0 auto;
+    margin: 0;
+    height: 100%;
+    background: var(--primary-white);
+    box-shadow: 0 4px 8px 0 var(--quintynary-dark-grey);
 
     .column {
+      padding: 0 16px;
+
       .container-user-image {
         .edit-icon {
           right: 0;
@@ -295,8 +299,10 @@ p {
 
 @include responsivePCFirst(sm) {
   .profile {
+    height: 100%;
+
     .column {
-      grid-template-rows: 137px 32px 30px 39px 43px auto 76px;
+      grid-template-rows: 137px 32px 30px 39px 43px auto auto;
 
       .container-user-image {
         margin: 48px auto 0;

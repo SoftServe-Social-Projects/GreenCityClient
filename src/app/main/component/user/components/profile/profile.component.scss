@@ -12,7 +12,6 @@
   .left-column {
     width: 100%;
     box-shadow: 4px 0 8px -4px var(--quintynary-dark-grey);
-    background-color: var(--primary-white);
 
     .app-users-achievements,
     .app-users-friends,
@@ -44,9 +43,11 @@
       min-height: 323px;
     }
 
-    .app-users-friends {
+    .app-users-friends,
+    .app-users-achievements {
       width: 100%;
-      margin-top: 15px;
+      margin-top: 30px;
+      box-shadow: 0 4px 8px 0 var(--quintynary-dark-grey);
     }
 
     .habits-dashboard {
@@ -144,7 +145,7 @@
 
 @include responsivePCFirst(sm) {
   .left-column {
-    height: 430px;
+    gap: 24px;
 
     .app-users-friends {
       width: 100%;
@@ -154,6 +155,7 @@
   .profile-wrapper {
     .right-column {
       app-to-do-list {
+        margin: 0;
         display: none;
       }
     }

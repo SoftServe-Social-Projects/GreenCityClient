@@ -3,9 +3,9 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 import { TranslateModule } from '@ngx-translate/core';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
-// import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of } from 'rxjs';
-import { NotificationBody, Notifications } from '../../ubs-admin/models/ubs-user.model';
+import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
+import { of, throwError } from 'rxjs';
+import { NotificationBody, Notifications } from '@ubs/ubs-admin/models/ubs-user.model';
 import { UserMessagesService } from '../services/user-messages.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
@@ -25,6 +25,7 @@ describe('UbsUserMessagesComponent', () => {
     read: false,
     isOpen: false
   };
+
   const fakeNotification: Notifications = {
     page: [fakeNotificationBody],
     totalElements: 1,
@@ -36,15 +37,23 @@ describe('UbsUserMessagesComponent', () => {
   const localStorageServiceFake = jasmine.createSpyObj('LocalStorageService', ['']);
   localStorageServiceFake.languageBehaviourSubject = () => of('en');
 
-  const userMessageServiceMock = jasmine.createSpyObj('UserMessagesService', ['getNotification']);
-  userMessageServiceMock.getNotification = () => of(fakeNotification);
+  const userMessageServiceMock = jasmine.createSpyObj('UserMessagesService', [
+    'getNotification',
+    'markNotificationAsRead',
+    'deleteNotification',
+    'fetchNotification'
+  ]);
+  userMessageServiceMock.getNotification.and.returnValue(of(fakeNotification));
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [UbsUserMessagesComponent, PaginatePipe],
       imports: [MatDialogModule, TranslateModule.forRoot(), RouterTestingModule, NgxPaginationModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: UserMessagesService, useValue: userMessageServiceMock }]
+      providers: [
+        { provide: UserMessagesService, useValue: userMessageServiceMock },
+        { provide: MatSnackBarComponent, useValue: { openSnackBar: () => {} } }
+      ]
     }).compileComponents();
 
     route = TestBed.inject(ActivatedRoute);
@@ -53,10 +62,18 @@ describe('UbsUserMessagesComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UbsUserMessagesComponent);
     component = fixture.componentInstance;
+    component.notifications = fakeNotification.page;
     fixture.detectChanges();
   });
 
-  it('can load instance', () => {
+  afterEach(() => {
+    userMessageServiceMock.markNotificationAsRead.calls.reset();
+    userMessageServiceMock.deleteNotification.calls.reset();
+    userMessageServiceMock.countOfNoReadMessages = 1;
+    component.notifications = [{ ...fakeNotificationBody, read: false }];
+  });
+
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
@@ -68,7 +85,7 @@ describe('UbsUserMessagesComponent', () => {
   });
 
   it(`should initialize the notification body`, () => {
-    component.fetchNotification();
+    component.fetchNotification('en');
 
     expect(component.notifications).toEqual([fakeNotificationBody]);
   });
@@ -79,4 +96,90 @@ describe('UbsUserMessagesComponent', () => {
     tick();
     expect(spy).toHaveBeenCalled();
   }));
+
+  describe('markAsRead', () => {
+    beforeEach(() => {
+      userMessageServiceMock.countOfNoReadMessages = 1;
+    });
+
+    it('should set notification as read and decrease unread message count', () => {
+      const notification = component.notifications[0];
+      userMessageServiceMock.markNotificationAsRead.and.returnValue(of(undefined));
+
+      component.setRead(notification);
+
+      expect(userMessageServiceMock.markNotificationAsRead).toHaveBeenCalledWith(notification.id);
+      expect(notification.read).toBeTrue();
+      expect(userMessageServiceMock.countOfNoReadMessages).toBe(0);
+    });
+
+    it('should not call markNotificationAsRead if notification is already read', () => {
+      const notification = component.notifications[1];
+
+      component.setRead(notification);
+
+      expect(userMessageServiceMock.markNotificationAsRead).not.toHaveBeenCalled();
+    });
+  });
+  describe('deleteNotification', () => {
+    it('should delete a notification and update notifications list', () => {
+      component.notifications = [
+        {
+          id: 1,
+          images: ['https://csb10032000a548f571.blob.core.windows.net/allfiles/90370622-3311-4ff1-9462-20cc98a64d1ddefault_image.jpg'],
+          body: 'fakeBody',
+          notificationTime: '04.06.2020',
+          orderId: 1,
+          title: 'Недотримання правил УБС',
+          read: false,
+          isOpen: false
+        },
+        {
+          id: 2,
+          images: ['https://csb10032000a548f571.blob.core.windows.net/allfiles/90370622-3311-4ff1-9462-20cc98a64d1ddefault_image.jpg'],
+          body: 'fakeBody',
+          notificationTime: '04.06.2020',
+          orderId: 1,
+          title: 'Недотримання правил УБС',
+          read: false,
+          isOpen: false
+        }
+      ];
+
+      const notificationToDelete = component.notifications[1];
+      const mockEvent = new MouseEvent('click');
+      userMessageServiceMock.deleteNotification.and.returnValue(of(null));
+
+      component.deleteNotification(mockEvent, notificationToDelete);
+
+      expect(userMessageServiceMock.deleteNotification).toHaveBeenCalledWith(notificationToDelete.id);
+      expect(component.notifications).toEqual([component.notifications[0]]);
+    });
+
+    it('should fetch more notifications if there are less than pageSize and hasNextPage', () => {
+      const mockEvent = new MouseEvent('click');
+
+      userMessageServiceMock.deleteNotification.and.returnValue(of(null));
+      spyOn(component, 'fetchNotification');
+      component.deleteNotification(mockEvent, fakeNotificationBody);
+      expect(component.fetchNotification).toHaveBeenCalled();
+    });
+
+    it('should decrease the page and fetch notifications if the list is empty', () => {
+      const mockEvent = new MouseEvent('click');
+
+      userMessageServiceMock.deleteNotification.and.returnValue(of(null));
+      spyOn(component, 'fetchNotification');
+      component.deleteNotification(mockEvent, fakeNotificationBody);
+      expect(component.page).toBe(0);
+      expect(component.fetchNotification).toHaveBeenCalled();
+    });
+
+    it('should not proceed if event is neither MouseEvent nor Enter key', () => {
+      const mockEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+      component.deleteNotification(mockEvent, fakeNotificationBody);
+
+      expect(userMessageServiceMock.deleteNotification).not.toHaveBeenCalled();
+    });
+  });
 });
