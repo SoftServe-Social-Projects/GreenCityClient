@@ -59,7 +59,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
   private eventsPerPage = 6;
   private searchResultSubscription: Subscription;
   private searchQuery: string;
-  private dialogRef: MatDialogRef<unknown>;
+  private readonly dialogRef: MatDialogRef<unknown>;
 
   constructor(
     private store: Store,
