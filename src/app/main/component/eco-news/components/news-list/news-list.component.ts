@@ -1,6 +1,6 @@
 import { Breakpoints } from '../../../../config/breakpoints.constants';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { EcoNewsModel } from '@eco-news-models/eco-news-model';
 import { FilterModel } from '@shared/components/tag-filter/tag-filter.model';
