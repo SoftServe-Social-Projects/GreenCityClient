@@ -77,7 +77,7 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
     this.ordersForm = this.fb.group({
       exportDetailsDto: this.fb.group({
         dateExport: [
-          [this.exportInfo.dateExport ? formatDate(this.exportInfo.dateExport, 'yyyy-MM-dd', this.currentLang) : ''],
+          this.exportInfo.dateExport ? formatDate(this.exportInfo.dateExport, 'yyyy-MM-dd', this.currentLang) : '',
           [Validators.required]
         ],
         timeDeliveryFrom: [this.parseTimeToStr(this.exportInfo.timeDeliveryFrom), [Validators.required]],
@@ -87,12 +87,17 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
 
       responsiblePersonsForm: this.fb.group({
         responsibleCaller: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.CallManager), [Validators.required]],
-        responsibleLogicMan: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.Logistician), [Validators.required]],
-        responsibleNavigator: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.Navigator), [Validators.required]],
-        responsibleDriver: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.Driver), [Validators.required]]
+        responsibleLogicMan: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.Logistician)],
+        responsibleNavigator: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.Navigator)],
+        responsibleDriver: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.Driver)]
       })
     });
     this.setEmployeesByPosition();
+  }
+
+  isFieldOptional(controlName: string): boolean {
+    const control = this.ordersForm.get(['responsiblePersonsForm', controlName]);
+    return control && !control.hasValidator(Validators.required);
   }
 
   showTimePickerClick(): void {
@@ -159,9 +164,8 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
       employeeId: 0,
       positionId: responiblePersonId
     };
-    const employeeId = this.dataFromTable
-      .find((e) => e.title === positionName)
-      .arrayData.find((element) => element.ua === responsibleEmployee).key;
+    const employeeId =
+      this.dataFromTable.find((e) => e.title === positionName).arrayData.find((element) => element.ua === responsibleEmployee)?.key ?? 0;
     newEmployee.employeeId = Number(employeeId);
     return newEmployee;
   }

@@ -197,6 +197,7 @@
       "save": "Зберегти"
     },
     "title": "Обрати час вивезення",
+    "optional-field": "необов'язково",
     "export-time": {
       "from": "З",
       "to": "До"
@@ -418,7 +419,7 @@
   "responsible-persons": {
     "title": "Відповідальні особи",
     "service-manager": "Менеджер послуги",
-    "call-manager": "Менеджер обдзвону",
+    "call-manager": "Менеджер",
     "logistician": "Логіст",
     "navigator": "Штурман",
     "driver": "Водій",
