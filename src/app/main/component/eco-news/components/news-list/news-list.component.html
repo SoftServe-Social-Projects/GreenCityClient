@@ -4,8 +4,8 @@
       <div class="cont">
         <h1 class="main-header">{{ 'homepage.eco-news.title' | translate }}</h1>
         <div class="create-container">
-          <div class="container-input" *ngIf="searchToggle">
-            <input type="text" *ngIf="searchToggle" class="place-input" [formControl]="searchNewsControl" placeholder="Search" />
+          <div class="container-input" *ngIf="isSearchVisible">
+            <input type="text" *ngIf="isSearchVisible" class="place-input" [formControl]="searchNewsControl" placeholder="Search" />
             <img
               src="assets/img/smallCross.svg"
               class="cross-position"
@@ -14,8 +14,8 @@
               alt="cancel search"
             />
           </div>
-          <div class="container-img" (click)="search()" (keydown.enter)="search()" *ngIf="!searchToggle">
-            <span class="search-img" [ngClass]="{ 'search-img-active': searchToggle }"></span>
+          <div class="container-img" (click)="toggleSearch()" (keydown.enter)="toggleSearch()" *ngIf="!isSearchVisible">
+            <span class="search-img" [ngClass]="{ 'search-img-active': isSearchVisible }"></span>
           </div>
           <div class="container-img" (click)="showSelectedNews()" (keydown.enter)="showSelectedNews()">
             <span class="bookmark-img" [ngClass]="{ 'bookmark-img-active': bookmarkSelected }"></span>

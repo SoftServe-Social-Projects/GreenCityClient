@@ -30,8 +30,8 @@ export class EcoNewsService implements OnDestroy {
     return this.http.get<EcoNewsDto>(`${this.backEnd}eco-news`, { params });
   }
 
-  getEcoNewsListByAutorId(authorId: number, page: number, quantity: number) {
-    return this.http.get(`${this.backEnd}eco-news?author-id=${authorId}&page=${page}&size=${quantity}`);
+  getEcoNewsListByAuthorId(authorId: number, page: number, quantity: number): Observable<EcoNewsDto> {
+    return this.http.get<EcoNewsDto>(`${this.backEnd}eco-news?author-id=${authorId}&page=${page}&size=${quantity}`);
   }
 
   getNewsList(): Observable<any> {

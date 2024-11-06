@@ -128,7 +128,7 @@ describe('EcoNewsService', () => {
 
   it('should get eco news list by author ID', () => {
     const authorId = 123;
-    service.getEcoNewsListByAutorId(authorId, 0, 5).subscribe((data) => {
+    service.getEcoNewsListByAuthorId(authorId, 0, 5).subscribe((data) => {
       expect(data).toBeDefined();
     });
 

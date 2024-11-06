@@ -155,9 +155,9 @@ describe('NewsListComponent', () => {
   });
 
   it('should toggle search state', () => {
-    component.searchToggle = false;
-    component.search();
-    expect(component.searchToggle).toBeTrue();
+    component.isSearchVisible = false;
+    component.toggleSearch();
+    expect(component.isSearchVisible).toBeTrue();
   });
 
   it('should change favorite status when user is logged in', () => {

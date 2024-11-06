@@ -42,13 +42,12 @@ export class NewsListComponent implements OnInit, OnDestroy {
   isLoading = false;
   private page = 0;
   noNewsMatch = false;
-  searchToggle = false;
+  isSearchVisible = false;
   private isRequestInFlight = false;
   searchNewsControl = new FormControl('', [Validators.maxLength(30), Validators.pattern(Patterns.NameInfoPattern)]);
   econews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
   searchQuery: string;
 
-  private readonly destroy: Subject<boolean> = new Subject<boolean>();
   private dialogRef: MatDialogRef<unknown>;
 
   constructor(
@@ -124,14 +123,14 @@ export class NewsListComponent implements OnInit, OnDestroy {
 
   cancelSearch(): void {
     if (this.searchNewsControl.value.trim() === '') {
-      this.searchToggle = false;
+      this.isSearchVisible = false;
     } else {
       this.searchNewsControl.setValue('');
     }
   }
 
-  search(): void {
-    this.searchToggle = !this.searchToggle;
+  toggleSearch(): void {
+    this.isSearchVisible = !this.isSearchVisible;
   }
 
   changeFavoriteStatus(event: Event, data: EcoNewsModel) {
@@ -249,7 +248,5 @@ export class NewsListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();
-    this.destroy.next(true);
-    this.destroy.complete();
   }
 }
