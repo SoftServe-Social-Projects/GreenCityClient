@@ -125,15 +125,14 @@ export class EventsListComponent implements OnInit, OnDestroy {
           this.isLoggedIn = !!result;
         });
     } else {
-      this.bookmarkSelected = !this.bookmarkSelected;
-      if (this.bookmarkSelected) {
-        this.cleanEventList();
-        this.getUserFavoriteEvents();
-      } else {
-        this.cleanEventList();
-        this.getEvents();
-      }
+      this.toggleEventList();
     }
+  }
+
+  private toggleEventList(): void {
+    this.bookmarkSelected = !this.bookmarkSelected;
+    this.cleanEventList();
+    this.getEvents();
   }
 
   getUniqueLocations(addresses: Array<Addresses>): FilterItem[] {
@@ -362,7 +361,6 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.eventService.getEvents(this.getEventsHttpParams()).subscribe((res) => {
       this.isLoading = false;
       this.eventsList.push(...res.page);
-      this.page++;
       this.countOfEvents = res.totalElements;
       this.hasNextPage = res.hasNext;
     });
