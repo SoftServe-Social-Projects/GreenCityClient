@@ -3,7 +3,7 @@
     <h4>{{ 'several-orders-pop-up.title' | translate }}</h4>
   </div>
 
-  <form class="form_styles" *ngIf="ordersForm" [formGroup]="ordersForm">
+  <form class="form_styles" *ngIf="ordersForm; else spinner" [formGroup]="ordersForm">
     <div class="form_container">
       <div class="form" formGroupName="exportDetailsDto">
         <div class="form-row-container">
@@ -73,5 +73,8 @@
       </div>
     </div>
   </form>
+  <ng-template #spinner>
+    <app-spinner></app-spinner>
+  </ng-template>
   <app-time-picker *ngIf="showTimePicker" (timeOfExport)="setExportTime($event)" [exportDate]="getExportDate()"> </app-time-picker>
 </div>

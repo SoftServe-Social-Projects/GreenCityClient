@@ -108,7 +108,7 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   mouseEvents = MouseEvents;
   cancellationReason: string;
   cancellationComment: string;
-  @ViewChild(MatTable, { read: ElementRef }) private readonly matTableRef: ElementRef;
+  @ViewChild(MatTable, { read: ElementRef }) private matTableRef: ElementRef;
   defaultColumnWidth = 120; // In px
   minColumnWidth = 100;
   columnsWidthPreference: Map<string, number>;
@@ -639,7 +639,8 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
     sortedOrders = sortedOrders
       .map((e) => keysForEditDetails.filter((elem) => e[elem] === null || e[elem] === ''))
       .filter((arrayList) => arrayList?.length !== 0);
-    this.showPopUp = sortedOrders.length !== 0;
+    // this.showPopUp = sortedOrders.length !== 0;
+    this.showPopUp = true;
   }
 
   selectRowsToChange(event: MatCheckboxChange, row: any): void {
@@ -657,7 +658,7 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   editCell(e: IEditCell): void {
     if (this.allChecked) {
       this.editAll(e);
-    } else if (this.idsToChange.length === 0) {
+    } else if (this.idsToChange.length === 1) {
       this.editSingle(e);
     } else {
       this.editGroup(e);

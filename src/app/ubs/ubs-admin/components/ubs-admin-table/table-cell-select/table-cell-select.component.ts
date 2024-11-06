@@ -36,6 +36,7 @@ export class TableCellSelectComponent implements OnInit {
   isDisabled = true;
   options = [];
   private newOption: string;
+  private oldOption: string;
   private typeOfChange: number[];
   private checkStatus: boolean;
   private dialogConfig = new MatDialogConfig();
@@ -56,6 +57,7 @@ export class TableCellSelectComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentValue = this.optional.filter((item) => item.key === this.key)[0];
+    this.oldOption = this.currentValue;
     this.filterStatuses();
   }
 
@@ -132,6 +134,7 @@ export class TableCellSelectComponent implements OnInit {
     this.typeOfChange = this.adminTableService.howChangeCell(this.isAllChecked, this.ordersToChange, this.id);
     this.cancelEdit.emit(this.typeOfChange);
     this.newOption = '';
+    this.currentValue = this.oldOption;
   }
 
   chosenOption(e: MatSelectChange): void {

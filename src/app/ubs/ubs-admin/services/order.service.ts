@@ -92,7 +92,7 @@ export class OrderService {
     }
   }
 
-  getOrderInfo(orderId) {
+  getOrderInfo(orderId: number) {
     return this.http.get(`${this.backend}/management/get-data-for-order/${orderId}`);
   }
 

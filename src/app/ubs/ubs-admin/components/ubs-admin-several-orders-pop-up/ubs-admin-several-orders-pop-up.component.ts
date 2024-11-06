@@ -6,9 +6,15 @@ import {
   IUpdateExportDetails,
   IUpdateResponsibleEmployee,
   FormFieldsName,
-  IDataForPopUp
-} from '../../models/ubs-admin.interface';
+  IDataForPopUp,
+  IOrderInfo,
+  IExportDetails,
+  IResponsiblePersons,
+  ResponsibleEmployee
+} from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
 import { OrderService } from '../../services/order.service';
+import { take } from 'rxjs';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-ubs-admin-several-orders-pop-up',
@@ -30,6 +36,8 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
   receivingStations: string[];
   currentDate: string;
   responsiblePersonsData: IResponsiblePersonsData[];
+  exportInfo: IExportDetails;
+  responsiblePersonInfo: IResponsiblePersons;
 
   values = {};
   ordersForm: FormGroup;
@@ -45,24 +53,43 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.initForm();
+    if (this.ordersId.length === 1) {
+      this.getOrderInfo(this.ordersId[0]);
+    } else {
+      this.initForm();
+    }
     this.currentDate = new Date().toISOString().split('T')[0];
   }
 
+  getOrderInfo(orderId: number): void {
+    this.orderService
+      .getOrderInfo(orderId)
+      .pipe(take(1))
+      .subscribe((data: IOrderInfo) => {
+        this.exportInfo = data.exportDetailsDto;
+        this.responsiblePersonInfo = data.employeePositionDtoRequest;
+        this.initForm();
+      });
+  }
+
   initForm(): void {
+    const currentEmployees = this.responsiblePersonInfo.currentPositionEmployees;
     this.ordersForm = this.fb.group({
       exportDetailsDto: this.fb.group({
-        dateExport: [null, [Validators.required]],
-        timeDeliveryFrom: [null, [Validators.required]],
-        timeDeliveryTo: [null, [Validators.required]],
-        receivingStationId: [null, [Validators.required]]
+        dateExport: [
+          [this.exportInfo.dateExport ? formatDate(this.exportInfo.dateExport, 'yyyy-MM-dd', this.currentLang) : ''],
+          [Validators.required]
+        ],
+        timeDeliveryFrom: [this.parseTimeToStr(this.exportInfo.timeDeliveryFrom), [Validators.required]],
+        timeDeliveryTo: [this.parseTimeToStr(this.exportInfo.timeDeliveryTo), [Validators.required]],
+        receivingStationId: [this.getReceivingStationById(this.exportInfo.receivingStationId), [Validators.required]]
       }),
 
       responsiblePersonsForm: this.fb.group({
-        responsibleCaller: [null, [Validators.required]],
-        responsibleLogicMan: [null, [Validators.required]],
-        responsibleNavigator: [null, [Validators.required]],
-        responsibleDriver: [null, [Validators.required]]
+        responsibleCaller: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.CallManager), [Validators.required]],
+        responsibleLogicMan: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.Logistician), [Validators.required]],
+        responsibleNavigator: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.Navigator), [Validators.required]],
+        responsibleDriver: [this.getEmployeeById(currentEmployees, ResponsibleEmployee.Driver), [Validators.required]]
       })
     });
     this.setEmployeesByPosition();
@@ -90,12 +117,28 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
     return this.ordersForm.controls.exportDetailsDto.get('dateExport').value;
   }
 
+  getEmployeeById(allCurrentEmployees: Map<string, string>, id: number) {
+    if (!allCurrentEmployees) {
+      return '';
+    }
+    const key = Object.keys(allCurrentEmployees).find((el) => el.includes(`id=${id},`));
+    return key ? allCurrentEmployees[key] : '';
+  }
+
   parseStrToTime(dateStr: string, date: Date): string {
     const hours = dateStr.split(':')[0];
     const minutes = dateStr.split(':')[1];
     date.setHours(+hours + 2);
     date.setMinutes(+minutes);
     return date ? date.toISOString().split('Z').join('') : '';
+  }
+
+  parseTimeToStr(dateStr: string) {
+    return dateStr ? formatDate(dateStr, 'HH:mm', this.currentLang) : '';
+  }
+
+  getReceivingStationById(receivingStationId: number): string {
+    return this.exportInfo.allReceivingStations.find((element) => receivingStationId === element.id)?.name || '';
   }
 
   setEmployeesByPosition(): void {
@@ -136,7 +179,6 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
     );
     newValues.updateResponsibleEmployeeDto = arrEmployees;
     this.values = newValues;
-
     this.orderService.updateOrdersInfo(this.currentLang, newValues).subscribe(() => this.dialogRef.close(true));
   }
 
