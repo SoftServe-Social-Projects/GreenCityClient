@@ -115,12 +115,11 @@ export class HabitEditToDoListComponent implements OnInit, OnChanges, OnDestroy 
 
   selectItem(item: ToDoList): void {
     this.isListChanged = true;
-    this.toDoList.map((element) => {
+    this.toDoList.forEach((element) => {
       if (element.text === item.text) {
         element.selected = !item.selected;
         element.status = item.selected ? TodoStatus.inprogress : TodoStatus.active;
       }
-      return element;
     });
     if (item.selected) {
       const index = this.toDoList.indexOf(item);
