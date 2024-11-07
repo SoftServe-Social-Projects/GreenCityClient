@@ -93,7 +93,7 @@ describe('ProfileDashboardComponent', () => {
 
   it('onInit news should have expected result', waitForAsync(() => {
     component.ngOnInit();
-    component.authorNews$.subscribe((item: any) => {
+    component.econews$.subscribe((item: any) => {
       expect(component.news[0]).toEqual({ newsId: 1 } as any);
     });
   }));
@@ -217,6 +217,7 @@ describe('ProfileDashboardComponent', () => {
 
   it('onScroll', () => {
     const spy = spyOn(component, 'dispatchNews');
+    component.news = [{ news: 1 } as any];
     component.onScroll();
     expect(spy).toHaveBeenCalledTimes(1);
   });

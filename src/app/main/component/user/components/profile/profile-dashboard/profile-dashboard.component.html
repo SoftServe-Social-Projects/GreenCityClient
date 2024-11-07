@@ -69,7 +69,7 @@
             <div class="in-progress">
               <p>
                 <app-set-count [remainingCount]="totalNews" [tabName]="'news'">
-                  {{ 'profile.dashboard.news-list' | translate }} <br />
+                  {{ (isNewsFavoriteBtnClicked ? 'profile.dashboard.news-saved' : 'profile.dashboard.news-list') | translate }} <br />
                 </app-set-count>
               </p>
               <div class="buttons-wrapper">

@@ -41,7 +41,7 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   isActiveNewsScroll = false;
   isActiveEventsScroll = false;
   userId: number;
-  news: EcoNewsModel[];
+  news: EcoNewsModel[] = [];
   isOnlineChecked = false;
   isOfflineChecked = false;
   eventsList: EventResponse[] = [];
