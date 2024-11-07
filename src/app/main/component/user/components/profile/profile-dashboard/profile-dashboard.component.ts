@@ -8,7 +8,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
 import { IEcoNewsState } from 'src/app/store/state/ecoNews.state';
-import { GetEcoNewsByAuthorAction } from 'src/app/store/actions/ecoNews.actions';
+import { GetEcoNewsAction, GetEcoNewsByAuthorAction } from 'src/app/store/actions/ecoNews.actions';
 import { EcoNewsModel } from '@eco-news-models/eco-news-model';
 import { EventResponse, EventResponseDto } from 'src/app/main/component/events/models/events.interface';
 import { EventsService } from 'src/app/main/component/events/services/events.service';
@@ -48,17 +48,20 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   favoriteEventsPage = 0;
   totalEvents = 0;
   totalNews = 0;
+  tagsList = [];
   loadingEvents = false;
   eventType = '';
   isFavoriteBtnClicked = false;
+  isNewsFavoriteBtnClicked = false;
   userLatitude = 0;
   userLongitude = 0;
   images = singleNewsImages;
-  authorNews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
+  isRequestInFlight = false;
+  econews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   private hasNext = true;
   private hasNextPageOfEvents = true;
-  private currentPage: number;
+  private page: number;
   private newsCount = 5;
 
   constructor(
@@ -76,12 +79,12 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.subscribeToLangChange();
     this.getUserId();
 
-    this.authorNews$.subscribe((val: IEcoNewsState) => {
-      this.currentPage = val.authorNewsPage;
-      if (val.ecoNewsByAuthor) {
-        this.totalNews = val.ecoNewsByAuthor.totalElements;
-        this.hasNext = val.ecoNewsByAuthor.hasNext;
-        this.news = val.authorNews;
+    this.econews$.subscribe((val: IEcoNewsState) => {
+      this.page = val.pageNumber;
+      if (val.ecoNews) {
+        this.totalNews = val.ecoNews.totalElements;
+        this.hasNext = val.ecoNews.hasNext;
+        this.news = [...val.pages];
       }
     });
 
@@ -197,17 +200,74 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  dispatchNews(res: boolean) {
-    if (this.currentPage !== undefined && this.hasNext) {
-      this.store.dispatch(
-        GetEcoNewsByAuthorAction({
-          authorId: this.userId,
-          currentPage: this.currentPage,
-          numberOfNews: this.newsCount,
-          reset: res
-        })
-      );
+  toggleNewsFavorites() {
+    this.isNewsFavoriteBtnClicked = !this.isNewsFavoriteBtnClicked;
+    this.dispatchNews(true);
+  }
+
+  // dispatchNews(res: boolean) {
+  //   if (this.currentPage !== undefined && this.hasNext) {
+  //     this.store.dispatch(
+  //       GetEcoNewsByAuthorAction({
+  //         authorId: this.userId,
+  //         currentPage: this.currentPage,
+  //         numberOfNews: this.newsCount,
+  //         reset: res
+  //       })
+  //     );
+  //   }
+  // }
+
+  private cleanNewsList(): void {
+    this.loading = true;
+    this.hasNext = true;
+    this.page = 0;
+    this.news = [];
+    this.totalNews = 0;
+  }
+
+  dispatchNews(res: boolean): void {
+    if (res) {
+      this.cleanNewsList();
     }
+
+    if (!this.hasNext || this.isRequestInFlight) {
+      return;
+    }
+
+    this.isRequestInFlight = true;
+    const params = this.getNewsHttpParams();
+
+    const action = GetEcoNewsAction({ params, reset: res });
+    this.store.dispatch(action);
+
+    this.page++;
+    this.isRequestInFlight = false;
+  }
+
+  private getNewsHttpParams(): HttpParams {
+    let params = new HttpParams().set('page', this.page.toString()).set('size', this.newsCount.toString());
+
+    const optionalParams = [
+      !this.isNewsFavoriteBtnClicked && this.appendIfNotEmpty('author-id', this.userId?.toString()),
+      this.isNewsFavoriteBtnClicked && this.appendIfNotEmpty('user-id', this.userId?.toString()),
+      this.appendIfNotEmpty('tags', this.tagsList),
+      this.isNewsFavoriteBtnClicked ? { key: 'favorite', value: this.isNewsFavoriteBtnClicked ? 'true' : '' } : null
+    ];
+
+    optionalParams.forEach((param) => {
+      if (param) {
+        params = params.append(param.key, param.value);
+      }
+    });
+
+    const serializedParams = params.toString();
+    return new HttpParams({ fromString: serializedParams });
+  }
+
+  private appendIfNotEmpty(key: string, value: string | string[]): { key: string; value: string } | null {
+    const formattedValue = Array.isArray(value) ? value.join(',') : value;
+    return formattedValue?.trim() ? { key, value: formattedValue.toUpperCase() } : null;
   }
 
   changeStatus(habit: HabitAssignInterface) {
@@ -256,6 +316,9 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   }
 
   onScroll(): void {
+    if (!this.news.length) {
+      return;
+    }
     this.dispatchNews(false);
   }
 

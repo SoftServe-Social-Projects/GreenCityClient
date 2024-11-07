@@ -71,18 +71,23 @@
                 {{ 'profile.dashboard.news-list' | translate }} <br />
               </app-set-count>
             </p>
-            <a [routerLink]="['/news/create-news']">
-              <div id="create-button-news" class="secondary-global-button s-btn">
-                <span>{{ 'profile.dashboard.add-news' | translate }}</span>
+            <div class="buttons-wrapper">
+              <a [routerLink]="['/news/create-news']">
+                <div id="create-button-news" class="secondary-global-button s-btn">
+                  <span>{{ 'profile.dashboard.add-news' | translate }}</span>
+                </div>
+              </a>
+              <div class="favourites" (click)="toggleNewsFavorites()">
+                <span [ngClass]="isNewsFavoriteBtnClicked ? 'flag-active' : 'flag'"></span>
               </div>
-            </a>
+            </div>
           </div>
           <div class="news-body">
             <div
               class="scrolling"
               infinite-scroll
               [infiniteScrollDistance]="1"
-              [infiniteScrollThrottle]="100"
+              [infiniteScrollThrottle]="500"
               (scrolled)="onScroll()"
               [infiniteScrollDisabled]="!isActiveNewsScroll"
             >
