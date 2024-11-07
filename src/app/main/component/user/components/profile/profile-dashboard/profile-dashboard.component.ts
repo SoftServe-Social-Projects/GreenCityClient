@@ -180,6 +180,7 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
           next: (res: EventResponseDto) => {
             this.eventsList.push(...res.page);
             this.eventsPage++;
+            this.totalEvents = res.totalElements;
             this.hasNextPageOfEvents = res.hasNext;
             this.isActiveEventsScroll = res.hasNext;
           },

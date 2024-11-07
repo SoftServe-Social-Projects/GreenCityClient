@@ -18,6 +18,7 @@ a {
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.01em;
+    margin: 24px 0;
 
     p {
       color: var(--primary-dark-grey);
@@ -29,9 +30,9 @@ a {
       align-items: center;
 
       .favourites {
-        margin: 0 10px;
-        width: 40px;
-        height: 40px;
+        margin-left: 10px;
+        width: 36px;
+        height: 36px;
         background-color: var(--primary-white);
         border-radius: 5px;
         display: flex;
@@ -61,10 +62,17 @@ a {
 
   .in-progress {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin: 24px 0;
-    height: 48px;
+    justify-content: space-between;
+  }
+
+  .column {
+    flex-direction: column;
+    margin-bottom: 24px;
+  }
+
+  .justify-end {
+    justify-content: end;
   }
 
   .secondary-global-button {
