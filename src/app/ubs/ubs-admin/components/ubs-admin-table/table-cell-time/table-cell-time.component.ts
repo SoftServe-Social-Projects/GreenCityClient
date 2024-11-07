@@ -14,6 +14,7 @@ export class TableCellTimeComponent implements OnInit {
   @Input() id: number;
   @Input() ordersToChange: number[];
   @Input() isAllChecked: boolean;
+  @Input() doneOrCanceled: boolean;
   @Input() timeOfExport: string;
   @Input() exportDate: string;
 
@@ -55,7 +56,10 @@ export class TableCellTimeComponent implements OnInit {
     this.from = res[0];
     this.to = res[1];
   }
-  edit(): void {
+  edit(event?: KeyboardEvent): void {
+    if (event && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+    }
     this.isTimePickerOpened.emit(true);
     this.isEditable = false;
     this.isBlocked = true;

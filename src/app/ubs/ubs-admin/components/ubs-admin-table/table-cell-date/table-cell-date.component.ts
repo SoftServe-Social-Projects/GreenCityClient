@@ -13,6 +13,7 @@ export class TableCellDateComponent {
   @Input() id: number;
   @Input() ordersToChange: number[];
   @Input() isAllChecked: boolean;
+  @Input() doneOrCanceled: boolean;
 
   @Output() editDateCell = new EventEmitter();
   @Output() showBlockedInfo = new EventEmitter();
@@ -23,7 +24,10 @@ export class TableCellDateComponent {
 
   constructor(private adminTableService: AdminTableService) {}
 
-  edit(): void {
+  edit(event?: KeyboardEvent): void {
+    if (event && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+    }
     this.isEditable = false;
     this.isBlocked = true;
     let typeOfChange: number[];

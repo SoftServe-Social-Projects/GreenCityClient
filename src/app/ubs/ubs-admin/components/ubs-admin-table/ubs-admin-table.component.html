@@ -337,6 +337,7 @@
           [id]="row.id"
           [ordersToChange]="idsToChange"
           [isAllChecked]="allChecked"
+          [doneOrCanceled]="checkStatusOfOrders(row.id)"
           (editDateCell)="editCell($event)"
           (showBlockedInfo)="showBlockedMessage($event)"
         >
@@ -349,6 +350,7 @@
           [id]="row.id"
           [ordersToChange]="idsToChange"
           [isAllChecked]="allChecked"
+          [doneOrCanceled]="checkStatusOfOrders(row.id)"
           (cancelEdit)="cancelEditCell($event)"
           (editTimeCell)="editCell($event)"
           (showBlockedInfo)="showBlockedMessage($event)"
