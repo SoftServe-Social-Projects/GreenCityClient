@@ -65,24 +65,36 @@
       <mat-tab label="{{ 'profile.dashboard.my-news' | translate }}">
         <hr />
         <div *ngIf="!loading; else spinner">
-          <div class="in-progress header">
-            <p>
-              <app-set-count [remainingCount]="totalNews" [tabName]="'news'">
-                {{ 'profile.dashboard.news-list' | translate }} <br />
-              </app-set-count>
-            </p>
-            <div class="buttons-wrapper">
-              <a [routerLink]="['/news/create-news']">
-                <div id="create-button-news" class="secondary-global-button s-btn">
-                  <span>{{ 'profile.dashboard.add-news' | translate }}</span>
+          <div class="header">
+            <div class="in-progress">
+              <p>
+                <app-set-count [remainingCount]="totalNews" [tabName]="'news'">
+                  {{ 'profile.dashboard.news-list' | translate }} <br />
+                </app-set-count>
+              </p>
+              <div class="buttons-wrapper">
+                <a [routerLink]="['/news/create-news']">
+                  <div id="create-button-news" class="secondary-global-button s-btn">
+                    <span>{{ 'profile.dashboard.add-news' | translate }}</span>
+                  </div>
+                </a>
+                <div class="favourites" (click)="toggleNewsFavorites()">
+                  <span [ngClass]="isNewsFavoriteBtnClicked ? 'flag-active' : 'flag'"></span>
                 </div>
-              </a>
-              <div class="favourites" (click)="toggleNewsFavorites()">
-                <span [ngClass]="isNewsFavoriteBtnClicked ? 'flag-active' : 'flag'"></span>
               </div>
             </div>
+            <div class="filters">
+              <app-tag-filter (tagsList)="getFilterData($event)" [storageKey]="'EcoNews-filter'" [tagsListData]="tagList"></app-tag-filter>
+            </div>
+            <hr />
           </div>
           <div class="news-body">
+            <app-no-data
+              *ngIf="!news.length"
+              [title]="'profile.dashboard.no-news'"
+              [text]="isNewsFavoriteBtnClicked ? 'profile.dashboard.no-news-saved' : 'profile.dashboard.no-news-advice'"
+            >
+            </app-no-data>
             <div
               class="scrolling"
               infinite-scroll
@@ -123,7 +135,7 @@
                 <div class="edit-events">{{ 'create-event.back' | translate }}</div>
               </div>
             </div>
-            <div class="events-filter">
+            <div class="events-filter filters">
               <div class="events-types">
                 <mat-checkbox [(ngModel)]="isOnlineChecked" (ngModelChange)="onCheckboxChange()" color="primary" class="checkbox">
                   {{ 'homepage.events.my-space.event-type-online' | translate }}

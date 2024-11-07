@@ -18,6 +18,8 @@ import { EventType } from 'src/app/ubs/ubs/services/event-type.enum';
 import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
 import { HttpParams } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { FilterModel } from '@shared/components/tag-filter/tag-filter.model';
+import { tagsListEcoNewsData } from '@eco-news-models/eco-news-consts';
 
 @Component({
   selector: 'app-profile-dashboard',
@@ -48,7 +50,8 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   favoriteEventsPage = 0;
   totalEvents = 0;
   totalNews = 0;
-  tagsList = [];
+  tagsList: Array<string> = [];
+  tagList: FilterModel[] = tagsListEcoNewsData;
   loadingEvents = false;
   eventType = '';
   isFavoriteBtnClicked = false;
@@ -218,8 +221,14 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   //   }
   // }
 
+  getFilterData(value: Array<string>): void {
+    if (this.tagsList !== value) {
+      this.tagsList = value;
+    }
+    this.dispatchNews(true);
+  }
+
   private cleanNewsList(): void {
-    this.loading = true;
     this.hasNext = true;
     this.page = 0;
     this.news = [];
@@ -235,14 +244,14 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isRequestInFlight = true;
+    this.loading = true;
     const params = this.getNewsHttpParams();
 
     const action = GetEcoNewsAction({ params, reset: res });
     this.store.dispatch(action);
 
     this.page++;
-    this.isRequestInFlight = false;
+    this.loading = false;
   }
 
   private getNewsHttpParams(): HttpParams {
