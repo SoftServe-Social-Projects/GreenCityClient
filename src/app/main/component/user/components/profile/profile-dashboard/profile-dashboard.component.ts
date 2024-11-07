@@ -134,15 +134,8 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.hasNextPageOfEvents = true;
   }
 
-  escapeFromFavorites(): void {
+  toggleFavorites(): void {
     this.isFavoriteBtnClicked = !this.isFavoriteBtnClicked;
-
-    this.cleanState();
-    this.getUserEvents();
-  }
-
-  goToFavorites(): void {
-    this.isFavoriteBtnClicked = true;
 
     this.cleanState();
     this.getUserEvents();

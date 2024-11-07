@@ -48,6 +48,10 @@ a {
           transition: all 0.3s;
         }
 
+        .flag {
+          background: url('/assets/events-icons/bookmark-set.png') no-repeat center;
+        }
+
         .flag-active {
           background: url('/assets/events-icons/bookmark-active.png') no-repeat center;
         }

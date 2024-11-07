@@ -100,22 +100,16 @@
         <hr />
         <div *ngIf="!loading; else spinner">
           <div class="in-progress">
-            <div class="in-progress header" id="my-events" *ngIf="!isFavoriteBtnClicked">
+            <div class="in-progress header" id="my-events">
               <div class="buttons-wrapper">
                 <a [routerLink]="['/events/create-event']">
                   <div id="create-button-event" class="secondary-global-button s-btn">
                     <span>{{ 'profile.dashboard.add-event' | translate }}</span>
                   </div>
                 </a>
-                <div class="favourites" (click)="goToFavorites()">
-                  <span class="flag-active"></span>
+                <div class="favourites" (click)="toggleFavorites()">
+                  <span [ngClass]="isFavoriteBtnClicked ? 'flag-active' : 'flag'"></span>
                 </div>
-              </div>
-            </div>
-            <div *ngIf="isFavoriteBtnClicked" class="in-progress header">
-              <div class="button-arrow" (click)="escapeFromFavorites()">
-                <img [src]="images.arrowLeft" aria-hidden="true" alt="arrow" class="button-arrow-img" />
-                <div class="edit-events">{{ 'create-event.back' | translate }}</div>
               </div>
             </div>
             <div class="events-filter">
