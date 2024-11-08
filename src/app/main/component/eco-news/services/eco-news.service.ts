@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, Observer, ReplaySubject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { EcoNewsModel } from '../models/eco-news-model';
 import { environment } from '@environment/environment';
 import { EcoNewsDto } from '../models/eco-news-dto';
