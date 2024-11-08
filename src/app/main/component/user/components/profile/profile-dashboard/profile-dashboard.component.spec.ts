@@ -33,15 +33,25 @@ describe('ProfileDashboardComponent', () => {
   LocalStorageServiceMock.setCurrentPage = () => of('previousPage', '/profile');
   LocalStorageServiceMock.getCurrentLanguage = () => of('ua');
 
+  const newsMock = {
+    countComments: 5,
+    id: 13578,
+    imagePath: null,
+    title: '',
+    text: '',
+    content: '',
+    shortInfo: '',
+    tags: ['News', 'Events'],
+    tagsEn: ['News'],
+    tagsUa: ['Новини'],
+    creationDate: '2021-11-25T22:32:30.555088+02:00',
+    likes: 0,
+    source: '',
+    author: { id: 312, name: 'taqcTestName' }
+  };
+
   const storeMock = jasmine.createSpyObj('store', ['select', 'dispatch']);
-  storeMock.select = () =>
-    of({
-      ecoNews: {},
-      authorNews: [{ newsId: 1 }],
-      pageNumber: 1,
-      error: 'error',
-      ecoNewsByAuthor: true
-    });
+  storeMock.select = () => of({ ecoNews: {}, pages: [], pageNumber: 1, error: 'error' });
 
   const eventsServiceMock = jasmine.createSpyObj('EventsService', ['getEvents', 'getUserFavoriteEvents']);
   eventsServiceMock.getEvents = () => of(mockEvent);
@@ -94,7 +104,7 @@ describe('ProfileDashboardComponent', () => {
   it('onInit news should have expected result', waitForAsync(() => {
     component.ngOnInit();
     component.econews$.subscribe((item: any) => {
-      expect(component.news[0]).toEqual({ newsId: 1 } as any);
+      expect(component.news).toEqual([]);
     });
   }));
 
@@ -217,7 +227,7 @@ describe('ProfileDashboardComponent', () => {
 
   it('onScroll', () => {
     const spy = spyOn(component, 'dispatchNews');
-    component.news = [{ news: 1 } as any];
+    component.news = [newsMock, { ...newsMock, id: 2 }];
     component.onScroll();
     expect(spy).toHaveBeenCalledTimes(1);
   });
