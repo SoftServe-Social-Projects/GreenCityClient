@@ -20,7 +20,7 @@ export class UbsUserMessagesComponent implements OnInit, OnDestroy {
   panelOpenState = false;
   page = 1;
   count = 0;
-  pageSize = 1;
+  pageSize = 10;
   isLoadSpinner: boolean;
   isLoadBar: boolean;
   hasNextPage: boolean;
