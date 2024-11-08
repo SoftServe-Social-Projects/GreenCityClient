@@ -1,10 +1,10 @@
-<div class="shop-list-container">
+<div class="to-do-list-container">
   <a *ngIf="!isAcquired && !isEditMode" class="edit-icon" (click)="changeEditMode()" aria-label="Edit Todo List"></a>
   <a *ngIf="isEditMode" class="close-edit-mode" (click)="cancelEditing()" aria-label="Close Editing Todo List"></a>
   <div class="title">{{ 'user.habit.to-do.to-do-list' | translate }}</div>
-  <div *ngIf="shopList" class="list-container">
-    <ul *ngIf="shopList.length" [ngClass]="isEditMode ? 'shop-list shop-list-edit-mode' : 'shop-list'">
-      <li *ngFor="let item of shopList; index as i" class="list-item">
+  <div *ngIf="toDoList" class="list-container">
+    <ul *ngIf="toDoList.length" [ngClass]="isEditMode ? 'to-do-list to-do-list-edit-mode' : 'to-do-list'">
+      <li *ngFor="let item of toDoList; index as i" class="list-item">
         <div class="item-box">
           <button class="check-btn" [disabled]="isAcquired || !isEditMode" (click)="selectItem(item)">
             <img [src]="getCheckIcon(item)" alt="Check to-do item" />
@@ -26,8 +26,8 @@
         <button *ngIf="item.custom && isEditMode" class="del-btn" type="button" (click)="deleteItem(item.text)"></button>
       </li>
     </ul>
-    <div *ngIf="!shopList.length" class="no-item">
-      {{ 'user.habit.to-do.no-shopping-items' | translate }}
+    <div *ngIf="!toDoList.length" class="no-item">
+      {{ 'user.habit.to-do.no-to-do-items' | translate }}
     </div>
     <div *ngIf="isEditMode && !isAcquired">
       <form [formGroup]="itemForm" class="add-item-form">

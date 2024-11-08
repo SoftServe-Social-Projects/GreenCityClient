@@ -4,7 +4,7 @@ export const HABIT_TAGS_MAXLENGTH = 3;
 
 export const FIELD_SYMBOLS_LIMIT = 2048;
 
-export const SHOPPING_ITEM_NAME_LIMIT = 20;
+export const TO_DO_ITEM_NAME_LIMIT = 20;
 
 export const HABIT_COMPLEXITY_LIST = [
   { value: 1, name: 'user.habit.add-new-habit.difficulty.easy', alt: 'Easy difficulty' },
@@ -23,7 +23,7 @@ export const STAR_IMAGES = {
   GREEN: 'assets/img/icon/star-1.png'
 };
 
-export const HABIT_SHOPPING_LIST_CHECK = {
+export const HABIT_TO_DO_LIST_CHECK = {
   doneCheck: 'assets/icons/habits/filled-check-circle.svg',
   inprogressCheck: 'assets/icons/habits/lined-green-circle.svg',
   plusCheck: 'assets/icons/habits/doted-plus-green-circle.svg',

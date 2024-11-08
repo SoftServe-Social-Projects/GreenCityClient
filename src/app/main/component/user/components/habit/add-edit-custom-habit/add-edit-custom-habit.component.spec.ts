@@ -13,11 +13,11 @@ import { HabitAssignService } from '@global-service/habit-assign/habit-assign.se
 import { HabitService } from '@global-service/habit/habit.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { HabitDurationComponent } from '@global-user/components/habit/add-new-habit/habit-duration/habit-duration.component';
-import { HabitEditShoppingListComponent } from '@global-user/components/habit/add-new-habit/habit-edit-shopping-list/habit-edit-shopping-list.component';
+import { HabitEditToDoListComponent } from '@global-user/components/habit/add-new-habit/habit-edit-to-do-list/habit-edit-to-do-list.component';
 import { HabitInviteFriendsComponent } from '@global-user/components/habit/add-new-habit/habit-invite-friends/habit-invite-friends.component';
 import { HabitProgressComponent } from '@global-user/components/habit/add-new-habit/habit-progress/habit-progress.component';
 import { CalendarWeekComponent } from '@global-user/components/profile/calendar/calendar-week/calendar-week.component';
-import { ShoppingList } from '@global-user/models/shoppinglist.interface';
+import { ToDoList } from '@global-user/models/to-do-list.interface';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { provideMockStore } from '@ngrx/store/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -82,7 +82,7 @@ describe('AddEditCustomHabitComponent', () => {
         HabitDurationComponent,
         CalendarWeekComponent,
         CalendarComponent,
-        HabitEditShoppingListComponent,
+        HabitEditToDoListComponent,
         HabitInviteFriendsComponent,
         HabitProgressComponent,
         SelectImagesComponent,
@@ -152,7 +152,7 @@ describe('AddEditCustomHabitComponent', () => {
   });
 
   it('should call changeCustomHabit() and goToAllHabits() on success', () => {
-    const habitFormValue = { title: 'Title', description: 'Description', complexity: 1, duration: 7, tagIds: [1], image: '', shopList: [] };
+    const habitFormValue = { title: 'Title', description: 'Description', complexity: 1, duration: 7, tagIds: [1], image: '', toDoList: [] };
     component.habitForm.setValue(habitFormValue);
     habitServiceMock.changeCustomHabit = jasmine.createSpy('changeCustomHabit').and.returnValue(of(null));
     spyOn(component, 'goToAllHabits');

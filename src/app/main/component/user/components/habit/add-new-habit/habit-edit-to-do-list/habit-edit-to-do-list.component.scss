@@ -1,4 +1,4 @@
-.shop-list-container {
+.to-do-list-container {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -40,7 +40,7 @@
   flex-direction: column;
   height: 100%;
 
-  .shop-list {
+  .to-do-list {
     display: flex;
     flex-direction: column;
     height: 190px;
@@ -83,7 +83,7 @@
     }
   }
 
-  .shop-list-edit-mode {
+  .to-do-list-edit-mode {
     height: 112px;
   }
 
@@ -183,7 +183,7 @@ form {
 }
 
 @media (max-width: 560px) {
-  .shop-list-container .title {
+  .to-do-list-container .title {
     font-size: 16px;
     margin-bottom: 20px;
   }

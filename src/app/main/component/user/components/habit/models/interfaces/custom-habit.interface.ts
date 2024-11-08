@@ -1,4 +1,4 @@
-import { ShoppingList } from '@user-models/shoppinglist.interface';
+import { ToDoList } from '@global-user/models/to-do-list.interface';
 import { HabitTranslationInterface } from './habit.interface';
 
 export interface CustomHabitDtoRequest {
@@ -7,7 +7,7 @@ export interface CustomHabitDtoRequest {
   defaultDuration: number;
   image: string;
   tagIds: number[];
-  customShoppingListItemDto: ShoppingList[];
+  customToDoListItemDto: ToDoList[];
   id?: number;
   userId?: number;
 }
@@ -19,5 +19,5 @@ export interface CustomHabit {
   duration: number;
   tagIds: number[];
   image: string;
-  shopList: ShoppingList[];
+  toDoList: ToDoList[];
 }

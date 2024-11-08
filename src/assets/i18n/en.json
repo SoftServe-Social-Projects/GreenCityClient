@@ -806,7 +806,6 @@
       "privacy": "Profile privacy",
       "location": "Show my location",
       "eco-place": "Show my eco places",
-      "shopping-list": "Show my shopping list",
       "to-do-list": "Show my To-do list",
       "picture-tooltip": "Upload PNG or JPG only. File size should be less than 10MB",
       "change-photo": "Do you want to change your profile picture?",
@@ -920,7 +919,7 @@
       },
       "to-do": {
         "to-do-list": "To-do list",
-        "no-shopping-items": "No items to recommend",
+        "no-to-do-items": "No items to recommend",
         "too-long-input": "The input field should contain no more than 2048 characters",
         "add-custom-item": "Add custom item",
         "save": "Save",
