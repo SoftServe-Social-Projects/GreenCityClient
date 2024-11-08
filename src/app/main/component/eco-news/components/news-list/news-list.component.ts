@@ -54,7 +54,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
     private localStorageService: LocalStorageService,
     private store: Store,
     private readonly dialog: MatDialog,
-    private ecoNewsService: EcoNewsService
+    private readonly ecoNewsService: EcoNewsService
   ) {}
 
   ngOnInit() {
