@@ -1,12 +1,10 @@
 <div class="search_item-wrp">
-  <div class="search_item-tag" *ngFor="let tag of searchModel.tags">
-    {{ tag }}
+  <div class="search_item-tag" *ngFor="let item of commonModel.tagsOrCategory">
+    {{ item }}
   </div>
   <div class="search_item-title">
-    <a [routerLink]="['/' + type, searchModel.id]">
-      <p>
-        {{ searchModel.title | slice: 0 : 130 }}
-      </p>
+    <a [routerLink]="itemLink">
+      <p>{{ commonModel.title | slice: 0 : 130 }}</p>
     </a>
   </div>
 </div>

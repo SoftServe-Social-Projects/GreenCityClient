@@ -13,6 +13,8 @@ import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchCategory } from './search-consts';
+import { PlacesSearchModel } from '@global-models/search/placesSearch.model';
+import { PopupSearchResults } from './search-popup.model';
 
 @Component({
   selector: 'app-search-popup',
@@ -23,10 +25,14 @@ export class SearchPopupComponent implements OnInit, OnDestroy {
   resultsCounters: {
     news: number;
     events: number;
+    places: number;
     total: number;
-  } = { events: null, news: null, total: null };
+  } = { events: null, news: null, places: null, total: null };
+
   newsElements: NewsSearchModel[] = [];
   eventsElements: EventsSearchModel[] = [];
+  placesElements: PlacesSearchModel[] = [];
+
   isSearchClicked = false;
   searchModalSubscription: Subscription;
   searchInput = new FormControl('');
@@ -61,11 +67,12 @@ export class SearchPopupComponent implements OnInit, OnDestroy {
           this.currentLanguage = this.localStorageService.getCurrentLanguage();
           return forkJoin({
             news: this.searchService.getAllResults(query, SearchCategory.NEWS, this.currentLanguage),
-            events: this.searchService.getAllResults(query, SearchCategory.EVENTS, this.currentLanguage)
+            events: this.searchService.getAllResults(query, SearchCategory.EVENTS, this.currentLanguage),
+            places: this.searchService.getAllResults(query, SearchCategory.PLACES, this.currentLanguage)
           });
         })
       )
-      .subscribe((data: { news: SearchDataModel<NewsSearchModel>; events: SearchDataModel<EventsSearchModel> }) => {
+      .subscribe((data: PopupSearchResults) => {
         this.setData(data);
       });
 
@@ -84,14 +91,17 @@ export class SearchPopupComponent implements OnInit, OnDestroy {
     this.snackBar.openSnackBar('error');
   }
 
-  private setData(data: { news: SearchDataModel<NewsSearchModel>; events: SearchDataModel<EventsSearchModel> }): void {
+  private setData(data: PopupSearchResults): void {
     this.isLoading = false;
 
     this.newsElements = data.news.page;
     this.eventsElements = data.events.page;
+    this.placesElements = data.places.page;
+
     this.resultsCounters.events = data.events.totalElements;
     this.resultsCounters.news = data.news.totalElements;
-    this.resultsCounters.total = data.events.totalElements + data.news.totalElements;
+    this.resultsCounters.places = data.places.totalElements;
+    this.resultsCounters.total = data.events.totalElements + data.news.totalElements + data.places.totalElements;
   }
 
   private subscribeToSignal(signal: boolean): void {
@@ -110,7 +120,7 @@ export class SearchPopupComponent implements OnInit, OnDestroy {
   private resetData(): void {
     this.newsElements = [];
     this.eventsElements = [];
-    this.resultsCounters = { events: null, news: null, total: null };
+    this.resultsCounters = { events: null, news: null, places: null, total: null };
   }
 
   ngOnDestroy() {

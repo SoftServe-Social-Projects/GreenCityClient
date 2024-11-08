@@ -59,6 +59,23 @@
           </app-search-item>
         </div>
       </div>
+      <div *ngIf="placesElements && placesElements.length > 0">
+        <a [routerLink]="['/places']" (click)="closeSearch()">
+          <h3 class="search-title">
+            {{ 'search.search-popup.places' | translate }} <span class="counter">({{ resultsCounters.places }})</span>
+          </h3>
+        </a>
+        <div class="list-search-items">
+          <app-search-item
+            *ngFor="let element of placesElements | slice: 0 : 3"
+            [searchModel]="element"
+            [type]="'places'"
+            (closeSearch)="closeSearch()"
+            class="search-item"
+          >
+          </app-search-item>
+        </div>
+      </div>
       <div class="search_see-all" *ngIf="resultsCounters.total">
         <a
           [routerLink]="['/search']"
