@@ -20,6 +20,7 @@ import { HttpParams } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { FilterModel } from '@shared/components/tag-filter/tag-filter.model';
 import { tagsListEcoNewsData } from '@eco-news-models/eco-news-consts';
+import { EcoNewsService } from '@eco-news-service/eco-news.service';
 
 @Component({
   selector: 'app-profile-dashboard',
@@ -59,7 +60,6 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   userLatitude = 0;
   userLongitude = 0;
   images = singleNewsImages;
-  isRequestInFlight = false;
   econews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   private hasNext = true;
@@ -74,7 +74,8 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     private eventService: EventsService,
     private route: ActivatedRoute,
     private readonly cdr: ChangeDetectorRef,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly ecoNewsService: EcoNewsService
   ) {}
 
   ngOnInit() {
@@ -215,55 +216,33 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.dispatchNews(true);
   }
 
-  private cleanNewsList(): void {
-    this.hasNext = true;
-    this.page = 0;
-    this.news = [];
-    this.totalNews = 0;
-  }
-
   dispatchNews(res: boolean): void {
     if (res) {
-      this.cleanNewsList();
+      this.hasNext = true;
+      this.page = 0;
+      this.news = [];
+      this.totalNews = 0;
     }
 
-    if (!this.hasNext || this.isRequestInFlight) {
+    if (!this.hasNext || this.loading) {
       return;
     }
 
     this.loading = true;
-    const params = this.getNewsHttpParams();
+    const params = this.ecoNewsService.getNewsHttpParams({
+      page: this.page,
+      size: this.newsCount,
+      authorId: this.userId,
+      favorite: this.isNewsFavoriteBtnClicked,
+      userId: this.userId,
+      tags: this.tagsList
+    });
 
     const action = GetEcoNewsAction({ params, reset: res });
     this.store.dispatch(action);
 
     this.page++;
     this.loading = false;
-  }
-
-  private getNewsHttpParams(): HttpParams {
-    let params = new HttpParams().set('page', this.page.toString()).set('size', this.newsCount.toString());
-
-    const optionalParams = [
-      !this.isNewsFavoriteBtnClicked && this.appendIfNotEmpty('author-id', this.userId?.toString()),
-      this.isNewsFavoriteBtnClicked && this.appendIfNotEmpty('user-id', this.userId?.toString()),
-      this.appendIfNotEmpty('tags', this.tagsList),
-      this.isNewsFavoriteBtnClicked ? { key: 'favorite', value: this.isNewsFavoriteBtnClicked ? 'true' : '' } : null
-    ];
-
-    optionalParams.forEach((param) => {
-      if (param) {
-        params = params.append(param.key, param.value);
-      }
-    });
-
-    const serializedParams = params.toString();
-    return new HttpParams({ fromString: serializedParams });
-  }
-
-  private appendIfNotEmpty(key: string, value: string | string[]): { key: string; value: string } | null {
-    const formattedValue = Array.isArray(value) ? value.join(',') : value;
-    return formattedValue?.trim() ? { key, value: formattedValue.toUpperCase() } : null;
   }
 
   changeStatus(habit: HabitAssignInterface) {

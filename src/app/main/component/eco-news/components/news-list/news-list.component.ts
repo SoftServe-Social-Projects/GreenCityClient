@@ -15,7 +15,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { Patterns } from '@assets/patterns/patterns';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthModalComponent } from '@global-auth/auth-modal/auth-modal.component';
-import { HttpParams } from '@angular/common/http';
+import { EcoNewsService } from '@eco-news-service/eco-news.service';
 
 @Component({
   selector: 'app-news-list',
@@ -39,14 +39,13 @@ export class NewsListComponent implements OnInit, OnDestroy {
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   bookmarkSelected = false;
   hasNext = true;
-  isLoading = false;
+  loading = false;
   private page = 0;
   noNewsMatch = false;
   isSearchVisible = false;
-  private isRequestInFlight = false;
   searchNewsControl = new FormControl('', [Validators.maxLength(30), Validators.pattern(Patterns.NameInfoPattern)]);
   econews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
-  searchQuery: string;
+  searchQuery = '';
 
   private dialogRef: MatDialogRef<unknown>;
 
@@ -54,7 +53,8 @@ export class NewsListComponent implements OnInit, OnDestroy {
     private userOwnAuthService: UserOwnAuthService,
     private localStorageService: LocalStorageService,
     private store: Store,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private ecoNewsService: EcoNewsService
   ) {}
 
   ngOnInit() {
@@ -76,6 +76,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
           Math.abs(data.totalElements - value.countOfEcoNews) > 0 && value.countOfEcoNews !== 0 ? value.countOfEcoNews : data.totalElements;
         this.elementsArePresent = this.elements.length < data.totalElements;
       }
+      this.loading = false;
     });
 
     this.searchNewsControl.valueChanges.subscribe((value) => {
@@ -106,7 +107,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
     if (!this.elements.length) {
       return;
     }
-    this.scroll = true;
     this.dispatchStore(false);
   }
 
@@ -181,57 +181,34 @@ export class NewsListComponent implements OnInit, OnDestroy {
     }
   }
 
-  private cleanNewsList(): void {
-    this.isLoading = true;
-    this.hasNext = true;
-    this.page = 0;
-    this.elements = [];
-    this.noNewsMatch = false;
-    this.newsTotal = 0;
-  }
-
   dispatchStore(res: boolean): void {
     if (res) {
-      this.cleanNewsList();
+      this.hasNext = true;
+      this.page = 0;
+      this.elements = [];
+      this.noNewsMatch = false;
+      this.newsTotal = 0;
     }
+    console.log('in2');
 
-    if (!this.hasNext || this.isRequestInFlight) {
+    if (!this.hasNext || this.loading) {
+      console.log(this.hasNext, this.loading);
       return;
     }
+    console.log('in3');
 
-    this.isRequestInFlight = true;
-    const params = this.getNewsHttpParams();
+    this.loading = true;
+    const params = this.ecoNewsService.getNewsHttpParams({
+      page: this.page,
+      size: this.numberOfNews,
+      title: this.searchQuery,
+      favorite: this.bookmarkSelected,
+      userId: this.userId,
+      tags: this.tagsList
+    });
 
     const action = GetEcoNewsAction({ params, reset: res });
     this.store.dispatch(action);
-
-    this.page++;
-    this.isRequestInFlight = false;
-  }
-
-  private getNewsHttpParams(): HttpParams {
-    let params = new HttpParams().set('page', this.page.toString()).set('size', this.numberOfNews.toString());
-
-    const optionalParams = [
-      this.appendIfNotEmpty('user-id', this.userId?.toString()),
-      this.appendIfNotEmpty('title', this.searchQuery),
-      this.appendIfNotEmpty('tags', this.tagsList),
-      this.bookmarkSelected ? { key: 'favorite', value: this.bookmarkSelected ? 'true' : '' } : null
-    ];
-
-    optionalParams.forEach((param) => {
-      if (param) {
-        params = params.append(param.key, param.value);
-      }
-    });
-
-    const serializedParams = params.toString();
-    return new HttpParams({ fromString: serializedParams });
-  }
-
-  private appendIfNotEmpty(key: string, value: string | string[]): { key: string; value: string } | null {
-    const formattedValue = Array.isArray(value) ? value.join(',') : value;
-    return formattedValue?.trim() ? { key, value: formattedValue.toUpperCase() } : null;
   }
 
   private checkUserSingIn(): void {

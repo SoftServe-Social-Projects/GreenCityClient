@@ -75,6 +75,41 @@ export class EcoNewsService implements OnDestroy {
     return this.http.delete(`${this.backEnd}eco-news/${id}/favorites`, {});
   }
 
+  getNewsHttpParams(parameters: {
+    page: number;
+    size: number;
+    title?: string;
+    favorite: boolean;
+    userId: number;
+    authorId?: number;
+    tags: string[];
+  }): HttpParams {
+    let params = new HttpParams().set('page', parameters.page.toString()).set('size', parameters.size.toString());
+
+    console.log(parameters);
+    const optionalParams = [
+      parameters.favorite && this.appendIfNotEmpty('user-id', parameters.userId.toString()),
+      !parameters.favorite && this.appendIfNotEmpty('author-id', parameters.authorId ? parameters?.authorId.toString() : null),
+      this.appendIfNotEmpty('title', parameters.title),
+      this.appendIfNotEmpty('tags', parameters.tags),
+      parameters.favorite && { key: 'favorite', value: parameters.favorite }
+    ];
+
+    optionalParams.forEach((param) => {
+      if (param) {
+        params = params.append(param.key, param.value);
+      }
+    });
+
+    const serializedParams = params.toString();
+    return new HttpParams({ fromString: serializedParams });
+  }
+
+  private appendIfNotEmpty(key: string, value: string | string[]): { key: string; value: string } | null {
+    const formattedValue = Array.isArray(value) ? value.join(',') : value;
+    return formattedValue?.trim() ? { key, value: formattedValue.toUpperCase() } : null;
+  }
+
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();
