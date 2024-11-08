@@ -58,7 +58,7 @@ describe('ProfileHeaderComponent', () => {
       rating: 2,
       showEcoPlace: false,
       showLocation: false,
-      showShoppingList: false,
+      showToDoList: false,
       socialNetworks: [{ id: 220, url: 'http://instagram' }]
     } as EditProfileModel;
     fixture.detectChanges();

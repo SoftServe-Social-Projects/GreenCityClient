@@ -7,12 +7,12 @@
   box-shadow: 1px 4px 8px var(--quintynary-dark-grey);
 }
 
-.shopping-list-block {
+.to-do-list-block {
   width: 213px;
   margin: 0 auto;
 }
 
-.shopping-list-content {
+.to-do-list-content {
   padding-top: 24px;
   font-family: var(--tertiary-font);
   font-style: normal;
@@ -86,15 +86,15 @@ h2 > span {
   text-decoration: line-through;
 }
 
-.shopping-list-min {
+.to-do-list-min {
   height: 90px;
 }
 
-.shopping-list-max {
+.to-do-list-max {
   height: max-content;
 }
 
-.shopping-list {
+.to-do-list {
   width: 100%;
   padding: 5px 0 0;
   overflow-x: hidden;
@@ -138,7 +138,7 @@ h2 > span {
 }
 
 @include responsiveRange(md, 2xl) {
-  .shopping-list-block {
+  .to-do-list-block {
     border-top: 1px solid var(--quaternary-light-grey);
     width: 184px;
   }
@@ -149,7 +149,7 @@ h2 > span {
     margin-top: 20px;
   }
 
-  .shopping-list-block {
+  .to-do-list-block {
     width: 100%;
     padding: 0 16px;
   }

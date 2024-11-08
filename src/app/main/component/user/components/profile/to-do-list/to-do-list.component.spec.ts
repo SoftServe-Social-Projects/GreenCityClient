@@ -1,24 +1,24 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ShoppingListComponent } from '@global-user/components';
+import { ToDoListComponent } from '@global-user/components';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { of, BehaviorSubject } from 'rxjs';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ShoppingListService } from '@global-user/components/habit/add-new-habit/habit-edit-shopping-list/shopping-list.service';
+import { ToDoListService } from '@global-user/components/habit/add-new-habit/habit-edit-to-do-list/to-do-list.service';
 import { Language } from 'src/app/main/i18n/Language';
-import { SHOPLISTITEMONE, SHOPLISTITEMTWO } from '@global-user/components/habit/mocks/shopping-list-mock';
-import { SHOPLIST } from '@global-user/components/habit/mocks/shopping-list-mock';
-import { ALLUSERSHOPLISTS } from '@global-user/components/habit/mocks/shopping-list-mock';
+import { TODOLISTITEMONE, TODOLISTITEMTWO } from '@global-user/components/habit/mocks/to-do-list-mock';
+import { TODOLIST } from '@global-user/components/habit/mocks/to-do-list-mock';
+import { ALLUSERTODOLISTS } from '@global-user/components/habit/mocks/to-do-list-mock';
 import { CorrectUnitPipe } from 'src/app/shared/correct-unit-pipe/correct-unit.pipe';
 import { TodoStatus } from '@global-user/components/habit/models/todo-status.enum';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-describe('ShoppingListComponent', () => {
-  let component: ShoppingListComponent;
-  let fixture: ComponentFixture<ShoppingListComponent>;
+describe('ToDoListComponent', () => {
+  let component: ToDoListComponent;
+  let fixture: ComponentFixture<ToDoListComponent>;
 
   const localStorageServiceMock = jasmine.createSpyObj('localStorageService', [
     'languageBehaviourSubject',
@@ -30,18 +30,18 @@ describe('ShoppingListComponent', () => {
   localStorageServiceMock.languageSubject = of('en');
   localStorageServiceMock.getUserId = () => 1;
 
-  const shoppingListServiceMock: ShoppingListService = jasmine.createSpyObj('fakeShoppingListService', [
-    'getUserShoppingLists',
-    'updateStandardShopItemStatus',
-    'updateCustomShopItemStatus'
+  const toDoListServiceMock: ToDoListService = jasmine.createSpyObj('fakeToDoListService', [
+    'getUserToDoLists',
+    'updateStandardToDoItemStatus',
+    'updateCustomToDoItemStatus'
   ]);
-  shoppingListServiceMock.getUserShoppingLists = () => of([ALLUSERSHOPLISTS]);
-  shoppingListServiceMock.updateStandardShopItemStatus = () => of();
-  shoppingListServiceMock.updateCustomShopItemStatus = () => of();
+  toDoListServiceMock.getUserToDoLists = () => of([ALLUSERTODOLISTS]);
+  toDoListServiceMock.updateStandardToDoItemStatus = () => of();
+  toDoListServiceMock.updateCustomToDoItemStatus = () => of();
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ShoppingListComponent, CorrectUnitPipe],
+      declarations: [ToDoListComponent, CorrectUnitPipe],
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
@@ -51,7 +51,7 @@ describe('ShoppingListComponent', () => {
         NgbModule
       ],
       providers: [
-        { provide: ShoppingListService, useValue: shoppingListServiceMock },
+        { provide: ToDoListService, useValue: toDoListServiceMock },
         { provide: LocalStorageService, useValue: localStorageServiceMock }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -59,7 +59,7 @@ describe('ShoppingListComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ShoppingListComponent);
+    fixture = TestBed.createComponent(ToDoListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -68,20 +68,20 @@ describe('ShoppingListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set custom true after getShopLists', () => {
+  it('should set custom true after getToDoLists', () => {
     const result = [
-      { ...SHOPLISTITEMONE, custom: true },
-      { ...SHOPLISTITEMTWO, custom: true }
+      { ...TODOLISTITEMONE, custom: true },
+      { ...TODOLISTITEMTWO, custom: true }
     ];
-    SHOPLIST.forEach((el) => (el.custom = true));
-    component.shoppingList = SHOPLIST;
-    expect(component.shoppingList).toEqual(result);
+    TODOLIST.forEach((el) => (el.custom = true));
+    component.toDoList = TODOLIST;
+    expect(component.toDoList).toEqual(result);
   });
 
-  it('should set shopList after getShopList', () => {
-    component.shoppingList = [];
-    component.shoppingList = [...component.shoppingList, ...SHOPLIST];
-    expect(component.shoppingList).toEqual(SHOPLIST);
+  it('should set toDoList after getToDoList', () => {
+    component.toDoList = [];
+    component.toDoList = [...component.toDoList, ...TODOLIST];
+    expect(component.toDoList).toEqual(TODOLIST);
   });
 
   it('should change toogle from true on openCloseList', () => {
@@ -97,8 +97,8 @@ describe('ShoppingListComponent', () => {
   });
 
   it('should change item status on toggleDone', () => {
-    SHOPLISTITEMONE.status = TodoStatus.inprogress;
-    component.toggleDone(SHOPLISTITEMONE);
-    expect(SHOPLISTITEMONE.status).toBe('DONE');
+    TODOLISTITEMONE.status = TodoStatus.inprogress;
+    component.toggleDone(TODOLISTITEMONE);
+    expect(TODOLISTITEMONE.status).toBe('DONE');
   });
 });

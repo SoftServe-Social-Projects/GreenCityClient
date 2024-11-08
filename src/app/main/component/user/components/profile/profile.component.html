@@ -6,7 +6,7 @@
         <app-users-achievements class="app-users-achievements"></app-users-achievements>
         <app-users-friends class="app-users-friends"></app-users-friends>
         <app-eco-places class="app-eco-places" *ngIf="userInfo.showEcoPlace"></app-eco-places>
-        <app-shopping-list class="app-shopping-list" *ngIf="userInfo.showShoppingList"></app-shopping-list>
+        <app-to-do-list class="app-to-do-list" *ngIf="userInfo.showToDoList"></app-to-do-list>
       </div>
       <app-profile-dashboard class="habits-dashboard"></app-profile-dashboard>
       <div class="right-column">
@@ -15,7 +15,7 @@
           <app-calendar-week class="app-calendar-week"></app-calendar-week>
         </ng-template>
         <app-profile-cards class="app-profile-cards"></app-profile-cards>
-        <app-shopping-list class="app-shopping-list" *ngIf="userInfo.showShoppingList"></app-shopping-list>
+        <app-to-do-list class="app-to-do-list" *ngIf="userInfo.showToDoList"></app-to-do-list>
       </div>
     </div>
   </div>

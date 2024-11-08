@@ -83,7 +83,7 @@ describe('ProfileService', () => {
         rating: 1999,
         showEcoPlace: true,
         showLocation: false,
-        showShoppingList: true,
+        showToDoList: true,
         socialNetworks: []
       };
 
