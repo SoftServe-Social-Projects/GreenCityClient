@@ -14,7 +14,7 @@ export class TableCellTimeComponent implements OnInit {
   @Input() id: number;
   @Input() ordersToChange: number[];
   @Input() isAllChecked: boolean;
-  @Input() doneOrCanceled: boolean;
+  @Input() uneditableStatus: boolean;
   @Input() timeOfExport: string;
   @Input() exportDate: string;
 

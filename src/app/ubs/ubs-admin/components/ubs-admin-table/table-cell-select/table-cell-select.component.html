@@ -1,5 +1,5 @@
 <div class="select_wr">
-  <div *ngIf="doneOrCanceled; else selectOption">{{ currentValue | serverTranslate: lang }}</div>
+  <div *ngIf="uneditableStatus; else selectOption">{{ currentValue | serverTranslate: lang }}</div>
 </div>
 
 <ng-template #selectOption>

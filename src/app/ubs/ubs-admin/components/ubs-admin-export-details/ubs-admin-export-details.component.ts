@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, AfterViewChecked, ChangeDetectorRef, AfterViewInit, OnChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectorRef, OnChanges } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { IExportDetails } from '../../models/ubs-admin.interface';
@@ -29,7 +29,7 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
   currentHour: string;
   allReceivingStations: string[];
   currentDate: string;
-  isOrderStatusCancelOrDone = false;
+  uneditableStatus = false;
   resetFieldImg = './assets/img/ubs-tariff/bigClose.svg';
   private statuses = [OrderStatus.BROUGHT_IT_HIMSELF, OrderStatus.CANCELED];
 
@@ -57,8 +57,12 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
       this.exportDetailsDto.updateValueAndValidity();
     });
 
-    if (this.orderStatus === OrderStatus.CANCELED || this.orderStatus === OrderStatus.DONE) {
-      this.isOrderStatusCancelOrDone = true;
+    if (
+      this.orderStatus === OrderStatus.CANCELED ||
+      this.orderStatus === OrderStatus.DONE ||
+      this.orderStatus === OrderStatus.BROUGHT_IT_HIMSELF
+    ) {
+      this.uneditableStatus = true;
     }
 
     this.cdr.detectChanges();
@@ -81,9 +85,9 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
   get isFormRequired(): boolean {
     const isNotOpen = !this.pageOpen;
     const isNotValid = !this.exportDetailsDto.valid;
-    const isNotCancelOrDone = !this.isOrderStatusCancelOrDone;
+    const isUneditable = !this.uneditableStatus;
 
-    return isNotOpen && isNotValid && isNotCancelOrDone;
+    return isNotOpen && isNotValid && isUneditable;
   }
 
   showTimePickerClick(): void {

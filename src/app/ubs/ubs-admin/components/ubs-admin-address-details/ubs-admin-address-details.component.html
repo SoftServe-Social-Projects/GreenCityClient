@@ -10,7 +10,7 @@
     [address]="address"
     [edit]="true"
     [isFromAdminPage]="true"
-    [isOrderStatusCancelOrDone]="isOrderStatusCancelOrDone$ | async"
+    [uneditableStatus]="isEditableStatus$ | async"
   ></app-address-input>
   <hr />
 </div>

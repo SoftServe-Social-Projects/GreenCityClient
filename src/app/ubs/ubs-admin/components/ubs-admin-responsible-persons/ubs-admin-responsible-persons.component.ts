@@ -19,13 +19,17 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
   allLogisticians: string[];
   allNavigators: string[];
   allDrivers: string[];
-  isOrderStatusCancelOrDone = false;
+  uneditableStatus = false;
   pageOpen: boolean;
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.orderStatus?.currentValue === OrderStatus.CANCELED || changes.orderStatus?.currentValue === OrderStatus.DONE) {
-      this.isOrderStatusCancelOrDone = true;
+    if (
+      changes.orderStatus?.currentValue === OrderStatus.CANCELED ||
+      changes.orderStatus?.currentValue === OrderStatus.DONE ||
+      changes.orderStatus?.currentValue === OrderStatus.BROUGHT_IT_HIMSELF
+    ) {
+      this.uneditableStatus = true;
     }
   }
 
@@ -48,9 +52,9 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
   isFormRequired(): boolean {
     const isNotOpen = !this.pageOpen;
     const isNotValid = !this.responsiblePersonsForm.valid;
-    const isNotCancelOrDone = !this.isOrderStatusCancelOrDone;
+    const isUneditable = !this.uneditableStatus;
 
-    return isNotOpen && isNotValid && isNotCancelOrDone;
+    return isNotOpen && isNotValid && isUneditable;
   }
 
   getEmployeesById(employeeObjects: Map<string, IEmployee[]>, id: number): string[] {

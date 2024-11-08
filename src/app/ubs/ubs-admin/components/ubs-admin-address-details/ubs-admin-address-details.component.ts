@@ -14,14 +14,17 @@ export class UbsAdminAddressDetailsComponent implements OnChanges {
   @Input() address: Address;
   @Input() orderStatus: string;
   pageOpen: boolean;
-  isOrderStatusCancelOrDone$ = new BehaviorSubject<boolean>(false);
+  isEditableStatus$ = new BehaviorSubject<boolean>(false);
 
   openDetails(): void {
     this.pageOpen = !this.pageOpen;
   }
 
   ngOnChanges(): void {
-    const status = this.orderStatus === OrderStatus.CANCELED || this.orderStatus === OrderStatus.DONE;
-    this.isOrderStatusCancelOrDone$.next(status);
+    const status =
+      this.orderStatus === OrderStatus.CANCELED ||
+      this.orderStatus === OrderStatus.DONE ||
+      this.orderStatus === OrderStatus.BROUGHT_IT_HIMSELF;
+    this.isEditableStatus$.next(status);
   }
 }

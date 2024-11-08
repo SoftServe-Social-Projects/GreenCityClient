@@ -49,7 +49,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() addFromProfile: boolean;
   @Input() isShowCommentInput = true;
   @Input() isFromAdminPage: boolean;
-  @Input() isOrderStatusCancelOrDone: boolean;
+  @Input() uneditableStatus: boolean;
 
   addressForm: FormGroup;
   currentLanguage: string;
@@ -182,7 +182,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       return;
     }
 
-    if (this.isOrderStatusCancelOrDone) {
+    if (this.uneditableStatus) {
       this.disableAllFields();
     } else {
       this.enableAllFields();

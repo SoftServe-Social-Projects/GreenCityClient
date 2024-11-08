@@ -60,7 +60,7 @@ describe('UbsAdminResponsiblePersonsComponent', () => {
 
   it('should return true when pageOpen is false, responsiblePersonInfo is invalid and orderStatus is not cancel or done', () => {
     component.pageOpen = false;
-    component.isOrderStatusCancelOrDone = false;
+    component.uneditableStatus = false;
     expect(component.isFormRequired()).toBeFalsy();
   });
 });

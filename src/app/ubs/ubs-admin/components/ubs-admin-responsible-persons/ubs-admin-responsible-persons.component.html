@@ -1,17 +1,17 @@
 <div class="container" [formGroup]="responsiblePersonsForm">
   <div class="empty_card" (click)="openDetails()">
     <img
-      *ngIf="!pageOpen && (responsiblePersonsForm.valid || isOrderStatusCancelOrDone)"
+      *ngIf="!pageOpen && (responsiblePersonsForm.valid || uneditableStatus)"
       src="assets/img/ubs-admin-orders/arrow_up.svg"
       alt="arrow up"
     />
     <img
-      *ngIf="pageOpen && (responsiblePersonsForm.valid || isOrderStatusCancelOrDone)"
+      *ngIf="pageOpen && (responsiblePersonsForm.valid || uneditableStatus)"
       src="assets/img/ubs-admin-orders/arrow_down.svg"
       alt="arrow down"
     />
     <img
-      *ngIf="pageOpen && !responsiblePersonsForm.valid && !isOrderStatusCancelOrDone"
+      *ngIf="pageOpen && !responsiblePersonsForm.valid && !uneditableStatus"
       src="assets/img/ubs-admin-orders/red_arrow_down.svg"
       alt="arrow down"
     />
