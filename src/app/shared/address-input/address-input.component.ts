@@ -49,6 +49,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() addFromProfile: boolean;
   @Input() isShowCommentInput = true;
   @Input() isFromAdminPage: boolean;
+  @Input() isOrderStatusCancelOrDone: boolean;
 
   addressForm: FormGroup;
   currentLanguage: string;
@@ -69,6 +70,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   private buildingPattern = Patterns.numericAndAlphabetic;
   private $destroy: Subject<void> = new Subject();
+  private viewInitialized = false;
 
   autocompleteRegionRequest = {
     input: '',
@@ -170,6 +172,25 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngAfterViewInit(): void {
+    this.initializeFieldStates();
+    this.viewInitialized = true;
+    this.cdr.detectChanges();
+  }
+
+  ngOnChanges(): void {
+    if (!this.viewInitialized) {
+      return;
+    }
+
+    if (this.isOrderStatusCancelOrDone) {
+      this.disableAllFields();
+    } else {
+      this.enableAllFields();
+      this.initializeFieldStates();
+    }
+  }
+
+  private initializeFieldStates(): void {
     if (!this.edit) {
       this.region.value ? this.city.enable() : this.city.disable();
       this.street.disable();
@@ -180,11 +201,29 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     } else {
       this.updateDistrictEditState();
     }
+
     if (this.isFromAdminPage) {
       this.addressComment.disable();
       this.region.disable();
     }
-    this.cdr.detectChanges();
+  }
+
+  private disableAllFields(): void {
+    this.city.disable();
+    this.street.disable();
+    this.houseNumber.disable();
+    this.houseCorpus.disable();
+    this.entranceNumber.disable();
+    this.district.disable();
+  }
+
+  private enableAllFields(): void {
+    this.city.enable();
+    this.street.enable();
+    this.houseNumber.enable();
+    this.houseCorpus.enable();
+    this.entranceNumber.enable();
+    this.district.enable();
   }
 
   initListeners(): void {
