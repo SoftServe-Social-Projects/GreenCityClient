@@ -78,7 +78,7 @@
                     <span>{{ 'profile.dashboard.add-news' | translate }}</span>
                   </div>
                 </a>
-                <div class="favourites" (click)="toggleNewsFavorites()">
+                <div class="favourites" (click)="toggleNewsFavorites()" (keydown.enter)="toggleNewsFavorites()">
                   <span [ngClass]="isNewsFavoriteBtnClicked ? 'flag-active' : 'flag'"></span>
                 </div>
               </div>

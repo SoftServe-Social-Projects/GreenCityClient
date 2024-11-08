@@ -8,7 +8,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
 import { IEcoNewsState } from 'src/app/store/state/ecoNews.state';
-import { GetEcoNewsAction, GetEcoNewsByAuthorAction } from 'src/app/store/actions/ecoNews.actions';
+import { GetEcoNewsAction } from 'src/app/store/actions/ecoNews.actions';
 import { EcoNewsModel } from '@eco-news-models/eco-news-model';
 import { EventResponse, EventResponseDto } from 'src/app/main/component/events/models/events.interface';
 import { EventsService } from 'src/app/main/component/events/services/events.service';
@@ -207,19 +207,6 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.isNewsFavoriteBtnClicked = !this.isNewsFavoriteBtnClicked;
     this.dispatchNews(true);
   }
-
-  // dispatchNews(res: boolean) {
-  //   if (this.currentPage !== undefined && this.hasNext) {
-  //     this.store.dispatch(
-  //       GetEcoNewsByAuthorAction({
-  //         authorId: this.userId,
-  //         currentPage: this.currentPage,
-  //         numberOfNews: this.newsCount,
-  //         reset: res
-  //       })
-  //     );
-  //   }
-  // }
 
   getFilterData(value: Array<string>): void {
     if (this.tagsList !== value) {
