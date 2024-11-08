@@ -45,7 +45,9 @@ export class UbsAdminOrderClientInfoComponent implements OnInit, OnChanges, OnDe
     if (changes.orderStatus?.currentValue) {
       this.isOrderDone = changes.orderStatus.currentValue === OrderStatus.DONE;
       this.uneditableStatus =
-        changes.orderStatus.currentValue === OrderStatus.CANCELED || changes.orderStatus.currentValue === OrderStatus.BROUGHT_IT_HIMSELF;
+        this.isOrderDone ||
+        changes.orderStatus.currentValue === OrderStatus.CANCELED ||
+        changes.orderStatus.currentValue === OrderStatus.BROUGHT_IT_HIMSELF;
       this.isOrderNotTakenOut = changes.orderStatus.currentValue === OrderStatus.NOT_TAKEN_OUT;
     }
   }

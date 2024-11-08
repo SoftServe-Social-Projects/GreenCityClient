@@ -669,7 +669,6 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
     const exportDetails = this.orderForm.get('exportDetailsDto').value;
     const allFieldsHaveValue = Object.keys(exportDetails).every((key) => exportDetails[key]);
     const isStatusDoneAndFormFilled = this.currentOrderStatus === OrderStatus.DONE && allFieldsHaveValue;
-
     if (
       this.currentOrderStatus === OrderStatus.CANCELED ||
       this.currentOrderStatus === OrderStatus.BROUGHT_IT_HIMSELF ||
