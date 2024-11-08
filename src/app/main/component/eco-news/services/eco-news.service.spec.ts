@@ -63,17 +63,6 @@ describe('EcoNewsService', () => {
     req.flush(newsDtoMock);
   });
 
-  it('should return news list', () => {
-    const arr = [newsMock];
-    service.getNewsList().subscribe((data) => {
-      expect(data).toBe(arr);
-    });
-
-    const req = httpTestingController.expectOne(`${environment.backendLink}eco-news`);
-    expect(req.request.method).toEqual('GET');
-    req.flush(arr);
-  });
-
   it('should return news list by id', () => {
     service.getEcoNewsById(13578).subscribe((data) => {
       expect(data).toBeDefined();

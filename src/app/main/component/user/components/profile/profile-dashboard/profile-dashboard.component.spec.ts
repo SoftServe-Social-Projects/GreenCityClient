@@ -10,11 +10,12 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { EventsService } from 'src/app/main/component/events/services/events.service';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { EventType } from 'src/app/ubs/ubs/services/event-type.enum';
-import { mockEvent, mockFavouriteEvents, mockHabitAssign } from '@assets/mocks/events/mock-events';
+import { mockEvent, mockFavouriteEvents } from '@assets/mocks/events/mock-events';
 import { mockHabits } from '@assets/mocks/habit/mock-habit-calendar';
+import { newsMock } from '@assets/mocks/eco-news/mock-news-item';
 
 describe('ProfileDashboardComponent', () => {
   let component: ProfileDashboardComponent;
@@ -32,23 +33,6 @@ describe('ProfileDashboardComponent', () => {
   LocalStorageServiceMock.languageBehaviourSubject = new BehaviorSubject('ua');
   LocalStorageServiceMock.setCurrentPage = () => of('previousPage', '/profile');
   LocalStorageServiceMock.getCurrentLanguage = () => of('ua');
-
-  const newsMock = {
-    countComments: 5,
-    id: 13578,
-    imagePath: null,
-    title: '',
-    text: '',
-    content: '',
-    shortInfo: '',
-    tags: ['News', 'Events'],
-    tagsEn: ['News'],
-    tagsUa: ['Новини'],
-    creationDate: '2021-11-25T22:32:30.555088+02:00',
-    likes: 0,
-    source: '',
-    author: { id: 312, name: 'taqcTestName' }
-  };
 
   const storeMock = jasmine.createSpyObj('store', ['select', 'dispatch']);
   storeMock.select = () => of({ ecoNews: {}, pages: [], pageNumber: 1, error: 'error' });

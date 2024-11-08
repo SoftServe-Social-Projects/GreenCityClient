@@ -48,7 +48,6 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   eventsList: EventResponse[] = [];
   eventsPerPage = 6;
   eventsPage = 1;
-  favoriteEventsPage = 0;
   totalEvents = 0;
   totalNews = 0;
   tagsList: Array<string> = [];

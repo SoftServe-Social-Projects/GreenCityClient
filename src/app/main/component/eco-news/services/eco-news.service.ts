@@ -34,19 +34,6 @@ export class EcoNewsService implements OnDestroy {
     return this.http.get<EcoNewsDto>(`${this.backEnd}eco-news?author-id=${authorId}&page=${page}&size=${quantity}`);
   }
 
-  getNewsList(): Observable<any> {
-    const headers = new HttpHeaders();
-    headers.set('Content-type', 'application/json');
-    return new Observable((observer: Observer<any>) => {
-      this.http
-        .get<EcoNewsDto>(`${this.backEnd}eco-news`)
-        .pipe(take(1))
-        .subscribe((newsDto: EcoNewsDto) => {
-          observer.next(newsDto);
-        });
-    });
-  }
-
   getEcoNewsById(id: number): Observable<EcoNewsModel> {
     return this.http.get<EcoNewsModel>(`${this.backEnd}eco-news/${id}?lang=${this.language}`);
   }
@@ -86,7 +73,6 @@ export class EcoNewsService implements OnDestroy {
   }): HttpParams {
     let params = new HttpParams().set('page', parameters.page.toString()).set('size', parameters.size.toString());
 
-    console.log(parameters);
     const optionalParams = [
       parameters.favorite && this.appendIfNotEmpty('user-id', parameters.userId.toString()),
       !parameters.favorite && this.appendIfNotEmpty('author-id', parameters.authorId ? parameters?.authorId.toString() : null),

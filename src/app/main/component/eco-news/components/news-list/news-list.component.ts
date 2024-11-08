@@ -1,7 +1,7 @@
 import { Breakpoints } from '../../../../config/breakpoints.constants';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { Observable, of, ReplaySubject } from 'rxjs';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { EcoNewsModel } from '@eco-news-models/eco-news-model';
 import { FilterModel } from '@shared/components/tag-filter/tag-filter.model';
 import { UserOwnAuthService } from '@auth-service/user-own-auth.service';
@@ -133,24 +133,25 @@ export class NewsListComponent implements OnInit, OnDestroy {
     this.isSearchVisible = !this.isSearchVisible;
   }
 
+  private checkAuthentication(): Observable<boolean> {
+    if (!this.userId) {
+      this.openAuthModalWindow('sign-in');
+      return this.dialogRef.afterClosed().pipe(
+        take(1),
+        map((result) => !!result)
+      );
+    }
+    return of(true);
+  }
+
   changeFavoriteStatus(event: Event, data: EcoNewsModel) {
     event.preventDefault();
     event.stopPropagation();
 
-    let isRegistered = !!this.userId;
+    this.checkAuthentication();
 
-    if (!isRegistered) {
-      this.openAuthModalWindow('sign-in');
-      this.dialogRef
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe((result) => {
-          isRegistered = !!result;
-        });
-    } else {
-      const action = ChangeEcoNewsFavoriteStatusAction({ id: data.id, favorite: !data.favorite, isFavoritesPage: this.bookmarkSelected });
-      this.store.dispatch(action);
-    }
+    const action = ChangeEcoNewsFavoriteStatusAction({ id: data.id, favorite: !data.favorite, isFavoritesPage: this.bookmarkSelected });
+    this.store.dispatch(action);
   }
 
   openAuthModalWindow(page: string): void {
@@ -165,20 +166,9 @@ export class NewsListComponent implements OnInit, OnDestroy {
   }
 
   showSelectedNews(): void {
-    let isRegistered = !!this.userId;
-
-    if (!isRegistered) {
-      this.openAuthModalWindow('sign-in');
-      this.dialogRef
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe((result) => {
-          isRegistered = !!result;
-        });
-    } else {
-      this.bookmarkSelected = !this.bookmarkSelected;
-      this.dispatchStore(true);
-    }
+    this.checkAuthentication();
+    this.bookmarkSelected = !this.bookmarkSelected;
+    this.dispatchStore(true);
   }
 
   dispatchStore(res: boolean): void {
@@ -189,13 +179,11 @@ export class NewsListComponent implements OnInit, OnDestroy {
       this.noNewsMatch = false;
       this.newsTotal = 0;
     }
-    console.log('in2');
 
     if (!this.hasNext || this.loading) {
       console.log(this.hasNext, this.loading);
       return;
     }
-    console.log('in3');
 
     this.loading = true;
     const params = this.ecoNewsService.getNewsHttpParams({
