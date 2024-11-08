@@ -172,6 +172,9 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngAfterViewInit(): void {
+    if (this.uneditableStatus) {
+      this.disableAllFields();
+    }
     this.initializeFieldStates();
     this.viewInitialized = true;
     this.cdr.detectChanges();
