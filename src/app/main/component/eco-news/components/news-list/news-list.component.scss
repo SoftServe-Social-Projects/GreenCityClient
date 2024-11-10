@@ -48,6 +48,140 @@ div hr {
   }
 }
 
+.create-container {
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  flex: 1;
+  justify-content: flex-end;
+  margin-right: 30px;
+
+  @include responsivePCFirst(sm) {
+    flex-direction: row;
+    gap: 18px;
+  }
+}
+
+.container-img {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary-white);
+  border-radius: 4px;
+  box-shadow: 0 0 1px 0 var(--primary-grey);
+  cursor: pointer;
+
+  span {
+    transition: all 0.3s;
+  }
+
+  .search-img {
+    min-width: 20px;
+    min-height: 20px;
+    background: url('/assets/events-icons/search.png');
+    display: inline-block;
+
+    &:hover {
+      background: url('/assets/events-icons/search-hover.png');
+    }
+  }
+
+  .search-img-active {
+    min-width: 20px;
+    min-height: 20px;
+    background: url('/assets/events-icons/search-active.png');
+  }
+
+  .bookmark-img {
+    width: 12px;
+    height: 17px;
+    background: url('/assets/events-icons/bookmark-grey.png');
+  }
+
+  .bookmark-img-active {
+    width: 12px;
+    height: 17px;
+    background: url('/assets/events-icons/bookmark-active.png');
+  }
+}
+
+.container-input {
+  position: relative;
+  margin-left: 15px;
+  flex: 1;
+
+  .cross-position {
+    position: absolute;
+    top: 14px;
+    right: 10px;
+    cursor: pointer;
+  }
+
+  .place-input {
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+    box-shadow: 0 0 1px 0 var(--primary-grey);
+    height: 40px;
+    padding: 0 14px;
+
+    &:active,
+    &:focus,
+    &:hover {
+      border: 1px solid var(--primary-grey);
+      outline: none;
+    }
+  }
+}
+
+.link {
+  position: relative;
+}
+
+.news-flags {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255 255 255/ 80%);
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 8px;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 1px 0 var(--primary-grey);
+  cursor: pointer;
+
+  span {
+    display: inline-block;
+    width: 12px;
+    height: 16.5px;
+    transition: all 0.3s;
+  }
+
+  .flag {
+    background: url('/assets/img/places/bookmark-default.svg') no-repeat center;
+    background-size: contain;
+  }
+
+  .flag-active {
+    background: url('/assets/img/places/bookmark-set.svg') no-repeat center;
+    background-size: contain;
+  }
+}
+
+.my-events-img {
+  width: 17px;
+  height: 17px;
+}
+
 .gallery-view-active {
   display: grid;
   grid-template-columns: repeat(3, 359px);

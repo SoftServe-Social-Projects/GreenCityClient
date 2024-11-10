@@ -10,11 +10,12 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { EventsService } from 'src/app/main/component/events/services/events.service';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { EventType } from 'src/app/ubs/ubs/services/event-type.enum';
-import { mockEvent, mockFavouriteEvents, mockHabitAssign } from '@assets/mocks/events/mock-events';
+import { mockEvent, mockFavouriteEvents } from '@assets/mocks/events/mock-events';
 import { mockHabits } from '@assets/mocks/habit/mock-habit-calendar';
+import { newsMock } from '@assets/mocks/eco-news/mock-news-item';
 
 describe('ProfileDashboardComponent', () => {
   let component: ProfileDashboardComponent;
@@ -34,14 +35,7 @@ describe('ProfileDashboardComponent', () => {
   LocalStorageServiceMock.getCurrentLanguage = () => of('ua');
 
   const storeMock = jasmine.createSpyObj('store', ['select', 'dispatch']);
-  storeMock.select = () =>
-    of({
-      ecoNews: {},
-      authorNews: [{ newsId: 1 }],
-      pageNumber: 1,
-      error: 'error',
-      ecoNewsByAuthor: true
-    });
+  storeMock.select = () => of({ ecoNews: {}, pages: [], pageNumber: 1, error: 'error' });
 
   const eventsServiceMock = jasmine.createSpyObj('EventsService', ['getEvents', 'getUserFavoriteEvents']);
   eventsServiceMock.getEvents = () => of(mockEvent);
@@ -93,8 +87,8 @@ describe('ProfileDashboardComponent', () => {
 
   it('onInit news should have expected result', waitForAsync(() => {
     component.ngOnInit();
-    component.authorNews$.subscribe((item: any) => {
-      expect(component.news[0]).toEqual({ newsId: 1 } as any);
+    component.econews$.subscribe((item: any) => {
+      expect(component.news).toEqual([]);
     });
   }));
 
@@ -217,6 +211,7 @@ describe('ProfileDashboardComponent', () => {
 
   it('onScroll', () => {
     const spy = spyOn(component, 'dispatchNews');
+    component.news = [newsMock, { ...newsMock, id: 2 }];
     component.onScroll();
     expect(spy).toHaveBeenCalledTimes(1);
   });

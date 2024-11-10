@@ -146,17 +146,19 @@
 
   span {
     display: inline-block;
-    width: 25px;
-    height: 25px;
+    width: 12px;
+    height: 16.5px;
     transition: all 0.3s;
   }
 
   .flag {
     background: url('/assets/img/places/bookmark-default.svg') no-repeat center;
+    background-size: contain;
   }
 
   .flag-active {
     background: url('/assets/img/places/bookmark-set.svg') no-repeat center;
+    background-size: contain;
   }
 }
 

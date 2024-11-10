@@ -1153,6 +1153,10 @@
       "add-event": "Add Event",
       "no-events": "Hi Eco Friend ;-)",
       "no-events-advice": "Welcome to My Events. It seems you don’t have any events. Let’s start to join event!",
+      "no-news": "Hi Eco Friend ;-)",
+      "news-saved": "Saved news",
+      "no-news-advice": "Welcome to My News. It seems you don’t have any news. Let’s start to create news!",
+      "no-news-saved": "Welcome to My News. It seems you don’t have any saved news",
       "join-event": "Join Event"
     },
     "habits-in-progress": "habits in progress",
