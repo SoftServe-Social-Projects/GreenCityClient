@@ -639,8 +639,7 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
     sortedOrders = sortedOrders
       .map((e) => keysForEditDetails.filter((elem) => e[elem] === null || e[elem] === ''))
       .filter((arrayList) => arrayList?.length !== 0);
-    // this.showPopUp = sortedOrders.length !== 0;
-    this.showPopUp = true;
+    this.showPopUp = sortedOrders.length !== 0;
   }
 
   selectRowsToChange(event: MatCheckboxChange, row: any): void {
