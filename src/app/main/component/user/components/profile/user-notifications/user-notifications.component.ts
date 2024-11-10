@@ -297,7 +297,9 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     const targetId = Number(target.getAttribute('data-targetid'));
 
     const isClickOrEnter = event instanceof MouseEvent || (event instanceof KeyboardEvent && event.key === 'Enter');
-    if (!isClickOrEnter) return;
+    if (!isClickOrEnter) {
+      return;
+    }
 
     if (targetUserId) {
       this.router.navigate(['profile', userId, 'users', targetTextContent, targetUserId]);
