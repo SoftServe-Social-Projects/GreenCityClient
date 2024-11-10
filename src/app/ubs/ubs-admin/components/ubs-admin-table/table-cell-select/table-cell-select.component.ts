@@ -10,6 +10,7 @@ import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
 import { UbsAdminSeveralOrdersPopUpComponent } from '../../ubs-admin-several-orders-pop-up/ubs-admin-several-orders-pop-up.component';
 import { MatSelect } from '@angular/material/select';
 import { MatSelectChange } from '@angular/material/select';
+import { UbsAdminConfirmStatusChangePopUpComponent } from '../../ubs-admin-confirm-status-change-pop-up/ubs-admin-confirm-status-change-pop-up.component';
 
 @Component({
   selector: 'app-table-cell-select',
@@ -111,12 +112,22 @@ export class TableCellSelectComponent implements OnInit {
   }
 
   saveClick(): void {
-    if (this.nameOfColumn === 'orderStatus' && this.checkStatus && this.showPopUp) {
-      this.checkIfStatusConfirmed();
-    } else if (this.nameOfColumn === 'orderStatus' && (this.newOption === 'Canceled' || this.newOption === 'Скасовано')) {
-      this.openCancelPopUp();
-    } else if (this.nameOfColumn === 'orderStatus') {
+    if (this.nameOfColumn !== 'orderStatus') {
       this.save();
+      return;
+    }
+
+    const isCancelOption = ['Canceled', 'Скасовано'].includes(this.newOption);
+    const isConfirmOption = ['Сформовано', 'Formed', 'Confirmed', 'Підтверджено', 'Привезе сам', 'Brought by himself'].includes(
+      this.newOption
+    );
+
+    if (isConfirmOption) {
+      this.openConfirmPopUp();
+    } else if (isCancelOption) {
+      this.openCancelPopUp();
+    } else if (this.checkStatus && this.showPopUp) {
+      this.checkIfStatusConfirmed();
     } else {
       this.save();
     }
@@ -160,6 +171,20 @@ export class TableCellSelectComponent implements OnInit {
           cancellationComment: res.reason === 'OTHER' ? res.comment : null
         };
         this.orderCancellation.emit(orderCancellationData);
+        this.save();
+      });
+  }
+
+  openConfirmPopUp(): void {
+    this.dialog
+      .open(UbsAdminConfirmStatusChangePopUpComponent, this.dialogConfig)
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((res) => {
+        if (!res) {
+          this.cancel();
+          return;
+        }
         this.save();
       });
   }
