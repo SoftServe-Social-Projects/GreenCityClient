@@ -122,7 +122,7 @@ export class NewsListComponent implements OnInit, OnDestroy {
   }
 
   cancelSearch(): void {
-    if (this.searchNewsControl.value.trim() === '') {
+    if (!this.searchNewsControl.value.trim()) {
       this.isSearchVisible = false;
     } else {
       this.searchNewsControl.setValue('');
@@ -181,7 +181,6 @@ export class NewsListComponent implements OnInit, OnDestroy {
     }
 
     if (!this.hasNext || this.loading) {
-      console.log(this.hasNext, this.loading);
       return;
     }
 
