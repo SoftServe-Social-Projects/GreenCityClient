@@ -1,13 +1,13 @@
-import { CustomShoppingItem } from '@global-user/models/shoppinglist.interface';
+import { CustomToDoItem } from '@global-user/models/to-do-list.interface';
 
 export interface HabitAssignCustomPropertiesDto {
   friendsIdsList: Array<number>;
   habitAssignPropertiesDto: HabitAssignPropertiesDto;
-  customShoppingListItemList: Array<CustomShoppingItem>;
+  customToDoListItemList: Array<CustomToDoItem>;
 }
 
 export interface HabitAssignPropertiesDto {
-  defaultShoppingListItems: Array<number>;
+  defaultToDoListItems: Array<number>;
   duration: number;
   isPrivate: boolean;
 }

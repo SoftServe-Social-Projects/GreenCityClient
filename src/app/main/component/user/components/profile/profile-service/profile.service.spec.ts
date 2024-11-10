@@ -83,7 +83,7 @@ describe('ProfileService', () => {
         rating: 1999,
         showEcoPlace: true,
         showLocation: false,
-        showShoppingList: true,
+        showToDoList: true,
         socialNetworks: []
       };
 
@@ -169,12 +169,9 @@ describe('ProfileService', () => {
     });
 
     it('should return the twitter icon when the url belongs to twitter', () => {
-      expect(profileService.getSocialImage('https://twitter.com')).toBe(profileService.socialMedia.twitter);
-      expect(profileService.getSocialImage('https://twitter.com/facebook')).toBe(profileService.socialMedia.twitter);
-      expect(profileService.getSocialImage('https://twitter.com?test=youtube&val=linkedin')).toBe(profileService.socialMedia.twitter);
-      expect(profileService.getSocialImage('https://x.com')).toBe(profileService.socialMedia.twitter);
-      expect(profileService.getSocialImage('https://x.com/facebook')).toBe(profileService.socialMedia.twitter);
-      expect(profileService.getSocialImage('https://x.com?test=youtube&val=instagram')).toBe(profileService.socialMedia.twitter);
+      expect(profileService.getSocialImage('https://x.com')).toBe(profileService.socialMedia.x);
+      expect(profileService.getSocialImage('https://x.com/facebook')).toBe(profileService.socialMedia.x);
+      expect(profileService.getSocialImage('https://x.com?test=youtube&val=instagram')).toBe(profileService.socialMedia.x);
     });
 
     it('should youtube the instagram icon when the url belongs to youtube', () => {

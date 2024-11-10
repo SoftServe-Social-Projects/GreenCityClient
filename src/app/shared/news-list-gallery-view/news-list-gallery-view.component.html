@@ -2,8 +2,14 @@
   <img class="list-image-content" role="img" [src]="checkNewsImage()" alt="user added image" />
   <div class="list-gallery-content">
     <div class="filter-tag" role="list">
-      <div role="none" aria-hidden="false" class="ul-eco-buttons" *ngFor="let tag of tags">
-        {{ tag }}
+      <div role="none" aria-hidden="false" class="ul-eco-buttons" *ngFor="let tag of tags; let i = index">
+        <span>{{ tag }}</span>
+        <span
+          class="tag-divider"
+          *ngIf="tags.length > 1 && i !== tags.length - 1"
+          [ngClass]="{ 'divider-small': tags.length === 3 && currentLang === 'ua' }"
+          >|</span
+        >
       </div>
     </div>
     <div class="added-data">

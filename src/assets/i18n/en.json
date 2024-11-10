@@ -806,7 +806,6 @@
       "privacy": "Profile privacy",
       "location": "Show my location",
       "eco-place": "Show my eco places",
-      "shopping-list": "Show my shopping list",
       "to-do-list": "Show my To-do list",
       "picture-tooltip": "Upload PNG or JPG only. File size should be less than 10MB",
       "change-photo": "Do you want to change your profile picture?",
@@ -920,7 +919,7 @@
       },
       "to-do": {
         "to-do-list": "To-do list",
-        "no-shopping-items": "No items to recommend",
+        "no-to-do-items": "No items to recommend",
         "too-long-input": "The input field should contain no more than 2048 characters",
         "add-custom-item": "Add custom item",
         "save": "Save",
@@ -1155,6 +1154,10 @@
       "add-event": "Add Event",
       "no-events": "Hi Eco Friend ;-)",
       "no-events-advice": "Welcome to My Events. It seems you don’t have any events. Let’s start to join event!",
+      "no-news": "Hi Eco Friend ;-)",
+      "news-saved": "Saved news",
+      "no-news-advice": "Welcome to My News. It seems you don’t have any news. Let’s start to create news!",
+      "no-news-saved": "Welcome to My News. It seems you don’t have any saved news",
       "join-event": "Join Event"
     },
     "habits-in-progress": "habits in progress",

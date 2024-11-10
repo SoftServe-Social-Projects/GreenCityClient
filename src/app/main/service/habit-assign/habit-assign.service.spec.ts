@@ -109,11 +109,11 @@ describe('HabitService', () => {
     const HABIT_ASSIGN_CUSTOM: HabitAssignCustomPropertiesDto = {
       friendsIdsList: [2, 3, 4],
       habitAssignPropertiesDto: {
-        defaultShoppingListItems: [],
+        defaultToDoListItems: [],
         duration: 15,
         isPrivate: true
       },
-      customShoppingListItemList: [{ text: '1234567890' }]
+      customToDoListItemList: [{ text: '1234567890' }]
     };
 
     const spy = spyOn(service, 'assignCustomHabit');

@@ -96,15 +96,15 @@
             <app-habit-progress [habit]="habit" class="progress-container"></app-habit-progress>
           </div>
           <div class="habit-second-block">
-            <div class="duration-shoping">
+            <div class="duration-to-do">
               <div class="duration">
                 <app-habit-duration
                   [habitDurationInitial]="initialDuration"
                   (changeDuration)="durationControl.setValue($event)"
                 ></app-habit-duration>
               </div>
-              <div class="shopping">
-                <app-habit-edit-shopping-list (newList)="getShopList($event)" [shopList]="shopList"></app-habit-edit-shopping-list>
+              <div class="to-do">
+                <app-habit-edit-to-do-list (newList)="getToDoList($event)" [toDoList]="toDoList"></app-habit-edit-to-do-list>
               </div>
             </div>
             <div class="invite-friends">

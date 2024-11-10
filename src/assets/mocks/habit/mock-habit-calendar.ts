@@ -10,7 +10,7 @@ export const mockHabits = {
   workingDays: 2,
   habitStreak: 10,
   habit: {
-    shoppingListItems: [{ id: 1, status: 'INPROGRESS', text: 'text', selected: true, custom: true }]
+    toDoListItems: [{ id: 1, status: 'INPROGRESS', text: 'text', selected: true, custom: true }]
   }
 };
 

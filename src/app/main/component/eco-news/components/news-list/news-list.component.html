@@ -3,6 +3,27 @@
     <div (window:resize)="onResize()">
       <div class="cont">
         <h1 class="main-header">{{ 'homepage.eco-news.title' | translate }}</h1>
+        <div class="create-container">
+          <div class="container-input" *ngIf="isSearchVisible">
+            <input type="text" *ngIf="isSearchVisible" class="place-input" [formControl]="searchNewsControl" placeholder="Search" />
+            <img
+              src="assets/img/smallCross.svg"
+              class="cross-position"
+              (click)="cancelSearch()"
+              (keydown.enter)="cancelSearch()"
+              alt="cancel search"
+            />
+          </div>
+          <div class="container-img" (click)="toggleSearch()" (keydown.enter)="toggleSearch()" *ngIf="!isSearchVisible">
+            <span class="search-img" [ngClass]="{ 'search-img-active': isSearchVisible }"></span>
+          </div>
+          <div class="container-img" (click)="showSelectedNews()" (keydown.enter)="showSelectedNews()">
+            <span class="bookmark-img" [ngClass]="{ 'bookmark-img-active': bookmarkSelected }"></span>
+          </div>
+          <div class="container-img">
+            <img class="my-events-img" src="assets/events-icons/my-event.png" alt="my-event" />
+          </div>
+        </div>
         <a class="create" [routerLink]="['create-news']" *ngIf="isLoggedIn">
           <div id="create-button" class="secondary-global-button m-btn">
             <span id="create-button-text">{{ 'homepage.eco-news.create' | translate }}</span>
@@ -34,9 +55,17 @@
           }"
           *ngFor="let data of elements"
         >
-          <a [routerLink]="['/news', data.id]" tabindex="0">
+          <a [routerLink]="['/news', data.id]" tabindex="0" class="link">
             <app-news-list-gallery-view *ngIf="view" [ecoNewsModel]="data"> </app-news-list-gallery-view>
             <app-news-list-list-view *ngIf="!view" [ecoNewsModel]="data"> </app-news-list-list-view>
+
+            <div
+              class="news-flags favourite-button"
+              (click)="changeFavoriteStatus($event, data)"
+              (keydown.enter)="changeFavoriteStatus($event, data)"
+            >
+              <span [ngClass]="data.favorite ? 'flag-active' : 'flag'"></span>
+            </div>
           </a>
         </li>
       </ul>
