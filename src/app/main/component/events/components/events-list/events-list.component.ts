@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Addresses, EventListResponse, FilterItem } from '../../models/events.interface';
 import { UserOwnAuthService } from '@auth-service/user-own-auth.service';
-import { Observable, ReplaySubject, Subscription } from 'rxjs';
+import { Observable, ReplaySubject, Subscription, take } from 'rxjs';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
@@ -9,7 +9,7 @@ import { IEcoEventsState } from 'src/app/store/state/ecoEvents.state';
 import { statusFiltersData, timeStatusFiltersData, typeFiltersData } from '../../models/event-consts';
 import { Router } from '@angular/router';
 import { AuthModalComponent } from '@global-auth/auth-modal/auth-modal.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
 import { Patterns } from 'src/assets/patterns/patterns';
@@ -35,7 +35,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
   searchEventControl = new FormControl('', [Validators.maxLength(30), Validators.pattern(Patterns.NameInfoPattern)]);
 
   eventsList: EventListResponse[] = [];
-  isLoggedIn: string;
+  isLoggedIn: boolean;
   selectedEventTimeStatusFiltersList: string[] = [];
   selectedLocationFiltersList: string[] = [];
   selectedStatusFiltersList: string[] = [];
@@ -59,6 +59,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
   private eventsPerPage = 6;
   private searchResultSubscription: Subscription;
   private searchQuery: string;
+  private readonly dialogRef: MatDialogRef<unknown>;
 
   constructor(
     private store: Store,
@@ -115,14 +116,23 @@ export class EventsListComponent implements OnInit, OnDestroy {
   }
 
   showSelectedEvents(): void {
-    this.bookmarkSelected = !this.bookmarkSelected;
-    if (this.bookmarkSelected) {
-      this.cleanEventList();
-      this.getUserFavoriteEvents();
+    if (!this.isLoggedIn) {
+      this.openAuthModalWindow('sign-in');
+      this.dialogRef
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe((result) => {
+          this.isLoggedIn = !!result;
+        });
     } else {
-      this.cleanEventList();
-      this.getEvents();
+      this.toggleEventList();
     }
+  }
+
+  private toggleEventList(): void {
+    this.bookmarkSelected = !this.bookmarkSelected;
+    this.cleanEventList();
+    this.getEvents();
   }
 
   getUniqueLocations(addresses: Array<Addresses>): FilterItem[] {
@@ -351,7 +361,6 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.eventService.getEvents(this.getEventsHttpParams()).subscribe((res) => {
       this.isLoading = false;
       this.eventsList.push(...res.page);
-      this.page++;
       this.countOfEvents = res.totalElements;
       this.hasNextPage = res.hasNext;
     });
@@ -446,7 +455,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
   private checkUserSingIn(): void {
     this.userOwnAuthService.credentialDataSubject.subscribe((data) => {
-      this.isLoggedIn = data?.userId;
+      this.isLoggedIn = !!data?.userId;
       this.userId = data.userId;
       this.statusFiltersList = this.userId ? statusFiltersData : statusFiltersData.slice(0, 2);
     });
