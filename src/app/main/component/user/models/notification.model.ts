@@ -11,8 +11,8 @@ export interface NotificationArrayModel {
 }
 
 export interface NotificationModel {
-  actionUserId: number;
-  actionUserText: string;
+  actionUserId: number[];
+  actionUserText: string[];
   bodyText: string;
   message: string;
   notificationId: number;
