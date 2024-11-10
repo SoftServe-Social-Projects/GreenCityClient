@@ -130,7 +130,7 @@
                       <span>{{ 'profile.dashboard.add-event' | translate }}</span>
                     </div>
                   </a>
-                  <div class="favourites" (click)="toggleFavorites()">
+                  <div class="favourites" (click)="toggleFavorites()" (keydown.enter)="toggleFavorites()">
                     <span [ngClass]="isFavoriteBtnClicked ? 'flag-active' : 'flag'"></span>
                   </div>
                 </div>
