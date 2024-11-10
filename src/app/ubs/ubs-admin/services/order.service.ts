@@ -9,7 +9,8 @@ import {
   FormFieldsName,
   ResponsibleEmployee,
   INotTakenOutReason,
-  NotTakenOutReasonImages
+  NotTakenOutReasonImages,
+  IOrderInfo
 } from '../models/ubs-admin.interface';
 import { environment } from '@environment/environment';
 import { IViolation } from '../models/violation.model';
@@ -92,8 +93,8 @@ export class OrderService {
     }
   }
 
-  getOrderInfo(orderId: number) {
-    return this.http.get(`${this.backend}/management/get-data-for-order/${orderId}`);
+  getOrderInfo(orderId: number): Observable<IOrderInfo> {
+    return this.http.get<IOrderInfo>(`${this.backend}/management/get-data-for-order/${orderId}`);
   }
 
   updateOrderInfo(orderId: number, lang: string, data: object, images?: NotTakenOutReasonImages[]) {

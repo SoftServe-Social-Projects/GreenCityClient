@@ -8,8 +8,7 @@ import { OrderService } from '../../../services/order.service';
 import { AddOrderCancellationReasonComponent } from '../../add-order-cancellation-reason/add-order-cancellation-reason.component';
 import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
 import { UbsAdminSeveralOrdersPopUpComponent } from '../../ubs-admin-several-orders-pop-up/ubs-admin-several-orders-pop-up.component';
-import { MatSelect } from '@angular/material/select';
-import { MatSelectChange } from '@angular/material/select';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { UbsAdminConfirmStatusChangePopUpComponent } from '../../ubs-admin-confirm-status-change-pop-up/ubs-admin-confirm-status-change-pop-up.component';
 
 @Component({

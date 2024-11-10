@@ -1,6 +1,6 @@
 <div class="container">
   <div class="close-container">
-    <button class="close-btn" mat-dialog-close (click)="close()">
+    <button class="close-btn" mat-dialog-close (click)="closeDialog(false)">
       <img src="{{ closeButton }}" alt="close" />
     </button>
   </div>
@@ -9,8 +9,8 @@
   </div>
   <div>
     <div class="btn-container">
-      <button type="reset" class="disagree btn" (click)="close()">{{ 'order-status-confirm.no' | translate }}</button>
-      <button type="submit" class="agree btn" (click)="save()">
+      <button type="reset" class="disagree btn" (click)="closeDialog(false)">{{ 'order-status-confirm.no' | translate }}</button>
+      <button type="submit" class="agree btn" (click)="closeDialog(true)">
         {{ 'order-status-confirm.yes' | translate }}
       </button>
     </div>

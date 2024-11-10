@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { OrderService } from 'src/app/ubs/ubs-admin/services/order.service';
 import { environment } from '@environment/environment';
 import { OrderStatus, PaymnetStatus } from '../../ubs/order-status.enum';
+import { IOrderInfo } from '../models/ubs-admin.interface';
 
 describe('OrderService', () => {
   let httpMock: HttpTestingController;
@@ -22,6 +23,131 @@ describe('OrderService', () => {
       violationsAmount: 0,
       violationsDescription: {}
     }
+  };
+
+  const mockOrderInfo: IOrderInfo = {
+    generalOrderInfo: {
+      id: 1,
+      blocked: false,
+      dateFormed: '2024-11-01',
+      adminComment: 'Admin comment example',
+      orderStatus: 'CONFIRMED',
+      orderStatusName: 'Confirmed',
+      orderStatusNameEng: 'Confirmed',
+      orderStatusesDtos: [
+        {
+          ableActualChange: true,
+          key: 'CONFIRMED',
+          translation: 'Confirmed'
+        }
+      ],
+      orderPaymentStatus: 'PAID',
+      orderPaymentStatusName: 'Paid',
+      orderPaymentStatusNameEng: 'Paid',
+      orderPaymentStatusesDto: [
+        {
+          key: 'PAID',
+          translation: 'Paid'
+        }
+      ]
+    },
+    userInfoDto: {
+      recipientId: 123,
+      customerEmail: 'customer@example.com',
+      customerName: 'John',
+      customerPhoneNumber: '+1234567890',
+      customerSurName: 'Doe',
+      recipientEmail: 'recipient@example.com',
+      recipientName: 'Jane',
+      recipientPhoneNumber: '+0987654321',
+      recipientSurName: 'Doe',
+      totalUserViolations: 0,
+      userViolationForCurrentOrder: 0
+    },
+    addressExportDetailsDto: {
+      actual: true,
+      city: 'Kyiv',
+      cityEn: 'Kyiv',
+      coordinates: { latitude: 50.45, longitude: 30.52 },
+      region: 'Kyiv Region',
+      regionEn: 'Kyiv Region',
+      district: 'Shevchenkivskyi',
+      districtEn: 'Shevchenkivskyi',
+      entranceNumber: '5',
+      houseCorpus: 'A',
+      houseNumber: '10',
+      id: 1,
+      placeId: 'place123',
+      street: 'Main Street',
+      streetEn: 'Main Street'
+    },
+    addressComment: 'Please leave at the door.',
+    amountOfBagsConfirmed: new Map([['plastic', 2]]),
+    amountOfBagsExported: new Map([['plastic', 1]]),
+    amountOfBagsOrdered: new Map([['plastic', 3]]),
+    bags: [
+      {
+        capacity: 10,
+        id: 1,
+        name: 'Plastic Bag',
+        nameEng: 'Plastic Bag',
+        price: 5,
+        confirmed: 2,
+        actual: 1
+      }
+    ],
+    courierPricePerPackage: 2.5,
+    courierInfo: {
+      courierLimit: 'LIMIT_BY_AMOUNT_OF_BAG',
+      min: 1,
+      max: 10
+    },
+    orderBonusDiscount: 5,
+    orderCertificateTotalDiscount: 10,
+    orderDiscountedPrice: 85,
+    orderExportedDiscountedPrice: 75,
+    orderExportedPrice: 90,
+    orderFullPrice: 100,
+    certificates: ['CERT123'],
+    numbersFromShop: ['#1234', '#5678'],
+    comment: 'Urgent delivery, please!',
+    paymentTableInfoDto: {
+      overpayment: 0,
+      paidAmount: 90,
+      paymentInfoDtos: [
+        {
+          id: 1,
+          comment: 'Paid in full',
+          currentDate: '2024-11-01',
+          amount: 90,
+          settlementdate: '2024-11-01',
+          receiptLink: 'https://example.com/receipt/123'
+        }
+      ],
+      unPaidAmount: 0
+    },
+    exportDetailsDto: {
+      allReceivingStations: [
+        {
+          createDate: '2024-01-01',
+          createdBy: 'admin',
+          id: 1,
+          name: 'Station A'
+        }
+      ],
+      dateExport: '2024-11-02',
+      timeDeliveryFrom: '10:00',
+      timeDeliveryTo: '12:00',
+      receivingStationId: 1
+    },
+    employeePositionDtoRequest: {
+      allPositionsEmployees: new Map([['manager', [{ id: 1, name: 'Alice', position: 'Manager' }]]]),
+      currentPositionEmployees: new Map([['manager', 'Alice']]),
+      orderId: 1
+    },
+    writeOffStationSum: 0,
+    updateResponsibleEmployeeDto: [{ positionId: 1, employeeId: 1 }],
+    isOrderCancelledAfterFormed: false
   };
 
   const recipient = {
@@ -206,11 +332,11 @@ describe('OrderService', () => {
 
   it('should return info about order', () => {
     service.getOrderInfo(1).subscribe((data) => {
-      expect(data).toBe(userMock);
+      expect(data).toBe(mockOrderInfo);
     });
     const req = httpMock.expectOne(`${urlMock}/management/get-data-for-order/1`);
     expect(req.request.method).toBe('GET');
-    req.flush(userMock);
+    req.flush(mockOrderInfo);
   });
 
   it('should filter statuses', () => {
