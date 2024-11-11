@@ -18,6 +18,9 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { EventsSearchModel } from '@global-models/search/eventsSearch.model';
+import { SearchDataModel } from '@global-models/search/search.model';
+import { SearchCategory } from './search-consts';
 
 describe('SearchPopupComponent', () => {
   let component: SearchPopupComponent;
@@ -26,28 +29,6 @@ describe('SearchPopupComponent', () => {
   const localStorageServiceMock: LocalStorageService = jasmine.createSpyObj('LocalStorageService', ['getCurrentLanguage']);
   localStorageServiceMock.getCurrentLanguage = () => 'ua' as Language;
 
-  const mockTipData = {
-    id: 1,
-    title: 'test',
-    author: {
-      id: 1,
-      name: 'test'
-    },
-    creationDate: '0101',
-    tags: ['test']
-  };
-
-  const mockNewsData = {
-    id: 1,
-    title: 'test',
-    author: {
-      id: 1,
-      name: 'test'
-    },
-    creationDate: '0101',
-    tags: ['test']
-  };
-
   const mockEventsData = {
     id: 1,
     title: 'test',
@@ -55,16 +36,16 @@ describe('SearchPopupComponent', () => {
     tags: ['test']
   };
 
-  const searchModelMock = {
-    countOfResults: 2,
-    ecoNews: [mockNewsData],
-    events: [mockEventsData],
-    tipsAndTricks: [mockTipData]
+  const eventsSearchModelMock: SearchDataModel<EventsSearchModel> = {
+    currentPage: 1,
+    page: [mockEventsData],
+    totalElements: 1,
+    totalPages: 1
   };
 
   const searchMock: SearchService = jasmine.createSpyObj('SearchService', ['getAllResults']);
   searchMock.searchSubject = new Subject();
-  searchMock.getAllResults = () => of(searchModelMock);
+  searchMock.getAllResults = () => of(eventsSearchModelMock);
   searchMock.closeSearchSignal = () => true;
 
   beforeEach(waitForAsync(() => {
@@ -113,12 +94,12 @@ describe('SearchPopupComponent', () => {
 
   describe('Testing services:', () => {
     it('should handle search value changes', fakeAsync(() => {
-      const getSearchSpy = spyOn(component.searchService, 'getAllResults').and.returnValue(of(searchModelMock));
+      const getSearchSpy = spyOn(component.searchService, 'getAllResults').and.returnValue(of(eventsSearchModelMock));
       component.ngOnInit();
 
       component.searchInput.setValue('test');
       tick(300);
-      expect(getSearchSpy).toHaveBeenCalledWith('test', 'econews', 'ua');
+      expect(getSearchSpy).toHaveBeenCalledWith('test', SearchCategory.EVENTS, 'ua');
     }));
 
     it('closeSearch should open SearchService/closeSearchSignal', () => {

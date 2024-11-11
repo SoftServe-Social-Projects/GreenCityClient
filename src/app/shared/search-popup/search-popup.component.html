@@ -23,11 +23,13 @@
   <div class="search_body-wrapper">
     <div class="search-content-wrapper container">
       <div class="search_remaining-items" *ngIf="!isLoading && searchInput.value">
-        {{ itemsFound }} {{ 'search.search-popup.items-found' | translate }}
+        {{ resultsCounters.total }} {{ 'search.search-popup.items-found' | translate }}
       </div>
       <div *ngIf="newsElements && newsElements.length > 0">
         <a [routerLink]="['/news']" (click)="closeSearch()">
-          <h3 class="search-title">{{ 'search.search-popup.news' | translate }}</h3>
+          <h3 class="search-title">
+            {{ 'search.search-popup.news' | translate }} <span class="counter">({{ resultsCounters.news }})</span>
+          </h3>
         </a>
         <div class="list-search-items">
           <app-search-item
@@ -42,7 +44,9 @@
       </div>
       <div *ngIf="eventsElements && eventsElements.length > 0">
         <a [routerLink]="['/events']" (click)="closeSearch()">
-          <h3 class="search-title">{{ 'search.search-popup.events' | translate }}</h3>
+          <h3 class="search-title">
+            {{ 'search.search-popup.events' | translate }} <span class="counter">({{ resultsCounters.events }})</span>
+          </h3>
         </a>
         <div class="list-search-items">
           <app-search-item
@@ -55,7 +59,24 @@
           </app-search-item>
         </div>
       </div>
-      <div class="search_see-all" *ngIf="itemsFound">
+      <div *ngIf="placesElements && placesElements.length > 0">
+        <a [routerLink]="['/places']" (click)="closeSearch()">
+          <h3 class="search-title">
+            {{ 'search.search-popup.places' | translate }} <span class="counter">({{ resultsCounters.places }})</span>
+          </h3>
+        </a>
+        <div class="list-search-items">
+          <app-search-item
+            *ngFor="let element of placesElements | slice: 0 : 3"
+            [searchModel]="element"
+            [type]="'places'"
+            (closeSearch)="closeSearch()"
+            class="search-item"
+          >
+          </app-search-item>
+        </div>
+      </div>
+      <div class="search_see-all" *ngIf="resultsCounters.total">
         <a
           [routerLink]="['/search']"
           [queryParams]="{ query: searchInput.value, category: newsElements && newsElements.length > 0 ? 'econews' : 'events' }"
@@ -65,7 +86,11 @@
         </a>
       </div>
 
-      <app-search-not-found *ngIf="itemsFound === 0" [inputValue]="searchInput.value" (closeUnsuccessfulSearchResults)="closeSearch()">
+      <app-search-not-found
+        *ngIf="resultsCounters.total === 0"
+        [inputValue]="searchInput.value"
+        (closeUnsuccessfulSearchResults)="closeSearch()"
+      >
       </app-search-not-found>
     </div>
     <app-spinner class="search_spinner" *ngIf="isLoading"></app-spinner>
