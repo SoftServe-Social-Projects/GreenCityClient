@@ -410,7 +410,7 @@
   "responsible-persons": {
     "title": "Відповідальні особи",
     "service-manager": "Менеджер послуги",
-    "call-manager": "Менеджер обдзвону",
+    "call-manager": "Менеджер",
     "logistician": "Логіст",
     "navigator": "Штурман",
     "driver": "Водій",

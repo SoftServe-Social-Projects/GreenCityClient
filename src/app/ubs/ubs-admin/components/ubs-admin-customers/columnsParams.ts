@@ -114,7 +114,7 @@ export const columnsParamsOrders: ColumnParam[] = [
   { title: { key: 'timeOfExport', ua: 'Час вивезення', en: 'Time of export' }, width: 100 },
   { title: { key: 'idOrderFromShop', ua: 'Номер замовлення з магазину', en: 'Id order from shop' }, width: 100 },
   { title: { key: 'receivingStation', ua: 'Станція приймання', en: 'Receiving station' }, width: 100 },
-  { title: { key: 'responsibleCaller', ua: 'Менеджер обдзвону', en: 'Call manager' }, width: 100 },
+  { title: { key: 'responsibleCaller', ua: 'Менеджер', en: 'Manager' }, width: 100 },
   { title: { key: 'responsibleLogicMan', ua: 'Логіст', en: 'Logistician' }, width: 100 },
   { title: { key: 'responsibleDriver', ua: 'Водій', en: 'Driver' }, width: 100 },
   { title: { key: 'responsibleNavigator', ua: 'Штурман', en: 'Navigator' }, width: 100 },
