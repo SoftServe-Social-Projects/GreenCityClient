@@ -198,7 +198,8 @@
     "export-time": {
       "from": "From",
       "to": "To"
-    }
+    },
+    "optional-field": "optional"
   },
   "order-cancel": {
     "title": "Add reason to cancel order",
