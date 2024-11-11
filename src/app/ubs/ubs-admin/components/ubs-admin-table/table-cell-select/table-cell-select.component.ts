@@ -8,7 +8,8 @@ import { OrderService } from '../../../services/order.service';
 import { AddOrderCancellationReasonComponent } from '../../add-order-cancellation-reason/add-order-cancellation-reason.component';
 import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
 import { UbsAdminSeveralOrdersPopUpComponent } from '../../ubs-admin-several-orders-pop-up/ubs-admin-several-orders-pop-up.component';
-import { MatSelect } from '@angular/material/select';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { UbsAdminConfirmStatusChangePopUpComponent } from '../../ubs-admin-confirm-status-change-pop-up/ubs-admin-confirm-status-change-pop-up.component';
 
 @Component({
   selector: 'app-table-cell-select',
@@ -35,6 +36,7 @@ export class TableCellSelectComponent implements OnInit {
   isDisabled = true;
   options = [];
   private newOption: string;
+  private oldOption: string;
   private typeOfChange: number[];
   private checkStatus: boolean;
   private dialogConfig = new MatDialogConfig();
@@ -48,13 +50,14 @@ export class TableCellSelectComponent implements OnInit {
   @ViewChild('select') select: MatSelect;
 
   constructor(
-    private adminTableService: AdminTableService,
-    private orderService: OrderService,
+    private readonly adminTableService: AdminTableService,
+    private readonly orderService: OrderService,
     public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.currentValue = this.optional.filter((item) => item.key === this.key)[0];
+    this.oldOption = this.currentValue;
     this.filterStatuses();
   }
 
@@ -62,7 +65,6 @@ export class TableCellSelectComponent implements OnInit {
     if (this.isLocked) {
       return;
     }
-
     this.lockOrder();
   }
 
@@ -94,7 +96,7 @@ export class TableCellSelectComponent implements OnInit {
 
   save(): void {
     const newValueObj = this.findKeyForNewOption();
-    if (newValueObj === -1) {
+    if (newValueObj === -1 && this.id) {
       this.typeOfChange = this.adminTableService.howChangeCell(this.isAllChecked, this.ordersToChange, this.id);
       this.cancelEdit.emit(this.typeOfChange);
     } else {
@@ -105,17 +107,26 @@ export class TableCellSelectComponent implements OnInit {
       };
       this.editCellSelect.emit(newSelectValue);
       this.newOption = '';
-      this.cancelEdit.emit(this.typeOfChange);
     }
   }
 
   saveClick(): void {
-    if (this.nameOfColumn === 'orderStatus' && this.checkStatus && this.showPopUp) {
-      this.checkIfStatusConfirmed();
-    } else if (this.nameOfColumn === 'orderStatus' && (this.newOption === 'Canceled' || this.newOption === 'Скасовано')) {
-      this.openCancelPopUp();
-    } else if (this.nameOfColumn === 'orderStatus') {
+    if (this.nameOfColumn !== 'orderStatus') {
       this.save();
+      return;
+    }
+
+    const isCancelOption = ['Canceled', 'Скасовано'].includes(this.newOption);
+    const isConfirmOption = ['Сформовано', 'Formed', 'Confirmed', 'Підтверджено', 'Привезе сам', 'Brought by himself'].includes(
+      this.newOption
+    );
+
+    if (isConfirmOption) {
+      this.openConfirmPopUp();
+    } else if (isCancelOption) {
+      this.openCancelPopUp();
+    } else if (this.checkStatus && this.showPopUp) {
+      this.checkIfStatusConfirmed();
     } else {
       this.save();
     }
@@ -133,11 +144,13 @@ export class TableCellSelectComponent implements OnInit {
     this.typeOfChange = this.adminTableService.howChangeCell(this.isAllChecked, this.ordersToChange, this.id);
     this.cancelEdit.emit(this.typeOfChange);
     this.newOption = '';
+    this.currentValue = this.oldOption;
   }
 
-  chosenOption(e: any): void {
-    this.newOption = e.target.value;
+  chosenOption(e: MatSelectChange): void {
+    this.newOption = e.value;
     this.checkStatus = this.filterStatusesForPopUp();
+    this.saveClick();
   }
 
   openCancelPopUp(): void {
@@ -157,6 +170,20 @@ export class TableCellSelectComponent implements OnInit {
           cancellationComment: res.reason === 'OTHER' ? res.comment : null
         };
         this.orderCancellation.emit(orderCancellationData);
+        this.save();
+      });
+  }
+
+  openConfirmPopUp(): void {
+    this.dialog
+      .open(UbsAdminConfirmStatusChangePopUpComponent, this.dialogConfig)
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((res) => {
+        if (!res) {
+          this.cancel();
+          return;
+        }
         this.save();
       });
   }
