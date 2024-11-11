@@ -223,16 +223,18 @@ describe('ProfileDashboardComponent', () => {
   });
 
   it('should toggle isFavoriteBtnClicked property on escapeFromFavorites method', () => {
+    component.isFavoriteBtnClicked = false;
     expect(component.isFavoriteBtnClicked).toBeFalse();
-    component.escapeFromFavorites();
+    component.toggleFavorites();
     expect(component.isFavoriteBtnClicked).toBeTrue();
-    component.escapeFromFavorites();
+    component.toggleFavorites();
     expect(component.isFavoriteBtnClicked).toBeFalse();
   });
 
   it('should set isFavoriteBtnClicked to true and call getUserEvents when goToFavorites is called', () => {
     spyOn(component, 'getUserEvents');
-    component.goToFavorites();
+    component.isFavoriteBtnClicked = false;
+    component.toggleFavorites();
     expect(component.isFavoriteBtnClicked).toBeTrue();
     expect(component.getUserEvents).toHaveBeenCalled();
   });

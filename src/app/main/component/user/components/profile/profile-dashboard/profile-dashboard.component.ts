@@ -140,15 +140,8 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.hasNextPageOfEvents = true;
   }
 
-  escapeFromFavorites(): void {
+  toggleFavorites(): void {
     this.isFavoriteBtnClicked = !this.isFavoriteBtnClicked;
-
-    this.cleanState();
-    this.getUserEvents();
-  }
-
-  goToFavorites(): void {
-    this.isFavoriteBtnClicked = true;
 
     this.cleanState();
     this.getUserEvents();
@@ -193,6 +186,7 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
           next: (res: EventResponseDto) => {
             this.eventsList.push(...res.page);
             this.eventsPage++;
+            this.totalEvents = res.totalElements;
             this.hasNextPageOfEvents = res.hasNext;
             this.isActiveEventsScroll = res.hasNext;
           },

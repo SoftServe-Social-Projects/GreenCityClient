@@ -116,33 +116,36 @@
       <mat-tab label="{{ 'homepage.events.my-space.tag-title' | translate }}">
         <hr />
         <div *ngIf="!loading; else spinner">
-          <div class="in-progress">
-            <div class="in-progress header" id="my-events" *ngIf="!isFavoriteBtnClicked">
-              <div class="buttons-wrapper">
-                <a [routerLink]="['/events/create-event']">
-                  <div id="create-button-event" class="secondary-global-button s-btn">
-                    <span>{{ 'profile.dashboard.add-event' | translate }}</span>
+          <div class="header">
+            <div class="in-progress">
+              <p>
+                <app-set-count [remainingCount]="totalEvents" [tabName]="'news'">
+                  {{ (isFavoriteBtnClicked ? 'profile.dashboard.saved-events' : 'profile.dashboard.my-events') | translate }} <br />
+                </app-set-count>
+              </p>
+              <div class="in-progress" id="my-events">
+                <div class="buttons-wrapper">
+                  <a [routerLink]="['/events/create-event']">
+                    <div id="create-button-event" class="secondary-global-button s-btn">
+                      <span>{{ 'profile.dashboard.add-event' | translate }}</span>
+                    </div>
+                  </a>
+                  <div class="favourites" (click)="toggleFavorites()" (keydown.enter)="toggleFavorites()">
+                    <span [ngClass]="isFavoriteBtnClicked ? 'flag-active' : 'flag'"></span>
                   </div>
-                </a>
-                <div class="favourites" (click)="goToFavorites()">
-                  <span class="flag-active"></span>
                 </div>
               </div>
             </div>
-            <div *ngIf="isFavoriteBtnClicked" class="in-progress header">
-              <div class="button-arrow" (click)="escapeFromFavorites()">
-                <img [src]="images.arrowLeft" aria-hidden="true" alt="arrow" class="button-arrow-img" />
-                <div class="edit-events">{{ 'create-event.back' | translate }}</div>
-              </div>
-            </div>
-            <div class="events-filter filters">
-              <div class="events-types">
-                <mat-checkbox [(ngModel)]="isOnlineChecked" (ngModelChange)="onCheckboxChange()" color="primary" class="checkbox">
-                  {{ 'homepage.events.my-space.event-type-online' | translate }}
-                </mat-checkbox>
-                <mat-checkbox [(ngModel)]="isOfflineChecked" (ngModelChange)="onCheckboxChange()" color="primary" class="checkbox"
-                  >{{ 'homepage.events.my-space.event-type-offline' | translate }}
-                </mat-checkbox>
+            <div class="in-progress justify-end">
+              <div class="events-filter">
+                <div class="events-types">
+                  <mat-checkbox [(ngModel)]="isOnlineChecked" (ngModelChange)="onCheckboxChange()" color="primary" class="checkbox">
+                    {{ 'homepage.events.my-space.event-type-online' | translate }}
+                  </mat-checkbox>
+                  <mat-checkbox [(ngModel)]="isOfflineChecked" (ngModelChange)="onCheckboxChange()" color="primary" class="checkbox"
+                    >{{ 'homepage.events.my-space.event-type-offline' | translate }}
+                  </mat-checkbox>
+                </div>
               </div>
             </div>
           </div>
