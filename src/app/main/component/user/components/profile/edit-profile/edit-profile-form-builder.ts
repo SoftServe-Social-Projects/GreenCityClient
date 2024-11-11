@@ -37,11 +37,24 @@ export class EditProfileFormBuilder {
       )
     );
 
+    this.setupEmailPreferenceListeners(emailPrefsGroup);
+
     if (preferences) {
       this.initializeEmailPreferences(emailPrefsGroup, preferences);
     }
 
     return emailPrefsGroup;
+  }
+
+  private setupEmailPreferenceListeners(group: FormGroup): void {
+    this.emailPreferences.forEach((pref) => {
+      const periodicityControl = group.get(`periodicity${this.capitalizeFirstLetter(pref)}`);
+      const checkboxControl = group.get(pref);
+
+      periodicityControl?.valueChanges.subscribe((value) => {
+        checkboxControl?.setValue(value !== 'NEVER', { emitEvent: false });
+      });
+    });
   }
 
   initializeEmailPreferences(group: FormGroup, preferences: NotificationPreference[]): void {
