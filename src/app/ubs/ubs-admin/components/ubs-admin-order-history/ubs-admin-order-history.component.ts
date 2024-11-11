@@ -82,13 +82,14 @@ export class UbsAdminOrderHistoryComponent implements OnDestroy, OnChanges, OnIn
     }
 
     this.orderHistory.forEach((order) => {
-      if (order.id === orderHistoryId) {
-        if (order.result === ordersStatuses.CancelUA) {
-          this.openCancelReason();
-        }
-        if (order.result === ordersStatuses.NotTakenOutUA) {
-          this.openNotTakenOutReason(orderHistoryId);
-        }
+      if (order.id !== orderHistoryId) {
+        return;
+      }
+      if (order.result === ordersStatuses.CancelUA) {
+        this.openCancelReason();
+      }
+      if (order.result === ordersStatuses.NotTakenOutUA) {
+        this.openNotTakenOutReason(orderHistoryId);
       }
     });
   }
