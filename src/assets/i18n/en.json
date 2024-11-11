@@ -1264,7 +1264,7 @@
     "picture-tooltip": "Upload PNG or JPG only. File size should be less than 10MB",
     "submit-changes-button": "Submit",
     "cancel-changes-button": "Cancel",
-    "not-uploaded-warning": "Image isn't uploaded"
+    "not-uploaded-warning": "The image isn't uploaded"
   },
   "date": {
     "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
