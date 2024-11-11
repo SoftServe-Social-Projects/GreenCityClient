@@ -1,3 +1,5 @@
+@import 'src/typography/_resp.scss';
+
 .dashboard {
   font-family: var(--primary-font);
   margin-bottom: 30px;
@@ -80,34 +82,56 @@
   max-width: 100%;
 }
 
-@media (min-width: 768px) {
+@include responsiveMobileFirst(md) {
   .friends-item {
     width: 469px;
   }
 }
 
-@media (min-width: 1200px) {
+@include responsiveMobileFirst(xl) {
+  .dashboard-container {
+    max-width: 900px;
+    overflow-x: auto;
+  }
+
   .friends-list {
     display: grid;
     grid-template-columns: 417px 417px;
   }
 }
 
+@include responsiveMobileFirst(3xl) {
+  .dashboard-container {
+    max-width: 1220px;
+    overflow-x: auto;
+  }
+}
+
+@include responsivePCFirst(md) {
+  .dashboard-container {
+    padding: 0;
+  }
+}
+
 .gallery {
   display: grid;
-  grid-template-columns: 250px;
+  grid-template-columns: minmax(280px, 350px);
   grid-gap: 30px;
   justify-content: center;
 
-  @media (min-width: 576px) {
-    grid-template-columns: repeat(2, 50%);
+  @include responsiveMobileFirst(md) {
+    grid-template-columns: repeat(1, minmax(200px, 380px));
   }
 
-  @media (min-width: 992px) {
-    grid-template-columns: repeat(3, 199px);
+  @include responsiveMobileFirst(lg) {
+    grid-template-columns: repeat(2, minmax(250px, 350px));
   }
 
-  @media (min-width: 1200px) {
+  @include responsiveMobileFirst(2xl) {
+    grid-template-columns: repeat(2, 350px);
+  }
+
+  @include responsiveMobileFirst(3xl) {
     grid-template-columns: repeat(3, 350px);
   }
 }
