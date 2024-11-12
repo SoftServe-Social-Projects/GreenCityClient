@@ -140,7 +140,6 @@ export class UbsAdminOrderHistoryComponent implements OnDestroy, OnChanges, OnIn
   }
 
   getOrderHistory(orderId: number): void {
-    console.log(this.currentLanguage);
     this.orderService
       .getOrderHistory(orderId, this.currentLanguage)
       .pipe(takeUntil(this.destroy$))
