@@ -18,6 +18,11 @@
   <button mat-icon-button type="button" (click)="toggleImageUploader()" class="image-upload-btn">
     <mat-icon>image</mat-icon>
   </button>
+
+  <button mat-icon-button type="button" (click)="toggleEmojiPickerVisibility()" class="emoji-picker-btn">
+    <mat-icon>sentiment_satisfied_alt</mat-icon>
+  </button>
+
   <button
     mat-icon-button
     #menuTrigger="matMenuTrigger"
@@ -39,6 +44,17 @@
     </button>
   </mat-menu>
 </div>
+
+<emoji-mart
+  class="emoji-picker"
+  [emojiSize]="20"
+  [totalFrequentLines]="2"
+  [darkMode]="false"
+  [style]="{ width: '506px' }"
+  [showPreview]="false"
+  *ngIf="isEmojiPickerOpen"
+  (emojiClick)="onEmojiClick($event)"
+></emoji-mart>
 
 <div class="comment-textarea-uploader" *ngIf="isImageUploaderOpen">
   <app-drag-and-drop [aspectRatio]="aspectRatio || 1" (newFile)="onImageSelected($event)"> </app-drag-and-drop>

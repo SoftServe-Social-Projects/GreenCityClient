@@ -37,6 +37,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   isImageUploaderOpen = false;
   showImageControls = false;
   isFirstImageLoaded = false;
+  isEmojiPickerOpen = false;
   uploadedImage: { url: string; file: File }[] = [];
 
   content: FormControl = new FormControl('', [Validators.required, this.innerHtmlMaxLengthValidator(8000)]);
@@ -142,7 +143,40 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     }, 0);
   }
 
+  toggleEmojiPickerVisibility(): void {
+    this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
+    this.isImageUploaderOpen = false;
+  }
+
+  onEmojiClick(event: any): void {
+    this.insertEmoji(event.emoji.native);
+    this.content.setValue(this.commentTextarea.nativeElement.textContent.trim());
+    this.emitComment();
+  }
+
+  private insertEmoji(emoji: string): void {
+    this.commentTextarea.nativeElement.focus();
+
+    const selection = window.getSelection();
+    if (!selection.rangeCount) {
+      return;
+    }
+
+    const range = selection.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(document.createTextNode(emoji));
+    range.collapse(false);
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
   onCommentTextareaFocus(): void {
+    const currentText = this.commentTextarea.nativeElement.textContent.trim();
+    if (currentText === 'Add a comment' || currentText === '') {
+      this.commentTextarea.nativeElement.textContent = '';
+    }
+
     const range = document.createRange();
     const nodeAmount = this.commentTextarea.nativeElement.childNodes.length;
     range.setStartAfter(this.commentTextarea.nativeElement.childNodes[nodeAmount - 1]);
@@ -183,6 +217,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   toggleImageUploader(): void {
     if (this.uploadedImage.length < 5) {
       this.isImageUploaderOpen = !this.isImageUploaderOpen;
+      this.isEmojiPickerOpen = false;
       this.imageUploaderStatus.emit(this.isImageUploaderOpen);
     }
   }
