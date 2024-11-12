@@ -21,7 +21,6 @@ export class EditPhotoPopUpComponent implements OnInit {
   loadingAnim: boolean;
   isDragAndDropMenu = false;
   croppedImage: string | File;
-  shouldCancel = false;
 
   @ViewChild(DragAndDropComponent) dragAndDropComponent: DragAndDropComponent;
 

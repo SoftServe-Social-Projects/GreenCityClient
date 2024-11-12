@@ -4,7 +4,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { searchIcons } from '../../main/image-pathes/search-icons';
 import { negate, isNil } from 'lodash';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, forkJoin } from 'rxjs';
+import { Observable, Subscription, forkJoin } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, tap, switchMap, filter } from 'rxjs/operators';
 import { SearchService } from '@global-service/search/search.service';
@@ -31,16 +31,13 @@ export class SearchPopupComponent implements OnInit, OnDestroy {
   newsElements: NewsSearchModel[] = [];
   eventsElements: EventsSearchModel[] = [];
   placesElements: PlacesSearchModel[] = [];
-
   isSearchClicked = false;
   searchModalSubscription: Subscription;
   searchInput = new FormControl('');
   isLoading = false;
-  isNewsSearchFound: boolean;
-  searchValueChanges;
+  searchValueChanges: Observable<string>;
   private currentLanguage: string;
   searchIcons = searchIcons;
-  searctabindex: SearchService;
 
   constructor(
     public searchService: SearchService,
