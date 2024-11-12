@@ -73,7 +73,6 @@ export class EditPhotoPopUpComponent implements OnInit {
   cancelPhoto() {
     this.dragAndDropComponent.cancelChanges();
     this.selectedFile = null;
-    console.log(this.isWarning);
   }
 
   private setUserAvatar(): void {
@@ -85,7 +84,6 @@ export class EditPhotoPopUpComponent implements OnInit {
   }
 
   imageCropped(fileHandle: FileHandle): void {
-    console.log(fileHandle);
     if (!fileHandle?.file) {
       return;
     }

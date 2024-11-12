@@ -17,7 +17,7 @@ import {
 import { EditProfileService } from '@global-user/services/edit-profile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FormBaseComponent } from '@shared/components/form-base/form-base.component';
-import { ReplaySubject, Subscription } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { Patterns } from 'src/assets/patterns/patterns';
 import { emailPreferencesList, periodicityOptions } from '@global-user/models/edit-profile-const';
@@ -43,7 +43,7 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
   private profileService: ProfileService;
   private snackBar: MatSnackBarComponent;
   private localStorageService: LocalStorageService;
-  private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
+  private readonly destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   cityOptions: google.maps.places.AutocompletionRequest = {
     input: '',
     types: ['(cities)']
