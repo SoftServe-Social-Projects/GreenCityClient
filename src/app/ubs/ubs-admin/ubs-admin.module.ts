@@ -98,6 +98,7 @@ import { TariffSelectorComponent } from './components/ubs-admin-employee/ubs-adm
 import { ClickOutsideDirective } from './derictives/clickOutside.directive';
 import { MatMenuModule } from '@angular/material/menu';
 import { ChatModule } from 'src/app/chat/chat.module';
+import { UbsAdminConfirmStatusChangePopUpComponent } from './components/ubs-admin-confirm-status-change-pop-up/ubs-admin-confirm-status-change-pop-up.component';
 
 @NgModule({
   declarations: [
@@ -164,7 +165,8 @@ import { ChatModule } from 'src/app/chat/chat.module';
     UbsAdminNotificationEditFormComponent,
     UbsAdminNotificationSettingsComponent,
     ConfirmationDialogComponent,
-    TariffSelectorComponent
+    TariffSelectorComponent,
+    UbsAdminConfirmStatusChangePopUpComponent
   ],
   imports: [
     CommonModule,

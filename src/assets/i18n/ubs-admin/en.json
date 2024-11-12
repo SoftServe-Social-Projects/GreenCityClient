@@ -221,6 +221,11 @@
     "date": "Date",
     "added": "Added"
   },
+  "order-status-confirm": {
+    "confirm-message": "Do you realy want to change order status to",
+    "yes": "Yes",
+    "no": "No"
+  },
   "order-not-taken-out": {
     "title": "Add the reason for not taken out order",
     "label-reason": "Describe what happened",
