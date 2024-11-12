@@ -73,7 +73,6 @@ export class EditPhotoPopUpComponent implements OnInit {
   cancelPhoto() {
     this.dragAndDropComponent.cancelChanges();
     this.selectedFile = null;
-    // this.isWarning = false;
     console.log(this.isWarning);
   }
 
