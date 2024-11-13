@@ -17,8 +17,8 @@ import {
 import { EditProfileService } from '@global-user/services/edit-profile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FormBaseComponent } from '@shared/components/form-base/form-base.component';
-import { Subscription } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { Patterns } from 'src/assets/patterns/patterns';
 import { emailPreferencesList, periodicityOptions } from '@global-user/models/edit-profile-const';
 
@@ -29,7 +29,6 @@ import { emailPreferencesList, periodicityOptions } from '@global-user/models/ed
 })
 export class EditProfileComponent extends FormBaseComponent implements OnInit, OnDestroy {
   editProfileForm: FormGroup;
-  private langChangeSub: Subscription;
   private currentLocation: UserLocationDto;
   coordinates: Coordinates = { latitude: null, longitude: null };
   previousPath = '/profile';
@@ -44,7 +43,7 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
   private profileService: ProfileService;
   private snackBar: MatSnackBarComponent;
   private localStorageService: LocalStorageService;
-  private translate: TranslateService;
+  private readonly destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   cityOptions: google.maps.places.AutocompletionRequest = {
     input: '',
     types: ['(cities)']
@@ -81,9 +80,10 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
   }
 
   constructor(
-    private injector: Injector,
+    private readonly injector: Injector,
     public dialog: MatDialog,
     public router: Router,
+    private readonly translate: TranslateService,
     private readonly cdr: ChangeDetectorRef
   ) {
     super(router, dialog);
@@ -92,14 +92,12 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
     this.profileService = injector.get(ProfileService);
     this.snackBar = injector.get(MatSnackBarComponent);
     this.localStorageService = injector.get(LocalStorageService);
-    this.translate = injector.get(TranslateService);
   }
 
   ngOnInit() {
+    this.subscribeToLangChange();
     this.initForm();
     this.getInitialValue();
-    this.subscribeToLangChange();
-    this.bindLang(this.localStorageService.getCurrentLanguage());
   }
 
   getFormValues(): any {
@@ -215,17 +213,25 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
   }
 
   private bindLang(lang: string): void {
-    this.translate.setDefaultLang(lang);
+    if (lang && this.translate.currentLang !== lang) {
+      this.translate.setDefaultLang(lang);
+      this.translate.use(lang).subscribe(() => {
+        this.cdr.detectChanges();
+      });
+    }
     if (this.city.pristine) {
       this.city.setValue(this.builder.getFormatedCity(this.currentLocation));
     }
   }
 
   private subscribeToLangChange(): void {
-    this.langChangeSub = this.localStorageService.languageSubject.subscribe((lang) => this.bindLang(lang));
+    this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroyed$)).subscribe((lang: string) => {
+      this.bindLang(lang);
+    });
   }
 
   ngOnDestroy(): void {
-    this.langChangeSub.unsubscribe();
+    this.destroyed$.next(null);
+    this.destroyed$.complete();
   }
 }

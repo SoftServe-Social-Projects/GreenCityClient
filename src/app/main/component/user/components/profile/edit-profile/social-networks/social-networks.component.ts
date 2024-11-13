@@ -19,7 +19,7 @@ import { ProfileService } from 'src/app/main/component/user/components/profile/p
   ]
 })
 export class SocialNetworksComponent implements ControlValueAccessor, OnInit {
-  urlValidationRegex = Patterns.linkPattern;
+  urlValidationRegex = Patterns.socialMediaPattern;
   showInput = false;
   inputTextValue;
   editedSocialLink: any = false;
@@ -126,7 +126,7 @@ export class SocialNetworksComponent implements ControlValueAccessor, OnInit {
 
   onAddLink(link?) {
     this.onChange(link);
-    const value = link || this.inputTextValue;
+    const value = (link || this.inputTextValue).trim();
     if (this.checkIsUrl(value) && !this.onCheckForExisting(value)) {
       this.socialNetworks.push({
         url: value
