@@ -14,7 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { UserProfileImageComponent } from '@global-user/components/shared/components/user-profile-image/user-profile-image.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UserOnlineStatusService } from '@global-user/services/user-online-status.service';
-import { routes } from '../../../../../../../app-routing.module';
+import { routes } from 'src/app/app-routing.module';
 
 describe('ProfileHeaderComponent', () => {
   let component: ProfileHeaderComponent;

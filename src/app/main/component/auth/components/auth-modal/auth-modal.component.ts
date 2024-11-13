@@ -1,4 +1,4 @@
-import { authImages, ubsAuthImages } from './../../../../image-pathes/auth-images';
+import { authImages, ubsAuthImages } from 'src/app/main/image-pathes/auth-images';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LiveAnnouncer } from '@angular/cdk/a11y';

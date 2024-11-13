@@ -1,4 +1,4 @@
-import { Language } from './../../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { BehaviorSubject } from 'rxjs';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';

@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AdviceService } from '../../../../../../../service/advice/advice.service';
-import { AdviceDto } from '../../../../../../../model/advice/AdviceDto';
+import { AdviceService } from 'src/app/main/service/advice/advice.service';
+import { AdviceDto } from 'src/app/main/model/advice/AdviceDto';
 import { Observable } from 'rxjs';
-import { HabitDictionaryDto } from '../../../../../../../model/habit/HabitDictionaryDto';
-import { LanguageService } from '../../../../../../../i18n/language.service';
+import { HabitDictionaryDto } from 'src/app/main/model/habit/HabitDictionaryDto';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 
 @Component({
   selector: 'app-advice',

@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { UbsAdminEmployeeService } from '../../../services/ubs-admin-employee.service';
+import { UbsAdminEmployeeService } from 'src/app/ubs/ubs-admin/services/ubs-admin-employee.service';
 import {
   Employees,
   Page,
@@ -10,16 +10,16 @@ import {
   TariffForEmployee,
   EmployeeDataToSend,
   Tariff
-} from '../../../models/ubs-admin.interface';
+} from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
 import { AddEmployee, UpdateEmployee } from 'src/app/store/actions/employee.actions';
 import { skip, takeUntil } from 'rxjs/operators';
-import { ShowImgsPopUpComponent } from '../../../../../shared/show-imgs-pop-up/show-imgs-pop-up.component';
+import { ShowImgsPopUpComponent } from 'src/app/shared/show-imgs-pop-up/show-imgs-pop-up.component';
 import { Subject } from 'rxjs';
 import { Masks, Patterns } from 'src/assets/patterns/patterns';
 import { PhoneNumberValidator } from 'src/app/shared/phone-validator/phone.validator';
-import { TariffsService } from '../../../services/tariffs.service';
+import { TariffsService } from 'src/app/ubs/ubs-admin/services/tariffs.service';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { UploadPhotoContainerComponent } from 'src/app/shared/upload-photo-container/upload-photo-container.component';
 import { FileHandle } from '@eco-news-models/create-news-interface';

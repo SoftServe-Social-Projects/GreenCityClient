@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HabitDto } from '../../../../../../../../model/habit/HabitDto';
-import { HabitStatisticsDto } from '../../../../../../../../model/habit/HabitStatisticsDto';
-import { HabitStatisticService } from '../../../../../../../../service/habit-statistic/habit-statistic.service';
+import { HabitDto } from 'src/app/main/model/habit/HabitDto';
+import { HabitStatisticsDto } from 'src/app/main/model/habit/HabitStatisticsDto';
+import { HabitStatisticService } from 'src/app/main/service/habit-statistic/habit-statistic.service';
 import { filter, map, tap } from 'rxjs/operators';
-import { Photo } from '../../../../../../../../model/photo/photo';
+import { Photo } from 'src/app/main/model/photo/photo';
 import { HabitItem } from '../habit-item/HabitItem';
 
 @Component({

@@ -14,7 +14,7 @@ import { UbsAdminEmployeeService } from 'src/app/ubs/ubs-admin/services/ubs-admi
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { UbsAdminEmployeeTableComponent } from './ubs-admin-employee-table.component';
 import { UbsAdminEmployeeEditFormComponent } from '../ubs-admin-employee-edit-form/ubs-admin-employee-edit-form.component';
-import { DialogPopUpComponent } from '../../../../../shared/dialog-pop-up/dialog-pop-up.component';
+import { DialogPopUpComponent } from 'src/app/shared/dialog-pop-up/dialog-pop-up.component';
 
 describe('UbsAdminEmployeeTableComponent', () => {
   let component: UbsAdminEmployeeTableComponent;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Chat, ChatDto, LocationForChat } from '../../model/Chat.model';
-import { environment } from '../../../../environments/environment';
+import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Message, MessageExtended, MessagesToSave } from '../../model/Message.model';
 import { FriendArrayModel, FriendModel } from '@global-user/models/friend.model';

@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { DialogPopUpComponent } from 'src/app/shared/dialog-pop-up/dialog-pop-up.component';
 import { CreateEcoEventAction, EditEcoEventAction, EventsActions } from 'src/app/store/actions/ecoEvents.actions';
-import { singleNewsImages } from '../../../../image-pathes/single-news-images';
+import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
 import { Place } from '../../../places/models/place';
 import { DefaultCoordinates } from '../../models/event-consts';
 import { DateInformation, Dates, EventDTO, EventForm, EventResponse, TagObj } from '../../models/events.interface';
@@ -230,7 +230,8 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
         this.eventId = Number(urlSegments[urlSegments.length - 1]);
       }
       const currentImages = (this._savedFormValues?.eventInformation?.images || [])
-        .filter((value) => !value.file).map((value) => value.url);
+        .filter((value) => !value.file)
+        .map((value) => value.url);
       sendEventDto = {
         ...sendEventDto,
         additionalImages: currentImages.slice(1),
@@ -258,42 +259,44 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
   }
 
   transformDatesFormToDates(form: DateInformation[]): Dates[] {
-    return form.map((value) => {
-      const { date, endTime, startTime } = value.day;
-      const { onlineLink, place, coordinates } = value.placeOnline;
+    return form
+      .map((value) => {
+        const { date, endTime, startTime } = value.day;
+        const { onlineLink, place, coordinates } = value.placeOnline;
 
-      const dateObject = new Date(date);
+        const dateObject = new Date(date);
 
-      if (isNaN(dateObject.getTime())) {
-        return;
-      }
+        if (isNaN(dateObject.getTime())) {
+          return;
+        }
 
-      let [hours, minutes] = startTime.split(':');
-      dateObject.setHours(parseInt(hours, 10));
-      dateObject.setMinutes(parseInt(minutes, 10));
-      const startDate = dateObject.toISOString();
+        let [hours, minutes] = startTime.split(':');
+        dateObject.setHours(parseInt(hours, 10));
+        dateObject.setMinutes(parseInt(minutes, 10));
+        const startDate = dateObject.toISOString();
 
-      [hours, minutes] = endTime.split(':');
-      dateObject.setHours(parseInt(hours, 10));
-      dateObject.setMinutes(parseInt(minutes, 10));
-      const finishDate = dateObject.toISOString();
+        [hours, minutes] = endTime.split(':');
+        dateObject.setHours(parseInt(hours, 10));
+        dateObject.setMinutes(parseInt(minutes, 10));
+        const finishDate = dateObject.toISOString();
 
-      const dates: Dates = {
-        startDate,
-        finishDate,
-        id: undefined
-      };
-      if (onlineLink) {
-        dates.onlineLink = onlineLink;
-      }
-      if (place) {
-        dates.coordinates = {
-          latitude: coordinates.lat,
-          longitude: coordinates.lng
+        const dates: Dates = {
+          startDate,
+          finishDate,
+          id: undefined
         };
-      }
-      return dates;
-    }).filter(Boolean);
+        if (onlineLink) {
+          dates.onlineLink = onlineLink;
+        }
+        if (place) {
+          dates.coordinates = {
+            latitude: coordinates.lat,
+            longitude: coordinates.lng
+          };
+        }
+        return dates;
+      })
+      .filter(Boolean);
   }
 
   escapeFromCreateEvent(): void {

@@ -1,4 +1,4 @@
-import { Language } from './../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, Injectable, EventEmitter } from '@angular/core';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
