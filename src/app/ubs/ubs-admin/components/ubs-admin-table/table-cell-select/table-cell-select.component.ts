@@ -175,6 +175,7 @@ export class TableCellSelectComponent implements OnInit {
   }
 
   openConfirmPopUp(): void {
+    this.dialogConfig.data = { newOption: this.newOption };
     this.dialog
       .open(UbsAdminConfirmStatusChangePopUpComponent, this.dialogConfig)
       .afterClosed()
