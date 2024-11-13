@@ -73,16 +73,16 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
   }
 
   initForm(): void {
-    const currentEmployees = this.responsiblePersonInfo.currentPositionEmployees;
+    const currentEmployees = this.responsiblePersonInfo?.currentPositionEmployees;
     this.ordersForm = this.fb.group({
       exportDetailsDto: this.fb.group({
         dateExport: [
-          this.exportInfo.dateExport ? formatDate(this.exportInfo.dateExport, 'yyyy-MM-dd', this.currentLang) : '',
+          this.exportInfo?.dateExport ? formatDate(this.exportInfo.dateExport, 'yyyy-MM-dd', this.currentLang) : '',
           [Validators.required]
         ],
-        timeDeliveryFrom: [this.parseTimeToStr(this.exportInfo.timeDeliveryFrom), [Validators.required]],
-        timeDeliveryTo: [this.parseTimeToStr(this.exportInfo.timeDeliveryTo), [Validators.required]],
-        receivingStationId: [this.getReceivingStationById(this.exportInfo.receivingStationId), [Validators.required]]
+        timeDeliveryFrom: [this.parseTimeToStr(this.exportInfo?.timeDeliveryFrom), [Validators.required]],
+        timeDeliveryTo: [this.parseTimeToStr(this.exportInfo?.timeDeliveryTo), [Validators.required]],
+        receivingStationId: [this.getReceivingStationById(this.exportInfo?.receivingStationId), [Validators.required]]
       }),
 
       responsiblePersonsForm: this.fb.group({
@@ -143,7 +143,7 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
   }
 
   getReceivingStationById(receivingStationId: number): string {
-    return this.exportInfo.allReceivingStations.find((element) => receivingStationId === element.id)?.name || '';
+    return this.exportInfo?.allReceivingStations.find((element) => receivingStationId === element.id)?.name || '';
   }
 
   setEmployeesByPosition(): void {
