@@ -71,7 +71,6 @@ export class ProfileService {
   private getDomainFromUrl(url: string): string | null {
     const regex = Patterns.socialMediaPattern;
     const match = regex.exec(url);
-
     return match?.[1] || null;
   }
 }

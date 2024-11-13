@@ -149,7 +149,7 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
   getInitialValue(): void {
     this.profileService
       .getUserInfo()
-      .pipe(take(1), filter(Boolean))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe((data: EditProfileModel) => {
         this.editProfileForm = this.builder.getEditProfileForm(data);
         this.currentLocation = data.userLocationDto;
