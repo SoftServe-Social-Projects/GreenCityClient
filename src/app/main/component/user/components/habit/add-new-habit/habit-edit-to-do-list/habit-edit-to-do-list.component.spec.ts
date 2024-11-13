@@ -2,27 +2,27 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { HabitService } from '@global-service/habit/habit.service';
-import { ShoppingList } from '@global-user/models/shoppinglist.interface';
+import { ToDoList } from '@global-user/models/to-do-list.interface';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TodoStatus } from '../../models/todo-status.enum';
 
-import { HabitEditShoppingListComponent } from './habit-edit-shopping-list.component';
-import { ShoppingListService } from './shopping-list.service';
+import { HabitEditToDoListComponent } from './habit-edit-to-do-list.component';
+import { ToDoListService } from './to-do-list.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SimpleChange, SimpleChanges } from '@angular/core';
 
-describe('HabitEditShoppingListComponent', () => {
-  let component: HabitEditShoppingListComponent;
-  let fixture: ComponentFixture<HabitEditShoppingListComponent>;
+describe('HabitEditToDoListComponent', () => {
+  let component: HabitEditToDoListComponent;
+  let fixture: ComponentFixture<HabitEditToDoListComponent>;
   let snackBar: MatSnackBar;
 
   const mockActivatedRoute = {
     params: of({ habitId: 2 })
   };
-  const mockList: ShoppingList[] = [
+  const mockList: ToDoList[] = [
     {
       id: 1,
       status: TodoStatus.active,
@@ -36,7 +36,7 @@ describe('HabitEditShoppingListComponent', () => {
       selected: false
     }
   ];
-  const mockItem: ShoppingList = {
+  const mockItem: ToDoList = {
     id: 234,
     status: TodoStatus.active,
     text: 'Item 2',
@@ -51,10 +51,10 @@ describe('HabitEditShoppingListComponent', () => {
     const matDialogRefMock = jasmine.createSpyObj(['open', 'afterClosed']);
     matDialogRefMock.open.and.returnValue({ afterClosed: () => of(true) });
     TestBed.configureTestingModule({
-      declarations: [HabitEditShoppingListComponent],
+      declarations: [HabitEditToDoListComponent],
       imports: [HttpClientTestingModule, TranslateModule.forRoot(), MatSnackBarModule],
       providers: [
-        ShoppingListService,
+        ToDoListService,
         HabitService,
         MatSnackBar,
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -64,18 +64,18 @@ describe('HabitEditShoppingListComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HabitEditShoppingListComponent);
+    fixture = TestBed.createComponent(HabitEditToDoListComponent);
     component = fixture.componentInstance;
     snackBar = TestBed.inject(MatSnackBar);
     fixture.detectChanges();
-    component.shopList = [];
+    component.toDoList = [];
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should add item to shop list on additem', () => {
+  it('should add item to toDo list on additem', () => {
     const newList = [
       {
         id: null,
@@ -85,9 +85,9 @@ describe('HabitEditShoppingListComponent', () => {
         selected: true
       }
     ];
-    component.shopList = [];
+    component.toDoList = [];
     component.addItem('test');
-    expect(component.shopList).toEqual(newList);
+    expect(component.toDoList).toEqual(newList);
   });
 
   it('should setValue empty string on add item', () => {
@@ -98,49 +98,49 @@ describe('HabitEditShoppingListComponent', () => {
 
   it('should return disableCheck if isAcquired is true', () => {
     component.isAcquired = true;
-    const result = component.getCheckIcon({} as ShoppingList);
+    const result = component.getCheckIcon({} as ToDoList);
     expect(result).toBe(component.img.disableCheck);
   });
 
   it('should return doneCheck if item status is done', () => {
-    const item: ShoppingList = { status: TodoStatus.done, text: mockText1, id: null };
+    const item: ToDoList = { status: TodoStatus.done, text: mockText1, id: null };
     const result = component.getCheckIcon(item);
     expect(result).toBe(component.img.doneCheck);
   });
 
   it('should return minusCheck if item is selected', () => {
-    const item: ShoppingList = { selected: true, status: TodoStatus.inprogress, text: mockText2, id: null };
+    const item: ToDoList = { selected: true, status: TodoStatus.inprogress, text: mockText2, id: null };
     const result = component.getCheckIcon(item);
     expect(result).toBe(component.img.minusCheck);
   });
 
   it('should return plusCheck if item is not selected and status is not done', () => {
-    const item: ShoppingList = { selected: false, status: TodoStatus.inprogress, text: mockText3, id: null };
+    const item: ToDoList = { selected: false, status: TodoStatus.inprogress, text: mockText3, id: null };
     const result = component.getCheckIcon(item);
     expect(result).toBe(component.img.plusCheck);
   });
 
   it('should select item and change status to in progress if selected', () => {
-    const item: ShoppingList = mockList[0];
-    component.shopList = [item];
+    const item: ToDoList = mockList[0];
+    component.toDoList = [item];
     component.selectItem(item);
-    expect(component.shopList[0].selected).toBe(true);
-    expect(component.shopList[0].status).toBe(TodoStatus.inprogress);
+    expect(component.toDoList[0].selected).toBe(true);
+    expect(component.toDoList[0].status).toBe(TodoStatus.inprogress);
   });
 
   it('should deselect item and change status to active if not selected', () => {
-    const item: ShoppingList = { id: null, status: TodoStatus.inprogress, text: 'item1', selected: true };
-    component.shopList = [item];
+    const item: ToDoList = { id: null, status: TodoStatus.inprogress, text: 'item1', selected: true };
+    component.toDoList = [item];
     component.selectItem(item);
-    expect(component.shopList[0].selected).toBe(false);
-    expect(component.shopList[0].status).toBe(TodoStatus.active);
+    expect(component.toDoList[0].selected).toBe(false);
+    expect(component.toDoList[0].status).toBe(TodoStatus.active);
   });
 
   it('should move selected item to the top of the list', () => {
-    component.shopList = [...mockList];
+    component.toDoList = [...mockList];
     component.selectItem(mockList[1]);
-    expect(component.shopList[0]).toBe(mockList[1]);
-    expect(component.shopList[1]).toBe(mockList[0]);
+    expect(component.toDoList[0]).toBe(mockList[1]);
+    expect(component.toDoList[1]).toBe(mockList[0]);
   });
 
   it('should not open snackbar if form is valid', () => {

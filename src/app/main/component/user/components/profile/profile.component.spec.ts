@@ -14,7 +14,7 @@ describe('ProfileComponent', () => {
 
   const fakeItem = {
     city: 'fakeCity',
-    showShoppingList: false
+    showToDoList: false
   };
   const liveAnnouncerMock = jasmine.createSpyObj('announcer', ['announce']);
   const localStorageServiceMock = jasmine.createSpyObj('localStorageService', ['getCurrentLanguage', 'setCurentPage']);

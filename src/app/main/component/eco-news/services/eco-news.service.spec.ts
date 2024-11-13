@@ -4,6 +4,7 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '@environment/environment';
 import { EcoNewsService } from './eco-news.service';
+import { HttpParams } from '@angular/common/http';
 
 describe('EcoNewsService', () => {
   let service: EcoNewsService;
@@ -14,12 +15,25 @@ describe('EcoNewsService', () => {
     imagePath: null,
     title: '',
     text: '',
-    author: { id: 312, name: 'taqcTestName' },
+    content: '',
+    shortInfo: '',
     tags: ['News', 'Events'],
+    tagsEn: ['News'],
+    tagsUa: ['Новини'],
     creationDate: '2021-11-25T22:32:30.555088+02:00',
     likes: 0,
-    source: ''
+    source: '',
+    author: { id: 312, name: 'taqcTestName' }
   };
+
+  const newsDtoMock = {
+    page: [newsMock],
+    totalElements: 5,
+    currentPage: 0,
+    totalPages: 1,
+    hasNext: true
+  };
+
   const localStorageServiceMock: LocalStorageService = jasmine.createSpyObj('LocalStorageService', ['languageBehaviourSubject']);
   localStorageServiceMock.languageBehaviourSubject = new BehaviorSubject('en');
 
@@ -41,34 +55,12 @@ describe('EcoNewsService', () => {
 
   it('should return eco news list by current page', () => {
     service.getEcoNewsListByPage(0, 5).subscribe((data) => {
-      expect(data).toBe(newsMock);
+      expect(data).toEqual(newsDtoMock);
     });
 
     const req = httpTestingController.expectOne(`${environment.backendLink}eco-news?page=0&size=5`);
     expect(req.request.method).toEqual('GET');
-    req.flush(newsMock);
-  });
-
-  it('should return eco news list by current tags', () => {
-    const tagMock = ['News'];
-    service.getNewsListByTags(0, 5, tagMock).subscribe((data) => {
-      expect(data).toBe(newsMock);
-    });
-
-    const req = httpTestingController.expectOne(`${environment.backendLink}eco-news?tags=${tagMock}&page=0&size=5`);
-    expect(req.request.method).toEqual('GET');
-    req.flush(newsMock);
-  });
-
-  it('should return news list', () => {
-    const arr = [newsMock];
-    service.getNewsList().subscribe((data) => {
-      expect(data).toBe(arr);
-    });
-
-    const req = httpTestingController.expectOne(`${environment.backendLink}eco-news`);
-    expect(req.request.method).toEqual('GET');
-    req.flush(arr);
+    req.flush(newsDtoMock);
   });
 
   it('should return news list by id', () => {
@@ -110,5 +102,59 @@ describe('EcoNewsService', () => {
     const req = httpTestingController.expectOne(`${environment.backendLink}eco-news/13578/likes/1`);
     expect(req.request.method).toEqual('GET');
     req.flush(isLikedByUser);
+  });
+
+  it('should get eco news list with custom parameters', () => {
+    const params = new HttpParams().set('page', '0').set('size', '5');
+    service.getEcoNewsList(params).subscribe((data) => {
+      expect(data).toEqual(newsDtoMock);
+    });
+
+    const req = httpTestingController.expectOne(`${environment.backendLink}eco-news?page=0&size=5`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(newsDtoMock);
+  });
+
+  it('should get eco news list by author ID', () => {
+    const authorId = 123;
+    service.getEcoNewsListByAuthorId(authorId, 0, 5).subscribe((data) => {
+      expect(data).toBeDefined();
+    });
+
+    const req = httpTestingController.expectOne(`${environment.backendLink}eco-news?author-id=${authorId}&page=0&size=5`);
+    expect(req.request.method).toEqual('GET');
+  });
+
+  it('should delete a news item', () => {
+    const newsId = 13578;
+    service.deleteNews(newsId).subscribe((data) => {
+      expect(data).toBeDefined();
+    });
+
+    const req = httpTestingController.expectOne(`${environment.backendLink}eco-news/${newsId}`);
+    expect(req.request.method).toEqual('DELETE');
+    req.flush({});
+  });
+
+  it('should add news to favorites', () => {
+    const newsId = 13578;
+    service.addNewsToFavorites(newsId).subscribe((data) => {
+      expect(data).toBeDefined();
+    });
+
+    const req = httpTestingController.expectOne(`${environment.backendLink}eco-news/${newsId}/favorites`);
+    expect(req.request.method).toEqual('POST');
+    req.flush({});
+  });
+
+  it('should remove news from favorites', () => {
+    const newsId = 13578;
+    service.removeNewsFromFavorites(newsId).subscribe((data) => {
+      expect(data).toBeDefined();
+    });
+
+    const req = httpTestingController.expectOne(`${environment.backendLink}eco-news/${newsId}/favorites`);
+    expect(req.request.method).toEqual('DELETE');
+    req.flush({});
   });
 });

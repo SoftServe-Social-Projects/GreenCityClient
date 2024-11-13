@@ -18,17 +18,15 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { Store } from '@ngrx/store';
 import { Language } from 'src/app/main/i18n/Language';
+import { MatDialog } from '@angular/material/dialog';
+import { ChangeEcoNewsFavoriteStatusAction } from 'src/app/store/actions/ecoNews.actions';
 
 describe('NewsListComponent', () => {
   let component: NewsListComponent;
   let fixture: ComponentFixture<NewsListComponent>;
 
-  const ecoNewsServiceMock: EcoNewsService = jasmine.createSpyObj('EcoNewsService', [
-    'getAllPresentTags',
-    'getNewsListByTags',
-    'getEcoNewsListByPage'
-  ]);
-  ecoNewsServiceMock.getNewsListByTags = () => new Observable();
+  const ecoNewsServiceMock: EcoNewsService = jasmine.createSpyObj('EcoNewsService', ['getAllPresentTags', 'getEcoNewsListByPage']);
+
   ecoNewsServiceMock.getEcoNewsListByPage = () => new Observable();
 
   const localStorageServiceMock: LocalStorageService = jasmine.createSpyObj('LocalStorageService', [
@@ -45,6 +43,31 @@ describe('NewsListComponent', () => {
   userOwnAuthServiceMock.getDataFromLocalStorage = () => true;
   userOwnAuthServiceMock.credentialDataSubject = new Subject();
   userOwnAuthServiceMock.isLoginUserSubject = new BehaviorSubject(true);
+
+  const newsMock = {
+    countComments: 5,
+    id: 13578,
+    imagePath: null,
+    title: '',
+    text: '',
+    content: '',
+    shortInfo: '',
+    tags: ['News', 'Events'],
+    tagsEn: ['News'],
+    tagsUa: ['Новини'],
+    creationDate: '2021-11-25T22:32:30.555088+02:00',
+    likes: 0,
+    source: '',
+    author: { id: 312, name: 'taqcTestName' }
+  };
+
+  const matDialogRefMock = {
+    afterClosed: jasmine.createSpy('afterClosed').and.returnValue(of(true))
+  };
+
+  const matDialogMock = {
+    open: jasmine.createSpy('open').and.returnValue(matDialogRefMock)
+  };
 
   const storeMock = jasmine.createSpyObj('store', ['select', 'dispatch']);
   storeMock.select = () => of({ ecoNews: {}, pages: [], pageNumber: 1, error: 'error' });
@@ -70,7 +93,8 @@ describe('NewsListComponent', () => {
         { provide: LocalStorageService, useValue: localStorageServiceMock },
         { provide: EcoNewsService, useValue: ecoNewsServiceMock },
         { provide: UserOwnAuthService, useValue: userOwnAuthServiceMock },
-        { provide: Store, useValue: storeMock }
+        { provide: Store, useValue: storeMock },
+        { provide: MatDialog, useValue: matDialogMock }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -80,6 +104,7 @@ describe('NewsListComponent', () => {
     fixture = TestBed.createComponent(NewsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    storeMock.dispatch.calls.reset();
   });
 
   it('should create', () => {
@@ -89,6 +114,15 @@ describe('NewsListComponent', () => {
   it('should add elements to current list if scroll', () => {
     spyOn(component, 'dispatchStore');
     component.onScroll();
+    expect(component.dispatchStore).toHaveBeenCalledTimes(0);
+  });
+
+  it('should dispatch store action on scroll when elements are present', () => {
+    component.elements = [newsMock, { ...newsMock, id: 2 }];
+
+    spyOn(component, 'dispatchStore');
+    component.onScroll();
+    expect(component.dispatchStore).toHaveBeenCalledWith(false);
     expect(component.dispatchStore).toHaveBeenCalledTimes(1);
   });
 
@@ -108,5 +142,40 @@ describe('NewsListComponent', () => {
     spyOn(component, 'getFilterData');
     component.getFilterData(['News']);
     expect(component.getFilterData).toHaveBeenCalledWith(['News']);
+  });
+
+  it('should cancel search correctly', () => {
+    component.searchNewsControl.setValue('test');
+    component.cancelSearch();
+    expect(component.searchNewsControl.value).toBe('');
+  });
+
+  it('should toggle search state', () => {
+    component.isSearchVisible = false;
+    component.toggleSearch();
+    expect(component.isSearchVisible).toBeTrue();
+  });
+
+  it('should change favorite status when user is logged in', () => {
+    const event = new MouseEvent('click');
+    const data = { ...newsMock, favorite: false };
+    component.userId = 1;
+
+    component.changeFavoriteStatus(event, data);
+
+    const expectedAction = ChangeEcoNewsFavoriteStatusAction({
+      id: data.id,
+      favorite: true,
+      isFavoritesPage: component.bookmarkSelected
+    });
+
+    expect(storeMock.dispatch).toHaveBeenCalledWith(expectedAction);
+  });
+
+  it('should toggle bookmarked news display', () => {
+    component.userId = 1;
+    component.bookmarkSelected = false;
+    component.showSelectedNews();
+    expect(component.bookmarkSelected).toBeTrue();
   });
 });

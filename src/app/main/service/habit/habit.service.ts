@@ -7,7 +7,7 @@ import { habitLink } from '../../links';
 import { TagInterface } from '@shared/components/tag-filter/tag-filter.model';
 import { environment } from '@environment/environment';
 import { HabitInterface, HabitListInterface } from '@global-user/components/habit/models/interfaces/habit.interface';
-import { ShoppingList } from '@global-user/models/shoppinglist.interface';
+import { ToDoList } from '@global-user/models/to-do-list.interface';
 import { CustomHabitDtoRequest, CustomHabit } from '@global-user/components/habit/models/interfaces/custom-habit.interface';
 import { FriendProfilePicturesArrayModel } from '@global-user/models/friend.model';
 import { FileHandle } from '@eco-news-models/create-news-interface';
@@ -54,8 +54,8 @@ export class HabitService {
     return this.http.get<HabitInterface>(`${habitLink}/${id}?lang=${this.language}`);
   }
 
-  getHabitShoppingList(id: number): Observable<Array<ShoppingList>> {
-    return this.http.get<Array<ShoppingList>>(`${habitLink}/${id}/shopping-list?lang=${this.language}`);
+  getHabitToDoList(id: number): Observable<Array<ToDoList>> {
+    return this.http.get<Array<ToDoList>>(`${habitLink}/${id}/to-do-list?lang=${this.language}`);
   }
 
   getAllTags(): Observable<Array<TagInterface>> {
@@ -97,7 +97,7 @@ export class HabitService {
       complexity: habit.complexity,
       defaultDuration: habit.duration,
       tagIds: habit.tagIds,
-      customShoppingListItemDto: habit.shopList
+      customToDoListItemDto: habit.toDoList
     };
 
     const formData = new FormData();

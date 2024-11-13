@@ -100,7 +100,7 @@ export const mockHabitAssign: HabitAssignInterface[] = [
     habitStreak: 10,
     lastEnrollmentDate: new Date(),
     habitStatusCalendarDtoList: [],
-    shoppingListItems: []
+    toDoListItems: []
   },
   {
     id: 2,
@@ -115,7 +115,7 @@ export const mockHabitAssign: HabitAssignInterface[] = [
     habitStreak: 10,
     lastEnrollmentDate: new Date(),
     habitStatusCalendarDtoList: [],
-    shoppingListItems: []
+    toDoListItems: []
   }
 ];
 

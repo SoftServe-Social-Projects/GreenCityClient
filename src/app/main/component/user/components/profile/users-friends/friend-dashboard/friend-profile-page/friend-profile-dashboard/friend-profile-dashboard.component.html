@@ -1,7 +1,7 @@
 <div class="dashboard">
   <mat-tab-group animationDuration="400ms" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
     <mat-tab label="{{ 'user.habit.all-habits.title' | translate }}">
-      <div class="container">
+      <div class="container dashboard-container">
         <div class="img-absent" *ngIf="!isHabitsPresent">
           <img [src]="absentContent" alt="absent-friends" class="no-data-image" />
           <h3 class="title">{{ 'user.habit.all-habits.title' | translate }}</h3>
@@ -12,7 +12,7 @@
       </div>
     </mat-tab>
     <mat-tab label="{{ 'user.habit.all-habits.mutual' | translate }}" [disabled]="userId === currentUserId">
-      <div class="container">
+      <div class="container dashboard-container">
         <div class="img-absent" *ngIf="!isMutualHabitsPresent">
           <img [src]="absentContent" alt="absent-friends" class="no-data-image" />
           <h3 class="title">{{ 'user.habit.all-habits.mutual' | translate }}</h3>
@@ -24,7 +24,7 @@
     </mat-tab>
 
     <mat-tab label="{{ 'profile.dashboard.my-habits' | translate }}">
-      <div class="container">
+      <div class="container dashboard-container">
         <div class="img-absent" *ngIf="!isAllHabitsListPresent">
           <img [src]="absentContent" alt="absent-friends" class="no-data-image" />
           <h3 class="title">{{ 'profile.dashboard.my-habits' | translate }}</h3>

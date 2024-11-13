@@ -3,8 +3,14 @@
   <div class="eco-news_list-content">
     <div>
       <div class="filter-tag">
-        <p class="eco-news_list-tag d-inline-block" *ngFor="let tag of tags">
-          {{ tag }}
+        <p class="eco-news_list-tag d-inline-block" *ngFor="let tag of tags; let i = index">
+          <span>{{ tag }}</span>
+          <span
+            class="tag-divider"
+            *ngIf="tags.length > 1 && i !== tags.length - 1"
+            [ngClass]="{ 'divider-small': tags.length === 3 && currentLang === 'ua' }"
+            >|</span
+          >
         </p>
       </div>
       <div class="eco-news_list-content-box">

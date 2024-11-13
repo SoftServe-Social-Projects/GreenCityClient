@@ -136,6 +136,10 @@ div.search-content-wrapper {
   display: block;
 }
 
+span.counter {
+  opacity: 0.5;
+}
+
 @media (min-width: 576px) {
   .list-search-items {
     grid-template-columns: repeat(2, 254px);

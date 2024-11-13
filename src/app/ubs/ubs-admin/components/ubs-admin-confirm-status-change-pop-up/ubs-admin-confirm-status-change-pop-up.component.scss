@@ -1,0 +1,27 @@
+.content-container {
+  padding: 40px 0 20px;
+}
+
+.btn-container {
+  text-align: right;
+}
+
+.container {
+  position: relative;
+
+  .close-container {
+    position: absolute;
+    top: -5px;
+    right: 5px;
+  }
+
+  .close-btn {
+    border: none;
+    background-color: transparent;
+    outline: none;
+
+    img {
+      width: 20px;
+    }
+  }
+}

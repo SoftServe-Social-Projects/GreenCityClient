@@ -1,0 +1,18 @@
+<div class="container">
+  <div class="close-container">
+    <button class="close-btn" mat-dialog-close (click)="closeDialog(false)">
+      <img src="{{ closeButton }}" alt="close" />
+    </button>
+  </div>
+  <div class="content-container">
+    <h4>{{ 'order-status-confirm.confirm-message' | translate }}</h4>
+  </div>
+  <div>
+    <div class="btn-container">
+      <button type="reset" class="disagree btn" (click)="closeDialog(false)">{{ 'order-status-confirm.no' | translate }}</button>
+      <button type="submit" class="agree btn" (click)="closeDialog(true)">
+        {{ 'order-status-confirm.yes' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

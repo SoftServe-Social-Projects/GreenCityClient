@@ -82,7 +82,7 @@ export const MOCK_CUSTOM_HABIT: CustomHabit = {
   duration: 30,
   tagIds: [1, 2],
   image: 'testImage',
-  shopList: [
+  toDoList: [
     {
       id: 2,
       text: 'Collapsible Silicone Water Bottle',
@@ -107,7 +107,7 @@ export const MOCK_CUSTOM_HABIT_RESPONSE: CustomHabitDtoRequest = {
   defaultDuration: MOCK_CUSTOM_HABIT.duration,
   image: MOCK_CUSTOM_HABIT.image,
   tagIds: MOCK_CUSTOM_HABIT.tagIds,
-  customShoppingListItemDto: MOCK_CUSTOM_HABIT.shopList
+  customToDoListItemDto: MOCK_CUSTOM_HABIT.toDoList
 };
 
 export const NEW_HABIT_ARRAY_MOCK: NewHabitDto[] = [new NewHabitDto(1), new NewHabitDto(2), new NewHabitDto(3)];

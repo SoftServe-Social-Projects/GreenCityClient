@@ -190,8 +190,8 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     const parsedDate = new Date(body.notificationTime);
     const isValidDate = !isNaN(parsedDate.getTime());
     return {
-      actionUserId: 0,
-      actionUserText: '',
+      actionUserId: [],
+      actionUserText: [],
       bodyText: body.body || '',
       message: body.body || '',
       notificationId: body.id,
@@ -293,8 +293,32 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     const userId = this.userService.userId;
     const targetTextContent = target.textContent?.trim() || '';
     const targetUserId = target.getAttribute('data-userid')?.toString();
-    if ((event instanceof MouseEvent || (event instanceof KeyboardEvent && event.key === 'Enter')) && targetUserId) {
+    const notificationType = target.getAttribute('data-notificationType');
+    const targetId = Number(target.getAttribute('data-targetid'));
+
+    const isClickOrEnter = event instanceof MouseEvent || (event instanceof KeyboardEvent && event.key === 'Enter');
+    if (!isClickOrEnter) {
+      return;
+    }
+
+    if (targetUserId) {
       this.router.navigate(['profile', userId, 'users', targetTextContent, targetUserId]);
+      return;
+    }
+
+    if (targetId && notificationType) {
+      const routes = {
+        EVENT: ['events', targetId],
+        ECONEWS: ['news', targetId],
+        HABIT: ['profile', userId, 'allhabits', 'edithabit', targetId]
+      };
+
+      for (const type in routes) {
+        if (notificationType.includes(type)) {
+          this.router.navigate(routes[type]);
+          return;
+        }
+      }
     }
   }
 

@@ -19,13 +19,24 @@ div {
   display: none;
 }
 
+.tag-divider {
+  color: var(--primary-light-green);
+  height: 100%;
+  padding: 0 4px;
+  margin: 0 4px;
+}
+
+.divider-small {
+  margin: 0 2px;
+  padding: 0;
+}
+
 .eco-news_list-tag {
   font-family: var(--primary-font);
   font-size: 12px;
   line-height: 16px;
   text-transform: uppercase;
   color: var(--primary-green);
-  margin-right: 5px;
 }
 
 .eco-news_list-content {

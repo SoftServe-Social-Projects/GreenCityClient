@@ -1,7 +1,7 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -186,7 +186,7 @@ describe('EditProfileComponent', () => {
         userCredo: '',
         showLocation: '',
         showEcoPlace: '',
-        showShoppingList: '',
+        showToDoList: '',
         socialNetworks: []
       };
       component.editProfileForm.value.city = '';
@@ -194,7 +194,7 @@ describe('EditProfileComponent', () => {
       component.editProfileForm.value.credo = '';
       component.editProfileForm.value.showLocation = '';
       component.editProfileForm.value.showEcoPlace = '';
-      component.editProfileForm.value.showShoppingList = '';
+      component.editProfileForm.value.showToDoList = '';
       component.socialNetworksToServer = [];
     });
 
@@ -239,11 +239,12 @@ describe('EditProfileComponent', () => {
 
     describe('The formControl: city should be marked as valid if the value:', () => {
       for (let i = 0; i < validCity.length; i++) {
-        it(`${i + 1}-st - ${validCity[i]}.`, () => {
+        it(`${i + 1}-st - ${validCity[i]}.`, fakeAsync(() => {
           const control = component.editProfileForm.get('city');
           control.setValue(validCity[i]);
+          tick(100);
           expect(control.valid).toBeTruthy();
-        });
+        }));
       }
     });
   });
@@ -264,7 +265,7 @@ describe('EditProfileComponent', () => {
         rating: 658,
         showEcoPlace: true,
         showLocation: true,
-        showShoppingList: true,
+        showToDoList: true,
         socialNetworks: [{ id: 220, url: 'http://instagram.com/profile' }]
       } as EditProfileModel;
     });

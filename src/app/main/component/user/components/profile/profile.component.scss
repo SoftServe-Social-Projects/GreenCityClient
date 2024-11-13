@@ -12,6 +12,7 @@
   .left-column {
     width: 100%;
     box-shadow: 4px 0 8px -4px var(--quintynary-dark-grey);
+    background-color: var(--primary-white);
 
     .app-users-achievements,
     .app-users-friends,
@@ -41,6 +42,7 @@
       order: 1;
       width: 100vw;
       min-height: 323px;
+      background-color: transparent;
     }
 
     .app-users-friends,
@@ -154,7 +156,7 @@
 
   .profile-wrapper {
     .right-column {
-      app-shopping-list {
+      app-to-do-list {
         margin: 0;
         display: none;
       }
@@ -176,13 +178,13 @@
         display: flex;
       }
 
-      .app-shopping-list {
+      .app-to-do-list {
         display: none;
       }
     }
 
     .right-column {
-      app-shopping-list {
+      app-to-do-list {
         margin-top: 50px;
         margin-bottom: 24px;
       }
@@ -193,13 +195,13 @@
 @include responsiveRange(md, xl) {
   .profile-wrapper {
     .left-column {
-      .app-shopping-list {
+      .app-to-do-list {
         display: block;
       }
     }
 
     .right-column {
-      .app-shopping-list {
+      .app-to-do-list {
         display: none;
       }
     }
@@ -209,13 +211,13 @@
 @include responsiveMobileFirst(xl) {
   .profile-wrapper {
     .left-column {
-      .app-shopping-list {
+      .app-to-do-list {
         display: none;
       }
     }
 
     .right-column {
-      .app-shopping-list {
+      .app-to-do-list {
         display: block;
         margin-top: 16px;
       }

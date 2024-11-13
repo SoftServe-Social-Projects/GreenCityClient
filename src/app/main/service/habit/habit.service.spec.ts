@@ -20,8 +20,8 @@ import {
   MOCK_CUSTOM_HABIT_RESPONSE,
   MOCK_FRIEND_PROFILE_PICTURES,
   MOCK_HABITS,
-  SHOPLIST
-} from '@global-user/components/habit/mocks/shopping-list-mock';
+  TODOLIST
+} from '@global-user/components/habit/mocks/to-do-list-mock';
 import { TAGLIST } from '@global-user/components/habit/mocks/tags-list-mock';
 import { HttpParams, HttpResponse } from '@angular/common/http';
 
@@ -96,16 +96,16 @@ describe('HabitService', () => {
     req.flush(CUSTOMHABIT);
   });
 
-  it('should return habit shopping list', () => {
-    habitService.getHabitShoppingList(2).subscribe((data) => {
-      expect(data).toBe(SHOPLIST);
+  it('should return habit toDo list', () => {
+    habitService.getHabitToDoList(2).subscribe((data) => {
+      expect(data).toBe(TODOLIST);
     });
 
-    const req = httpMock.expectOne(`${habitLink}/2/shopping-list?lang=en`);
+    const req = httpMock.expectOne(`${habitLink}/2/to-do-list?lang=en`);
     expect(req.cancelled).toBeFalsy();
     expect(req.request.responseType).toEqual('json');
     expect(req.request.method).toBe('GET');
-    req.flush(SHOPLIST);
+    req.flush(TODOLIST);
   });
 
   it('should return habit tags', () => {
