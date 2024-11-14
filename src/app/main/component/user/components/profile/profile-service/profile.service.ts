@@ -32,8 +32,7 @@ export class ProfileService {
 
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService,
-    private languageService: LanguageService
+    private localStorageService: LocalStorageService
   ) {}
 
   setUserId(): void {

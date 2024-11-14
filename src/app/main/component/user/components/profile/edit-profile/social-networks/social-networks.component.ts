@@ -124,7 +124,7 @@ export class SocialNetworksComponent implements ControlValueAccessor, OnInit {
     return result;
   }
 
-  onAddLink(link?) {
+  onAddLink(link?: string) {
     this.onChange(link);
     const value = (link || this.inputTextValue).trim();
     if (this.checkIsUrl(value) && !this.onCheckForExisting(value)) {
