@@ -149,7 +149,7 @@ export class OneHabitComponent implements OnInit, OnDestroy {
 
   getUsersFriendTrakingSameHabit(): void {
     this.habitService
-      .getFriendsTrakingSameHabitByHabitId(this.habit.habit.id)
+      .getFriendsTrakingSameHabitByHabitAssignId(this.habit.id)
       .pipe(take(1))
       .subscribe((resp) => (this.friends = resp));
   }
@@ -171,7 +171,7 @@ export class OneHabitComponent implements OnInit, OnDestroy {
     this.dialog.open(FriendsListPopUpComponent, {
       data: {
         friends: this.friends,
-        habitId: this.habit.habit.id
+        habitId: this.habit.id
       },
       width: '400px',
       height: '400px'

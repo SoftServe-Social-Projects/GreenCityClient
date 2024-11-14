@@ -76,8 +76,8 @@ export class HabitService {
     return this.http.put<CustomHabitDtoRequest>(`${habitLink}/update/${id}`, formData, this.httpOptions);
   }
 
-  getFriendsTrakingSameHabitByHabitId(id: number): Observable<FriendProfilePicturesArrayModel[]> {
-    return this.http.get<FriendProfilePicturesArrayModel[]>(`${habitLink}/${id}/friends/profile-pictures`);
+  getFriendsTrakingSameHabitByHabitAssignId(assignId: number): Observable<FriendProfilePicturesArrayModel[]> {
+    return this.http.get<FriendProfilePicturesArrayModel[]>(`${habitLink}/${assignId}/friends/profile-pictures`);
   }
 
   deleteCustomHabit(id: number): Observable<CustomHabitDtoRequest> {
