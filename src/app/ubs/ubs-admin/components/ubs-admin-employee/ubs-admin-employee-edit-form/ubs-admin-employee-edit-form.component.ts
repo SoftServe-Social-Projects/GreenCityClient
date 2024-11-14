@@ -98,7 +98,7 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
       firstName: [this.data?.firstName ?? '', [Validators.required, Validators.pattern(Patterns.NamePattern), Validators.maxLength(30)]],
       lastName: [this.data?.lastName ?? '', [Validators.required, Validators.pattern(Patterns.NamePattern), Validators.maxLength(30)]],
       phoneNumber: [
-        this.data?.phoneNumber ?? '',
+        this.data?.phoneNumber.replace('+', '') ?? '',
         [Validators.required, Validators.pattern(Patterns.adminPhone), PhoneNumberValidator('UA')]
       ],
       email: [
@@ -375,8 +375,7 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
         !this.isInitialDataChanged &&
         !this.isInitialImageChanged &&
         !this.isInitialPositionsChanged &&
-        !this.isInitialTariffsChanged &&
-        !this.isAnyTariffSelected)
+        !this.isInitialTariffsChanged)
     );
   }
 }
