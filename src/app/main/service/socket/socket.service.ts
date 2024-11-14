@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { environment } from '../../../../environments/environment';
+import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import SockJS from 'sockjs-client';
 import { Stomp, StompSubscription } from '@stomp/stompjs';

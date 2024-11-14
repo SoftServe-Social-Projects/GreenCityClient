@@ -17,7 +17,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { Store } from '@ngrx/store';
-import { Language } from '../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangeEcoNewsFavoriteStatusAction } from 'src/app/store/actions/ecoNews.actions';
 

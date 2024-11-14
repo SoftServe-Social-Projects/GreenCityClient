@@ -4,7 +4,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { IMask } from 'angular-imask';
 import * as _moment from 'moment';
 import 'moment/locale/uk';
-import { LanguageService } from '../../../../../../../../i18n/language.service';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 import { MomentDateAdapter } from './moment-date-adapter';
 
 export const MY_FORMATS = {

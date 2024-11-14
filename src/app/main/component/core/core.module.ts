@@ -1,4 +1,4 @@
-import { AppRoutingModule } from './../../../app-routing.module';
+import { AppRoutingModule } from 'src/app/app-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';

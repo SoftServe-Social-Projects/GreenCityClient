@@ -8,7 +8,7 @@ import { accounts } from 'google-one-tap';
 import { Observable, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Patterns } from 'src/assets/patterns/patterns';
-import { SignInIcons } from './../../../../image-pathes/sign-in-icons';
+import { SignInIcons } from 'src/app/main/image-pathes/sign-in-icons';
 
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';

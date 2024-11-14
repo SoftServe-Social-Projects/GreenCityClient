@@ -3,7 +3,7 @@ import { EventsService } from 'src/app/main/component/events/services/events.ser
 import { of, throwError } from 'rxjs';
 import { mockFavouriteEvents } from '@assets/mocks/events/mock-events';
 import { Actions } from '@ngrx/effects';
-import { EventsEffects } from '../../../../store/effects/ecoEvents.effects';
+import { EventsEffects } from 'src/app/store/effects/ecoEvents.effects';
 import {
   AddAttenderEcoEventsByIdAction,
   AddAttenderEventsByIdSuccessAction,
@@ -18,7 +18,7 @@ import {
   ReceivedFailureAction,
   RemoveAttenderEcoEventsByIdAction,
   RemoveAttenderEventsByIdSuccessAction
-} from '../../../../store/actions/ecoEvents.actions';
+} from 'src/app/store/actions/ecoEvents.actions';
 import { StoreModule } from '@ngrx/store';
 
 describe('EventsService', () => {

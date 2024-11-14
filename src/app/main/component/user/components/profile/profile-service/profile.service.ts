@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ProfileStatistics } from '@user-models/profile-statistiscs';
 import { EditProfileModel } from '@user-models/edit-profile.model';
-import { mainLink, mainUserLink } from '../../../../../links';
+import { mainLink, mainUserLink } from 'src/app/main/links';
 import { Patterns } from 'src/assets/patterns/patterns';
 
 @Injectable({

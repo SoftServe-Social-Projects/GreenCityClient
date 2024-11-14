@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { HabitDto } from '../../../../../../model/habit/HabitDto';
-import { HabitStatisticService } from '../../../../../../service/habit-statistic/habit-statistic.service';
+import { HabitDto } from 'src/app/main/model/habit/HabitDto';
+import { HabitStatisticService } from 'src/app/main/service/habit-statistic/habit-statistic.service';
 import { filter, map } from 'rxjs/operators';
-import { HabitStatisticsDto } from '../../../../../../model/habit/HabitStatisticsDto';
-import { LanguageService } from '../../../../../../i18n/language.service';
+import { HabitStatisticsDto } from 'src/app/main/model/habit/HabitStatisticsDto';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 
 @Component({
   selector: 'app-habit-tracker',
