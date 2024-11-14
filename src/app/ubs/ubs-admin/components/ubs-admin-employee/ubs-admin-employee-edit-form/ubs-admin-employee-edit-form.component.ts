@@ -58,6 +58,7 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
   search: FormControl;
   filteredTariffs = [];
   tariffsFromEditForm = [];
+  isAnyTariffSelected = false;
 
   private addMappers = {
     tariffs: (tariffData) =>
@@ -167,6 +168,7 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
             hasChat: !!this.tariffsFromEditForm.find((el) => el.id === tariffItem.id)?.hasChat
           };
         });
+        this.isAnyTariffSelected = this.filteredTariffs.some((tariff) => tariff.selected);
       } else {
         this.filteredTariffs = this.tariffs;
       }
@@ -218,6 +220,7 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
     if (!this.isInitialTariffsChanged) {
       this.isInitialTariffsChanged = true;
     }
+    this.isAnyTariffSelected = this.filteredTariffs.some((tariff) => tariff.selected);
   }
 
   doesIncludeRole(role) {
@@ -360,5 +363,20 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
         images: [{ src: this.imageURL }]
       }
     });
+  }
+
+  isButtonDisabled(): boolean {
+    return (
+      this.employeeForm.invalid ||
+      !this.employeePositions.length ||
+      this.isUploading ||
+      !this.isAnyTariffSelected ||
+      (this.editMode &&
+        !this.isInitialDataChanged &&
+        !this.isInitialImageChanged &&
+        !this.isInitialPositionsChanged &&
+        !this.isInitialTariffsChanged &&
+        !this.isAnyTariffSelected)
+    );
   }
 }
