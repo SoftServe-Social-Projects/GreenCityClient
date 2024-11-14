@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ProfileStatistics } from '@user-models/profile-statistiscs';
 import { EditProfileModel } from '@user-models/edit-profile.model';
-import { LanguageService } from 'src/app/main/i18n/language.service';
 import { mainLink, mainUserLink } from '../../../../../links';
 import { Patterns } from 'src/assets/patterns/patterns';
 
