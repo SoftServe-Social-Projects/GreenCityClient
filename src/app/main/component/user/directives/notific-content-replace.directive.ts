@@ -45,12 +45,23 @@ export class NotificContentReplaceDirective implements OnChanges {
             userId: replacements.actionUserId[index]
           });
         }
+      } else if (contentKey === 'message' && replacements.notificationType) {
+        const linkAttributes = replacements.targetId
+          ? {
+              targetId: replacements.targetId,
+              notificationType: replacements.notificationType
+            }
+          : null;
+        result = this.buildReplacementString(result, contentKey, replacements[replacementKey], linkAttributes);
       } else if (replacements.hasOwnProperty(replacementKey)) {
         const linkAttributes = idToNavigate ? { userId: replacements[idToNavigate] } : null;
+
         result = this.buildReplacementString(result, contentKey, replacements[replacementKey], linkAttributes);
+        console.log('in 3');
       }
     });
 
+    console.log(result);
     return result;
   }
 

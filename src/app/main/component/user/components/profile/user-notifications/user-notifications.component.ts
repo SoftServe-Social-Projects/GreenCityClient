@@ -34,6 +34,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   projects = projects;
   notificationTypes = NotificationCriteria;
   notificationFriendRequest = NotificationCriteria.FRIEND_REQUEST_RECEIVED;
+  notificationHabitInvitation = NotificationCriteria.HABIT_INVITATION;
 
   notifications: NotificationModel[] = [];
   currentPage = 0;
@@ -114,7 +115,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private getAllSelectedFilters(approach: string): NotificationFilter[] {
     const filterArr = approach === this.filterCriteria.TYPE ? notificationCriteriaOptions : projects;
     const allOption = filterArr.find((el) => el.name === this.filterAll);
-    return allOption.isSelected ? [] : [...filterArr.filter((el) => {return el.isSelected === true && el.name !== this.filterAll;})];
+    return allOption.isSelected ? [] : [...filterArr.filter((el) => { return el.isSelected === true && el.name !== this.filterAll; })];
   }
 
   getNotification(page: number): void {
@@ -260,47 +261,58 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     }
   }
 
-  acceptRequest(userId: number): void {
+  acceptRequest(notification: NotificationModel): void {
     let isAccepted = true;
-    this.userFriendsService.acceptRequest(userId).subscribe({
-      error: () => {
-        isAccepted = false;
-      },
-      complete: () => {
-        if (isAccepted) {
-          this.matSnackBar.openSnackBar('friendInValidRequest');
+
+    const userId = notification.actionUserId[0];
+    if (notification.notificationType === this.notificationFriendRequest) {
+      this.userFriendsService.acceptRequest(userId).subscribe({
+        error: () => {
+          isAccepted = false;
+        },
+        complete: () => {
+          if (isAccepted) {
+            this.matSnackBar.openSnackBar('friendInValidRequest');
+          }
         }
-      }
-    });
+      });
+    }
   }
 
-  declineRequest(userId: number): void {
+  declineRequest(notification: NotificationModel): void {
     let isAccepted = true;
-    this.userFriendsService.declineRequest(userId).subscribe({
-      error: () => {
-        isAccepted = false;
-      },
-      complete: () => {
-        if (isAccepted) {
-          this.matSnackBar.openSnackBar('friendInValidRequest');
+    const userId = notification.actionUserId[0];
+    if (notification.notificationType === this.notificationFriendRequest) {
+      this.userFriendsService.declineRequest(userId).subscribe({
+        error: () => {
+          isAccepted = false;
+        },
+        complete: () => {
+          if (isAccepted) {
+            this.matSnackBar.openSnackBar('friendInValidRequest');
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   navigate(event: Event): void {
     const target = event.target as HTMLElement;
     const userId = this.userService.userId;
     const targetTextContent = target.textContent?.trim() || '';
-    const targetUserId = target.getAttribute('data-userid')?.toString();
+    const targetUserId = Number(target.getAttribute('data-userId'));
     const notificationType = target.getAttribute('data-notificationType');
-    const targetId = Number(target.getAttribute('data-targetid'));
+    const targetId = Number(target.getAttribute('data-targetId'));
 
     const isClickOrEnter = event instanceof MouseEvent || (event instanceof KeyboardEvent && event.key === 'Enter');
     if (!isClickOrEnter) {
       return;
     }
 
+    if (targetUserId === userId) {
+      this.router.navigate(['profile', userId]);
+      return;
+    }
     if (targetUserId) {
       this.router.navigate(['profile', userId, 'users', targetTextContent, targetUserId]);
       return;
@@ -310,7 +322,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
       const routes = {
         EVENT: ['events', targetId],
         ECONEWS: ['news', targetId],
-        HABIT: ['profile', userId, 'allhabits', 'edithabit', targetId]
+        HABIT: ['profile', userId, 'allhabits', 'addhabit', targetId]
       };
 
       for (const type in routes) {
