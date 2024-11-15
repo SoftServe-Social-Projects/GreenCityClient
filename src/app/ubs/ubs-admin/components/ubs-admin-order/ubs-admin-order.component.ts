@@ -582,8 +582,9 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
       for (const formControlName in formItem.controls) {
         if (Object.prototype.hasOwnProperty.call(formItem.controls, formControlName)) {
           const formControl = formItem.controls[formControlName];
-
-          if (formControl instanceof FormControl) {
+          if (formControlName === 'userInfoDto' && formControl.dirty) {
+            changedValues[formControlName] = formControl.value;
+          } else if (formControl instanceof FormControl) {
             this.getUpdates(formControl, changedValues, formControlName);
           } else if (formControl instanceof FormArray && formControl.dirty && formControl.controls.length > 0) {
             changedValues[formControlName] = [];
