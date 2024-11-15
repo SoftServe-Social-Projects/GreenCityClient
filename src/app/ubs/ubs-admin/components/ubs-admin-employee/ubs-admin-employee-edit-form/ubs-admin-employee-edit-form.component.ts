@@ -8,8 +8,7 @@ import {
   EmployeePositions,
   InitialData,
   TariffForEmployee,
-  EmployeeDataToSend,
-  Tariff
+  EmployeeDataToSend
 } from '../../../models/ubs-admin.interface';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
@@ -56,7 +55,7 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
   selectedFile;
   defaultPhotoURL = 'https://csb10032000a548f571.blob.core.windows.net/allfiles/90370622-3311-4ff1-9462-20cc98a64d1ddefault_image.jpg';
   search: FormControl;
-  filteredTariffs = [];
+  filteredTariffs: TariffForEmployee[] = [];
   tariffsFromEditForm = [];
   isAnyTariffSelected = false;
 
@@ -215,7 +214,7 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  isTariffListChange(tariff: Tariff): void {
+  isTariffListChange(tariff: TariffForEmployee): void {
     tariff.hasChat = tariff.hasChat && tariff.selected;
     if (!this.isInitialTariffsChanged) {
       this.isInitialTariffsChanged = true;
