@@ -694,7 +694,7 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
       this.isFormResetted = true;
     } else {
       exportDetaisFields.forEach((el) => exportDetails.get(el).setValidators([Validators.required]));
-      responsiblePersonNames.forEach((el) => responsiblePersons.get(el).setValidators([Validators.required]));
+      responsiblePersons.get('responsibleCaller')?.setValidators([Validators.required]);
     }
     this.statusCanceledOrDone();
   }
