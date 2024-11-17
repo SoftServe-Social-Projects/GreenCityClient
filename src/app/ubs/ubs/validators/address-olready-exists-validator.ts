@@ -7,16 +7,18 @@ export function addressAlreadyExistsValidator(
   currentLanguage: Language
 ): (group: FormGroup) => ValidationErrors | null {
   return (group: FormGroup): ValidationErrors | null => {
-    const isAlreadyExist = addresses.some(
-      (address: Address) =>
-        getLangValue(address.region, address.regionEn, currentLanguage) === group.controls?.region.value &&
+    const isAlreadyExist = addresses.some((address: Address) => {
+      getLangValue(address.region, address.regionEn, currentLanguage) === group.controls?.region.value &&
         getLangValue(address.city, address.cityEn, currentLanguage) === group.controls?.city.value &&
         getLangValue(address.street, address.streetEn, currentLanguage) === group.controls?.street.value &&
-        address.district === group.controls?.district.value?.nameUa &&
         address.houseNumber === group.controls?.houseNumber.value &&
-        address.houseCorpus === group.controls?.houseCorpus.value &&
-        address.entranceNumber === group.controls?.entranceNumber.value
-    );
+        compareIfExist(group.controls?.houseCorpus.value, address.houseCorpus) &&
+        compareIfExist(group.controls?.entranceNumber.value, address.entranceNumber) &&
+        (address.district === group.controls?.district.value?.nameUa ||
+          address.district === group.controls?.district.value?.nameEn ||
+          address.district === group.controls?.district.value ||
+          address.districtEn === group.controls?.district.value);
+    });
 
     return isAlreadyExist ? { addressAlreadyExists: true } : null;
   };
@@ -24,4 +26,12 @@ export function addressAlreadyExistsValidator(
 
 function getLangValue(valUA: any, valEN: any, currentLanguage: Language): any {
   return currentLanguage === Language.EN ? valEN : valUA;
+}
+
+function compareIfExist(value: any, compareTo: any): boolean {
+  if (!value) {
+    return true;
+  }
+
+  return value === compareTo;
 }
