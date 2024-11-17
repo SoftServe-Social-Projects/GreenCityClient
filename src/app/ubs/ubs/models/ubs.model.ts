@@ -338,7 +338,7 @@ export class CAddressData {
   //Find required address component in google response by it's type
   //For example 'route' is a street name, 'street_number' is a house number
   private findValue(response: google.maps.GeocoderResult, ...types: string[]): google.maps.GeocoderAddressComponent {
-    for (let type of types) {
+    for (const type of types) {
       const value = response.address_components.find((component) => component.types.some((t) => type === t));
 
       if (value) {
