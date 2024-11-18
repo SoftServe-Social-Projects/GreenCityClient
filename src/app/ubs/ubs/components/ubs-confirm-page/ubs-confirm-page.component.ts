@@ -104,7 +104,7 @@ export class UbsConfirmPageComponent implements OnInit, OnDestroy {
       const existingOrderId = this.localStorageService.getExistingOrderId();
       existingOrderId
         ? this.snackBar.openSnackBar('successConfirmUpdateOrder')
-        : this.snackBar.openSnackBar('successConfirmSaveOrder', this.orderId);
+        : this.snackBar.openSnackBar('successConfirmSaveOrder', this.orderId, 6000, 'below-header');
       this.localStorageService.removeUBSExistingOrderId();
     } else if (!this.orderResponseError && this.orderStatusDone) {
       this.saveDataOnLocalStorage();
