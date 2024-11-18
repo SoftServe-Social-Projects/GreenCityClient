@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { HabitAssignInterface } from '@global-user/components/habit/models/interfaces/habit-assign.interface';
 import { FriendProfilePicturesArrayModel } from '@global-user/models/friend.model';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FriendsListPopUpComponent } from '@global-user/components/shared/components/friends-list-pop-up/friends-list-pop-up.component';
 import { habitImages } from 'src/app/main/image-pathes/habits-images';
 
@@ -168,13 +168,18 @@ export class OneHabitComponent implements OnInit, OnDestroy {
   }
 
   onDialogOpen() {
-    this.dialog.open(FriendsListPopUpComponent, {
+    const dialogRef: MatDialogRef<FriendsListPopUpComponent> = this.dialog.open(FriendsListPopUpComponent, {
       data: {
         friends: this.friends,
         habitId: this.habit.habit.id
       },
       width: '400px',
-      height: '400px'
+      height: '400px',
+      hasBackdrop: true
+    });
+
+    dialogRef.backdropClick().subscribe(() => {
+      dialogRef.close();
     });
   }
 
