@@ -18,7 +18,7 @@ import { EditProfileService } from '@global-user/services/edit-profile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FormBaseComponent } from '@shared/components/form-base/form-base.component';
 import { ReplaySubject } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Patterns } from 'src/assets/patterns/patterns';
 import { emailPreferencesList, periodicityOptions } from '@global-user/models/edit-profile-const';
 
