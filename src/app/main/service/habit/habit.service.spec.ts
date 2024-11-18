@@ -193,7 +193,7 @@ describe('HabitService', () => {
   it('should get friends tracking the same habit by habit id', () => {
     const id = CUSTOMHABIT.id;
     const mockResponse = MOCK_FRIEND_PROFILE_PICTURES;
-    habitService.getFriendsTrakingSameHabitByHabitId(id).subscribe((response) => {
+    habitService.getFriendsTrakingSameHabitByHabitAssignId(id).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
     const req = httpMock.expectOne(`${habitLink}/${id}/friends/profile-pictures`);
