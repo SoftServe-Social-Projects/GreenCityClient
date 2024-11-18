@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-ubs-admin-confirm-status-change-pop-up',
@@ -8,7 +8,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class UbsAdminConfirmStatusChangePopUpComponent {
   closeButton = './assets/img/profile/icons/cancel.svg';
-  constructor(public dialogRef: MatDialogRef<UbsAdminConfirmStatusChangePopUpComponent>) {}
+  constructor(
+    public dialogRef: MatDialogRef<UbsAdminConfirmStatusChangePopUpComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { newOption: string }
+  ) {}
   closeDialog(result: boolean): void {
     this.dialogRef.close(result);
   }
