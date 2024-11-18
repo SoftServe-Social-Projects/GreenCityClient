@@ -10,7 +10,7 @@ export const Patterns = {
 
   Base64Regex: /data:image\/([a-zA-Z]*);base64,([^"]*)/g,
 
-  socialMediaPattern: /^(?:https?:\/\/)?(?:www\.)?([^\/?]+)\.com/,
+  socialMediaPattern: /^(?:https?:\/\/)?(?:www\.)?([^\s/?]+)\.com(?:[/?][^\s]*)?$/,
 
   numericAndAlphabetic: /^[A-Za-zА-Яа-яїЇіІєЄёЁ0-9\-\\\/]*$/,
 

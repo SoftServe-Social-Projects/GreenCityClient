@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { LocationService } from './location.service';
 import { ADDRESSESMOCK } from 'src/app/ubs/mocks/address-mock';
-import { LanguageService } from '../../i18n/language.service';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 import { of } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { Language } from '../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 
 describe('LocationService', () => {
   let locations;

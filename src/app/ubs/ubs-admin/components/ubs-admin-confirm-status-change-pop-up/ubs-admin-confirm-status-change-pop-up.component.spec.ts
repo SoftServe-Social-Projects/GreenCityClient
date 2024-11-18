@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { UbsAdminConfirmStatusChangePopUpComponent } from './ubs-admin-confirm-status-change-pop-up.component';
@@ -14,7 +14,10 @@ describe('UbsAdminConfirmStatusChangePopUpComponent', () => {
     TestBed.configureTestingModule({
       declarations: [UbsAdminConfirmStatusChangePopUpComponent],
       imports: [MatDialogModule, TranslateModule.forRoot()],
-      providers: [{ provide: MatDialogRef, useValue: matDialogRefStub }]
+      providers: [
+        { provide: MatDialogRef, useValue: matDialogRefStub },
+        { provide: MAT_DIALOG_DATA, useValue: {} }
+      ]
     });
     fixture = TestBed.createComponent(UbsAdminConfirmStatusChangePopUpComponent);
     component = fixture.componentInstance;

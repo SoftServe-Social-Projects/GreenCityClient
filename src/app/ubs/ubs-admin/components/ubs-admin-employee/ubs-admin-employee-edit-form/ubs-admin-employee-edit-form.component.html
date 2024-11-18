@@ -124,7 +124,7 @@
                       ></mat-checkbox>
                     </td>
                     <td>
-                      <span [matTooltip]="!tariff.selected ? ('ubs-employee.chat-hint' | translate) : 'hohoho'">
+                      <span [matTooltip]="!tariff.selected ? ('ubs-employee.chat-hint' | translate) : ''">
                         <mat-checkbox
                           [(ngModel)]="tariff.hasChat"
                           [ngModelOptions]="{ standalone: true }"

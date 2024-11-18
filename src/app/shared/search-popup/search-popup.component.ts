@@ -1,6 +1,5 @@
 import { NewsSearchModel } from '@global-models/search/newsSearch.model';
 import { EventsSearchModel } from '@global-models/search/eventsSearch.model';
-import { SearchDataModel } from '@global-models/search/search.model';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { searchIcons } from '../../main/image-pathes/search-icons';
 import { negate, isNil } from 'lodash';

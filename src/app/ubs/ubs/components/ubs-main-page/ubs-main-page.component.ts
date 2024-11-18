@@ -1,11 +1,11 @@
-import { CheckTokenService } from './../../../../main/service/auth/check-token/check-token.service';
+import { CheckTokenService } from 'src/app/main/service/auth/check-token/check-token.service';
 import { Component, OnDestroy, OnInit, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil, finalize, tap, concatMap, switchMap } from 'rxjs/operators';
-import { ubsMainPageImages } from '../../../../main/image-pathes/ubs-main-page-images';
+import { ubsMainPageImages } from 'src/app/main/image-pathes/ubs-main-page-images';
 import {
   Bag,
   OrderDetails,

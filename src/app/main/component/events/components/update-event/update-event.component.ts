@@ -9,7 +9,7 @@ import {
   EventResponse,
   ImagesContainer
 } from '../../models/events.interface';
-import { LanguageService } from '../../../../i18n/language.service';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 import { EventStoreService } from '../../services/event-store.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 

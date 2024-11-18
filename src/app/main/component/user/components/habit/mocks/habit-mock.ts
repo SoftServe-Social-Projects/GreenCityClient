@@ -8,7 +8,7 @@ import { CustomHabit } from '@global-user/components/habit/models/interfaces/cus
 import { CustomHabitDtoRequest } from '@global-user/components/habit/models/interfaces/custom-habit.interface';
 import { TodoStatus } from '../models/todo-status.enum';
 import { HttpParams } from '@angular/common/http';
-import { AddedCommentDTO, CommentsModel } from '../../../../comments/models/comments-model';
+import { AddedCommentDTO, CommentsModel } from 'src/app/main/component/comments/models/comments-model';
 
 export const MOCK_HABIT_ADDED_COMMENT: AddedCommentDTO = {
   author: { id: 1, name: 'User', userProfilePicturePath: null },

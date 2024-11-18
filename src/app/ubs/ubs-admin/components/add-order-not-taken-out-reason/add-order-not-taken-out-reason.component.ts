@@ -6,7 +6,7 @@ import { FileHandle } from '../../models/file-handle.model';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { OrderService } from '../../services/order.service';
-import { ShowImgsPopUpComponent } from '../../../../shared/show-imgs-pop-up/show-imgs-pop-up.component';
+import { ShowImgsPopUpComponent } from 'src/app/shared/show-imgs-pop-up/show-imgs-pop-up.component';
 import { NotTakenOutReasonImage } from '../../models/not-taken-out-reason.model';
 
 @Component({

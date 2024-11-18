@@ -1,4 +1,4 @@
-import { Language } from '../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { LayoutModule } from '../../../layout/layout.module';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';

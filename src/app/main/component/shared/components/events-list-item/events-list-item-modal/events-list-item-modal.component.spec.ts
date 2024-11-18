@@ -1,4 +1,4 @@
-import { Language } from '../../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { EventsListItemModalComponent } from './events-list-item-modal.component';

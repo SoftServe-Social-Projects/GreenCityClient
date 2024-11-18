@@ -437,6 +437,11 @@ body {
   .mdc-snackbar__label {
     color: var(--quaternary-dark-grey) !important;
   }
+
+  &.below-header {
+    position: relative;
+    top: 80px;
+  }
 }
 
 .mat-mdc-button {

@@ -1,5 +1,5 @@
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { Language } from '../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 
 class MockDateLocalisationPipe {
   locale: string;

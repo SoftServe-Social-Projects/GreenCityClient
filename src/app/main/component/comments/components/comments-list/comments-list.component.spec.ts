@@ -121,8 +121,12 @@ describe('CommentsListComponent', () => {
   });
 
   it('should send data when user save edited content', () => {
-    component.content.setValue('some test text');
+    component.content.setValue('Updated comment text');
+
+    component['commentHtml'] = 'Updated comment text';
+
     const spy = spyOn((component as any).commentsService, 'editComment').and.returnValue(of());
+
     component.saveEditedComment(commentData);
     expect(spy).toHaveBeenCalled();
   });

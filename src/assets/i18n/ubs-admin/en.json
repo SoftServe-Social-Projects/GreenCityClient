@@ -225,7 +225,7 @@
     "added": "Added"
   },
   "order-status-confirm": {
-    "confirm-message": "Do you realy want to change order status?",
+    "confirm-message": "Do you realy want to change order status to",
     "yes": "Yes",
     "no": "No"
   },

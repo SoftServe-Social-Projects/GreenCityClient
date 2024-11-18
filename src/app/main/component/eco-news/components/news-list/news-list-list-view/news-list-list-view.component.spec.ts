@@ -4,10 +4,10 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { NewsListListViewComponent } from './news-list-list-view.component';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { Language } from '../../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { BehaviorSubject } from 'rxjs';
 import { LanguageService } from 'src/app/main/i18n/language.service';
-import { FIRSTECONEWS } from '../../../mocks/eco-news-mock';
+import { FIRSTECONEWS } from 'src/app/main/component/eco-news/mocks/eco-news-mock';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 

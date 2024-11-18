@@ -1,4 +1,4 @@
-import { LanguageService } from './../../i18n/language.service';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NewsDto } from '@home-models/NewsDto';
