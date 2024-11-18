@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ProfileStatistics } from '@user-models/profile-statistiscs';
 import { EditProfileModel } from '@user-models/edit-profile.model';
-import { LanguageService } from 'src/app/main/i18n/language.service';
 import { mainLink, mainUserLink } from 'src/app/main/links';
 import { Patterns } from 'src/assets/patterns/patterns';
 
@@ -32,8 +31,7 @@ export class ProfileService {
 
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService,
-    private languageService: LanguageService
+    private localStorageService: LocalStorageService
   ) {}
 
   setUserId(): void {
@@ -71,7 +69,6 @@ export class ProfileService {
   private getDomainFromUrl(url: string): string | null {
     const regex = Patterns.socialMediaPattern;
     const match = regex.exec(url);
-
     return match?.[1] || null;
   }
 }
