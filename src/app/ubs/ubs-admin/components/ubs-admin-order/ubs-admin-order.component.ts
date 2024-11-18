@@ -7,7 +7,6 @@ import { Observable, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import { UbsAdminCancelModalComponent } from '../ubs-admin-cancel-modal/ubs-admin-cancel-modal.component';
 import { OrderService } from '../../services/order.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
@@ -30,16 +29,15 @@ import {
   ReturnMoneyOrBonuses
 } from '../../models/ubs-admin.interface';
 import { IAppState } from 'src/app/store/state/app.state';
-import { ChangingOrderData } from 'src/app/store/actions/bigOrderTable.actions';
+import { UpdateOrderInfo, UpdateOrderInfoSuccess } from 'src/app/store/actions/bigOrderTable.actions';
 import { Patterns } from 'src/assets/patterns/patterns';
-import { GoogleScript } from 'src/assets/google-script/google-script';
 import { PhoneNumberValidator } from 'src/app/shared/phone-validator/phone.validator';
-import { OrderStatus, PaymentEnrollment } from 'src/app/ubs/ubs/order-status.enum';
+import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
 import { UbsAdminEmployeeService } from '../../services/ubs-admin-employee.service';
 import { AdminTableService } from '../../services/admin-table.service';
-import { TableKeys } from '../../services/table-keys.enum';
 import { UnsavedChangesGuard } from '@ubs/ubs-admin/unsaved-changes-guard.guard';
 import { Address } from '@ubs/ubs/models/ubs.interface';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-ubs-admin-order',
@@ -105,9 +103,8 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
     private router: Router,
     private changeDetector: ChangeDetectorRef,
     private store: Store<IAppState>,
+    private actions$: Actions,
     private orderService: OrderService,
-    private matSnackBar: MatSnackBarComponent,
-    private googleScript: GoogleScript,
     public ubsAdminEmployeeService: UbsAdminEmployeeService,
     public unsavedChangesGuard: UnsavedChangesGuard
   ) {}
@@ -508,66 +505,20 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
 
     this.addIdForUserAndAdress(changedValues);
 
-    this.orderService
-      .updateOrderInfo(this.orderId, this.currentLanguage, changedValues, this.notTakenOutReasonImages)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((response) => {
-        this.matSnackBar.openSnackBar(response.ok ? 'changesSaved' : 'error');
-        if (response.ok) {
-          this.getOrderInfo(this.orderId);
-          if (changedValues?.generalOrderInfo) {
-            Object.keys(changedValues?.generalOrderInfo).forEach((key: string) => {
-              if (changedValues.generalOrderInfo[key]) {
-                this.postDataItem([this.orderId], key, changedValues.generalOrderInfo[key]);
-              }
-            });
-          }
-          this.updateExportDataInState(changedValues);
-          this.updateResponsibleEmployeeInState(changedValues);
-        }
-      });
+    this.store.dispatch(
+      UpdateOrderInfo({
+        orderId: this.orderId,
+        updatedOrder: changedValues,
+        currentLanguage: this.currentLanguage,
+        notTakenOutReasonImages: this.notTakenOutReasonImages
+      })
+    );
+
+    this.actions$.pipe(ofType(UpdateOrderInfoSuccess), take(1)).subscribe(() => {
+      this.getOrderInfo(this.orderId);
+    });
+
     this.statusCanceledOrDone();
-  }
-
-  private updateExportDataInState(changedValues: IOrderInfo) {
-    if (changedValues?.exportDetailsDto) {
-      if (this.dateExport) {
-        this.postDataItem([this.orderId], TableKeys.dateOfExport, this.dateExport);
-      }
-      if (this.receivingStationId) {
-        this.postDataItem([this.orderId], TableKeys.receivingStation, String(this.receivingStationId));
-      }
-      if (this.timeDeliveryFrom && this.timeDeliveryTo) {
-        this.postDataItem([this.orderId], TableKeys.timeOfExport, [this.timeDeliveryFrom, this.timeDeliveryTo].join('-'));
-      }
-    }
-  }
-
-  private updateResponsibleEmployeeInState(changedValues: IOrderInfo) {
-    if (changedValues?.updateResponsibleEmployeeDto) {
-      changedValues?.updateResponsibleEmployeeDto.forEach((key) => {
-        switch (key.positionId) {
-          case 2:
-            this.postDataItem([this.orderId], TableKeys.responsibleCaller, String(key.employeeId));
-            break;
-          case 3:
-            this.postDataItem([this.orderId], TableKeys.responsibleLogicMan, String(key.employeeId));
-            break;
-          case 4:
-            this.postDataItem([this.orderId], TableKeys.responsibleNavigator, String(key.employeeId));
-            break;
-          case 5:
-            this.postDataItem([this.orderId], TableKeys.responsibleDriver, String(key.employeeId));
-            break;
-          default:
-            break;
-        }
-      });
-    }
-  }
-
-  private postDataItem(orderId: number[], columnName: string, newValue: string): void {
-    this.store.dispatch(ChangingOrderData({ orderData: [{ orderId, columnName, newValue }] }));
   }
 
   private getUpdates(formItem: FormGroup | FormArray | FormControl, changedValues: IOrderInfo, name?: string) {

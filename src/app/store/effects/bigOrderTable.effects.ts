@@ -5,8 +5,10 @@ import { select, Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { catchError, concatMap, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { filtersSelector } from 'src/app/store/selectors/big-order-table.selectors';
+import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import {
   IBigOrderTable,
+  IBigOrderTableOrderInfo,
   IBigOrderTableParams,
   ILocationDetails,
   IOrdersViewParameters
@@ -33,7 +35,9 @@ import {
   RemoveFilter,
   SaveFiltersAction,
   SetColumnToDisplay,
-  SetColumnToDisplaySuccess
+  SetColumnToDisplaySuccess,
+  UpdateOrderInfo,
+  UpdateOrderInfoSuccess
 } from '../actions/bigOrderTable.actions';
 
 @Injectable()
@@ -43,7 +47,8 @@ export class BigOrderTableEffects {
     private adminTableService: AdminTableService,
     private orderService: OrderService,
     private localStorageService: LocalStorageService,
-    private store: Store
+    private store: Store,
+    private snackBar: MatSnackBarComponent
   ) {}
 
   getColumnToDisplay = createEffect(() => {
@@ -128,6 +133,29 @@ export class BigOrderTableEffects {
       })
     );
   });
+
+  updateOrderInfo = createEffect(() =>
+    this.actions.pipe(
+      ofType(UpdateOrderInfo),
+      mergeMap((action) =>
+        this.orderService.updateOrderInfo(action.orderId, action.currentLanguage, action.updatedOrder, action.notTakenOutReasonImages).pipe(
+          map((response) => {
+            if (response.body) {
+              this.snackBar.openSnackBar('changesSaved');
+              return UpdateOrderInfoSuccess({ updatedOrder: response.body as IBigOrderTableOrderInfo });
+            } else {
+              this.snackBar.openSnackBar('error');
+              return ReceivedFailure({ error: 'Failed to update order' });
+            }
+          }),
+          catchError((error) => {
+            this.snackBar.openSnackBar('error');
+            return of(ReceivedFailure({ error }));
+          })
+        )
+      )
+    )
+  );
 
   addFilter = createEffect(
     () =>
