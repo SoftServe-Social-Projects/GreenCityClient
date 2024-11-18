@@ -8,8 +8,7 @@ import {
   EmployeePositions,
   InitialData,
   TariffForEmployee,
-  EmployeeDataToSend,
-  Tariff
+  EmployeeDataToSend
 } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
@@ -56,8 +55,9 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
   selectedFile;
   defaultPhotoURL = 'https://csb10032000a548f571.blob.core.windows.net/allfiles/90370622-3311-4ff1-9462-20cc98a64d1ddefault_image.jpg';
   search: FormControl;
-  filteredTariffs = [];
+  filteredTariffs: TariffForEmployee[] = [];
   tariffsFromEditForm = [];
+  isAnyTariffSelected = false;
 
   private addMappers = {
     tariffs: (tariffData) =>
@@ -97,7 +97,7 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
       firstName: [this.data?.firstName ?? '', [Validators.required, Validators.pattern(Patterns.NamePattern), Validators.maxLength(30)]],
       lastName: [this.data?.lastName ?? '', [Validators.required, Validators.pattern(Patterns.NamePattern), Validators.maxLength(30)]],
       phoneNumber: [
-        this.data?.phoneNumber ?? '',
+        this.data?.phoneNumber.replace('+', '') ?? '',
         [Validators.required, Validators.pattern(Patterns.adminPhone), PhoneNumberValidator('UA')]
       ],
       email: [
@@ -167,6 +167,7 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
             hasChat: !!this.tariffsFromEditForm.find((el) => el.id === tariffItem.id)?.hasChat
           };
         });
+        this.isAnyTariffSelected = this.filteredTariffs.some((tariff) => tariff.selected);
       } else {
         this.filteredTariffs = this.tariffs;
       }
@@ -213,11 +214,12 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  isTariffListChange(tariff: Tariff): void {
+  isTariffListChange(tariff: TariffForEmployee): void {
     tariff.hasChat = tariff.hasChat && tariff.selected;
     if (!this.isInitialTariffsChanged) {
       this.isInitialTariffsChanged = true;
     }
+    this.isAnyTariffSelected = this.filteredTariffs.some((tariff) => tariff.selected);
   }
 
   doesIncludeRole(role) {
@@ -360,5 +362,19 @@ export class UbsAdminEmployeeEditFormComponent implements OnInit, OnDestroy {
         images: [{ src: this.imageURL }]
       }
     });
+  }
+
+  isButtonDisabled(): boolean {
+    return (
+      this.employeeForm.invalid ||
+      !this.employeePositions.length ||
+      this.isUploading ||
+      !this.isAnyTariffSelected ||
+      (this.editMode &&
+        !this.isInitialDataChanged &&
+        !this.isInitialImageChanged &&
+        !this.isInitialPositionsChanged &&
+        !this.isInitialTariffsChanged)
+    );
   }
 }
