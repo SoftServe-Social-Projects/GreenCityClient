@@ -19,7 +19,9 @@ export class DragAndDropComponent {
   @Input() isDisabledButton: boolean;
   @Input() aspectRatio: number;
   @Input() roundCropper: boolean;
+  @Input() showTopMessage = true;
   @Output() newFile = new EventEmitter<FileHandle>();
+  @Output() warning = new EventEmitter<boolean>();
 
   stopCropping(): void {
     this.autoCropping();
@@ -87,5 +89,6 @@ export class DragAndDropComponent {
     } else {
       this.newFile.emit(this.file);
     }
+    this.warning.emit(this.isWarning);
   }
 }

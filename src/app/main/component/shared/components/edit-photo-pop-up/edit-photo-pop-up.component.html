@@ -1,7 +1,6 @@
 <div class="main-container" [ngSwitch]="true">
   <div class="wrapper" *ngSwitchCase="!selectedPhoto && !isNotification && !isDragAndDropMenu">
     <app-user-profile-image [imgPath]="avatarImg" [additionalImgClass]="'big'" [firstName]="data.firstName"> </app-user-profile-image>
-    <p *ngIf="isWarning" class="warning">{{ 'user.edit-profile.picture-tooltip' | translate }}</p>
     <p *ngIf="!isWarning">{{ 'user.edit-profile.change-photo' | translate }}</p>
     <div class="buttons">
       <button type="button" class="tertiary-global-button m-btn" (click)="closeEditPhoto()" tabindex="0">
@@ -15,32 +14,37 @@
       </button>
     </div>
   </div>
-  <div *ngSwitchDefault>
+  <div *ngSwitchCase="isDragAndDropMenu">
     <div class="wrapper">
       <div class="cropper-block">
         <app-drag-and-drop
           class="selected-photo"
+          [file]=""
           [height]="148"
           [aspectRatio]="1"
           [roundCropper]="true"
           [isDisabledButton]="true"
+          [showTopMessage]="false"
           (newFile)="imageCropped($event)"
+          (warning)="isWarning = $event"
         >
         </app-drag-and-drop>
       </div>
-      <p *ngIf="isWarning" class="warning">{{ 'user.edit-profile.picture-tooltip' | translate }}</p>
-      <p *ngIf="!isWarning">{{ 'user.edit-profile.would-you-like' | translate }}</p>
-      <div class="buttons">
-        <button type="button" class="tertiary-global-button m-btn" (click)="closeEditPhoto()">
-          {{ 'user.edit-profile.btn.cancel' | translate }}
-        </button>
-        <button class="secondary-global-button m-btn" (click)="selectedPhoto = false; files.pop()">
-          {{ 'user.edit-profile.btn.change-photo' | translate }}
-        </button>
-        <button type="button" class="primary-global-button m-btn" [disabled]="isWarning" (click)="savePhoto()" tabindex="0">
-          <span *ngIf="loadingAnim" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          {{ 'user.edit-profile.btn.save-photo' | translate }}
-        </button>
+      <p *ngIf="!selectedFile" class="message" [ngClass]="{ warning: isWarning }">{{ 'user.edit-profile.picture-tooltip' | translate }}</p>
+      <div *ngIf="!isWarning && selectedFile">
+        <p>{{ 'user.edit-profile.would-you-like' | translate }}</p>
+        <div class="buttons">
+          <button type="button" class="tertiary-global-button m-btn" (click)="closeEditPhoto()">
+            {{ 'user.edit-profile.btn.cancel' | translate }}
+          </button>
+          <button class="secondary-global-button m-btn" (click)="cancelPhoto()">
+            {{ 'user.edit-profile.btn.change-photo' | translate }}
+          </button>
+          <button type="button" class="primary-global-button m-btn" [disabled]="isWarning" (click)="savePhoto()" tabindex="0">
+            <span *ngIf="loadingAnim" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            {{ 'user.edit-profile.btn.save-photo' | translate }}
+          </button>
+        </div>
       </div>
     </div>
   </div>

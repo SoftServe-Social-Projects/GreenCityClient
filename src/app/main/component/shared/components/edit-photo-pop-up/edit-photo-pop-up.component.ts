@@ -1,8 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EditProfileService } from '@global-user/services/edit-profile.service';
 import { FileHandle } from '@eco-news-models/create-news-interface';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
+import { DragAndDropComponent } from '../drag-and-drop/drag-and-drop.component';
 
 @Component({
   selector: 'app-edit-photo-pop-up',
@@ -12,7 +13,7 @@ import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar
 export class EditPhotoPopUpComponent implements OnInit {
   avatarImg: string;
   cancelButton = './assets/img/profile/icons/cancel.svg';
-  files: FileHandle[] = [];
+  file: FileHandle = null;
   isWarning = false;
   selectedPhoto = false;
   selectedFile: File = null;
@@ -20,6 +21,8 @@ export class EditPhotoPopUpComponent implements OnInit {
   loadingAnim: boolean;
   isDragAndDropMenu = false;
   croppedImage: string | File;
+
+  @ViewChild(DragAndDropComponent) dragAndDropComponent: DragAndDropComponent;
 
   constructor(
     private matDialogRef: MatDialogRef<EditPhotoPopUpComponent>,
@@ -64,6 +67,11 @@ export class EditPhotoPopUpComponent implements OnInit {
 
   closeEditPhoto(): void {
     this.matDialogRef.close();
+  }
+
+  cancelPhoto() {
+    this.dragAndDropComponent.cancelChanges();
+    this.selectedFile = null;
   }
 
   private setUserAvatar(): void {
