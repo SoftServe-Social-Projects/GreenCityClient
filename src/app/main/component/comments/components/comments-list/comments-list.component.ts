@@ -75,6 +75,12 @@ export class CommentsListComponent {
   }
 
   saveEditedComment(element: CommentsDTO): void {
+    if (!this.commentHtml.trim() || this.commentHtml === element.text) {
+      element.isEdit = false;
+      this.content.reset();
+      return;
+    }
+
     this.commentsService
       .editComment(element.id, this.commentHtml)
       .pipe(take(1))
