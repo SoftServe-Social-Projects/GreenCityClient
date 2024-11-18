@@ -93,25 +93,22 @@ export class MatSnackBarComponent {
     private translate: TranslateService
   ) {}
 
-  openSnackBar(type: string, additionalValue?: string) {
+  openSnackBar(type: string, additionalValue?: string, duration: number = 3000, customPositioning?: string) {
     const isInclude = type.includes('400') ? this.getSnackBarMessage('error') : this.getSnackBarMessage('errorMessage', type);
-    if (additionalValue) {
-      return this.snackType[type] ? this.getSnackBarMessage(type, additionalValue) : isInclude;
-    }
-    return this.snackType[type] ? this.getSnackBarMessage(type) : isInclude;
+    return this.snackType[type] ? this.getSnackBarMessage(type, additionalValue, duration, customPositioning) : isInclude;
   }
 
-  getSnackBarMessage(type: string, additionalValue?: string): void {
+  getSnackBarMessage(type: string, additionalValue?: string, duration: number = 3000, customPositioning?: string): void {
     const className = this.snackType[type].classname;
     const key = this.snackType[type].key || type;
     const addValue = additionalValue ? { orderId: additionalValue } : {};
     this.translate.get(key, addValue).subscribe((translation) => {
       this.message = translation;
       this.snackBar.open(this.message, 'close', {
-        duration: 3000,
+        duration,
         verticalPosition: 'top',
         horizontalPosition: 'center',
-        panelClass: [className]
+        panelClass: [className, customPositioning]
       });
     });
   }

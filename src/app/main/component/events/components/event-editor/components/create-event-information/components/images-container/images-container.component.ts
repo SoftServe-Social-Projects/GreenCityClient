@@ -1,8 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
-import { FileHandle } from '../../../../../../../../../ubs/ubs-admin/models/file-handle.model';
-import { EventsService } from '../../../../../../services/events.service';
-import { ImagesContainer } from '../../../../../../models/events.interface';
+import { FileHandle } from 'src/app/ubs/ubs-admin/models/file-handle.model';
+import { EventsService } from 'src/app/main/component/events/services/events.service';
+import { ImagesContainer } from 'src/app/main/component/events/models/events.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { EditImagePopUpComponent } from 'src/app/shared/edit-image-pop-up/edit-image-pop-up.component';
 import { take } from 'rxjs';

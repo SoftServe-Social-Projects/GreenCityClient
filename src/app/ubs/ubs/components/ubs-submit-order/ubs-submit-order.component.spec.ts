@@ -11,7 +11,7 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { orderDetailsMock, personalMockData } from 'src/app/ubs/mocks/order-data-mock';
 import { Store } from '@ngrx/store';
-import { orderDetailsSelector, orderSelectors, personalDataSelector } from '../../../../store/selectors/order.selectors';
+import { orderDetailsSelector, orderSelectors, personalDataSelector } from 'src/app/store/selectors/order.selectors';
 import { WarningPopUpComponent } from '@shared/components';
 import { HttpErrorResponse } from '@angular/common/http';
 

@@ -6,7 +6,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { AllFriendsComponent } from './all-friends/all-friends.component';
 import { RecommendedFriendsComponent } from './recommended-friends/recommended-friends.component';
 import { FriendRequestsComponent } from './friend-requests/friend-requests.component';
-import { searchIcon } from '../../../../../../image-pathes/places-icons';
+import { searchIcon } from 'src/app/main/image-pathes/places-icons';
 
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';

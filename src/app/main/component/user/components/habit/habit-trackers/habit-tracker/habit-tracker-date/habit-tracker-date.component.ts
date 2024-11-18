@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { LanguageService } from '../../../../../../../i18n/language.service';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 
 @Component({
   selector: 'app-habit-tracker-date',

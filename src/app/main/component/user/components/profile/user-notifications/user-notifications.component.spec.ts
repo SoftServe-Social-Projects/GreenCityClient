@@ -30,8 +30,8 @@ describe('UserNotificationsComponent', () => {
 
   const notifications = [
     {
-      actionUserId: 2,
-      actionUserText: 'testUser',
+      actionUserId: [2],
+      actionUserText: ['testUser'],
       bodyText: 'test texts',
       message: 'test message',
       notificationId: 5,
@@ -45,8 +45,8 @@ describe('UserNotificationsComponent', () => {
       viewed: false
     },
     {
-      actionUserId: 1,
-      actionUserText: 'testUser1',
+      actionUserId: [1],
+      actionUserText: ['testUser1'],
       bodyText: 'test texts1',
       message: 'test message1',
       notificationId: 2,
@@ -139,6 +139,50 @@ describe('UserNotificationsComponent', () => {
     expect(component.filterCriteriaOptions.find((el) => el.name === FilterCriteria.TYPE).isSelected).toBeFalse();
     expect(component.filterCriteriaOptions.find((el) => el.name === FilterCriteria.ORIGIN).isSelected).toBeTrue();
   });
+
+  it('should navigate to news page when notification type is ECONEWS', fakeAsync(() => {
+    const event = new MouseEvent('click');
+    const target = document.createElement('div');
+    target.setAttribute('data-notificationType', 'ECONEWS');
+    target.setAttribute('data-targetid', '5');
+
+    const customEvent = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      composed: true
+    });
+
+    Object.defineProperty(customEvent, 'target', { value: target });
+
+    spyOn(component, 'navigate').and.callThrough();
+
+    component.navigate(customEvent);
+    tick();
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['news', 5]);
+  }));
+
+  it('should navigate to habit editing page when notification type is HABIT', fakeAsync(() => {
+    const event = new MouseEvent('click');
+    const target = document.createElement('div');
+    target.setAttribute('data-notificationType', 'HABIT');
+    target.setAttribute('data-targetid', '3');
+
+    const customEvent = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      composed: true
+    });
+
+    Object.defineProperty(customEvent, 'target', { value: target });
+
+    spyOn(component, 'navigate').and.callThrough();
+
+    component.navigate(customEvent);
+    tick();
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['profile', 1, 'allhabits', 'edithabit', 3]);
+  }));
 
   it('should return checkSelectedFilter', () => {
     component.filterCriteriaOptions = filterCriteriaOptions;

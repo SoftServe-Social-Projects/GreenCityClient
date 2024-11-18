@@ -13,7 +13,7 @@ import 'quill-emoji/dist/quill-emoji.js';
 import ImageResize from 'quill-image-resize-module';
 import { HabitService } from '@global-service/habit/habit.service';
 import { TagInterface } from '@shared/components/tag-filter/tag-filter.model';
-import { quillConfig } from '../../../../events/components/event-editor/quillEditorFunc';
+import { quillConfig } from 'src/app/main/component/events/components/event-editor/quillEditorFunc';
 import { ToDoList } from '@global-user/models/to-do-list.interface';
 import { FileHandle } from '@eco-news-models/create-news-interface';
 import { UserFriendsService } from '@global-user/services/user-friends.service';

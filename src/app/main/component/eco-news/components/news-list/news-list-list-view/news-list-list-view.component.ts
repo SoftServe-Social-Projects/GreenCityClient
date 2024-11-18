@@ -1,4 +1,4 @@
-import { userAssignedCardsIcons } from '../../../../../image-pathes/profile-icons';
+import { userAssignedCardsIcons } from 'src/app/main/image-pathes/profile-icons';
 import {
   Component,
   Input,

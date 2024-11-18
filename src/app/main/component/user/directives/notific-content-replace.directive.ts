@@ -9,6 +9,8 @@ export class NotificContentReplaceDirective implements OnChanges {
   @Input() replacements: NotificationModel;
   replacementKeys = [
     { contentKey: 'user', replacementKey: 'actionUserText', idToNavigate: 'actionUserId' },
+    { contentKey: 'user1', replacementKey: 'actionUserText', idToNavigate: 'actionUserId' },
+    { contentKey: 'user2', replacementKey: 'actionUserText', idToNavigate: 'actionUserId' },
     { contentKey: 'message', replacementKey: 'message' },
     { contentKey: 'secondMessage', replacementKey: 'secondMessage' }
   ];
@@ -26,15 +28,46 @@ export class NotificContentReplaceDirective implements OnChanges {
     }
   }
 
-  private replaceContent(content: string, replacements): string {
+  private replaceContent(content: string, replacements: NotificationModel): string {
     let result = content;
-    this.replacementKeys.forEach((el) => {
-      if (replacements.hasOwnProperty(el.replacementKey)) {
-        result = el.idToNavigate
-          ? result.replace(`{${el.contentKey}}`, `<a data-userid="${replacements[el.idToNavigate]}">${replacements[el.replacementKey]}</a>`)
-          : result.replace(`{${el.contentKey}}`, replacements[el.replacementKey]);
+
+    this.replacementKeys.forEach(({ contentKey, replacementKey, idToNavigate }) => {
+      if (contentKey === 'secondMessage' && replacements.notificationType) {
+        result = this.buildReplacementString(result, contentKey, replacements[replacementKey], {
+          targetId: replacements.targetId,
+          notificationId: replacements.notificationId,
+          notificationType: replacements.notificationType
+        });
+      } else if (['user1', 'user2'].includes(contentKey)) {
+        const index = parseInt(contentKey.slice(-1)) - 1;
+        if (replacements.actionUserText?.[index] && replacements.actionUserId?.[index]) {
+          result = this.buildReplacementString(result, contentKey, replacements.actionUserText[index], {
+            userId: replacements.actionUserId[index]
+          });
+        }
+      } else if (replacements.hasOwnProperty(replacementKey)) {
+        const linkAttributes = idToNavigate ? { userId: replacements[idToNavigate] } : null;
+        result = this.buildReplacementString(result, contentKey, replacements[replacementKey], linkAttributes);
       }
     });
+
     return result;
+  }
+
+  private buildReplacementString(
+    content: string,
+    placeholder: string,
+    text: string,
+    attributes: Record<string, string | number> | null
+  ): string {
+    if (!attributes) {
+      return content.replace(`{${placeholder}}`, text);
+    }
+
+    const attrString = Object.entries(attributes)
+      .map(([key, value]) => `data-${key}="${value}"`)
+      .join(' ');
+
+    return content.replace(`{${placeholder}}`, `<a ${attrString}>${text}</a>`);
   }
 }

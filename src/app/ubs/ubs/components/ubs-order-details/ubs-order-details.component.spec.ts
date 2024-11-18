@@ -19,7 +19,7 @@ import {
   locationIdSelector,
   orderDetailsSelector,
   pointsUsedSelector
-} from '../../../../store/selectors/order.selectors';
+} from 'src/app/store/selectors/order.selectors';
 import { CourierLocations, OrderDetails } from '@ubs/ubs/models/ubs.interface';
 import { IUserOrderInfo } from '@ubs/ubs-user/ubs-user-orders-list/models/UserOrder.interface';
 import {
@@ -28,7 +28,7 @@ import {
   SetAdditionalOrders,
   SetBags,
   SetOrderComment
-} from '../../../../store/actions/order.actions';
+} from 'src/app/store/actions/order.actions';
 import { ExtraPackagesPopUpComponent } from '@ubs/ubs/components/ubs-order-details/extra-packages-pop-up/extra-packages-pop-up.component';
 import { UbsOrderLocationPopupComponent } from '@ubs/ubs/components/ubs-order-details/ubs-order-location-popup/ubs-order-location-popup.component';
 

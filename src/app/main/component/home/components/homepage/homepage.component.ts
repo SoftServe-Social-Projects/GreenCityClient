@@ -1,4 +1,4 @@
-import { CheckTokenService } from './../../../../service/auth/check-token/check-token.service';
+import { CheckTokenService } from 'src/app/main/service/auth/check-token/check-token.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
