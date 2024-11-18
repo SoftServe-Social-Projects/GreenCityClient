@@ -12,6 +12,7 @@ import { JwtService } from '@global-service/jwt/jwt.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { EmojiService } from '@global-service/emoji/emoji.service';
 
 @Component({
   selector: 'app-new-message-window',
@@ -43,7 +44,8 @@ export class NewMessageWindowComponent implements OnInit, AfterViewInit, OnDestr
     public userService: UserService,
     private jwt: JwtService,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private emojiService: EmojiService
   ) {}
 
   ngOnInit(): void {
@@ -154,12 +156,12 @@ export class NewMessageWindowComponent implements OnInit, AfterViewInit, OnDestr
     }, 0);
   }
 
-  toggleEmojiPicker() {
-    this.showEmojiPicker = !this.showEmojiPicker;
+  toggleEmojiPicker(): void {
+    this.showEmojiPicker = this.emojiService.toggleEmojiPicker();
   }
 
-  addEmoji(event) {
-    const newValue = this.messageControl.value ? this.messageControl.value + event.emoji.native : event.emoji.native;
+  addEmoji(event: any): void {
+    const newValue = this.emojiService.insertEmoji(this.messageControl.value, event.emoji.native);
     this.messageControl.setValue(newValue);
     this.customInput.nativeElement.textContent = newValue;
   }

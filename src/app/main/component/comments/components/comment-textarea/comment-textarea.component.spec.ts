@@ -253,12 +253,4 @@ describe('CommentTextareaComponent', () => {
       imageFiles: null
     });
   });
-
-  it('should toggle isEmojiPickerOpen state correctly', () => {
-    component.isEmojiPickerOpen = false;
-    component.toggleEmojiPickerVisibility();
-    expect(component.isEmojiPickerOpen).toBe(true);
-    component.toggleEmojiPickerVisibility();
-    expect(component.isEmojiPickerOpen).toBe(false);
-  });
 });

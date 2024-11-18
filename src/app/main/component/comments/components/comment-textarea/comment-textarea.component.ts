@@ -20,6 +20,7 @@ import { Subject, fromEvent } from 'rxjs';
 import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { CHAT_ICONS } from 'src/app/chat/chat-icons';
+import { EmojiService } from '@global-service/emoji/emoji.service';
 
 @Component({
   selector: 'app-comment-textarea',
@@ -62,7 +63,8 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     public socketService: SocketService,
     private localStorageService: LocalStorageService,
     public elementRef: ElementRef,
-    private readonly sanitizer: DomSanitizer
+    private readonly sanitizer: DomSanitizer,
+    private readonly emojiService: EmojiService
   ) {
     this.socketService.initiateConnection(this.socketService.connection.greenCity);
   }
@@ -144,31 +146,15 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   }
 
   toggleEmojiPickerVisibility(): void {
-    this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
+    this.isEmojiPickerOpen = this.emojiService.toggleEmojiPicker();
     this.isImageUploaderOpen = false;
   }
 
   onEmojiClick(event: any): void {
-    this.insertEmoji(event.emoji.native);
-    this.content.setValue(this.commentTextarea.nativeElement.textContent.trim());
+    const newContent = this.emojiService.insertEmoji(this.content.value, event.emoji.native);
+    this.content.setValue(newContent);
+    this.commentTextarea.nativeElement.textContent = newContent;
     this.emitComment();
-  }
-
-  private insertEmoji(emoji: string): void {
-    this.commentTextarea.nativeElement.focus();
-
-    const selection = window.getSelection();
-    if (!selection.rangeCount) {
-      return;
-    }
-
-    const range = selection.getRangeAt(0);
-    range.deleteContents();
-    range.insertNode(document.createTextNode(emoji));
-    range.collapse(false);
-
-    selection.removeAllRanges();
-    selection.addRange(range);
   }
 
   onCommentTextareaFocus(): void {

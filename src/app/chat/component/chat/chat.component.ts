@@ -5,6 +5,7 @@ import { Message } from '../../model/Message.model';
 import { FormControl } from '@angular/forms';
 import { SocketService } from '../../service/socket/socket.service';
 import { UserService } from '@global-service/user/user.service';
+import { EmojiService } from '@global-service/emoji/emoji.service';
 
 @Component({
   selector: 'app-chat',
@@ -26,7 +27,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   constructor(
     public chatsService: ChatsService,
     private socketService: SocketService,
-    public userService: UserService
+    public userService: UserService,
+    private emojiService: EmojiService
   ) {}
 
   ngOnInit(): void {
@@ -70,12 +72,12 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.chatsService.updateChatMessages(this.chatsService.currentChat.id, this.page);
   }
 
-  toggleEmojiPicker() {
-    this.showEmojiPicker = !this.showEmojiPicker;
+  toggleEmojiPicker(): void {
+    this.showEmojiPicker = this.emojiService.toggleEmojiPicker();
   }
 
-  addEmoji(event) {
-    const newValue = this.messageControl.value ? this.messageControl.value + event.emoji.native : event.emoji.native;
+  addEmoji(event: any): void {
+    const newValue = this.emojiService.insertEmoji(this.messageControl.value, event.emoji.native);
     this.messageControl.setValue(newValue);
   }
 }
