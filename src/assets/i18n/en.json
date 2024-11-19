@@ -511,7 +511,11 @@
       "friend-request": "You cannot add this friend",
       "friend-already-added": "This friend has been already added",
       "error-create-address": "Oops, An error occurred while creating the address. Please try again.",
-      "error-edit-address": "Oops, An error occurred while edititng the address. Please try again."
+      "habit-not-added": "This habit invitation can`t be accepted",
+      "habit-already-added": "This habit invitation can`t be declined",
+      "habit-added-success": "Habit invitation was accepted",
+      "habit-decline-success": "Habit invitation was declined",
+      "error-edit-address": "Oops, An error occurred while editing the address. Please try again."
     },
     "attention": {
       "default": "Attention message. The action cannot be performed, because conditions weren’t met.",

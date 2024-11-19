@@ -19,6 +19,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { NotificationBody, Notifications } from '@ubs/ubs-admin/models/ubs-user.model';
 import { HttpParams } from '@angular/common/http';
+import { HabitService } from '@global-service/habit/habit.service';
 
 @Component({
   selector: 'app-user-notifications',
@@ -52,7 +53,8 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     private matSnackBar: MatSnackBarComponent,
     private userFriendsService: UserFriendsService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private readonly habitService: HabitService
   ) {}
 
   ngOnInit() {
@@ -262,10 +264,11 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   acceptRequest(notification: NotificationModel): void {
-    let isAccepted = true;
-
-    const userId = notification.actionUserId[0];
     if (notification.notificationType === this.notificationFriendRequest) {
+      let isAccepted = true;
+
+      const userId = notification.actionUserId[0];
+
       this.userFriendsService.acceptRequest(userId).subscribe({
         error: () => {
           isAccepted = false;
@@ -274,6 +277,17 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
           if (isAccepted) {
             this.matSnackBar.openSnackBar('friendInValidRequest');
           }
+        }
+      });
+    } else if (notification.notificationType === this.notificationHabitInvitation) {
+      const invitationId = notification.secondMessageId;
+
+      this.habitService.acceptHabitInvitation(invitationId).subscribe({
+        next: () => {
+          this.matSnackBar.openSnackBar('habitAcceptRequest');
+        },
+        error: () => {
+          this.matSnackBar.openSnackBar('habitAcceptInValidRequest');
         }
       });
     }
@@ -291,6 +305,17 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
           if (isAccepted) {
             this.matSnackBar.openSnackBar('friendInValidRequest');
           }
+        }
+      });
+    } else if (notification.notificationType === this.notificationHabitInvitation) {
+      const invitationId = notification.secondMessageId;
+
+      this.habitService.declineHabitInvitation(invitationId).subscribe({
+        next: () => {
+          this.matSnackBar.openSnackBar('habitDeclineRequest');
+        },
+        error: () => {
+          this.matSnackBar.openSnackBar('habitDeclineInValidRequest');
         }
       });
     }
