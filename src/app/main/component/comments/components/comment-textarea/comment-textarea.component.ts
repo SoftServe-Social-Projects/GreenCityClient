@@ -146,7 +146,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   }
 
   toggleEmojiPickerVisibility(): void {
-    this.isEmojiPickerOpen = this.emojiService.toggleEmojiPicker();
+    this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
     this.isImageUploaderOpen = false;
   }
 

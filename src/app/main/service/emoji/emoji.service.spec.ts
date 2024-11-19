@@ -15,17 +15,6 @@ describe('EmojiService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('toggleEmojiPicker', () => {
-    it('should toggle isPickerVisible from false to true', () => {
-      expect(service.toggleEmojiPicker()).toBe(true);
-    });
-
-    it('should toggle isPickerVisible from true to false', () => {
-      service.toggleEmojiPicker();
-      expect(service.toggleEmojiPicker()).toBe(false);
-    });
-  });
-
   describe('insertEmoji', () => {
     it('should append an emoji to the current text', () => {
       const currentText = 'Hello';

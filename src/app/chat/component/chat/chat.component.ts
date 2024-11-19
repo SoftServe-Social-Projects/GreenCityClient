@@ -25,10 +25,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   private isChatUpdate = false;
 
   constructor(
-    public chatsService: ChatsService,
-    private socketService: SocketService,
-    public userService: UserService,
-    private emojiService: EmojiService
+    public readonly chatsService: ChatsService,
+    private readonly socketService: SocketService,
+    public readonly userService: UserService,
+    private readonly emojiService: EmojiService
   ) {}
 
   ngOnInit(): void {
@@ -72,8 +72,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.chatsService.updateChatMessages(this.chatsService.currentChat.id, this.page);
   }
 
-  toggleEmojiPicker(): void {
-    this.showEmojiPicker = this.emojiService.toggleEmojiPicker();
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
   }
 
   addEmoji(event: any): void {

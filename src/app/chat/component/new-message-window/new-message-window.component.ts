@@ -38,14 +38,14 @@ export class NewMessageWindowComponent implements OnInit, AfterViewInit, OnDestr
   @ViewChild('customInput', { static: true }) customInput: ElementRef;
 
   constructor(
-    public chatsService: ChatsService,
-    private commonService: CommonService,
-    private socketService: SocketService,
-    public userService: UserService,
-    private jwt: JwtService,
-    public dialog: MatDialog,
-    private router: Router,
-    private emojiService: EmojiService
+    public readonly chatsService: ChatsService,
+    private readonly commonService: CommonService,
+    private readonly socketService: SocketService,
+    public readonly userService: UserService,
+    private readonly jwt: JwtService,
+    public readonly dialog: MatDialog,
+    private readonly router: Router,
+    private readonly emojiService: EmojiService
   ) {}
 
   ngOnInit(): void {
@@ -156,8 +156,8 @@ export class NewMessageWindowComponent implements OnInit, AfterViewInit, OnDestr
     }, 0);
   }
 
-  toggleEmojiPicker(): void {
-    this.showEmojiPicker = this.emojiService.toggleEmojiPicker();
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
   }
 
   addEmoji(event: any): void {
