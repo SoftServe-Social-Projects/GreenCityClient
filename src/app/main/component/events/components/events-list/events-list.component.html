@@ -144,7 +144,9 @@
       (scrolled)="getEvents()"
     ></app-spinner>
     <app-spinner *ngIf="isLoading && !eventsList.length" infiniteScroll [infiniteScrollThrottle]="500"></app-spinner>
-    <p class="end-page-txt" *ngIf="!hasNextPage && !noEventsMatch && !isLoading">{{ 'homepage.events.no-event-left' | translate }}</p>
+    <p class="end-page-txt" *ngIf="!hasNextPage && !noEventsMatch && !isLoading && !bookmarkSelected">
+      {{ 'homepage.events.no-event-left' | translate }}
+    </p>
     <p class="end-page-txt" *ngIf="noEventsMatch">{{ 'homepage.events.no-matching-left' | translate }}</p>
   </div>
 </div>
