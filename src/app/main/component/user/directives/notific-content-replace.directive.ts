@@ -47,10 +47,7 @@ export class NotificContentReplaceDirective implements OnChanges {
         }
       } else if (contentKey === 'message' && replacements.notificationType) {
         const linkAttributes = replacements.targetId
-          ? {
-              targetId: replacements.targetId,
-              notificationType: replacements.notificationType
-            }
+          ? { targetId: replacements.targetId, notificationType: replacements.notificationType }
           : null;
         result = this.buildReplacementString(result, contentKey, replacements[replacementKey], linkAttributes);
       } else if (replacements.hasOwnProperty(replacementKey)) {
