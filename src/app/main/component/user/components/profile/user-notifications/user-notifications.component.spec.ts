@@ -181,7 +181,7 @@ describe('UserNotificationsComponent', () => {
     component.navigate(customEvent);
     tick();
 
-    expect(routerMock.navigate).toHaveBeenCalledWith(['profile', 1, 'allhabits', 'edithabit', 3]);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['profile', 1, 'allhabits', 'addhabit', 3]);
   }));
 
   it('should return checkSelectedFilter', () => {

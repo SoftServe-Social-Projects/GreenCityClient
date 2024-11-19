@@ -74,7 +74,7 @@ describe('NotificContentReplaceDirective', () => {
     component.notification = { ...notification, ...{ bodyText: 'commented event {message}' } };
     fixture.detectChanges();
     expect(paragrEl.textContent).toBe('commented event test message');
-    expect(paragrEl.innerHTML).toBe('commented event test message');
+    expect(paragrEl.innerHTML).toBe('commented event <a data-targetid="10" data-notificationtype="Eco_NEWS">test message</a>');
   });
 
   it('should add property value to the content and anchor tag', () => {
@@ -83,7 +83,10 @@ describe('NotificContentReplaceDirective', () => {
       ...{ bodyText: '{user1},{user2} commented event {message}', actionUserId: [2, 3], actionUserText: ['testUser1', 'testUser2'] }
     };
     fixture.detectChanges();
-    expect(paragrEl.textContent).toBe('testUser1,testUser2 commented event test message');
-    expect(paragrEl.innerHTML).toBe('<a data-userid="2">testUser1</a>,<a data-userid="3">testUser2</a> commented event test message');
+    expect(paragrEl.textContent).toBe('testUser1,testUser2 commented event test message'); // Text content without tags
+    expect(paragrEl.innerHTML).toBe(
+      '<a data-userid="2">testUser1</a>,<a data-userid="3">testUser2</a> commented event ' +
+        '<a data-targetid="10" data-notificationtype="Eco_NEWS">test message</a>'
+    );
   });
 });
