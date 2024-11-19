@@ -76,7 +76,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.showEmojiPicker = !this.showEmojiPicker;
   }
 
-  addEmoji(event: any): void {
+  addEmoji(event): void {
     const newValue = this.emojiService.insertEmoji(this.messageControl.value, event.emoji.native);
     this.messageControl.setValue(newValue);
   }

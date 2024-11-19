@@ -150,7 +150,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     this.isImageUploaderOpen = false;
   }
 
-  onEmojiClick(event: any): void {
+  onEmojiClick(event): void {
     const newContent = this.emojiService.insertEmoji(this.content.value, event.emoji.native);
     this.content.setValue(newContent);
     this.commentTextarea.nativeElement.textContent = newContent;
