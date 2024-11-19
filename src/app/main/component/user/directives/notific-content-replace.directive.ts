@@ -57,11 +57,8 @@ export class NotificContentReplaceDirective implements OnChanges {
         const linkAttributes = idToNavigate ? { userId: replacements[idToNavigate] } : null;
 
         result = this.buildReplacementString(result, contentKey, replacements[replacementKey], linkAttributes);
-        console.log('in 3');
       }
     });
-
-    console.log(result);
     return result;
   }
 

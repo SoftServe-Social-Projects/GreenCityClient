@@ -84,12 +84,12 @@ export class HabitService {
     return this.http.delete<CustomHabitDtoRequest>(`${habitLink}/delete/${id}`);
   }
 
-  acceptHabitInvitation(invitationId: number) {
-    return this.http.patch(`${habitLink}/invite/${invitationId}/accept`, {});
+  acceptHabitInvitation(invitationId: number): Observable<string> {
+    return this.http.patch<string>(`${habitLink}/invite/${invitationId}/accept`, {});
   }
 
-  declineHabitInvitation(invitationId: number) {
-    return this.http.patch(`${habitLink}/invite/${invitationId}/reject`, {});
+  declineHabitInvitation(invitationId: number): Observable<string> {
+    return this.http.patch<string>(`${habitLink}/invite/${invitationId}/reject`, {});
   }
 
   private prepareCustomHabitRequest(habit: CustomHabit, lang: string): FormData {
