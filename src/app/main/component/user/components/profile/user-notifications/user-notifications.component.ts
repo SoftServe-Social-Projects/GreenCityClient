@@ -47,13 +47,13 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private filterAll = 'All';
 
   constructor(
-    private localStorageService: LocalStorageService,
-    public translate: TranslateService,
-    private userNotificationService: UserNotificationService,
-    private matSnackBar: MatSnackBarComponent,
-    private userFriendsService: UserFriendsService,
-    private router: Router,
-    private userService: UserService,
+    private readonly localStorageService: LocalStorageService,
+    public readonly translate: TranslateService,
+    private readonly userNotificationService: UserNotificationService,
+    private readonly matSnackBar: MatSnackBarComponent,
+    private readonly userFriendsService: UserFriendsService,
+    private readonly router: Router,
+    private readonly userService: UserService,
     private readonly habitService: HabitService
   ) {}
 
