@@ -13,7 +13,7 @@ import {
   OnDestroy,
   SecurityContext
 } from '@angular/core';
-import { TaggedUser } from '../../models/comments-model';
+import { EmojiEvent, TaggedUser } from '../../models/comments-model';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { FormControl, Validators } from '@angular/forms';
 import { Subject, fromEvent } from 'rxjs';
@@ -165,7 +165,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     this.isImageUploaderOpen = false;
   }
 
-  onEmojiClick(event): void {
+  onEmojiClick(event: EmojiEvent): void {
     const newContent = insertEmoji(this.content.value, event.emoji.native);
     this.content.setValue(newContent);
     this.commentTextarea.nativeElement.textContent = newContent;

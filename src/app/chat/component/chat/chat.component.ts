@@ -6,6 +6,7 @@ import { FormControl } from '@angular/forms';
 import { SocketService } from '../../service/socket/socket.service';
 import { UserService } from '@global-service/user/user.service';
 import { insertEmoji } from 'src/app/main/component/comments/components/add-emoji/add-emoji';
+import { EmojiEvent } from 'src/app/main/component/comments/models/comments-model';
 
 @Component({
   selector: 'app-chat',
@@ -75,7 +76,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.showEmojiPicker = !this.showEmojiPicker;
   }
 
-  addEmoji(event): void {
+  addEmoji(event: EmojiEvent): void {
     const newValue = insertEmoji(this.messageControl.value, event.emoji.native);
     this.messageControl.setValue(newValue);
   }

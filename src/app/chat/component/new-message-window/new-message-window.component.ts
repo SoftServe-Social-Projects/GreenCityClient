@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { insertEmoji } from 'src/app/main/component/comments/components/add-emoji/add-emoji';
+import { EmojiEvent } from 'src/app/main/component/comments/models/comments-model';
 
 @Component({
   selector: 'app-new-message-window',
@@ -159,7 +160,7 @@ export class NewMessageWindowComponent implements OnInit, AfterViewInit, OnDestr
     this.showEmojiPicker = !this.showEmojiPicker;
   }
 
-  addEmoji(event): void {
+  addEmoji(event: EmojiEvent): void {
     const newValue = insertEmoji(this.messageControl.value, event.emoji.native);
     this.messageControl.setValue(newValue);
     this.customInput.nativeElement.textContent = newValue;
