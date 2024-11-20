@@ -36,18 +36,25 @@ export class UpdateEventComponent implements OnInit {
 
   ngOnInit() {
     this.eventForm = this.eventStore.getEditorValues();
-    if (this.eventForm.eventInformation) {
-      return;
-    }
+
     const userId = this.localStorageService.getUserId();
+
     this.route.params.subscribe((params) => {
       const isAuthor = this.authorId === userId;
       this.eventId = params['id'];
+
+      console.log('in update', this.eventId);
+      if (this.eventForm.eventInformation && this.eventId === this.eventStore.getEventId()) {
+        return;
+      }
+
       if (isAuthor || !this.authorId) {
+        console.log('in update fetching');
         this.isFetching = true;
         this.eventService.getEventById(this.eventId).subscribe({
           next: (response) => {
             this.eventForm = this._transformResponseToForm(response);
+            this.eventStore.setEventId(this.eventId);
             this.eventStore.setEditorValues(this.eventForm);
             this.authorId = response.organizer.id;
             this.isAuthor = this.authorId === userId;
@@ -113,7 +120,8 @@ export class UpdateEventComponent implements OnInit {
 
       const place = this.languageService.getCurrentLanguage() === 'ua' ? coordinates?.formattedAddressUa : coordinates?.formattedAddressEn;
 
-      allPlace &&= address === coordinates?.formattedAddressEn ?? false;
+      allPlace = allPlace && address === (coordinates?.formattedAddressEn ?? false);
+
       allLink &&= link === onlineLink;
       return {
         day: { startTime: formattedStartTime, date: _startDate, endTime: formattedEndTime, allDay: false },

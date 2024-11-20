@@ -25,6 +25,7 @@ export class EventsService implements OnDestroy {
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   private divider = `, `;
   private isFromCreateEvent: boolean;
+  private eventId: number;
 
   constructor(
     private http: HttpClient,
@@ -34,6 +35,14 @@ export class EventsService implements OnDestroy {
   setEvent(event: EventForm): void {
     this.event = event;
     this.eventPreview = this.convertEventToPreview(event);
+  }
+
+  setEventId(id: number) {
+    this.eventId = id;
+  }
+
+  getEventId(): number {
+    return this.eventId;
   }
 
   setIsFromCreateEvent(value: boolean): void {
@@ -83,8 +92,8 @@ export class EventsService implements OnDestroy {
         .join(', ')
     };
   }
-  getEventPriview(): PagePreviewDTO {
-    return this.eventPreview;
+  getEventPreview(event: EventForm): PagePreviewDTO {
+    return this.convertEventToPreview(event);
   }
   getEvent(): EventForm {
     return this.event;

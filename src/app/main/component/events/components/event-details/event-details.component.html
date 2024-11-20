@@ -4,7 +4,7 @@
 
     <div *ngIf="event && !isPosting" class="event">
       <div class="event-nav">
-        <div *ngIf="!eventService.getForm()" class="back-button">
+        <div *ngIf="!isPreview" class="back-button">
           <a [routerLink]="routedFromProfile ? [backRoute, { tabId: 2 }] : [backRoute]" class="button-link">
             <div class="button-content">
               <img [src]="icons.arrowLeft" alt="arrow" aria-hidden="true" class="button-arrow-img arrow" />
@@ -12,7 +12,7 @@
             </div>
           </a>
         </div>
-        <div *ngIf="eventService.getForm()" class="back-button">
+        <div *ngIf="isPreview" class="back-button">
           <a (click)="navigateToEditEvent()" class="button-link">
             <div class="button-content">
               <img [src]="icons.arrowLeft" alt="arrow" aria-hidden="true" class="button-arrow-img arrow" />
@@ -29,12 +29,12 @@
             {{ 'homepage.events.btn.edit' | translate }}
           </button>
         </div>
-        <div *ngIf="eventService.getForm()">
-          <a [routerLink]="['/events', 'create-event']" class="button-link">
-            <button class="primary-global-button button-publish">
-              {{ 'create-event.publish' | translate }}
-            </button>
-          </a>
+        <div *ngIf="isPreview">
+          <!-- <a [routerLink]="['/events', 'create-event']" class="button-link"> -->
+          <button class="primary-global-button button-publish" (click)="onPublish()">
+            {{ 'create-event.publish' | translate }}
+          </button>
+          <!-- </a> -->
         </div>
       </div>
 
@@ -126,7 +126,7 @@
                 <div class="event-location-icon">
                   <img [src]="icons.location" alt="" />
                 </div>
-                <a href="{{ googleMapLink }}" target="_blank">{{ eventService.getForm() ? place : getAddress() }}</a>
+                <a href="{{ googleMapLink }}" target="_blank">{{ event || eventForm ? place : getAddress() }}</a>
               </div>
               <div *ngIf="locationLink" class="event-link">
                 <div class="event-link-icon">
@@ -155,7 +155,7 @@
             </div>
           </div>
           <div
-            *ngIf="!eventService.getForm()"
+            *ngIf="!isPreview"
             [ngClass]="localStorageService.getCurrentLanguage() === 'ua' ? 'save-join-event-block-ua' : 'save-join-event-block'"
           >
             <button (click)="changeFavouriteStatus($event)" class="secondary-global-button">
@@ -177,7 +177,7 @@
           <div [innerHTML]="event.description | safeHtmlTransform" class="ql-editor"></div>
         </div>
       </div>
-      <app-comments-container *ngIf="!eventService.getForm()" [entityId]="eventId" class="event"></app-comments-container>
+      <app-comments-container *ngIf="!isPreview" [entityId]="eventId" class="event"></app-comments-container>
     </div>
   </div>
 </div>

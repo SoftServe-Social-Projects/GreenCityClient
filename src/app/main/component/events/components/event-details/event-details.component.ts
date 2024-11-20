@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ActionsSubject, Store } from '@ngrx/store';
 import { take, takeUntil } from 'rxjs/operators';
@@ -8,11 +8,13 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { DialogPopUpComponent } from 'src/app/shared/dialog-pop-up/dialog-pop-up.component';
 import {
   AddAttenderEcoEventsByIdAction,
+  CreateEcoEventAction,
   DeleteEcoEventAction,
+  EditEcoEventAction,
   EventsActions,
   RemoveAttenderEcoEventsByIdAction
 } from 'src/app/store/actions/ecoEvents.actions';
-import { EventAttender, EventResponse, LocationResponse, PagePreviewDTO } from '../../models/events.interface';
+import { EventAttender, EventForm, EventResponse, LocationResponse, PagePreviewDTO } from '../../models/events.interface';
 import { EventsService } from '../../services/events.service';
 import { JwtService } from '@global-service/jwt/jwt.service';
 import { Subject } from 'rxjs';
@@ -25,6 +27,7 @@ import { ofType } from '@ngrx/effects';
 import { ICONS } from '../../models/event-consts';
 import { WarningPopUpComponent } from '@shared/components';
 import { MetaService } from 'src/app/shared/services/meta/meta.service';
+import { EventStoreService } from '../../services/event-store.service';
 
 @Component({
   selector: 'app-event-details',
@@ -49,6 +52,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   organizerName: string;
   isLiked: boolean;
   event: EventResponse | PagePreviewDTO;
+  eventForm: EventForm;
   locationLink: string;
   locationCoordinates: LocationResponse;
   place: string;
@@ -56,6 +60,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   isPosting: boolean;
   isActive: boolean;
   currentDate = new Date();
+  isPreview = false;
   max = 5;
   rate: number;
   likesType = {
@@ -94,6 +99,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     public eventService: EventsService,
+    private eventStoreService: EventStoreService,
     public router: Router,
     public localStorageService: LocalStorageService,
     private dialog: MatDialog,
@@ -108,6 +114,10 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.route.snapshot.params.id) {
       this.eventId = this.route.snapshot.params.id;
+
+      this.eventService.setEventId(this.eventId);
+
+      this.isPreview = false;
       this.localStorageService.userIdBehaviourSubject.subscribe((id) => {
         this.userId = Number(id);
       });
@@ -120,7 +130,9 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       this.backRoute = this.localStorageService.getPreviousPage();
       this.getIsLiked();
     } else {
-      this.event = this.eventService.getForm() as PagePreviewDTO;
+      this.isPreview = true;
+      this.eventForm = this.eventStoreService.getEditorValues();
+      this.event = this.eventService.getEventPreview(this.eventForm);
       this.locationLink = this.event.dates[this.event.dates.length - 1].onlineLink;
       this.place = this.event.location as string;
       this.images = this.event.imgArrayToPreview;
@@ -128,6 +140,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       this.bindUserName();
       this.setGoogleMapLink();
     }
+    console.log(this.isPreview);
   }
 
   private getIsLiked(): void {
@@ -220,10 +233,40 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
 
   navigateToEditEvent(): void {
     if (this.eventService.getIsFromCreateEvent()) {
-      this.router.navigate(['/events', 'create-event', this.eventId]);
+      this.router.navigate(['/events', 'create-event']);
     } else {
       this.localStorageService.setEditMode('canUserEdit', true);
-      this.router.navigate(['/events', 'update-event', this.eventId]);
+      const id = this.eventId || this.eventService.getEventId();
+      console.log(id);
+      // return;
+      this.router.navigate(['/events', 'update-event', id]);
+    }
+  }
+
+  onPublish() {
+    // const sendData;
+    // this.isPosting = true;
+    // !this.eventService.getIsFromCreateEvent()
+    //   ? this.store.dispatch(EditEcoEventAction({ data: sendData, id: this.eventId }))
+    //   : this.store.dispatch(CreateEcoEventAction({ data: sendData }));
+    // this.actionsSubj.pipe(ofType(EventsActions.CreateEcoEventSuccess, EventsActions.EditEcoEventSuccess), take(1)).subscribe(() => {
+    //   this.isPosting = false;
+    //   this.eventService.setForm(null);
+    //   this.escapeFromCreateEvent();
+    // });
+  }
+
+  escapeFromCreateEvent(): void {
+    this.router.navigate(['/events']);
+    this.eventSuccessfullyAdded();
+  }
+
+  private eventSuccessfullyAdded(): void {
+    const isUpdating = !this.eventService.getIsFromCreateEvent();
+    if (isUpdating) {
+      this.snackBar.openSnackBar('updatedEvent');
+    } else {
+      this.snackBar.openSnackBar('addedEvent');
     }
   }
 

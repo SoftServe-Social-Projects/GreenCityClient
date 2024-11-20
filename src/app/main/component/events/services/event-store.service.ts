@@ -3,13 +3,22 @@ import { EventForm, EventListResponse } from '../models/events.interface';
 
 @Injectable()
 export class EventStoreService implements OnDestroy {
-  private state: { eventListResponse: EventListResponse; eventAuthorId: number; editorValues: EventForm } = {
+  private state: { eventId: number; eventListResponse: EventListResponse; eventAuthorId: number; editorValues: EventForm } = {
+    eventId: undefined,
     editorValues: { eventInformation: undefined, dateInformation: undefined },
     eventAuthorId: undefined,
     eventListResponse: undefined
   };
 
   constructor() {}
+
+  setEventId(id: number) {
+    this.state.eventId = id;
+  }
+
+  getEventId() {
+    return this.state.eventId;
+  }
 
   setEditorValues(value: EventForm) {
     this.state.editorValues = value;
@@ -20,7 +29,8 @@ export class EventStoreService implements OnDestroy {
   }
 
   setEventListResponse(response: EventListResponse) {
-    const { organizer } = response;
+    const { id, organizer } = response;
+    this.setEventId(id);
     this.setEventAuthorId(organizer.id);
   }
 

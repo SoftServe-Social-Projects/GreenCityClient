@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ofType } from '@ngrx/effects';
@@ -17,9 +17,10 @@ import { CreateEcoEventAction, EditEcoEventAction, EventsActions } from 'src/app
 import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
 import { Place } from '../../../places/models/place';
 import { DefaultCoordinates } from '../../models/event-consts';
-import { DateInformation, Dates, EventDTO, EventForm, EventResponse, TagObj } from '../../models/events.interface';
+import { DateInformation, Dates, EventDTO, EventForm, EventResponse, LocationResponse, TagObj } from '../../models/events.interface';
 import { EventsService } from '../../services/events.service';
 import { quillConfig } from './quillEditorFunc';
+import { EventStoreService } from '../../services/event-store.service';
 
 @Component({
   selector: 'app-event-editor',
@@ -61,9 +62,33 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
   routedFromProfile: boolean;
   private _savedFormValues: EventForm;
 
+  locationLink: string;
+  locationCoordinates: LocationResponse;
+  place: string;
+  imagesList: string[] = [];
+  isActive: boolean;
+  currentDate = new Date();
+  rate: number;
+  likesType = {
+    like: 'assets/img/comments/like.png',
+    liked: 'assets/img/comments/liked.png'
+  };
+  deleteDialogData = {
+    popupTitle: 'homepage.events.delete-title-admin',
+    popupConfirm: 'homepage.events.delete-yes',
+    popupCancel: 'homepage.events.delete-no',
+    style: 'green'
+  };
+  mapDialogData: any;
+  address = 'Should be address';
+  organizerName: string;
+  isLiked: boolean;
+  googleMapLink: string;
+
   constructor(
     public dialog: MatDialog,
     public router: Router,
+    private readonly route: ActivatedRoute,
     private fb: FormBuilder,
     public localStorageService: LocalStorageService,
     private actionsSubj: ActionsSubject,
@@ -71,6 +96,7 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
     private snackBar: MatSnackBarComponent,
     public dialogRef: MatDialogRef<DialogPopUpComponent>,
     private eventsService: EventsService,
+    private eventStoreService: EventStoreService,
     private readonly cdRef: ChangeDetectorRef
   ) {
     super(router, dialog);
@@ -89,7 +115,12 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.event = this.eventsService.getEvent() ?? this.formInput;
+    this.event = this.formInput ?? this.eventStoreService.getEditorValues();
+
+    this.route.params.subscribe((params) => {
+      const id = params['id'];
+      this.eventsService.setEventId(Number(id));
+    });
 
     if (this.isUpdating) {
       this.submitButtonName = 'create-event.save-event';
@@ -206,9 +237,16 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
   }
 
   onPreview() {
+    const currentRoute = this.router.url;
     this.cdRef.detectChanges();
-    this.eventsService.setIsFromCreateEvent(true);
-    this.eventsService.setEvent(this.eventForm.value);
+
+    if (currentRoute.includes('create-event')) {
+      this.eventsService.setIsFromCreateEvent(true);
+    } else {
+      this.eventsService.setIsFromCreateEvent(false);
+    }
+
+    this.eventStoreService.setEditorValues(this.eventForm.value);
     this.router.navigate(['events', 'preview']);
   }
 
