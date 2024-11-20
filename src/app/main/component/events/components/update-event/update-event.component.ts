@@ -43,13 +43,11 @@ export class UpdateEventComponent implements OnInit {
       const isAuthor = this.authorId === userId;
       this.eventId = params['id'];
 
-      console.log('in update', this.eventId);
       if (this.eventForm.eventInformation && this.eventId === this.eventStore.getEventId()) {
         return;
       }
 
       if (isAuthor || !this.authorId) {
-        console.log('in update fetching');
         this.isFetching = true;
         this.eventService.getEventById(this.eventId).subscribe({
           next: (response) => {

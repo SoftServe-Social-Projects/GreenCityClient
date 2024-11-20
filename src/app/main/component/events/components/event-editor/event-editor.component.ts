@@ -62,29 +62,6 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
   routedFromProfile: boolean;
   private _savedFormValues: EventForm;
 
-  locationLink: string;
-  locationCoordinates: LocationResponse;
-  place: string;
-  imagesList: string[] = [];
-  isActive: boolean;
-  currentDate = new Date();
-  rate: number;
-  likesType = {
-    like: 'assets/img/comments/like.png',
-    liked: 'assets/img/comments/liked.png'
-  };
-  deleteDialogData = {
-    popupTitle: 'homepage.events.delete-title-admin',
-    popupConfirm: 'homepage.events.delete-yes',
-    popupCancel: 'homepage.events.delete-no',
-    style: 'green'
-  };
-  mapDialogData: any;
-  address = 'Should be address';
-  organizerName: string;
-  isLiked: boolean;
-  googleMapLink: string;
-
   constructor(
     public dialog: MatDialog,
     public router: Router,
@@ -115,11 +92,11 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.event = this.formInput ?? this.eventStoreService.getEditorValues();
+    this.event = this.formInput;
 
     this.route.params.subscribe((params) => {
       const id = params['id'];
-      this.eventsService.setEventId(Number(id));
+      this.eventStoreService.setEventId(Number(id));
     });
 
     if (this.isUpdating) {

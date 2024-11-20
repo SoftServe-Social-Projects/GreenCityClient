@@ -5,7 +5,6 @@ import { environment } from '@environment/environment';
 import {
   Addresses,
   EventAttender,
-  EventFilterCriteriaInterface,
   EventForm,
   EventResponse,
   EventResponseDto,
@@ -20,30 +19,15 @@ import { LanguageService } from 'src/app/main/i18n/language.service';
 export class EventsService implements OnDestroy {
   currentForm: PagePreviewDTO | EventResponse;
   private eventPreview: PagePreviewDTO;
-  private event: EventForm;
   private backEnd = environment.backendLink;
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   private divider = `, `;
   private isFromCreateEvent: boolean;
-  private eventId: number;
 
   constructor(
     private http: HttpClient,
     private langService: LanguageService
   ) {}
-
-  setEvent(event: EventForm): void {
-    this.event = event;
-    this.eventPreview = this.convertEventToPreview(event);
-  }
-
-  setEventId(id: number) {
-    this.eventId = id;
-  }
-
-  getEventId(): number {
-    return this.eventId;
-  }
 
   setIsFromCreateEvent(value: boolean): void {
     this.isFromCreateEvent = value;
@@ -52,6 +36,7 @@ export class EventsService implements OnDestroy {
   getIsFromCreateEvent(): boolean {
     return this.isFromCreateEvent;
   }
+
   private convertEventToPreview(event: EventForm): PagePreviewDTO {
     const { eventInformation, dateInformation } = event;
 
@@ -92,12 +77,11 @@ export class EventsService implements OnDestroy {
         .join(', ')
     };
   }
+
   getEventPreview(event: EventForm): PagePreviewDTO {
     return this.convertEventToPreview(event);
   }
-  getEvent(): EventForm {
-    return this.event;
-  }
+
   getAddresses(): Observable<Addresses[]> {
     return this.http.get<Addresses[]>(`${this.backEnd}events/addresses`);
   }

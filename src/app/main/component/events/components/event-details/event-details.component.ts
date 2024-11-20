@@ -115,7 +115,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.params.id) {
       this.eventId = this.route.snapshot.params.id;
 
-      this.eventService.setEventId(this.eventId);
+      this.eventStoreService.setEventId(this.eventId);
 
       this.isPreview = false;
       this.localStorageService.userIdBehaviourSubject.subscribe((id) => {
@@ -132,6 +132,9 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.isPreview = true;
       this.eventForm = this.eventStoreService.getEditorValues();
+      if (!this.eventForm.eventInformation) {
+        this.router.navigate(['/events']);
+      }
       this.event = this.eventService.getEventPreview(this.eventForm);
       this.locationLink = this.event.dates[this.event.dates.length - 1].onlineLink;
       this.place = this.event.location as string;
@@ -140,7 +143,6 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       this.bindUserName();
       this.setGoogleMapLink();
     }
-    console.log(this.isPreview);
   }
 
   private getIsLiked(): void {
@@ -236,14 +238,18 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       this.router.navigate(['/events', 'create-event']);
     } else {
       this.localStorageService.setEditMode('canUserEdit', true);
-      const id = this.eventId || this.eventService.getEventId();
-      console.log(id);
-      // return;
+      const id = this.eventId || this.eventStoreService.getEventId();
       this.router.navigate(['/events', 'update-event', id]);
     }
   }
 
   onPublish() {
+    if (this.eventService.getIsFromCreateEvent()) {
+      // add event
+    } else {
+      // update event
+    }
+
     // const sendData;
     // this.isPosting = true;
     // !this.eventService.getIsFromCreateEvent()
