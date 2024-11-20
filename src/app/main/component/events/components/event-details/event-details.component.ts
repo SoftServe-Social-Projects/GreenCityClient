@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ActionsSubject, Store } from '@ngrx/store';
 import { take, takeUntil } from 'rxjs/operators';
@@ -59,6 +59,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   images: string[] = [];
   isPosting: boolean;
   isActive: boolean;
+  isUpdating: boolean;
   currentDate = new Date();
   isPreview = false;
   max = 5;
@@ -112,6 +113,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.isUpdating = !this.eventService.getIsFromCreateEvent();
     if (this.route.snapshot.params.id) {
       this.eventId = this.route.snapshot.params.id;
 
@@ -234,7 +236,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   }
 
   navigateToEditEvent(): void {
-    if (this.eventService.getIsFromCreateEvent()) {
+    if (this.isUpdating) {
       this.router.navigate(['/events', 'create-event']);
     } else {
       this.localStorageService.setEditMode('canUserEdit', true);
@@ -244,22 +246,19 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   }
 
   onPublish() {
-    if (this.eventService.getIsFromCreateEvent()) {
-      // add event
-    } else {
-      // update event
-    }
+    this.isPosting = true;
+    const id = this.eventId || this.eventStoreService.getEventId();
+    const formEvent = this.eventService.convertEventToFormEvent(this.eventForm).value;
+    const sendData = this.eventService.prepareEventForSubmit(formEvent, id, this.isUpdating);
 
-    // const sendData;
-    // this.isPosting = true;
-    // !this.eventService.getIsFromCreateEvent()
-    //   ? this.store.dispatch(EditEcoEventAction({ data: sendData, id: this.eventId }))
-    //   : this.store.dispatch(CreateEcoEventAction({ data: sendData }));
-    // this.actionsSubj.pipe(ofType(EventsActions.CreateEcoEventSuccess, EventsActions.EditEcoEventSuccess), take(1)).subscribe(() => {
-    //   this.isPosting = false;
-    //   this.eventService.setForm(null);
-    //   this.escapeFromCreateEvent();
-    // });
+    this.isUpdating
+      ? this.store.dispatch(EditEcoEventAction({ data: sendData, id: id }))
+      : this.store.dispatch(CreateEcoEventAction({ data: sendData }));
+    this.actionsSubj.pipe(ofType(EventsActions.CreateEcoEventSuccess, EventsActions.EditEcoEventSuccess), take(1)).subscribe(() => {
+      this.isPosting = false;
+      this.eventStoreService.setEventListResponse(null);
+    });
+    this.escapeFromCreateEvent();
   }
 
   escapeFromCreateEvent(): void {
@@ -268,7 +267,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   }
 
   private eventSuccessfullyAdded(): void {
-    const isUpdating = !this.eventService.getIsFromCreateEvent();
+    const isUpdating = !this.isUpdating;
     if (isUpdating) {
       this.snackBar.openSnackBar('updatedEvent');
     } else {
