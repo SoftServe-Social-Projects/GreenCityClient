@@ -5,7 +5,7 @@ import { Message } from '../../model/Message.model';
 import { FormControl } from '@angular/forms';
 import { SocketService } from '../../service/socket/socket.service';
 import { UserService } from '@global-service/user/user.service';
-import { EmojiService } from '@global-service/emoji/emoji.service';
+import { insertEmoji } from 'src/app/main/component/comments/components/add-emoji/add-emoji';
 
 @Component({
   selector: 'app-chat',
@@ -27,8 +27,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   constructor(
     public readonly chatsService: ChatsService,
     private readonly socketService: SocketService,
-    public readonly userService: UserService,
-    private readonly emojiService: EmojiService
+    public readonly userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -77,7 +76,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   addEmoji(event): void {
-    const newValue = this.emojiService.insertEmoji(this.messageControl.value, event.emoji.native);
+    const newValue = insertEmoji(this.messageControl.value, event.emoji.native);
     this.messageControl.setValue(newValue);
   }
 }

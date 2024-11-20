@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ChatMessageComponent } from './component/chat-message/chat-message.component';
 import { SharedModule } from '../shared/shared.module';
+import { ChatComponent } from './component/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { SharedModule } from '../shared/shared.module';
     ReferenceDirective,
     ChatModalComponent,
     CurrentChatComponent,
-    ChatMessageComponent
+    ChatMessageComponent,
+    ChatComponent
   ],
   imports: [
     FormsModule,

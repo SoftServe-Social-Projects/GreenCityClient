@@ -12,7 +12,7 @@ import { JwtService } from '@global-service/jwt/jwt.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { EmojiService } from '@global-service/emoji/emoji.service';
+import { insertEmoji } from 'src/app/main/component/comments/components/add-emoji/add-emoji';
 
 @Component({
   selector: 'app-new-message-window',
@@ -44,8 +44,7 @@ export class NewMessageWindowComponent implements OnInit, AfterViewInit, OnDestr
     public readonly userService: UserService,
     private readonly jwt: JwtService,
     public readonly dialog: MatDialog,
-    private readonly router: Router,
-    private readonly emojiService: EmojiService
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -161,7 +160,7 @@ export class NewMessageWindowComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   addEmoji(event): void {
-    const newValue = this.emojiService.insertEmoji(this.messageControl.value, event.emoji.native);
+    const newValue = insertEmoji(this.messageControl.value, event.emoji.native);
     this.messageControl.setValue(newValue);
     this.customInput.nativeElement.textContent = newValue;
   }
