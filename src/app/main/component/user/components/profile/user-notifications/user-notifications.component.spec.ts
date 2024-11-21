@@ -155,7 +155,6 @@ describe('UserNotificationsComponent', () => {
   });
 
   it('should navigate to news page when notification type is ECONEWS', waitForAsync(() => {
-    const event = new MouseEvent('click');
     const target = document.createElement('div');
     target.setAttribute('data-notificationType', 'ECONEWS');
     target.setAttribute('data-targetid', '5');
@@ -176,7 +175,6 @@ describe('UserNotificationsComponent', () => {
   }));
 
   it('should navigate to habit editing page when notification type is HABIT', waitForAsync(() => {
-    const event = new MouseEvent('click');
     const target = document.createElement('div');
     target.setAttribute('data-notificationType', 'HABIT');
     target.setAttribute('data-targetid', '3');

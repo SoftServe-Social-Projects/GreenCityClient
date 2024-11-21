@@ -513,8 +513,6 @@
       "error-create-address": "Oops, An error occurred while creating the address. Please try again.",
       "habit-not-added": "This habit invitation can`t be accepted",
       "habit-already-added": "This habit invitation can`t be declined",
-      "habit-added-success": "Habit invitation was accepted",
-      "habit-decline-success": "Habit invitation was declined",
       "error-edit-address": "Oops, An error occurred while editing the address. Please try again."
     },
     "attention": {
@@ -538,7 +536,9 @@
       "add-friend": "Friend request sent",
       "cancel-request": "Your friend request has been canceled",
       "joint-event-request": "The request to join the closed event has been successfully sent to the organizer",
-      "create-news": "Your news has been successfully published"
+      "create-news": "Your news has been successfully published",
+      "habit-added-success": "Habit invitation was accepted",
+      "habit-decline-success": "Habit invitation was declined"
     }
   },
   "user": {

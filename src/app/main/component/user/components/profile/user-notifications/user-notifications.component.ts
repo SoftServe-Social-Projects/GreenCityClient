@@ -33,7 +33,6 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   filterCriteriaOptions = filterCriteriaOptions;
   notificationCriteriaOptions = notificationCriteriaOptions;
   projects = projects;
-  notificationTypes = NotificationCriteria;
   notificationFriendRequest = NotificationCriteria.FRIEND_REQUEST_RECEIVED;
   notificationHabitInvitation = NotificationCriteria.HABIT_INVITATION;
 
@@ -263,12 +262,35 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     }
   }
 
+  isFriendRequest(notification: NotificationModel): boolean {
+    return notification.notificationType === this.notificationFriendRequest;
+  }
+
+  isHabitInvitation(notification: NotificationModel): boolean {
+    return notification.notificationType === this.notificationHabitInvitation;
+  }
+
   acceptRequest(notification: NotificationModel): void {
-    if (notification.notificationType === this.notificationFriendRequest) {
-      let isAccepted = true;
+    if (this.isFriendRequest(notification)) {
+      this.handleFriendRequest(notification, 'accept');
+    } else if (this.isHabitInvitation(notification)) {
+      this.handleHabitInvitation(notification, 'accept');
+    }
+  }
 
-      const userId = notification.actionUserId[0];
+  declineRequest(notification: NotificationModel): void {
+    if (this.isFriendRequest(notification)) {
+      this.handleFriendRequest(notification, 'decline');
+    } else if (this.isHabitInvitation(notification)) {
+      this.handleHabitInvitation(notification, 'decline');
+    }
+  }
 
+  private handleFriendRequest(notification: NotificationModel, action: 'accept' | 'decline'): void {
+    let isAccepted = true;
+
+    const userId = notification.actionUserId[0];
+    if (action === 'accept') {
       this.userFriendsService.acceptRequest(userId).subscribe({
         error: () => {
           isAccepted = false;
@@ -279,24 +301,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
           }
         }
       });
-    } else if (notification.notificationType === this.notificationHabitInvitation) {
-      const invitationId = notification.secondMessageId;
-
-      this.habitService.acceptHabitInvitation(invitationId).subscribe({
-        next: () => {
-          this.matSnackBar.openSnackBar('habitAcceptRequest');
-        },
-        error: () => {
-          this.matSnackBar.openSnackBar('habitAcceptInValidRequest');
-        }
-      });
-    }
-  }
-
-  declineRequest(notification: NotificationModel): void {
-    let isAccepted = true;
-    const userId = notification.actionUserId[0];
-    if (notification.notificationType === this.notificationFriendRequest) {
+    } else {
       this.userFriendsService.declineRequest(userId).subscribe({
         error: () => {
           isAccepted = false;
@@ -307,15 +312,28 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
           }
         }
       });
-    } else if (notification.notificationType === this.notificationHabitInvitation) {
-      const invitationId = notification.secondMessageId;
+    }
+  }
 
-      this.habitService.declineHabitInvitation(invitationId).subscribe({
-        next: () => {
-          this.matSnackBar.openSnackBar('habitDeclineRequest');
-        },
+  private handleHabitInvitation(notification: NotificationModel, action: 'accept' | 'decline'): void {
+    let isAccepted = true;
+    const invitationId = notification.secondMessageId;
+    if (action === 'accept') {
+      this.habitService.acceptHabitInvitation(invitationId).subscribe({
         error: () => {
-          this.matSnackBar.openSnackBar('habitDeclineInValidRequest');
+          isAccepted = false;
+        },
+        complete: () => {
+          this.matSnackBar.openSnackBar(isAccepted ? 'habitAcceptRequest' : 'habitAcceptInValidRequest');
+        }
+      });
+    } else {
+      this.habitService.declineHabitInvitation(invitationId).subscribe({
+        error: () => {
+          isAccepted = false;
+        },
+        complete: () => {
+          this.matSnackBar.openSnackBar(isAccepted ? 'habitDeclineRequest' : 'habitDeclineInValidRequest');
         }
       });
     }

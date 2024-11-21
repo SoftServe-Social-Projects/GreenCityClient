@@ -109,12 +109,7 @@
           (click)="navigate($event)"
           (keydown)="navigate($event)"
         ></p>
-        <div
-          class="friend-action-button"
-          *ngIf="
-            notification.notificationType === notificationFriendRequest || notification.notificationType === notificationHabitInvitation
-          "
-        >
+        <div class="friend-action-button" *ngIf="isHabitInvitation(notification) || isFriendRequest(notification)">
           <button (click)="declineRequest(notification)" class="decline-request">
             <span class="material-icons">close</span><span>{{ 'profile.friends.request-decline' | translate }}</span>
           </button>
