@@ -43,7 +43,8 @@ export class UpdateEventComponent implements OnInit {
       const isAuthor = this.authorId === userId;
       this.eventId = params['id'];
 
-      if (this.eventForm.eventInformation && this.eventId === this.eventStore.getEventId()) {
+      console.log(this.eventForm, this.eventId, this.eventStore.getEventId());
+      if (this.eventForm.eventInformation && Number(this.eventId) === this.eventStore.getEventId()) {
         return;
       }
 

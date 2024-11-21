@@ -29,8 +29,7 @@ export class EventStoreService implements OnDestroy {
   }
 
   setEventListResponse(response: EventListResponse) {
-    const { id, organizer } = response;
-    this.setEventId(id);
+    const { organizer } = response;
     this.setEventAuthorId(organizer.id);
   }
 

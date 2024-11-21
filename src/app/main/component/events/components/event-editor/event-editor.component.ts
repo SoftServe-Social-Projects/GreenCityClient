@@ -17,7 +17,7 @@ import { CreateEcoEventAction, EditEcoEventAction, EventsActions } from 'src/app
 import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
 import { Place } from '../../../places/models/place';
 import { DefaultCoordinates } from '../../models/event-consts';
-import { EventForm, EventResponse, TagObj } from '../../models/events.interface';
+import { EventForm } from '../../models/events.interface';
 import { EventsService } from '../../services/events.service';
 import { quillConfig } from './quillEditorFunc';
 import { EventStoreService } from '../../services/event-store.service';
