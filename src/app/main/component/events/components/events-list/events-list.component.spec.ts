@@ -14,6 +14,7 @@ import { LangValueDirective } from 'src/app/shared/directives/lang-value/lang-va
 import { MatSelect } from '@angular/material/select';
 import { AuthModalComponent } from '@global-auth/auth-modal/auth-modal.component';
 import { addressesMock, eventStateMock, testCases } from '@assets/mocks/events/mock-events';
+import { EventStoreService } from '../../services/event-store.service';
 
 describe('EventsListComponent', () => {
   let component: EventsListComponent;
@@ -36,6 +37,9 @@ describe('EventsListComponent', () => {
     of(valEn);
   };
   const matDialogService: jasmine.SpyObj<MatDialog> = jasmine.createSpyObj<MatDialog>('MatDialog', ['open']);
+  const eventStoreServiceMock: jasmine.SpyObj<EventStoreService> = jasmine.createSpyObj<EventStoreService>('EventStoreService', [
+    'setEditorValues'
+  ]);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -44,7 +48,8 @@ describe('EventsListComponent', () => {
       providers: [
         { provide: UserOwnAuthService, useValue: UserOwnAuthServiceMock },
         { provide: Store, useValue: storeMock },
-        { provide: MatDialog, useValue: matDialogService }
+        { provide: MatDialog, useValue: matDialogService },
+        { provide: EventStoreService, useValue: eventStoreServiceMock }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

@@ -3,12 +3,7 @@ import { EventForm, EventListResponse } from '../models/events.interface';
 
 @Injectable()
 export class EventStoreService implements OnDestroy {
-  private state: {
-    eventId: number;
-    eventListResponse: EventListResponse;
-    eventAuthorId: number;
-    editorValues: EventForm;
-  } = {
+  private state: { eventId: number; eventListResponse: EventListResponse; eventAuthorId: number; editorValues: EventForm } = {
     eventId: undefined,
     editorValues: { eventInformation: undefined, dateInformation: undefined },
     eventAuthorId: undefined,

@@ -50,10 +50,9 @@ describe('EventDetailsComponent', () => {
     'getFormattedAddress',
     'getForm',
     'getLangValue',
-    'setBackFromPreview',
-    'setSubmitFromPreview',
     'postToggleLike',
-    'getIsLikedByUser'
+    'getIsLikedByUser',
+    'getIsFromCreateEvent'
   ]);
   EventsServiceMock.getEventById = () => of(eventMock);
   EventsServiceMock.deleteEvent = () => of(true);
