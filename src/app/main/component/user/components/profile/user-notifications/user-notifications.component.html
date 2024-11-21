@@ -68,7 +68,7 @@
             </div>
             <div class="notific-right-column">
               <div class="notification-header-time body-2">
-                {{ notification.time | localizedDate | relativeDate }}
+                {{ getFormattedNotificationTime(notification) }}
               </div>
               <div class="d-flex justify-content-around">
                 <button

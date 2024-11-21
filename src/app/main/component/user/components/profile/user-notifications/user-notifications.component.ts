@@ -19,6 +19,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { NotificationBody, Notifications } from '@ubs/ubs-admin/models/ubs-user.model';
 import { HttpParams } from '@angular/common/http';
+import { formatNotificationDate } from './format-notification-date/format-notification-date';
 
 @Component({
   selector: 'app-user-notifications',
@@ -320,6 +321,11 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  getFormattedNotificationTime(notification: NotificationModel): string {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    return formatNotificationDate(notification.time, timeZone, this.translate);
   }
 
   ngOnDestroy() {
