@@ -236,6 +236,10 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   }
 
   navigateToEditEvent(): void {
+    this.router.navigate(['/events', 'update-event', this.eventId]);
+  }
+
+  backToEditEvent(): void {
     if (!this.isUpdating) {
       this.router.navigate(['/events', 'create-event']);
     } else {

@@ -72,7 +72,7 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.event = this.formInput;
+    this.event = this.formInput || this.eventStoreService.getEditorValues();
 
     this.route.params.subscribe((params) => {
       const id = params['id'];

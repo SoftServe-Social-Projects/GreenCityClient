@@ -13,7 +13,7 @@
           </a>
         </div>
         <div *ngIf="isPreview" class="back-button">
-          <a (click)="navigateToEditEvent()" class="button-link">
+          <a (click)="backToEditEvent()" class="button-link">
             <div class="button-content">
               <img [src]="icons.arrowLeft" alt="arrow" aria-hidden="true" class="button-arrow-img arrow" />
               <div class="button-text">{{ 'create-event.back-edit' | translate }}</div>
