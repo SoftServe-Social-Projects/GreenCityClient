@@ -23,6 +23,7 @@ import { MaxTextLengthPipe } from 'src/app/shared/max-text-length-pipe/max-text-
 import { JwtService } from '@global-service/jwt/jwt.service';
 import { EventStoreService } from '../../../events/services/event-store.service';
 import { LangValueDirective } from 'src/app/shared/directives/lang-value/lang-value.directive';
+import { EVENT_MOCK } from '../../../events/mocks/events-mocks';
 
 @Injectable()
 class TranslationServiceStub {
@@ -70,52 +71,7 @@ describe('EventsListItemComponent', () => {
     join: 'event.btn-join'
   };
 
-  const eventMock: EventResponse = {
-    description: 'tralalalal',
-    additionalImages: [],
-    creationDate: '2022-05-31',
-    tags: [
-      { id: 1, nameUa: 'Соціальний', nameEn: 'Social' },
-      { id: 13, nameUa: 'Екологічний', nameEn: 'Environmental' },
-      { id: 14, nameUa: 'Економічний', nameEn: 'Economic' }
-    ],
-    dates: [
-      {
-        coordinates: {
-          latitude: 0,
-          longitude: 0,
-          cityEn: 'Lviv',
-          cityUa: 'Львів',
-          countryEn: 'Ukraine',
-          countryUa: 'Україна',
-          houseNumber: '55',
-          regionEn: 'Lvivska oblast',
-          regionUa: 'Львівська область',
-          streetEn: 'Svobody Ave',
-          streetUa: 'Свободи',
-          formattedAddressEn: 'Свободи, 55, Львів, Львівська область, Україна',
-          formattedAddressUa: 'Svobody Ave, 55, Lviv, Lvivska oblast, Ukraine'
-        },
-        id: null,
-        event: null,
-        startDate: '2022-05-31T00:00:00+03:00',
-        finishDate: '2022-05-31T23:59:00+03:00',
-        onlineLink: null
-      }
-    ],
-    id: 307,
-    organizer: { organizerRating: 0, id: 5, name: 'Mykola Kovalushun' },
-    title: 'dddddddd',
-    titleImage: 'https://-fc27f19b10e0apl',
-    isSubscribed: true,
-    isFavorite: false,
-    isRelevant: true,
-    open: true,
-    likes: 5,
-    countComments: 7,
-    isOrganizedByFriend: false,
-    eventRate: 0
-  };
+  const eventMock = EVENT_MOCK;
 
   const fakeItemTags: TagObj[] = [
     {
@@ -359,16 +315,6 @@ describe('EventsListItemComponent', () => {
       fixture.nativeElement.querySelector('.event-button').dispatchEvent(new Event('click'));
       fixture.detectChanges();
       expect(spy).toHaveBeenCalled();
-    });
-
-    it('should call EventsServiceMock setForm method', () => {
-      const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
-      dialogRefSpy.afterClosed.and.returnValue(of(true));
-      dialogSpy.open.and.returnValue(dialogRefSpy);
-
-      const spy = spyOn(EventsServiceMock, 'setForm');
-      component.buttonAction(component.btnName.cancel);
-      expect(spy).toHaveBeenCalledWith(null);
     });
 
     it('should open a popup when cancel button is clicked', () => {

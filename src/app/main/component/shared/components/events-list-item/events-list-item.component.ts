@@ -204,7 +204,6 @@ export class EventsListItemComponent implements OnInit, OnDestroy {
   }
 
   buttonAction(buttonName: string): void {
-    this.eventService.setForm(null);
     switch (buttonName) {
       case this.btnName.cancel:
         this.openPopUp();

@@ -43,17 +43,17 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
   routedFromProfile: boolean;
 
   constructor(
-    public dialog: MatDialog,
-    public router: Router,
+    public readonly dialog: MatDialog,
+    public readonly router: Router,
     private readonly route: ActivatedRoute,
-    private fb: FormBuilder,
-    public localStorageService: LocalStorageService,
-    private actionsSubj: ActionsSubject,
-    private store: Store,
-    private snackBar: MatSnackBarComponent,
-    public dialogRef: MatDialogRef<DialogPopUpComponent>,
-    private eventsService: EventsService,
-    private eventStoreService: EventStoreService,
+    private readonly fb: FormBuilder,
+    public readonly localStorageService: LocalStorageService,
+    private readonly actionsSubj: ActionsSubject,
+    private readonly store: Store,
+    private readonly snackBar: MatSnackBarComponent,
+    public readonly dialogRef: MatDialogRef<DialogPopUpComponent>,
+    private readonly eventsService: EventsService,
+    private readonly eventStoreService: EventStoreService,
     private readonly cdRef: ChangeDetectorRef
   ) {
     super(router, dialog);
@@ -198,7 +198,6 @@ export class EventEditorComponent extends FormBaseComponent implements OnInit {
 
     this.actionsSubj.pipe(ofType(EventsActions.CreateEcoEventSuccess, EventsActions.EditEcoEventSuccess), take(1)).subscribe(() => {
       this.isPosting = false;
-      this.eventsService.setForm(null);
       this.escapeFromCreateEvent();
     });
   }

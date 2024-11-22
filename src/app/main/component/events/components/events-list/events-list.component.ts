@@ -63,13 +63,13 @@ export class EventsListComponent implements OnInit, OnDestroy {
   private readonly dialogRef: MatDialogRef<unknown>;
 
   constructor(
-    private store: Store,
-    private userOwnAuthService: UserOwnAuthService,
-    private localStorageService: LocalStorageService,
-    private router: Router,
-    private eventService: EventsService,
-    private eventStoreService: EventStoreService,
-    private dialog: MatDialog
+    private readonly store: Store,
+    private readonly userOwnAuthService: UserOwnAuthService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly router: Router,
+    private readonly eventService: EventsService,
+    private readonly eventStoreService: EventStoreService,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit(): void {

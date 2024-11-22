@@ -20,12 +20,6 @@ describe('EventsListComponent', () => {
   let component: EventsListComponent;
   let fixture: ComponentFixture<EventsListComponent>;
 
-  const createMockMatSelect = (options: { value: string }[]): MatSelect => {
-    return {
-      options: options.map((opt) => jasmine.createSpyObj('MatOption', ['deselect'], { value: opt.value }))
-    } as unknown as MatSelect;
-  };
-
   const UserOwnAuthServiceMock = jasmine.createSpyObj('UserOwnAuthService', ['getDataFromLocalStorage', 'credentialDataSubject']);
   UserOwnAuthServiceMock.credentialDataSubject = of({ userId: 3 });
 

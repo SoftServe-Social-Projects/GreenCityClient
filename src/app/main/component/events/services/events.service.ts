@@ -24,7 +24,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 })
 export class EventsService implements OnDestroy {
   currentForm: PagePreviewDTO | EventResponse;
-  private eventPreview: PagePreviewDTO;
   private backEnd = environment.backendLink;
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   private divider = `, `;
@@ -212,14 +211,6 @@ export class EventsService implements OnDestroy {
 
   getImageAsFile(img: string): Observable<Blob> {
     return this.http.get(img, { responseType: 'blob' });
-  }
-
-  setForm(form: PagePreviewDTO | EventResponse): void {
-    this.currentForm = form;
-  }
-
-  getForm(): PagePreviewDTO | EventResponse {
-    return this.eventPreview;
   }
 
   createEvent(formData: FormData): Observable<EventResponse> {

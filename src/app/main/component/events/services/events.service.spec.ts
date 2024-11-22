@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { EventsService } from 'src/app/main/component/events/services/events.service';
 import { environment } from '@environment/environment';
@@ -12,6 +12,8 @@ import {
   mockHttpParams,
   mockParams
 } from '@assets/mocks/events/mock-events';
+import { FormBuilder } from '@angular/forms';
+import { EVENT_FORM_MOCK } from '../mocks/events-mocks';
 
 describe('EventsService', () => {
   let service: EventsService;
@@ -19,22 +21,24 @@ describe('EventsService', () => {
   const url = environment.backendLink;
   const formData = new FormData();
   formData.set('id', '1');
+  let formBuilder: FormBuilder;
 
-  beforeEach(() =>
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [EventsService, { provide: TranslateService, useValue: {} }]
-    })
-  );
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     service = TestBed.inject(EventsService);
+    formBuilder = TestBed.inject(FormBuilder);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => {
+  afterEach(waitForAsync(() => {
     httpTestingController.verify();
-  });
+  }));
 
   it('should be created', () => {
     const serviceNew: EventsService = TestBed.inject(EventsService);
@@ -355,5 +359,73 @@ describe('EventsService', () => {
 
     const req = httpTestingController.expectOne(`${service['backEnd']}events/addresses`);
     req.flush('Failed to load addresses', { status: 500, statusText: 'Server Error' });
+  });
+
+  it('should handle getAddresses when no addresses available', () => {
+    service.getAddresses().subscribe({
+      next: (addresses) => expect(addresses).toEqual([]),
+      error: fail
+    });
+
+    const req = httpTestingController.expectOne(`${url}events/addresses`);
+    req.flush([]);
+  });
+
+  it('should handle getAllAttendees for event with no attendees', () => {
+    const eventId = 9999;
+
+    service.getAllAttendees(eventId).subscribe({
+      next: (attendees) => expect(attendees).toEqual([]),
+      error: fail
+    });
+
+    const req = httpTestingController.expectOne(`${url}events/${eventId}/attenders`);
+    req.flush([]);
+  });
+
+  it('should handle removeEventFromFavourites with non-existent event', () => {
+    const eventId = 9999;
+
+    service.removeEventFromFavourites(eventId).subscribe({
+      next: () => fail('Expected error'),
+      error: (error) => expect(error.status).toBe(404)
+    });
+
+    const req = httpTestingController.expectOne(`${url}events/${eventId}/favorites`);
+    req.flush('Event not found', { status: 404, statusText: 'Not Found' });
+  });
+
+  it('should handle addEventToFavourites with non-existent event', () => {
+    const eventId = 9999;
+
+    service.addEventToFavourites(eventId).subscribe({
+      next: () => fail('Expected error'),
+      error: (error) => expect(error.status).toBe(404)
+    });
+
+    const req = httpTestingController.expectOne(`${url}events/${eventId}/favorites`);
+    req.flush('Event not found', { status: 404, statusText: 'Not Found' });
+  });
+
+  describe('convertEventToFormEvent', () => {
+    it('should convert EventForm to FormGroup with correct values', () => {
+      const formGroup = service.convertEventToFormEvent(EVENT_FORM_MOCK);
+
+      // Check eventInformation values
+      expect(formGroup.get('eventInformation.title').value).toBe(EVENT_FORM_MOCK.eventInformation.title);
+      expect(formGroup.get('eventInformation.description').value).toBe(EVENT_FORM_MOCK.eventInformation.description);
+      expect(formGroup.get('eventInformation.open').value).toBe(EVENT_FORM_MOCK.eventInformation.open);
+      expect(formGroup.get('eventInformation.duration').value).toBe(EVENT_FORM_MOCK.eventInformation.duration);
+      expect(formGroup.get('eventInformation.tags').value).toEqual(EVENT_FORM_MOCK.eventInformation.tags);
+
+      // Check dateInformation values
+      const dateGroup = formGroup.get('dateInformation').value[0];
+      expect(dateGroup.day.date).toEqual(EVENT_FORM_MOCK.dateInformation[0].day.date);
+      expect(dateGroup.day.startTime).toBe(EVENT_FORM_MOCK.dateInformation[0].day.startTime);
+      expect(dateGroup.day.endTime).toBe(EVENT_FORM_MOCK.dateInformation[0].day.endTime);
+      expect(dateGroup.placeOnline.onlineLink).toBe(EVENT_FORM_MOCK.dateInformation[0].placeOnline.onlineLink);
+      expect(dateGroup.placeOnline.place).toBe(EVENT_FORM_MOCK.dateInformation[0].placeOnline.place);
+      expect(dateGroup.placeOnline.coordinates).toEqual(EVENT_FORM_MOCK.dateInformation[0].placeOnline.coordinates);
+    });
   });
 });

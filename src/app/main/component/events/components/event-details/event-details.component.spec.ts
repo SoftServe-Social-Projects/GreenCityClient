@@ -7,7 +7,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { EventsService } from '../../services/events.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ActionsSubject, Store } from '@ngrx/store';
@@ -18,6 +18,7 @@ import { LangValueDirective } from 'src/app/shared/directives/lang-value/lang-va
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { eventMock, eventStateMock } from '@assets/mocks/events/mock-events';
 import { EventResponse } from '../../models/events.interface';
+import { CreateEcoEventAction, EditEcoEventAction, EventsActions } from 'src/app/store/actions/ecoEvents.actions';
 
 export function mockPipe(options: Pipe): Pipe {
   const metadata: Pipe = {
@@ -37,13 +38,15 @@ describe('EventDetailsComponent', () => {
   let component: EventDetailsComponent;
   let fixture: ComponentFixture<EventDetailsComponent>;
   let dialogSpy: jasmine.SpyObj<MatDialog>;
+  let router: Router;
+  let navigateSpy: jasmine.Spy;
 
   const storeMock = jasmine.createSpyObj('store', ['select', 'dispatch']);
   storeMock.select = () => of(eventStateMock);
   const snackBarMock = jasmine.createSpyObj('MatSnackBarComponent', ['openSnackBar']);
 
   const EventsServiceMock = jasmine.createSpyObj('eventService', [
-    'getEventById ',
+    'getEventById',
     'deleteEvent',
     'getAllAttendees',
     'createAddresses',
@@ -146,11 +149,29 @@ describe('EventDetailsComponent', () => {
     fixture = TestBed.createComponent(EventDetailsComponent);
     component = fixture.componentInstance;
     (component as any).dialog = TestBed.inject(MatDialog);
+    router = TestBed.inject(Router);
+    navigateSpy = spyOn(router, 'navigate');
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should initialize event on ngOnInit', waitForAsync(() => {
+    component.ngOnInit();
+
+    expect(EventsServiceMock.getEventById).toHaveBeenCalledWith(2);
+    expect(component.event).toEqual(eventMock);
+  }));
+
+  it('should return the correct formatted address', () => {
+    const expectedFormattedAddress = 'formatted address';
+
+    component.getAddress();
+
+    expect(EventsServiceMock.getFormattedAddress).toHaveBeenCalled();
+    expect(component.address).toBe('');
   });
 
   it('should return the formatted address from the event service', () => {
@@ -164,6 +185,90 @@ describe('EventDetailsComponent', () => {
     const role = component.roles.UNAUTHENTICATED;
     expect(role).toBe('UNAUTHENTICATED');
   });
+
+  it('should set the correct role when the user is an admin', () => {
+    jwtServiceFake.getUserRole = () => 'ROLE_ADMIN';
+    component.ngOnInit();
+
+    expect(component.role).toBe('ADMIN');
+  });
+
+  it('should set the correct role when the user is a regular user', () => {
+    jwtServiceFake.getUserRole = () => 'ROLE_USER';
+    component.ngOnInit();
+
+    expect(component.role).toBe('USER');
+  });
+
+  it('should open the auth modal window', () => {
+    const openAuthModalWindowSpy = spyOn(component, 'openAuthModalWindow');
+    const buttonClickEvent = {} as MouseEvent;
+
+    component.buttonAction(buttonClickEvent);
+
+    expect(openAuthModalWindowSpy).toHaveBeenCalledWith('sign-in');
+  });
+
+  it('should open a confirmation dialog when cancelling event join', () => {
+    spyOn(dialogSpy, 'open').and.returnValue(MatDialogMock as any);
+    const submitEventCancellingSpy = spyOn(component, 'submitEventCancelling');
+    component.openPopUp();
+
+    expect(dialogSpy.open).toHaveBeenCalled();
+    expect(submitEventCancellingSpy).toHaveBeenCalled();
+  });
+
+  it('should navigate to the event edit page', () => {
+    component.eventId = 2;
+    fixture.detectChanges();
+
+    component.navigateToEditEvent();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/events/update-event', component.eventId]);
+  });
+
+  it('should navigate back to the event edit page', () => {
+    component.isUpdating = true;
+    fixture.detectChanges();
+    component.backToEditEvent();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/events/update-event', component.eventId]);
+  });
+
+  it('should navigate back to the event create page', () => {
+    component.isUpdating = false;
+    fixture.detectChanges();
+    component.backToEditEvent();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/events/create-event']);
+  });
+
+  it('should dispatch correct action based on isUpdating', waitForAsync(() => {
+    const sendData = new FormData();
+    sendData.append('some', 'data');
+
+    EventsServiceMock.convertEventToFormEvent.and.returnValue({ value: {} });
+    EventsServiceMock.prepareEventForSubmit.and.returnValue(sendData);
+    storeMock.dispatch = jasmine.createSpy('dispatch');
+
+    // (Creating event)
+    component.isUpdating = false;
+    component.onPublish();
+
+    expect(storeMock.dispatch).toHaveBeenCalledWith(CreateEcoEventAction({ data: sendData }));
+
+    //(Editing event)
+    component.isUpdating = true;
+    component.onPublish();
+    expect(storeMock.dispatch).toHaveBeenCalledWith(EditEcoEventAction({ data: sendData, id: component.eventId }));
+  }));
+
+  it('should delete event when delete is called', waitForAsync(() => {
+    component.deleteEvent();
+
+    expect(EventsServiceMock.deleteEvent).toHaveBeenCalledWith(2);
+    expect(snackBarMock.openSnackBar).toHaveBeenCalledWith('eventDeletedSuccessfully');
+  }));
 
   it('should verify user role', () => {
     jwtServiceFake.getUserRole = () => 'ROLE_USER';

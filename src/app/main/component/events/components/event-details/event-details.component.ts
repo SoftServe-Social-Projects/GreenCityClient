@@ -98,16 +98,16 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   private destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private route: ActivatedRoute,
-    public eventService: EventsService,
-    private eventStoreService: EventStoreService,
-    public router: Router,
-    public localStorageService: LocalStorageService,
-    private dialog: MatDialog,
-    private store: Store,
-    private actionsSubj: ActionsSubject,
-    private jwtService: JwtService,
-    private snackBar: MatSnackBarComponent,
+    private readonly route: ActivatedRoute,
+    public readonly eventService: EventsService,
+    private readonly eventStoreService: EventStoreService,
+    public readonly router: Router,
+    public readonly localStorageService: LocalStorageService,
+    private readonly dialog: MatDialog,
+    private readonly store: Store,
+    private readonly actionsSubj: ActionsSubject,
+    private readonly jwtService: JwtService,
+    private readonly snackBar: MatSnackBarComponent,
     private readonly modalService: BsModalService,
     private readonly metaService: MetaService
   ) {}
