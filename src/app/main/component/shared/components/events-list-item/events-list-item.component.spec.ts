@@ -23,7 +23,7 @@ import { MaxTextLengthPipe } from 'src/app/shared/max-text-length-pipe/max-text-
 import { JwtService } from '@global-service/jwt/jwt.service';
 import { EventStoreService } from '../../../events/services/event-store.service';
 import { LangValueDirective } from 'src/app/shared/directives/lang-value/lang-value.directive';
-import { EVENT_MOCK } from '../../../events/mocks/events-mocks';
+import { EVENT_MOCK } from '@assets/mocks/events/mock-events';
 
 @Injectable()
 class TranslationServiceStub {

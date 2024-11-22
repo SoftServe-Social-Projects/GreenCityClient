@@ -13,7 +13,7 @@ import {
   mockParams
 } from '@assets/mocks/events/mock-events';
 import { FormBuilder } from '@angular/forms';
-import { EVENT_FORM_MOCK } from '../mocks/events-mocks';
+import { EVENT_FORM_MOCK } from '@assets/mocks/events/mock-events';
 
 describe('EventsService', () => {
   let service: EventsService;

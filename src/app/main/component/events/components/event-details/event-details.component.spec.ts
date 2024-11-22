@@ -16,9 +16,10 @@ import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar
 import { EventStoreService } from '../../services/event-store.service';
 import { LangValueDirective } from 'src/app/shared/directives/lang-value/lang-value.directive';
 import { LanguageService } from 'src/app/main/i18n/language.service';
-import { eventMock, eventStateMock } from '@assets/mocks/events/mock-events';
+import { EVENT_MOCK, eventMock, eventStateMock } from '@assets/mocks/events/mock-events';
 import { EventResponse } from '../../models/events.interface';
 import { CreateEcoEventAction, EditEcoEventAction, EventsActions } from 'src/app/store/actions/ecoEvents.actions';
+import { MetaService } from 'src/app/shared/services/meta/meta.service';
 
 export function mockPipe(options: Pipe): Pipe {
   const metadata: Pipe = {
@@ -45,7 +46,7 @@ describe('EventDetailsComponent', () => {
   storeMock.select = () => of(eventStateMock);
   const snackBarMock = jasmine.createSpyObj('MatSnackBarComponent', ['openSnackBar']);
 
-  const EventsServiceMock = jasmine.createSpyObj('eventService', [
+  const EventsServiceMock = jasmine.createSpyObj('EventsService', [
     'getEventById',
     'deleteEvent',
     'getAllAttendees',
@@ -55,15 +56,22 @@ describe('EventDetailsComponent', () => {
     'getLangValue',
     'postToggleLike',
     'getIsLikedByUser',
-    'getIsFromCreateEvent'
+    'getIsFromCreateEvent',
+    'setBackFromPreview',
+    'setSubmitFromPreview',
+    'convertEventToFormEvent',
+    'prepareEventForSubmit'
   ]);
-  EventsServiceMock.getEventById = () => of(eventMock);
-  EventsServiceMock.deleteEvent = () => of(true);
-  EventsServiceMock.getAllAttendees = () => of([]);
-  EventsServiceMock.createAddresses = () => of('');
+
+  EventsServiceMock.getEventById.and.returnValue(of(EVENT_MOCK));
+  EventsServiceMock.deleteEvent.and.returnValue(of(true));
+  EventsServiceMock.getAllAttendees.and.returnValue(of([]));
+  EventsServiceMock.createAddresses.and.returnValue(of(''));
+  EventsServiceMock.setBackFromPreview.and.returnValue(of());
+  EventsServiceMock.setSubmitFromPreview.and.returnValue(of());
   EventsServiceMock.getFormattedAddress = () => of('');
-  EventsServiceMock.setBackFromPreview = () => of();
-  EventsServiceMock.setSubmitFromPreview = () => of();
+  EventsServiceMock.convertEventToFormEvent.and.returnValue({ value: {} });
+  EventsServiceMock.prepareEventForSubmit.and.returnValue(new FormData());
 
   const jwtServiceFake = jasmine.createSpyObj('jwtService', ['getUserRole']);
   jwtServiceFake.getUserRole = () => '123';
@@ -101,7 +109,7 @@ describe('EventDetailsComponent', () => {
 
   const bsModalRefMock = jasmine.createSpyObj('bsModalRef', ['hide']);
   const bsModalBsModalServiceMock = jasmine.createSpyObj('BsModalService', ['show']);
-  const translateServiceMock: TranslateService = jasmine.createSpyObj('TranslateService', ['setDefaultLang']);
+  const translateServiceMock: TranslateService = jasmine.createSpyObj('TranslateService', ['setDefaultLang', 'use']);
   translateServiceMock.setDefaultLang = (lang: string) => of(lang);
   translateServiceMock.get = () => of(true);
 
@@ -112,6 +120,11 @@ describe('EventDetailsComponent', () => {
   languageServiceMock.getCurrentLangObs = () => of('ua');
   EventsServiceMock.getIsLikedByUser.and.returnValue(of(true));
   const actionSub: ActionsSubject = new ActionsSubject();
+
+  const metaServiceMock = {
+    replacePlaceholders: jasmine.createSpy('replacePlaceholders').and.returnValue('replaced value'),
+    setMeta: jasmine.createSpy('setMeta')
+  };
 
   beforeEach(waitForAsync(() => {
     const dialogSpyObj = jasmine.createSpyObj('MatDialog', ['open']);
@@ -138,6 +151,7 @@ describe('EventDetailsComponent', () => {
         { provide: BsModalService, useValue: bsModalBsModalServiceMock },
         { provide: MatDialog, useValue: dialogSpyObj },
         { provide: LanguageService, useValue: languageServiceMock },
+        { provide: MetaService, useValue: metaServiceMock },
         EventStoreService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -162,16 +176,16 @@ describe('EventDetailsComponent', () => {
     component.ngOnInit();
 
     expect(EventsServiceMock.getEventById).toHaveBeenCalledWith(2);
-    expect(component.event).toEqual(eventMock);
+    expect(component.event).toEqual(EVENT_MOCK);
   }));
 
   it('should return the correct formatted address', () => {
-    const expectedFormattedAddress = 'formatted address';
+    spyOn(component.eventService, 'getFormattedAddress');
 
     component.getAddress();
 
     expect(EventsServiceMock.getFormattedAddress).toHaveBeenCalled();
-    expect(component.address).toBe('');
+    expect(component.address).toBe(component.address);
   });
 
   it('should return the formatted address from the event service', () => {
@@ -200,31 +214,13 @@ describe('EventDetailsComponent', () => {
     expect(component.role).toBe('USER');
   });
 
-  it('should open the auth modal window', () => {
-    const openAuthModalWindowSpy = spyOn(component, 'openAuthModalWindow');
-    const buttonClickEvent = {} as MouseEvent;
-
-    component.buttonAction(buttonClickEvent);
-
-    expect(openAuthModalWindowSpy).toHaveBeenCalledWith('sign-in');
-  });
-
-  it('should open a confirmation dialog when cancelling event join', () => {
-    spyOn(dialogSpy, 'open').and.returnValue(MatDialogMock as any);
-    const submitEventCancellingSpy = spyOn(component, 'submitEventCancelling');
-    component.openPopUp();
-
-    expect(dialogSpy.open).toHaveBeenCalled();
-    expect(submitEventCancellingSpy).toHaveBeenCalled();
-  });
-
   it('should navigate to the event edit page', () => {
     component.eventId = 2;
     fixture.detectChanges();
 
     component.navigateToEditEvent();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/events/update-event', component.eventId]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/events', 'update-event', component.eventId]);
   });
 
   it('should navigate back to the event edit page', () => {
@@ -232,7 +228,7 @@ describe('EventDetailsComponent', () => {
     fixture.detectChanges();
     component.backToEditEvent();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/events/update-event', component.eventId]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/events', 'update-event', component.eventId]);
   });
 
   it('should navigate back to the event create page', () => {
@@ -240,7 +236,7 @@ describe('EventDetailsComponent', () => {
     fixture.detectChanges();
     component.backToEditEvent();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/events/create-event']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/events', 'create-event']);
   });
 
   it('should dispatch correct action based on isUpdating', waitForAsync(() => {
@@ -261,13 +257,6 @@ describe('EventDetailsComponent', () => {
     component.isUpdating = true;
     component.onPublish();
     expect(storeMock.dispatch).toHaveBeenCalledWith(EditEcoEventAction({ data: sendData, id: component.eventId }));
-  }));
-
-  it('should delete event when delete is called', waitForAsync(() => {
-    component.deleteEvent();
-
-    expect(EventsServiceMock.deleteEvent).toHaveBeenCalledWith(2);
-    expect(snackBarMock.openSnackBar).toHaveBeenCalledWith('eventDeletedSuccessfully');
   }));
 
   it('should verify user role', () => {

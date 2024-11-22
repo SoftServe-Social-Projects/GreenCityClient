@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { EventStoreService } from './event-store.service';
 import { EventForm, EventListResponse } from '../models/events.interface';
-import { EVENT_FORM_MOCK, EVENT_MOCK } from '../mocks/events-mocks';
+import { EVENT_FORM_MOCK, EVENT_MOCK } from '@assets/mocks/events/mock-events';
 
 describe('EventStoreService', () => {
   let service: EventStoreService;
