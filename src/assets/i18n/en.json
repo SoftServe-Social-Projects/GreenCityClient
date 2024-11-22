@@ -509,7 +509,7 @@
       "exist-address": "This address has already been added",
       "certificate-duration": "The duration of the certificate cant be more than 12 months",
       "friend-request": "You cannot add this friend",
-      "friend-already-added": "This friend has been already added",
+      "friend-already-added": "This friend invitation has been already accepted or declined",
       "error-create-address": "Oops, An error occurred while creating the address. Please try again.",
       "habit-not-added": "This habit invitation can`t be accepted",
       "habit-already-added": "This habit invitation can`t be declined",
@@ -538,7 +538,9 @@
       "joint-event-request": "The request to join the closed event has been successfully sent to the organizer",
       "create-news": "Your news has been successfully published",
       "habit-added-success": "Habit invitation was accepted",
-      "habit-decline-success": "Habit invitation was declined"
+      "habit-decline-success": "Habit invitation was declined",
+      "friend-added-success": "Friend invitation accepted",
+      "friend-declined-success": "Friend invitation declined"
     }
   },
   "user": {

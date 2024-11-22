@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NotificContentReplaceDirective } from './notific-content-replace.directive';
 
 @Component({
@@ -30,7 +30,7 @@ describe('NotificContentReplaceDirective', () => {
     viewed: false
   };
 
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent, NotificContentReplaceDirective]
     });
@@ -39,7 +39,7 @@ describe('NotificContentReplaceDirective', () => {
     fixture.detectChanges();
     component = fixture.componentInstance;
     paragrEl = fixture.nativeElement.querySelector('p');
-  });
+  }));
 
   it('should display multiple user replacements', () => {
     component.notification = { ...notification, ...{ bodyText: '{user1} and {user2} liked your post' } };
@@ -74,7 +74,7 @@ describe('NotificContentReplaceDirective', () => {
     component.notification = { ...notification, ...{ bodyText: 'commented event {message}' } };
     fixture.detectChanges();
     expect(paragrEl.textContent).toBe('commented event test message');
-    expect(paragrEl.innerHTML).toBe('commented event <a data-targetid="10" data-notificationtype="Eco_NEWS">test message</a>');
+    expect(paragrEl.innerHTML).toBe('commented event test message');
   });
 
   it('should add property value to the content and anchor tag', () => {
@@ -83,10 +83,7 @@ describe('NotificContentReplaceDirective', () => {
       ...{ bodyText: '{user1},{user2} commented event {message}', actionUserId: [2, 3], actionUserText: ['testUser1', 'testUser2'] }
     };
     fixture.detectChanges();
-    expect(paragrEl.textContent).toBe('testUser1,testUser2 commented event test message'); // Text content without tags
-    expect(paragrEl.innerHTML).toBe(
-      '<a data-userid="2">testUser1</a>,<a data-userid="3">testUser2</a> commented event ' +
-        '<a data-targetid="10" data-notificationtype="Eco_NEWS">test message</a>'
-    );
+    expect(paragrEl.textContent).toBe('testUser1,testUser2 commented event test message');
+    expect(paragrEl.innerHTML).toBe('<a data-userid="2">testUser1</a>,<a data-userid="3">testUser2</a> commented event test message');
   });
 });

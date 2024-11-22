@@ -89,7 +89,7 @@ export class HabitService {
   }
 
   declineHabitInvitation(invitationId: number): Observable<string> {
-    return this.http.patch<string>(`${habitLink}/invite/${invitationId}/reject`, {});
+    return this.http.delete<string>(`${habitLink}/invite/${invitationId}/reject`);
   }
 
   private prepareCustomHabitRequest(habit: CustomHabit, lang: string): FormData {

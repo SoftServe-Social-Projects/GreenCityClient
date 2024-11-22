@@ -296,9 +296,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
           isAccepted = false;
         },
         complete: () => {
-          if (isAccepted) {
-            this.matSnackBar.openSnackBar('friendInValidRequest');
-          }
+          this.matSnackBar.openSnackBar(isAccepted ? 'friendRequestAccepted' : 'friendInValidRequest');
         }
       });
     } else {
@@ -307,9 +305,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
           isAccepted = false;
         },
         complete: () => {
-          if (isAccepted) {
-            this.matSnackBar.openSnackBar('friendInValidRequest');
-          }
+          this.matSnackBar.openSnackBar(isAccepted ? 'friendRequestDeclined' : 'friendInValidRequest');
         }
       });
     }

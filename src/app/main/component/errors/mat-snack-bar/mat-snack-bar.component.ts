@@ -74,6 +74,8 @@ export class MatSnackBarComponent {
     addFriend: { classname: SnackbarClassName.success, key: 'snack-bar.success.add-friend' },
     friendValidation: { classname: SnackbarClassName.error, key: 'snack-bar.error.friend-request' },
     friendInValidRequest: { classname: SnackbarClassName.error, key: 'snack-bar.error.friend-already-added' },
+    friendRequestAccepted: { classname: SnackbarClassName.success, key: 'snack-bar.success.friend-added-success' },
+    friendRequestDeclined: { classname: SnackbarClassName.success, key: 'snack-bar.success.friend-declined-success' },
     habitAcceptRequest: { classname: SnackbarClassName.success, key: 'snack-bar.success.habit-added-success' },
     habitDeclineRequest: { classname: SnackbarClassName.success, key: 'snack-bar.success.habit-decline-success' },
     habitAcceptInValidRequest: { classname: SnackbarClassName.error, key: 'snack-bar.error.habit-not-added' },
