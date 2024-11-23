@@ -137,14 +137,6 @@ describe('UserFriendsService', () => {
     });
   });
 
-  describe('addedFriendsToHabit', () => {
-    it('function addedFriendsToHabit should have been called', () => {
-      const addedFriendsToHabitSpy = spyOn(userFriendsService, 'addedFriendsToHabit');
-      userFriendsService.addedFriendsToHabit(FRIENDS.page[0]);
-      expect(addedFriendsToHabitSpy).toHaveBeenCalled();
-    });
-  });
-
   it('userFriends', () => {
     userFriendsService.getUserFriends(1).subscribe((friends) => {
       expect(friends).toEqual(friends);

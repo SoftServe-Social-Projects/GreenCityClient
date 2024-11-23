@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { FRIENDS, FIRSTFRIEND, SECONDFRIEND } from '@global-user/mocks/friends-mock';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 describe('HabitInviteFriendsPopUpComponent', () => {
   let component: HabitInviteFriendsPopUpComponent;
@@ -34,7 +34,8 @@ describe('HabitInviteFriendsPopUpComponent', () => {
         { provide: LocalStorageService, useValue: localStorageServiceMock },
         { provide: Router, useValue: routerSpy },
         { provide: MatSnackBarComponent, useValue: MatSnackBarMock },
-        { provide: MAT_DIALOG_DATA, useValue: { habitId: 1 } }
+        { provide: MAT_DIALOG_DATA, useValue: { habitId: 1 } },
+        { provide: MatDialogRef, useValue: jasmine.createSpyObj('MatDialogRef', ['close']) }
       ]
     }).compileComponents();
 

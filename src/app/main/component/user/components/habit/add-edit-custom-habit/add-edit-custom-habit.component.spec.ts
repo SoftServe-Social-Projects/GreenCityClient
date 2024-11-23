@@ -65,11 +65,13 @@ describe('AddEditCustomHabitComponent', () => {
   const habitAssignServiceMock = jasmine.createSpyObj('fakeHabitAssignService', [
     'getHabitByAssignId',
     'getAssignHabitsByPeriod',
-    'getAssignedHabits'
+    'getAssignedHabits',
+    'getFriendsTrakingSameHabitByHabitAssignId'
   ]);
   habitAssignServiceMock.getHabitByAssignId = () => of(initialState);
   habitAssignServiceMock.getAssignHabitsByPeriod = () => of([]);
   habitAssignServiceMock.getAssignedHabits = () => of([]);
+  habitServiceMock.getFriendsTrakingSameHabitByHabitAssignId = () => of([]);
 
   const routerMock: Router = jasmine.createSpyObj('router', ['navigate']);
 
