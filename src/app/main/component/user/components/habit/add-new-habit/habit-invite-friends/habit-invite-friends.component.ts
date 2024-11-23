@@ -20,8 +20,8 @@ export class HabitInviteFriendsComponent implements OnInit, OnDestroy {
   @Input() habitAssignId: number;
 
   constructor(
-    private habitService: HabitService,
-    private dialog: MatDialog
+    private readonly habitService: HabitService,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit(): void {

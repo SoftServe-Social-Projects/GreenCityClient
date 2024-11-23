@@ -26,11 +26,11 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   invitationSent = false;
 
   constructor(
-    private userFriendsService: UserFriendsService,
-    private localStorageService: LocalStorageService,
+    private readonly userFriendsService: UserFriendsService,
+    private readonly localStorageService: LocalStorageService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private snackBar: MatSnackBarComponent,
-    private dialogRef: MatDialogRef<HabitInviteFriendsPopUpComponent>
+    private readonly snackBar: MatSnackBarComponent,
+    private readonly dialogRef: MatDialogRef<HabitInviteFriendsPopUpComponent>
   ) {}
 
   get isAnyFriendSelected(): boolean {
