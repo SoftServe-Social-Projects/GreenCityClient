@@ -29,7 +29,9 @@ export class HabitInviteFriendsComponent implements OnInit, OnDestroy {
   }
 
   fetchFriendsTrackingHabit(): void {
-    if (!this.habitAssignId) return;
+    if (!this.habitAssignId) {
+      return;
+    }
     this.habitService
       .getFriendsTrakingSameHabitByHabitAssignId(this.habitAssignId)
       .pipe(takeUntil(this.destroyed$))
