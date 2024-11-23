@@ -1,6 +1,0 @@
-<div class="w-100">
-  <ng-container *ngFor="let day of eventDateForm.controls; index as i">
-    <app-date-time [daysForm]="eventDateForm" [dayNumber]="i" [dayFormGroup]="day"></app-date-time>
-    <app-place-online [daysForm]="eventDateForm" [dayNumber]="i" [dayFormGroup]="day"></app-place-online>
-  </ng-container>
-</div>

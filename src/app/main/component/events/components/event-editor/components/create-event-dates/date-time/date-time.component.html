@@ -3,12 +3,12 @@
 
   <mat-form-field appearance="outline">
     <mat-label>{{ 'create-event.choose-date' | translate }}</mat-label>
-    <input matInput [matDatepicker]="dp" formControlName="date" [min]="minDate" [max]="maxDate" />
+    <input matInput [matDatepicker]="dp" formControlName="startDate" [min]="minDate" [max]="maxDate" />
     <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
     <mat-datepicker #dp></mat-datepicker>
 
-    <mat-error *ngIf="date.hasError('dateIncorrect')">{{ 'create-event.date-error-format' | translate }}</mat-error>
-    <mat-error *ngIf="date.hasError('dateInPast')">{{ 'create-event.date-error' | translate }}</mat-error>
+    <mat-error *ngIf="startDate.hasError('dateIncorrect')">{{ 'create-event.date-error-format' | translate }}</mat-error>
+    <mat-error *ngIf="startDate.hasError('dateInPast')">{{ 'create-event.date-error' | translate }}</mat-error>
   </mat-form-field>
 
   <div class="time">
@@ -26,7 +26,7 @@
 
     <mat-form-field appearance="outline" class="time-item">
       <mat-label>{{ 'create-event.set-end-time' | translate }}</mat-label>
-      <input #endTimeRef [matAutocomplete]="endOptions" formControlName="endTime" matInput maxlength="5" [readonly]="allDay.value" />
+      <input #endTimeRef [matAutocomplete]="endOptions" formControlName="finishTime" matInput maxlength="5" [readonly]="allDay.value" />
       <mat-autocomplete #endOptions="matAutocomplete">
         <mat-option *ngFor="let time of endOptionsArr" [value]="time">
           {{ time }}

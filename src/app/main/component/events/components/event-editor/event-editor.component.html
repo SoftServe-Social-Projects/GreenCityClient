@@ -1,5 +1,5 @@
-<app-spinner *ngIf="isPosting"></app-spinner>
-<div *ngIf="!isPosting">
+<app-spinner *ngIf="isPosting || isFetching"></app-spinner>
+<div *ngIf="!isPosting && !isFetching">
   <div class="container">
     <div class="event-header">
       <div class="event-header-items">
@@ -19,7 +19,12 @@
         <app-create-event-information [eventInfForm]="eventInformation"></app-create-event-information>
       </mat-card>
       <mat-card>
-        <app-create-event-dates [eventDateForm]="eventDateForm"></app-create-event-dates>
+        <div class="w-100">
+          <ng-container *ngFor="let day of eventDateForm.controls; index as i">
+            <app-date-time [daysForm]="eventDateForm" [dayNumber]="i" [dayFormGroup]="day"></app-date-time>
+            <app-place-online [daysForm]="eventDateForm" [dayNumber]="i" [dayFormGroup]="day"></app-place-online>
+          </ng-container>
+        </div>
       </mat-card>
     </div>
 
@@ -36,3 +41,4 @@
     </div>
   </div>
 </div>
+<h2 *ngIf="!isAuthor && isFetching">Event not found</h2>
