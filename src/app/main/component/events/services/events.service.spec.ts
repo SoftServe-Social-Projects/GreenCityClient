@@ -428,4 +428,87 @@ describe('EventsService', () => {
       expect(dateGroup.placeOnline.coordinates).toEqual(EVENT_FORM_MOCK.dateInformation[0].placeOnline.coordinates);
     });
   });
+
+  describe('transformDatesFormToDates', () => {
+    it('should transform valid form data to Dates[]', () => {
+      const result = service.transformDatesFormToDates(EVENT_FORM_MOCK.dateInformation);
+
+      expect(result.length).toBe(1);
+
+      const startDate = new Date(result[0].startDate);
+      const finishDate = new Date(result[0].finishDate);
+
+      expect(startDate.getHours()).toBe(10);
+      expect(startDate.getMinutes()).toBe(0);
+      expect(finishDate.getHours()).toBe(12);
+      expect(finishDate.getMinutes()).toBe(0);
+
+      expect(result[0].onlineLink).toBe('https://example.com/event');
+      expect(result[0].coordinates.latitude).toBe(40.712776);
+      expect(result[0].coordinates.longitude).toBe(-74.005974);
+    });
+
+    it('should filter out invalid dates', () => {
+      const mockFormData = [
+        {
+          day: { date: 'invalid-date', startTime: '10:00', endTime: '12:00', allDay: false },
+          placeOnline: { coordinates: { lat: 50, lng: 50 }, onlineLink: null, place: null }
+        }
+      ];
+
+      const result = service.transformDatesFormToDates(EVENT_FORM_MOCK.dateInformation);
+
+      expect(result.length).toBe(1);
+    });
+  });
+
+  describe('prepareEventForSubmit', () => {
+    it('should prepare FormData for a new event', () => {
+      const result = service.prepareEventForSubmit(EVENT_FORM_MOCK, 0, false);
+
+      const addEventDtoRequest = JSON.parse(result.get('addEventDtoRequest') as string);
+      expect(addEventDtoRequest.title).toBe('Sample Event Title');
+      expect(addEventDtoRequest.description).toBe('This is a sample event description.');
+      expect(addEventDtoRequest.open).toBe(true);
+      expect(addEventDtoRequest.tags).toEqual(['Technology', 'Education']);
+      expect(addEventDtoRequest.datesLocations.length).toBe(1);
+
+      expect(result.getAll('images').length).toBe(0);
+    });
+
+    it('should prepare FormData for updating an event', () => {
+      const result = service.prepareEventForSubmit(EVENT_FORM_MOCK, 1, true);
+
+      const eventDto = JSON.parse(result.get('eventDto') as string);
+      expect(eventDto.title).toBe('Sample Event Title');
+      expect(eventDto.description).toBe('This is a sample event description.');
+      expect(eventDto.open).toBe(true);
+      expect(eventDto.tags).toEqual(['Technology', 'Education']);
+      expect(eventDto.datesLocations.length).toBe(1);
+      expect(eventDto.id).toBe(1);
+
+      expect(result.getAll('images').length).toBe(0);
+    });
+
+    it('should append file images to FormData for a new event', () => {
+      const mockWithFiles = {
+        ...EVENT_FORM_MOCK,
+        eventInformation: {
+          ...EVENT_FORM_MOCK.eventInformation,
+          images: [
+            { file: new File([], 'main-image.jpg'), url: '', main: true },
+            { file: new File([], 'secondary-image.jpg'), url: '', main: false }
+          ]
+        }
+      };
+
+      const result = service.prepareEventForSubmit(mockWithFiles, 0, false);
+
+      // Check for the added files in FormData
+      const images = result.getAll('images') as File[];
+      expect(images.length).toBe(2);
+      expect(images[0].name).toBe('main-image.jpg');
+      expect(images[1].name).toBe('secondary-image.jpg');
+    });
+  });
 });

@@ -9,6 +9,7 @@ import { HttpParams } from '@angular/common/http';
 import { HabitAssignInterface } from '@global-user/components/habit/models/interfaces/habit-assign.interface';
 import { HabitStatus } from '@global-models/habit/HabitStatus.enum';
 import { HabitInterface } from '@global-user/components/habit/models/interfaces/habit.interface';
+import { FormBuilder, FormControl } from '@angular/forms';
 
 export const testCases = [
   {
@@ -543,5 +544,37 @@ export const EVENT_FORM_MOCK: EventForm = {
     }
   ]
 };
+
+const formBuilder = new FormBuilder();
+
+export const MOCK_EVENT_FORM_GROUP = formBuilder.group({
+  eventInformation: formBuilder.group({
+    title: ['Mock Title', []],
+    description: ['Mock description', []],
+    open: [true],
+    images: [[]],
+    duration: [1],
+    tags: [['Mock Tag 1', 'Mock Tag 2'], []]
+  }),
+  dateInformation: formBuilder.array([
+    formBuilder.group({
+      day: formBuilder.group({
+        date: [new Date(), []],
+        startTime: ['09:00 AM', []],
+        endTime: ['05:00 PM', []],
+        allDay: [false],
+        minDate: [new Date(), []],
+        maxDate: [null, []]
+      }),
+      placeOnline: formBuilder.group({
+        coordinates: new FormControl({ lat: 50.4501, lng: 30.5234 }),
+        onlineLink: new FormControl('https://example.com'),
+        place: new FormControl('Mock Place Name'),
+        appliedLinkForAll: [false],
+        appliedPlaceForAll: [true]
+      })
+    })
+  ])
+});
 
 export const mockAttendees: EventAttender[] = [{ name: 'Stetsenka Street', imagePath: 'http://example.com/image.jpg' }];
