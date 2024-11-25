@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NotificContentReplaceDirective } from './notific-content-replace.directive';
 
 @Component({
@@ -30,7 +30,7 @@ describe('NotificContentReplaceDirective', () => {
     viewed: false
   };
 
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent, NotificContentReplaceDirective]
     });
@@ -39,7 +39,7 @@ describe('NotificContentReplaceDirective', () => {
     fixture.detectChanges();
     component = fixture.componentInstance;
     paragrEl = fixture.nativeElement.querySelector('p');
-  });
+  }));
 
   it('should display multiple user replacements', () => {
     component.notification = { ...notification, ...{ bodyText: '{user1} and {user2} liked your post' } };

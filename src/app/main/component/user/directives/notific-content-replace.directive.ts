@@ -47,10 +47,10 @@ export class NotificContentReplaceDirective implements OnChanges {
         }
       } else if (replacements.hasOwnProperty(replacementKey)) {
         const linkAttributes = idToNavigate ? { userId: replacements[idToNavigate] } : null;
+
         result = this.buildReplacementString(result, contentKey, replacements[replacementKey], linkAttributes);
       }
     });
-
     return result;
   }
 

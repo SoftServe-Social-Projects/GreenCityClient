@@ -19,6 +19,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { NotificationBody, Notifications } from '@ubs/ubs-admin/models/ubs-user.model';
 import { HttpParams } from '@angular/common/http';
+import { HabitService } from '@global-service/habit/habit.service';
 
 @Component({
   selector: 'app-user-notifications',
@@ -32,8 +33,8 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   filterCriteriaOptions = filterCriteriaOptions;
   notificationCriteriaOptions = notificationCriteriaOptions;
   projects = projects;
-  notificationTypes = NotificationCriteria;
   notificationFriendRequest = NotificationCriteria.FRIEND_REQUEST_RECEIVED;
+  notificationHabitInvitation = NotificationCriteria.HABIT_INVITATION;
 
   notifications: NotificationModel[] = [];
   currentPage = 0;
@@ -45,13 +46,14 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private filterAll = 'All';
 
   constructor(
-    private localStorageService: LocalStorageService,
-    public translate: TranslateService,
-    private userNotificationService: UserNotificationService,
-    private matSnackBar: MatSnackBarComponent,
-    private userFriendsService: UserFriendsService,
-    private router: Router,
-    private userService: UserService
+    private readonly localStorageService: LocalStorageService,
+    public readonly translate: TranslateService,
+    private readonly userNotificationService: UserNotificationService,
+    private readonly matSnackBar: MatSnackBarComponent,
+    private readonly userFriendsService: UserFriendsService,
+    private readonly router: Router,
+    private readonly userService: UserService,
+    private readonly habitService: HabitService
   ) {}
 
   ngOnInit() {
@@ -114,7 +116,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   private getAllSelectedFilters(approach: string): NotificationFilter[] {
     const filterArr = approach === this.filterCriteria.TYPE ? notificationCriteriaOptions : projects;
     const allOption = filterArr.find((el) => el.name === this.filterAll);
-    return allOption.isSelected ? [] : [...filterArr.filter((el) => {return el.isSelected === true && el.name !== this.filterAll;})];
+    return allOption.isSelected ? [] : [...filterArr.filter((el) => { return el.isSelected === true && el.name !== this.filterAll; })];
   }
 
   getNotification(page: number): void {
@@ -260,47 +262,96 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     }
   }
 
-  acceptRequest(userId: number): void {
-    let isAccepted = true;
-    this.userFriendsService.acceptRequest(userId).subscribe({
-      error: () => {
-        isAccepted = false;
-      },
-      complete: () => {
-        if (isAccepted) {
-          this.matSnackBar.openSnackBar('friendInValidRequest');
-        }
-      }
-    });
+  isFriendRequest(notification: NotificationModel): boolean {
+    return notification.notificationType === this.notificationFriendRequest;
   }
 
-  declineRequest(userId: number): void {
+  isHabitInvitation(notification: NotificationModel): boolean {
+    return notification.notificationType === this.notificationHabitInvitation;
+  }
+
+  acceptRequest(notification: NotificationModel): void {
+    if (this.isFriendRequest(notification)) {
+      this.handleFriendRequest(notification, 'accept');
+    } else if (this.isHabitInvitation(notification)) {
+      this.handleHabitInvitation(notification, 'accept');
+    }
+  }
+
+  declineRequest(notification: NotificationModel): void {
+    if (this.isFriendRequest(notification)) {
+      this.handleFriendRequest(notification, 'decline');
+    } else if (this.isHabitInvitation(notification)) {
+      this.handleHabitInvitation(notification, 'decline');
+    }
+  }
+
+  private handleFriendRequest(notification: NotificationModel, action: 'accept' | 'decline'): void {
     let isAccepted = true;
-    this.userFriendsService.declineRequest(userId).subscribe({
-      error: () => {
-        isAccepted = false;
-      },
-      complete: () => {
-        if (isAccepted) {
-          this.matSnackBar.openSnackBar('friendInValidRequest');
+
+    const userId = notification.actionUserId[0];
+    if (action === 'accept') {
+      this.userFriendsService.acceptRequest(userId).subscribe({
+        error: () => {
+          isAccepted = false;
+        },
+        complete: () => {
+          this.matSnackBar.openSnackBar(isAccepted ? 'friendRequestAccepted' : 'friendInValidRequest');
         }
-      }
-    });
+      });
+    } else {
+      this.userFriendsService.declineRequest(userId).subscribe({
+        error: () => {
+          isAccepted = false;
+        },
+        complete: () => {
+          this.matSnackBar.openSnackBar(isAccepted ? 'friendRequestDeclined' : 'friendInValidRequest');
+        }
+      });
+    }
+  }
+
+  private handleHabitInvitation(notification: NotificationModel, action: 'accept' | 'decline'): void {
+    let isAccepted = true;
+    const invitationId = notification.secondMessageId;
+    if (action === 'accept') {
+      this.habitService.acceptHabitInvitation(invitationId).subscribe({
+        error: () => {
+          isAccepted = false;
+        },
+        complete: () => {
+          this.matSnackBar.openSnackBar(isAccepted ? 'habitAcceptRequest' : 'habitAcceptInValidRequest');
+        }
+      });
+    } else {
+      this.habitService.declineHabitInvitation(invitationId).subscribe({
+        error: () => {
+          isAccepted = false;
+        },
+        complete: () => {
+          this.matSnackBar.openSnackBar(isAccepted ? 'habitDeclineRequest' : 'habitDeclineInValidRequest');
+        }
+      });
+    }
   }
 
   navigate(event: Event): void {
     const target = event.target as HTMLElement;
     const userId = this.userService.userId;
     const targetTextContent = target.textContent?.trim() || '';
-    const targetUserId = target.getAttribute('data-userid')?.toString();
+    const targetUserId = Number(target.getAttribute('data-userId'));
     const notificationType = target.getAttribute('data-notificationType');
-    const targetId = Number(target.getAttribute('data-targetid'));
+    const targetId = Number(target.getAttribute('data-targetId'));
 
     const isClickOrEnter = event instanceof MouseEvent || (event instanceof KeyboardEvent && event.key === 'Enter');
     if (!isClickOrEnter) {
       return;
     }
 
+    if (targetUserId === userId) {
+      this.router.navigate(['profile', userId]);
+      return;
+    }
     if (targetUserId) {
       this.router.navigate(['profile', userId, 'users', targetTextContent, targetUserId]);
       return;
@@ -310,7 +361,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
       const routes = {
         EVENT: ['events', targetId],
         ECONEWS: ['news', targetId],
-        HABIT: ['profile', userId, 'allhabits', 'edithabit', targetId]
+        HABIT: ['profile', userId, 'allhabits', 'addhabit', targetId]
       };
 
       for (const type in routes) {
