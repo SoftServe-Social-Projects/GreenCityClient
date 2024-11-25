@@ -25,7 +25,11 @@ describe('NewsListComponent', () => {
   let component: NewsListComponent;
   let fixture: ComponentFixture<NewsListComponent>;
 
-  const ecoNewsServiceMock: EcoNewsService = jasmine.createSpyObj('EcoNewsService', ['getAllPresentTags', 'getEcoNewsListByPage']);
+  const ecoNewsServiceMock: EcoNewsService = jasmine.createSpyObj('EcoNewsService', [
+    'getAllPresentTags',
+    'getEcoNewsListByPage',
+    'getNewsHttpParams'
+  ]);
 
   ecoNewsServiceMock.getEcoNewsListByPage = () => new Observable();
 

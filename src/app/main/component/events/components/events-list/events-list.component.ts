@@ -16,6 +16,7 @@ import { Patterns } from 'src/assets/patterns/patterns';
 import { EventsService } from '../../services/events.service';
 import { MatOption } from '@angular/material/core';
 import { HttpParams } from '@angular/common/http';
+import { EventStoreService } from '../../services/event-store.service';
 
 @Component({
   selector: 'app-events-list',
@@ -62,12 +63,13 @@ export class EventsListComponent implements OnInit, OnDestroy {
   private readonly dialogRef: MatDialogRef<unknown>;
 
   constructor(
-    private store: Store,
-    private userOwnAuthService: UserOwnAuthService,
-    private localStorageService: LocalStorageService,
-    private router: Router,
-    private eventService: EventsService,
-    private dialog: MatDialog
+    private readonly store: Store,
+    private readonly userOwnAuthService: UserOwnAuthService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly router: Router,
+    private readonly eventService: EventsService,
+    private readonly eventStoreService: EventStoreService,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -317,7 +319,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
   isUserLoggedRedirect(): void {
     this.isLoggedIn ? this.router.navigate(['/events', 'create-event']) : this.openAuthModalWindow('sign-in');
-    this.eventService.setForm(null);
+    this.eventStoreService.setEditorValues(null);
   }
 
   openAuthModalWindow(page: string): void {
