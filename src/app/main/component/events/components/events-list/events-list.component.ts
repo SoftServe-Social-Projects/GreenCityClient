@@ -455,6 +455,10 @@ export class EventsListComponent implements OnInit, OnDestroy {
     return formattedValue ? { key, value: formattedValue } : null;
   }
 
+  isShow(condition: boolean): boolean {
+    return condition && !this.noEventsMatch && !this.isLoading && !this.bookmarkSelected;
+  }
+
   private checkUserSingIn(): void {
     this.userOwnAuthService.credentialDataSubject.subscribe((data) => {
       this.isLoggedIn = !!data?.userId;
