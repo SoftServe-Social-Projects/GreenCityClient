@@ -324,8 +324,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   getFormattedNotificationTime(notification: NotificationModel): string {
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-    return formatNotificationDate(notification.time, this.translate, timeZone);
+    return formatNotificationDate(notification.time, this.translate);
   }
 
   ngOnDestroy() {

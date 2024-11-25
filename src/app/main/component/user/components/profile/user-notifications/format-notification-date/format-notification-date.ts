@@ -1,7 +1,11 @@
 import { LocalizedDatePipe } from 'src/app/shared/localized-date-pipe/localized-date.pipe';
 import { TranslateService } from '@ngx-translate/core';
 
-export function formatNotificationDate(zonedDateTime: string, translate: TranslateService, timeZone: string = 'Europe/Kyiv'): string {
+export function formatNotificationDate(
+  zonedDateTime: string,
+  translate: TranslateService,
+  timeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
+): string {
   const localizedDatePipe = new LocalizedDatePipe();
   const formattedDate = localizedDatePipe.transform(zonedDateTime, { fromTimeZone: 'UTC', toTimeZone: timeZone });
 
