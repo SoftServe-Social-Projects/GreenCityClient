@@ -19,6 +19,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { NotificationBody, Notifications } from '@ubs/ubs-admin/models/ubs-user.model';
 import { HttpParams } from '@angular/common/http';
+import { formatNotificationDate } from './format-notification-date/format-notification-date';
 import { HabitService } from '@global-service/habit/habit.service';
 
 @Component({
@@ -371,6 +372,10 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  getFormattedNotificationTime(notification: NotificationModel): string {
+    return formatNotificationDate(notification.time, this.translate);
   }
 
   ngOnDestroy() {
