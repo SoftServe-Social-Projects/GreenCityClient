@@ -1,18 +1,18 @@
 import { NewsSearchModel } from '@global-models/search/newsSearch.model';
 import { EventsSearchModel } from '@global-models/search/eventsSearch.model';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { searchIcons } from '../../main/image-pathes/search-icons';
-import { negate, isNil } from 'lodash';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, forkJoin } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, tap, switchMap, filter } from 'rxjs/operators';
-import { SearchService } from '@global-service/search/search.service';
-import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
-import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { MatDialog } from '@angular/material/dialog';
-import { SearchCategory } from './search-consts';
+import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import { PlacesSearchModel } from '@global-models/search/placesSearch.model';
+import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
+import { SearchService } from '@global-service/search/search.service';
+import { isNil, negate } from 'lodash';
+import { debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs/operators';
+import { searchIcons } from '../../main/image-pathes/search-icons';
+import { SearchCategory } from './search-consts';
 import { PopupSearchResults } from './search-popup.model';
 
 @Component({
