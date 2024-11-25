@@ -3,11 +3,11 @@
     <p>{{ 'user.habit.invite.title' | translate }}</p>
   </div>
   <div class="invite-content">
-    <div *ngIf="!addedFriends.length" class="plus-circle">
+    <div *ngIf="!friends.length" class="plus-circle">
       <div class="icon-plus-grey" (click)="openInviteFriendsDialog()"></div>
     </div>
     <div class="invite-friends-box">
-      <div *ngFor="let friend of addedFriends" class="invite-friends">
+      <div *ngFor="let friend of friends.slice(0, 5); let i = index" class="invite-friends">
         <app-user-profile-image
           [imgPath]="friend.profilePicturePath"
           [firstName]="friend.name"
@@ -16,8 +16,18 @@
         >
         </app-user-profile-image>
       </div>
+      <div
+        *ngIf="friends.length"
+        class="three-dots"
+        [ngStyle]="{ left: calculateDotsPosition(friends.length) }"
+        (click)="openFriendsPopup()"
+      >
+        ...
+      </div>
     </div>
-    <div *ngIf="addedFriends.length" class="plus-circle">
+    <div *ngIf="friends.length > 5" class="more-friends">+{{ friends.length - 5 }}</div>
+
+    <div *ngIf="friends.length" class="plus-circle">
       <div class="icon-plus-green" (click)="openInviteFriendsDialog()"></div>
     </div>
   </div>

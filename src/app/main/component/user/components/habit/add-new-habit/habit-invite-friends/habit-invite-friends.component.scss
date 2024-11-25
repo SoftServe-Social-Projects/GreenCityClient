@@ -5,6 +5,13 @@
   height: 100%;
   width: 100%;
 
+  ::ng-deep .more-friends {
+    color: var(--secondary-grey);
+    font-family: var(--secondary-font);
+    margin-left: 10px;
+    width: 10px;
+  }
+
   p {
     font-family: var(--secondary-font);
     font-style: normal;
@@ -60,6 +67,28 @@
         z-index: 1;
       }
 
+      .three-dots {
+        margin: 0;
+        font-size: 30px;
+        position: absolute;
+        top: 65%;
+        width: 30px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        left: calc(80% + 60px);
+      }
+
+      .three-dots::after {
+        content: '';
+        height: 1px;
+        width: 80%;
+        background-color: var(--freinacht-black);
+        position: absolute;
+        top: 75%;
+        left: 40%;
+        transform: translateX(-50%);
+      }
+
       .invite-friends {
         display: flex;
         align-items: center;
@@ -102,11 +131,6 @@
         display: none;
       }
     }
-  }
-
-  .ng-star-inserted {
-    margin: 5px;
-    width: 80px;
   }
 
   .invite-detail {
