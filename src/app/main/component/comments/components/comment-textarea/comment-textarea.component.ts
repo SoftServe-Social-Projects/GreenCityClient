@@ -13,13 +13,14 @@ import {
   OnDestroy,
   SecurityContext
 } from '@angular/core';
-import { TaggedUser } from '../../models/comments-model';
+import { EmojiEvent, TaggedUser } from '../../models/comments-model';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { FormControl, Validators } from '@angular/forms';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { CHAT_ICONS } from 'src/app/chat/chat-icons';
+import { insertEmoji } from '../add-emoji/add-emoji';
 
 @Component({
   selector: 'app-comment-textarea',
@@ -36,7 +37,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   aspectRatio: number;
   isImageUploaderOpen = false;
   showImageControls = false;
-  isFirstImageLoaded = false;
+  isEmojiPickerOpen = false;
   uploadedImage: { url: string; file: File }[] = [];
 
   content: FormControl = new FormControl('', [Validators.required, this.innerHtmlMaxLengthValidator(8000)]);
@@ -58,9 +59,9 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   @Input() placeholder: string;
 
   constructor(
-    public socketService: SocketService,
-    private localStorageService: LocalStorageService,
-    public elementRef: ElementRef,
+    public readonly socketService: SocketService,
+    private readonly localStorageService: LocalStorageService,
+    public readonly elementRef: ElementRef,
     private readonly sanitizer: DomSanitizer
   ) {
     this.socketService.initiateConnection(this.socketService.connection.greenCity);
@@ -86,45 +87,62 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   }
 
   ngAfterViewInit(): void {
+    this.initializeTextareaContent();
+    this.setupTextareaInputListener();
+  }
+
+  private initializeTextareaContent(): void {
     if (this.commentTextToEdit) {
       this.commentTextarea.nativeElement.innerHTML = this.commentTextToEdit;
     }
+  }
+
+  private setupTextareaInputListener(): void {
     fromEvent(this.commentTextarea.nativeElement, 'input')
       .pipe(
         takeUntil(this.destroy$),
         debounceTime(300),
-        tap(() => {
-          this.content.setValue(this.commentTextarea.nativeElement.textContent);
-          this.emitComment();
-          const textContent = this.commentTextarea.nativeElement.textContent;
-          const hasTagCharacter = this.charToTagUsers.some((char) => textContent.includes(char));
-          if (!hasTagCharacter) {
-            this.menuTrigger.closeMenu();
-            this.suggestedUsers = [];
-          }
-        }),
-        filter(() => {
-          this.getSelectionStart();
-          if (this.range?.startContainer) {
-            const textBeforeCaret = this.range.startContainer.textContent.slice(0, this.range.startOffset);
-            this.lastTagCharIndex = Math.max(textBeforeCaret.lastIndexOf('@'), textBeforeCaret.lastIndexOf('#'));
-            return this.lastTagCharIndex !== -1;
-          }
-          return false;
-        })
+        tap(() => this.handleInputChange()),
+        filter(() => this.checkForTagCharacters())
       )
-      .subscribe(() => {
-        const textBeforeCaret = this.range.startContainer.textContent.slice(0, this.range.startOffset);
-        this.searchQuery = textBeforeCaret.slice(this.lastTagCharIndex + 1);
-        this.updateCursorPosition();
+      .subscribe(() => this.handleTagging());
+  }
 
-        if (!this.searchQuery.includes(' ')) {
-          this.sendSocketMessage(this.searchQuery);
-        } else {
-          this.menuTrigger.closeMenu();
-          this.suggestedUsers = [];
-        }
-      });
+  private handleInputChange(): void {
+    this.content.setValue(this.commentTextarea.nativeElement.textContent);
+    this.emitComment();
+    this.closeDropdownIfNoTag();
+  }
+
+  private closeDropdownIfNoTag(): void {
+    const textContent = this.commentTextarea.nativeElement.textContent;
+    if (!this.charToTagUsers.some((char) => textContent.includes(char))) {
+      this.menuTrigger.closeMenu();
+      this.suggestedUsers = [];
+    }
+  }
+
+  private checkForTagCharacters(): boolean {
+    this.getSelectionStart();
+    if (this.range?.startContainer) {
+      const textBeforeCaret = this.range.startContainer.textContent.slice(0, this.range.startOffset);
+      this.lastTagCharIndex = Math.max(textBeforeCaret.lastIndexOf('@'), textBeforeCaret.lastIndexOf('#'));
+      return this.lastTagCharIndex !== -1;
+    }
+    return false;
+  }
+
+  private handleTagging(): void {
+    const textBeforeCaret = this.range.startContainer.textContent.slice(0, this.range.startOffset);
+    this.searchQuery = textBeforeCaret.slice(this.lastTagCharIndex + 1);
+    this.updateCursorPosition();
+
+    if (!this.searchQuery.includes(' ')) {
+      this.sendSocketMessage(this.searchQuery);
+    } else {
+      this.menuTrigger.closeMenu();
+      this.suggestedUsers = [];
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -142,7 +160,24 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     }, 0);
   }
 
+  toggleEmojiPickerVisibility(): void {
+    this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
+    this.isImageUploaderOpen = false;
+  }
+
+  onEmojiClick(event: EmojiEvent): void {
+    const newContent = insertEmoji(this.content.value, event.emoji.native);
+    this.content.setValue(newContent);
+    this.commentTextarea.nativeElement.textContent = newContent;
+    this.emitComment();
+  }
+
   onCommentTextareaFocus(): void {
+    const currentText = this.commentTextarea.nativeElement.textContent.trim();
+    if (currentText === 'Add a comment' || currentText === '') {
+      this.commentTextarea.nativeElement.textContent = '';
+    }
+
     const range = document.createRange();
     const nodeAmount = this.commentTextarea.nativeElement.childNodes.length;
     range.setStartAfter(this.commentTextarea.nativeElement.childNodes[nodeAmount - 1]);
@@ -151,13 +186,6 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
-  }
-
-  onDropdownBlur(event: FocusEvent): void {
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(this.range);
-    this.refocusTextarea();
   }
 
   onCommentKeyDown(event: KeyboardEvent): void {
@@ -183,6 +211,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   toggleImageUploader(): void {
     if (this.uploadedImage.length < 5) {
       this.isImageUploaderOpen = !this.isImageUploaderOpen;
+      this.isEmojiPickerOpen = false;
       this.imageUploaderStatus.emit(this.isImageUploaderOpen);
     }
   }
