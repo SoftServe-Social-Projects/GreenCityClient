@@ -65,7 +65,7 @@ export class UbsAdminOrderHistoryComponent implements OnDestroy, OnChanges, OnIn
 
   ngOnChanges(changes: SimpleChanges): void {
     const orderID = this.orderInfo.generalOrderInfo.id;
-    if (changes.orderInfo) {
+    if (changes.orderInfo && this.currentLanguage) {
       this.getOrderHistory(orderID);
       this.getNotTakenOutReason(orderID);
       this.getOrderCancelReason(orderID);

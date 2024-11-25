@@ -224,7 +224,7 @@
     "added": "Додано"
   },
   "order-status-confirm": {
-    "confirm-message": "Ви справді хочете змінити статус замовлення?",
+    "confirm-message": "Ви справді хочете змінити статус замовлення на",
     "yes": "Так",
     "no": "Ні"
   },
@@ -631,6 +631,7 @@
     "email": "Email*",
     "position": "Посада*",
     "receiving-station": "Станція приймання*",
+    "chat-hint": "Спочатку додайте тариф",
     "image-input": "Фото",
     "picture-description-1": "Перетягніть",
     "picture-description-2": "зображення або",
@@ -643,7 +644,7 @@
     "update": "Зберегти",
     "filter-reset-all": "Очистити все",
     "image-error": "Підтримувані формати фотографії: PNG і JPG. Максимальний розмір – 10 Мб",
-    "tariffs": "Тарифи",
+    "tariffs": "Тарифи*",
     "tariffs-columns": {
       "region": "Область",
       "city": "Місто",

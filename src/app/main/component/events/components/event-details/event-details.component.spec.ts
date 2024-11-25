@@ -7,7 +7,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { EventsService } from '../../services/events.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ActionsSubject, Store } from '@ngrx/store';
@@ -16,8 +16,10 @@ import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar
 import { EventStoreService } from '../../services/event-store.service';
 import { LangValueDirective } from 'src/app/shared/directives/lang-value/lang-value.directive';
 import { LanguageService } from 'src/app/main/i18n/language.service';
-import { eventMock, eventStateMock } from '@assets/mocks/events/mock-events';
+import { EVENT_MOCK, eventMock, eventStateMock } from '@assets/mocks/events/mock-events';
 import { EventResponse } from '../../models/events.interface';
+import { CreateEcoEventAction, EditEcoEventAction, EventsActions } from 'src/app/store/actions/ecoEvents.actions';
+import { MetaService } from 'src/app/shared/services/meta/meta.service';
 
 export function mockPipe(options: Pipe): Pipe {
   const metadata: Pipe = {
@@ -37,31 +39,39 @@ describe('EventDetailsComponent', () => {
   let component: EventDetailsComponent;
   let fixture: ComponentFixture<EventDetailsComponent>;
   let dialogSpy: jasmine.SpyObj<MatDialog>;
+  let router: Router;
+  let navigateSpy: jasmine.Spy;
 
   const storeMock = jasmine.createSpyObj('store', ['select', 'dispatch']);
   storeMock.select = () => of(eventStateMock);
   const snackBarMock = jasmine.createSpyObj('MatSnackBarComponent', ['openSnackBar']);
 
-  const EventsServiceMock = jasmine.createSpyObj('eventService', [
-    'getEventById ',
+  const EventsServiceMock = jasmine.createSpyObj('EventsService', [
+    'getEventById',
     'deleteEvent',
     'getAllAttendees',
     'createAddresses',
     'getFormattedAddress',
     'getForm',
     'getLangValue',
+    'postToggleLike',
+    'getIsLikedByUser',
+    'getIsFromCreateEvent',
     'setBackFromPreview',
     'setSubmitFromPreview',
-    'postToggleLike',
-    'getIsLikedByUser'
+    'convertEventToFormEvent',
+    'prepareEventForSubmit'
   ]);
-  EventsServiceMock.getEventById = () => of(eventMock);
-  EventsServiceMock.deleteEvent = () => of(true);
-  EventsServiceMock.getAllAttendees = () => of([]);
-  EventsServiceMock.createAddresses = () => of('');
+
+  EventsServiceMock.getEventById.and.returnValue(of(EVENT_MOCK));
+  EventsServiceMock.deleteEvent.and.returnValue(of(true));
+  EventsServiceMock.getAllAttendees.and.returnValue(of([]));
+  EventsServiceMock.createAddresses.and.returnValue(of(''));
+  EventsServiceMock.setBackFromPreview.and.returnValue(of());
+  EventsServiceMock.setSubmitFromPreview.and.returnValue(of());
   EventsServiceMock.getFormattedAddress = () => of('');
-  EventsServiceMock.setBackFromPreview = () => of();
-  EventsServiceMock.setSubmitFromPreview = () => of();
+  EventsServiceMock.convertEventToFormEvent.and.returnValue({ value: {} });
+  EventsServiceMock.prepareEventForSubmit.and.returnValue(new FormData());
 
   const jwtServiceFake = jasmine.createSpyObj('jwtService', ['getUserRole']);
   jwtServiceFake.getUserRole = () => '123';
@@ -99,7 +109,7 @@ describe('EventDetailsComponent', () => {
 
   const bsModalRefMock = jasmine.createSpyObj('bsModalRef', ['hide']);
   const bsModalBsModalServiceMock = jasmine.createSpyObj('BsModalService', ['show']);
-  const translateServiceMock: TranslateService = jasmine.createSpyObj('TranslateService', ['setDefaultLang']);
+  const translateServiceMock: TranslateService = jasmine.createSpyObj('TranslateService', ['setDefaultLang', 'use']);
   translateServiceMock.setDefaultLang = (lang: string) => of(lang);
   translateServiceMock.get = () => of(true);
 
@@ -110,6 +120,11 @@ describe('EventDetailsComponent', () => {
   languageServiceMock.getCurrentLangObs = () => of('ua');
   EventsServiceMock.getIsLikedByUser.and.returnValue(of(true));
   const actionSub: ActionsSubject = new ActionsSubject();
+
+  const metaServiceMock = {
+    replacePlaceholders: jasmine.createSpy('replacePlaceholders').and.returnValue('replaced value'),
+    setMeta: jasmine.createSpy('setMeta')
+  };
 
   beforeEach(waitForAsync(() => {
     const dialogSpyObj = jasmine.createSpyObj('MatDialog', ['open']);
@@ -136,6 +151,7 @@ describe('EventDetailsComponent', () => {
         { provide: BsModalService, useValue: bsModalBsModalServiceMock },
         { provide: MatDialog, useValue: dialogSpyObj },
         { provide: LanguageService, useValue: languageServiceMock },
+        { provide: MetaService, useValue: metaServiceMock },
         EventStoreService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -147,11 +163,29 @@ describe('EventDetailsComponent', () => {
     fixture = TestBed.createComponent(EventDetailsComponent);
     component = fixture.componentInstance;
     (component as any).dialog = TestBed.inject(MatDialog);
+    router = TestBed.inject(Router);
+    navigateSpy = spyOn(router, 'navigate');
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should initialize event on ngOnInit', waitForAsync(() => {
+    component.ngOnInit();
+
+    expect(EventsServiceMock.getEventById).toHaveBeenCalledWith(2);
+    expect(component.event).toEqual(EVENT_MOCK);
+  }));
+
+  it('should return the correct formatted address', () => {
+    spyOn(component.eventService, 'getFormattedAddress');
+
+    component.getAddress();
+
+    expect(EventsServiceMock.getFormattedAddress).toHaveBeenCalled();
+    expect(component.address).toBe(component.address);
   });
 
   it('should return the formatted address from the event service', () => {
@@ -165,6 +199,65 @@ describe('EventDetailsComponent', () => {
     const role = component.roles.UNAUTHENTICATED;
     expect(role).toBe('UNAUTHENTICATED');
   });
+
+  it('should set the correct role when the user is an admin', () => {
+    jwtServiceFake.getUserRole = () => 'ROLE_ADMIN';
+    component.ngOnInit();
+
+    expect(component.role).toBe('ADMIN');
+  });
+
+  it('should set the correct role when the user is a regular user', () => {
+    jwtServiceFake.getUserRole = () => 'ROLE_USER';
+    component.ngOnInit();
+
+    expect(component.role).toBe('USER');
+  });
+
+  it('should navigate to the event edit page', () => {
+    component.eventId = 2;
+    fixture.detectChanges();
+
+    component.navigateToEditEvent();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/events', 'update-event', component.eventId]);
+  });
+
+  it('should navigate back to the event edit page', () => {
+    component.isUpdating = true;
+    fixture.detectChanges();
+    component.backToEditEvent();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/events', 'update-event', component.eventId]);
+  });
+
+  it('should navigate back to the event create page', () => {
+    component.isUpdating = false;
+    fixture.detectChanges();
+    component.backToEditEvent();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/events', 'create-event']);
+  });
+
+  it('should dispatch correct action based on isUpdating', waitForAsync(() => {
+    const sendData = new FormData();
+    sendData.append('some', 'data');
+
+    EventsServiceMock.convertEventToFormEvent.and.returnValue({ value: {} });
+    EventsServiceMock.prepareEventForSubmit.and.returnValue(sendData);
+    storeMock.dispatch = jasmine.createSpy('dispatch');
+
+    // (Creating event)
+    component.isUpdating = false;
+    component.onPublish();
+
+    expect(storeMock.dispatch).toHaveBeenCalledWith(CreateEcoEventAction({ data: sendData }));
+
+    //(Editing event)
+    component.isUpdating = true;
+    component.onPublish();
+    expect(storeMock.dispatch).toHaveBeenCalledWith(EditEcoEventAction({ data: sendData, id: component.eventId }));
+  }));
 
   it('should verify user role', () => {
     jwtServiceFake.getUserRole = () => 'ROLE_USER';

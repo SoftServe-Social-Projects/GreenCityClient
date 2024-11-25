@@ -1,15 +1,15 @@
+import { NewsSearchModel } from '@global-models/search/newsSearch.model';
+import { EventsSearchModel } from '@global-models/search/eventsSearch.model';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription, forkJoin } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
-import { EventsSearchModel } from '@global-models/search/eventsSearch.model';
-import { NewsSearchModel } from '@global-models/search/newsSearch.model';
 import { PlacesSearchModel } from '@global-models/search/placesSearch.model';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { SearchService } from '@global-service/search/search.service';
 import { isNil, negate } from 'lodash';
-import { Subscription, forkJoin } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs/operators';
 import { searchIcons } from '../../main/image-pathes/search-icons';
 import { SearchCategory } from './search-consts';
@@ -31,16 +31,13 @@ export class SearchPopupComponent implements OnInit, OnDestroy {
   newsElements: NewsSearchModel[] = [];
   eventsElements: EventsSearchModel[] = [];
   placesElements: PlacesSearchModel[] = [];
-
   isSearchClicked = false;
   searchModalSubscription: Subscription;
   searchInput = new FormControl('');
   isLoading = false;
-  isNewsSearchFound: boolean;
-  searchValueChanges;
+  searchValueChanges: Observable<string>;
   private currentLanguage: string;
   searchIcons = searchIcons;
-  searctabindex: SearchService;
 
   constructor(
     public searchService: SearchService,

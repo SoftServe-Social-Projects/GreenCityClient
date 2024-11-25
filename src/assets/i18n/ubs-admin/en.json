@@ -225,7 +225,7 @@
     "added": "Added"
   },
   "order-status-confirm": {
-    "confirm-message": "Do you realy want to change order status?",
+    "confirm-message": "Do you realy want to change order status to",
     "yes": "Yes",
     "no": "No"
   },
@@ -633,6 +633,7 @@
     "email": "Email*",
     "position": "Position*",
     "receiving-station": "Receiving station*",
+    "chat-hint": "Add a tariff first",
     "image-input": "Image",
     "picture-description-1": "Drop your",
     "picture-description-2": "image here or",
@@ -645,7 +646,7 @@
     "update": "Save",
     "filter-reset-all": "Reset all",
     "image-error": "The supported formats of the photo are PNG and JPG. Max size is 10MB",
-    "tariffs": "Tariffs",
+    "tariffs": "Tariffs*",
     "tariffs-columns": {
       "region": "Region",
       "city": "City",

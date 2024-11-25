@@ -8,11 +8,13 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { DialogPopUpComponent } from 'src/app/shared/dialog-pop-up/dialog-pop-up.component';
 import {
   AddAttenderEcoEventsByIdAction,
+  CreateEcoEventAction,
   DeleteEcoEventAction,
+  EditEcoEventAction,
   EventsActions,
   RemoveAttenderEcoEventsByIdAction
 } from 'src/app/store/actions/ecoEvents.actions';
-import { EventAttender, EventResponse, LocationResponse, PagePreviewDTO } from '../../models/events.interface';
+import { EventAttender, EventForm, EventResponse, LocationResponse, PagePreviewDTO } from '../../models/events.interface';
 import { EventsService } from '../../services/events.service';
 import { JwtService } from '@global-service/jwt/jwt.service';
 import { Subject } from 'rxjs';
@@ -25,6 +27,7 @@ import { ofType } from '@ngrx/effects';
 import { ICONS } from '../../models/event-consts';
 import { WarningPopUpComponent } from '@shared/components';
 import { MetaService } from 'src/app/shared/services/meta/meta.service';
+import { EventStoreService } from '../../services/event-store.service';
 
 @Component({
   selector: 'app-event-details',
@@ -49,13 +52,16 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   organizerName: string;
   isLiked: boolean;
   event: EventResponse | PagePreviewDTO;
+  eventForm: EventForm;
   locationLink: string;
   locationCoordinates: LocationResponse;
   place: string;
   images: string[] = [];
   isPosting: boolean;
   isActive: boolean;
+  isUpdating: boolean;
   currentDate = new Date();
+  isPreview = false;
   max = 5;
   rate: number;
   likesType = {
@@ -92,22 +98,28 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   private destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private route: ActivatedRoute,
-    public eventService: EventsService,
-    public router: Router,
-    public localStorageService: LocalStorageService,
-    private dialog: MatDialog,
-    private store: Store,
-    private actionsSubj: ActionsSubject,
-    private jwtService: JwtService,
-    private snackBar: MatSnackBarComponent,
+    private readonly route: ActivatedRoute,
+    public readonly eventService: EventsService,
+    private readonly eventStoreService: EventStoreService,
+    public readonly router: Router,
+    public readonly localStorageService: LocalStorageService,
+    private readonly dialog: MatDialog,
+    private readonly store: Store,
+    private readonly actionsSubj: ActionsSubject,
+    private readonly jwtService: JwtService,
+    private readonly snackBar: MatSnackBarComponent,
     private readonly modalService: BsModalService,
     private readonly metaService: MetaService
   ) {}
 
   ngOnInit(): void {
+    this.isUpdating = !this.eventService.getIsFromCreateEvent();
     if (this.route.snapshot.params.id) {
       this.eventId = this.route.snapshot.params.id;
+
+      this.eventStoreService.setEventId(this.eventId);
+
+      this.isPreview = false;
       this.localStorageService.userIdBehaviourSubject.subscribe((id) => {
         this.userId = Number(id);
       });
@@ -120,7 +132,12 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       this.backRoute = this.localStorageService.getPreviousPage();
       this.getIsLiked();
     } else {
-      this.event = this.eventService.getForm() as PagePreviewDTO;
+      this.isPreview = true;
+      this.eventForm = this.eventStoreService.getEditorValues();
+      if (!this.eventForm.eventInformation) {
+        this.router.navigate(['/events']);
+      }
+      this.event = this.eventService.getEventPreview(this.eventForm);
       this.locationLink = this.event.dates[this.event.dates.length - 1].onlineLink;
       this.place = this.event.location as string;
       this.images = this.event.imgArrayToPreview;
@@ -219,11 +236,46 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   }
 
   navigateToEditEvent(): void {
-    if (this.eventService.getIsFromCreateEvent()) {
-      this.router.navigate(['/events', 'create-event', this.eventId]);
+    this.router.navigate(['/events', 'update-event', this.eventId]);
+  }
+
+  backToEditEvent(): void {
+    if (!this.isUpdating) {
+      this.router.navigate(['/events', 'create-event']);
     } else {
       this.localStorageService.setEditMode('canUserEdit', true);
-      this.router.navigate(['/events', 'update-event', this.eventId]);
+      const id = this.eventId || this.eventStoreService.getEventId();
+      this.router.navigate(['/events', 'update-event', id]);
+    }
+  }
+
+  onPublish() {
+    this.isPosting = true;
+    const id = this.eventId || this.eventStoreService.getEventId();
+    const formEvent = this.eventService.convertEventToFormEvent(this.eventForm).value;
+    const sendData = this.eventService.prepareEventForSubmit(formEvent, id, this.isUpdating);
+
+    this.isUpdating
+      ? this.store.dispatch(EditEcoEventAction({ data: sendData, id: id }))
+      : this.store.dispatch(CreateEcoEventAction({ data: sendData }));
+    this.actionsSubj.pipe(ofType(EventsActions.CreateEcoEventSuccess, EventsActions.EditEcoEventSuccess), take(1)).subscribe(() => {
+      this.isPosting = false;
+      this.eventStoreService.setEventListResponse(null);
+    });
+    this.escapeFromCreateEvent();
+  }
+
+  escapeFromCreateEvent(): void {
+    this.router.navigate(['/events']);
+    this.eventSuccessfullyAdded();
+  }
+
+  private eventSuccessfullyAdded(): void {
+    const isUpdating = !this.isUpdating;
+    if (isUpdating) {
+      this.snackBar.openSnackBar('updatedEvent');
+    } else {
+      this.snackBar.openSnackBar('addedEvent');
     }
   }
 

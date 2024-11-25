@@ -1,5 +1,5 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { BehaviorSubject } from 'rxjs';
 import { HabitService } from './habit.service';
@@ -193,7 +193,7 @@ describe('HabitService', () => {
   it('should get friends tracking the same habit by habit id', () => {
     const id = CUSTOMHABIT.id;
     const mockResponse = MOCK_FRIEND_PROFILE_PICTURES;
-    habitService.getFriendsTrakingSameHabitByHabitId(id).subscribe((response) => {
+    habitService.getFriendsTrakingSameHabitByHabitAssignId(id).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
     const req = httpMock.expectOne(`${habitLink}/${id}/friends/profile-pictures`);
@@ -254,5 +254,31 @@ describe('HabitService', () => {
     const req = httpMock.expectOne((request) => request.urlWithParams === expectedUrl);
     expect(req.request.method).toBe('GET');
     req.flush(HABITLIST);
+  });
+
+  it('should accept habit invitation', () => {
+    const invitationId = 123;
+    const mockResponse = 'Invitation accepted successfully';
+
+    habitService.acceptHabitInvitation(invitationId).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${habitLink}/invite/${invitationId}/accept`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush(mockResponse);
+  });
+
+  it('should decline habit invitation', () => {
+    const invitationId = 456;
+    const mockResponse = 'Invitation declined successfully';
+
+    habitService.declineHabitInvitation(invitationId).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${habitLink}/invite/${invitationId}/reject`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(mockResponse);
   });
 });
