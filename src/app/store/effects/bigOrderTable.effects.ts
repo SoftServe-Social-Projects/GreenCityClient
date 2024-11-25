@@ -142,7 +142,7 @@ export class BigOrderTableEffects {
           map((response) => {
             if (response.body) {
               this.snackBar.openSnackBar('changesSaved');
-              return UpdateOrderInfoSuccess({ updatedOrder: response.body as IBigOrderTableOrderInfo });
+              return UpdateOrderInfoSuccess({ updatedOrder: response.body });
             } else {
               this.snackBar.openSnackBar('error');
               return ReceivedFailure({ error: 'Failed to update order' });

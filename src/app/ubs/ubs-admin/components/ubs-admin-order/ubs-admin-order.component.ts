@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterContentChecked, ChangeDetectorRef, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterContentChecked, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { formatDate } from '@angular/common';
@@ -11,14 +11,12 @@ import { UbsAdminCancelModalComponent } from '../ubs-admin-cancel-modal/ubs-admi
 import { OrderService } from '../../services/order.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import {
-  IAddressExportDetails,
   IEmployee,
   IExportDetails,
   IGeneralOrderInfo,
   IOrderDetails,
   IOrderInfo,
   IOrderStatusInfo,
-  IPaymentInfo,
   IResponsiblePersons,
   IUpdateResponsibleEmployee,
   IUserInfo,
@@ -50,7 +48,6 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
   private destroy$: Subject<boolean> = new Subject<boolean>();
   isOrderCancelledAfterFormed: boolean;
   orderForm: FormGroup;
-  isDataLoaded = false;
   orderId: number;
   orderInfo: IOrderInfo;
   generalInfo: IGeneralOrderInfo;
@@ -94,17 +91,17 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
     return this.orderForm.controls.addressExportDetailsDto as FormControl;
   }
   constructor(
-    private translate: TranslateService,
-    private localStorageService: LocalStorageService,
-    private adminTableService: AdminTableService,
-    private fb: FormBuilder,
-    private dialog: MatDialog,
-    private route: ActivatedRoute,
-    private router: Router,
-    private changeDetector: ChangeDetectorRef,
-    private store: Store<IAppState>,
-    private actions$: Actions,
-    private orderService: OrderService,
+    private readonly translate: TranslateService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly adminTableService: AdminTableService,
+    private readonly fb: FormBuilder,
+    private readonly dialog: MatDialog,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly changeDetector: ChangeDetectorRef,
+    private readonly store: Store<IAppState>,
+    private readonly actions$: Actions,
+    private readonly orderService: OrderService,
     public ubsAdminEmployeeService: UbsAdminEmployeeService,
     public unsavedChangesGuard: UnsavedChangesGuard
   ) {}
