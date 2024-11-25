@@ -767,6 +767,7 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   }
 
   openOrder(id: number): void {
+    this.adminTableService.blockOrders([id]).subscribe();
     this.router
       .navigate(['ubs-admin', 'order', `${id}`])
       .then(() => {})

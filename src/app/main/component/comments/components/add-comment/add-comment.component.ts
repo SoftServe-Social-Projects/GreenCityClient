@@ -55,6 +55,7 @@ export class AddCommentComponent implements OnInit {
     this.uploadedImage = null;
     this.imageUploaderStatus.emit(false);
     this.commentTextareaComponent.onCancelImage();
+    this.commentTextareaComponent.isEmojiPickerOpen = false;
   }
 
   setContent(data: { text: string; innerHTML: string; imageFiles?: File[] }) {

@@ -12,8 +12,8 @@ import {
   RemoveFilter,
   AddFilterMultiAction,
   ClearFilters,
-  GetLocationsDetails,
-  GetLocationsDetailsSuccess
+  GetLocationsDetailsSuccess,
+  UpdateOrderInfoSuccess
 } from '../actions/bigOrderTable.actions';
 import { createReducer, on } from '@ngrx/store';
 import { IFilters } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
@@ -56,6 +56,21 @@ export const bigOrderTableReducer = createReducer(
       })
     }
   })),
+
+  on(UpdateOrderInfoSuccess, (state, action) => {
+    if (!state.bigOrderTable || !state.bigOrderTable.content) {
+      return state;
+    }
+    return {
+      ...state,
+      bigOrderTable: {
+        ...state.bigOrderTable,
+        content: state.bigOrderTable.content.map((orderData) =>
+          orderData.id === action.updatedOrder.id ? { ...action.updatedOrder } : orderData
+        )
+      }
+    };
+  }),
 
   on(ChangingOrderPaymentStatus, (state, action) => ({
     ...state,

@@ -12,6 +12,8 @@ import { JwtService } from '@global-service/jwt/jwt.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { insertEmoji } from 'src/app/main/component/comments/components/add-emoji/add-emoji';
+import { EmojiEvent } from 'src/app/main/component/comments/models/comments-model';
 
 @Component({
   selector: 'app-new-message-window',
@@ -37,13 +39,13 @@ export class NewMessageWindowComponent implements OnInit, AfterViewInit, OnDestr
   @ViewChild('customInput', { static: true }) customInput: ElementRef;
 
   constructor(
-    public chatsService: ChatsService,
-    private commonService: CommonService,
-    private socketService: SocketService,
-    public userService: UserService,
-    private jwt: JwtService,
-    public dialog: MatDialog,
-    private router: Router
+    public readonly chatsService: ChatsService,
+    private readonly commonService: CommonService,
+    private readonly socketService: SocketService,
+    public readonly userService: UserService,
+    private readonly jwt: JwtService,
+    public readonly dialog: MatDialog,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -158,8 +160,8 @@ export class NewMessageWindowComponent implements OnInit, AfterViewInit, OnDestr
     this.showEmojiPicker = !this.showEmojiPicker;
   }
 
-  addEmoji(event) {
-    const newValue = this.messageControl.value ? this.messageControl.value + event.emoji.native : event.emoji.native;
+  addEmoji(event: EmojiEvent): void {
+    const newValue = insertEmoji(this.messageControl.value, event.emoji.native);
     this.messageControl.setValue(newValue);
     this.customInput.nativeElement.textContent = newValue;
   }
