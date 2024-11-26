@@ -60,10 +60,10 @@ export class UbsAdminOrderStatusComponent implements OnChanges, OnInit, OnDestro
         changes.generalInfo.currentValue.orderStatus,
         changes.generalInfo.currentValue.orderStatusesDtos
       );
+      if (changes.generalInfo.currentValue.orderStatus) {
+        this.updateUneditableStatus(changes.generalInfo.currentValue.orderStatus);
+      }
       this.renderOrderStatus();
-    }
-    if (changes.generalInfo.currentValue.orderStatus) {
-      this.updateUneditableStatus(changes.generalInfo.currentValue.orderStatus);
     }
   }
 

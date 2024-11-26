@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterContentChecked, ChangeDetectorRef, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterContentChecked, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { formatDate } from '@angular/common';
@@ -12,14 +12,12 @@ import { UbsAdminCancelModalComponent } from '../ubs-admin-cancel-modal/ubs-admi
 import { OrderService } from '../../services/order.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import {
-  IAddressExportDetails,
   IEmployee,
   IExportDetails,
   IGeneralOrderInfo,
   IOrderDetails,
   IOrderInfo,
   IOrderStatusInfo,
-  IPaymentInfo,
   IResponsiblePersons,
   IUpdateResponsibleEmployee,
   IUserInfo,
@@ -34,7 +32,7 @@ import { ChangingOrderData } from 'src/app/store/actions/bigOrderTable.actions';
 import { Patterns } from 'src/assets/patterns/patterns';
 import { GoogleScript } from 'src/assets/google-script/google-script';
 import { PhoneNumberValidator } from 'src/app/shared/phone-validator/phone.validator';
-import { OrderStatus, PaymentEnrollment } from 'src/app/ubs/ubs/order-status.enum';
+import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
 import { UbsAdminEmployeeService } from '../../services/ubs-admin-employee.service';
 import { AdminTableService } from '../../services/admin-table.service';
 import { TableKeys } from '../../services/table-keys.enum';
