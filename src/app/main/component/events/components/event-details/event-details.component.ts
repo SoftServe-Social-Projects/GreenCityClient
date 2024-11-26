@@ -130,7 +130,9 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
 
       this.routedFromProfile = this.localStorageService.getPreviousPage() === '/profile';
       this.backRoute = this.localStorageService.getPreviousPage();
-      this.getIsLiked();
+      if (this.userId) {
+        this.getIsLiked();
+      }
     } else {
       this.isPreview = true;
       this.eventForm = this.eventStoreService.getEditorValues();
