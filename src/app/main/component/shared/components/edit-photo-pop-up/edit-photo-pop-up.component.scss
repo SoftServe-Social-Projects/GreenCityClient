@@ -2,12 +2,9 @@
 
 .main-container {
   position: relative;
-  width: 600px;
-  height: 550px;
+  max-width: 90vw;
+  padding: 72px 80px 30px;
   font-family: var(--tertiary-font);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background: var(--primary-white);
 
   .cancel {
@@ -22,6 +19,11 @@
     }
   }
 
+  ::ng-deep .dropzone {
+    width: 99% !important;
+    margin: 1px;
+  }
+
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -30,7 +32,6 @@
 
     .selected-photo {
       max-height: 148px;
-      max-width: 148px;
       box-sizing: content-box;
     }
 
@@ -44,21 +45,32 @@
       text-align: center;
     }
 
-    .warning {
+    .message {
       font-family: var(--primary-font);
       font-size: 14px;
-      color: var(--error-ligh-red);
-      line-height: 0.8rem;
       padding: 0;
+      margin: 0;
+      margin-top: -30px;
+      z-index: 10;
+      color: var(--quaternary-grey);
+      width: 100%;
+      text-align: start;
+    }
+
+    .warning {
+      color: var(--error-ligh-red);
+      margin-top: 0;
     }
 
     .cropper-block {
       min-height: 148px;
+      width: 100%;
     }
 
     .buttons {
       display: flex;
       align-items: center;
+      justify-content: center;
 
       button {
         font-family: var(--tertiary-font);
@@ -81,80 +93,18 @@
   }
 }
 
-.dropzone-wrapper {
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-
-  .dropzone {
-    height: 231px;
-    width: 100%;
-    display: table;
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23333' stroke-width='1' stroke-dasharray='10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
-    margin-bottom: 8px;
-  }
-
-  .text-wrapper {
-    width: 456px;
-    height: 231px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    input[type='file'] {
-      position: absolute;
-      overflow: hidden;
-      z-index: -1;
-      width: 0.1px;
-      height: 0.1px;
-      opacity: 0;
-    }
-  }
-
-  .centered {
-    font-size: 16px;
-    text-align: center;
-    line-height: 24px;
-    width: 250px;
-    font-weight: 700;
-    font-family: var(--tertiary-font);
-
-    label > [browse] {
-      color: var(--primary-green);
-      text-decoration: underline;
-      cursor: pointer;
-    }
-  }
-
-  .download-info {
-    line-height: 24px;
-    color: var(--quaternary-grey);
-    font-size: 12px;
-  }
-}
-
-.dropzone-error {
-  & .dropzone {
-    background-color: var(--error-light-red);
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23EB180DFF' stroke-width='1' stroke-dasharray='10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
-  }
-
-  & .download-info {
-    color: var(--error-red);
-  }
-}
-
 @include responsiveRange(sm, md) {
   .main-container {
-    width: 518px;
-    height: 476px;
+    min-width: 518px;
+    padding: 72px 60px 30px;
   }
 }
 
 @include responsivePCFirst(sm) {
   .main-container {
     width: 90vw;
-    height: 90vh;
+    height: 100%;
+    padding: 72px 40px 30px;
     overflow: auto;
 
     .wrapper {
@@ -173,21 +123,6 @@
           width: 288px;
         }
       }
-    }
-
-    .dropzone {
-      margin-bottom: 16px;
-      width: 227px;
-    }
-
-    .download-info {
-      width: 232px;
-      text-align: left;
-    }
-
-    .text-wrapper {
-      width: 227px;
-      height: 259px;
     }
   }
 }

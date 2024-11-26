@@ -31,11 +31,11 @@ import {
   ProfileWidgetComponent,
   ProfileHeaderComponent,
   ProfileProgressComponent,
-  ShoppingListComponent,
   UserSettingComponent,
   EditProfileComponent,
   PersonalPhotoComponent,
-  SocialNetworksComponent
+  SocialNetworksComponent,
+  ToDoListComponent
 } from './components';
 import { ShowFirstNLettersPipe } from '@pipe/show-first-n-letters/show-first-n-letters.pipe';
 import { ShowFirstNPipe } from '@pipe/show-first-n-pipe/show-first-n.pipe';
@@ -55,7 +55,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { HabitProgressComponent } from './components/habit/add-new-habit/habit-progress/habit-progress.component';
 import { HabitInviteFriendsComponent } from './components/habit/add-new-habit/habit-invite-friends/habit-invite-friends.component';
 import { HabitDurationComponent } from './components/habit/add-new-habit/habit-duration/habit-duration.component';
-import { HabitEditShoppingListComponent } from './components/habit/add-new-habit/habit-edit-shopping-list/habit-edit-shopping-list.component';
+import { HabitEditToDoListComponent } from './components/habit/add-new-habit/habit-edit-to-do-list/habit-edit-to-do-list.component';
 import { AddNewHabitComponent } from './components/habit/add-new-habit/add-new-habit.component';
 import { GradientDirective } from './components/habit/add-new-habit/habit-duration/gradient.directive';
 import { FriendDashboardComponent } from './components/profile/users-friends/friend-dashboard/friend-dashboard.component';
@@ -119,7 +119,7 @@ import { AchievementItemComponent } from './components/profile/users-achievement
     ProfileProgressComponent,
     ProfileComponent,
     EcoPlacesComponent,
-    ShoppingListComponent,
+    ToDoListComponent,
     CalendarComponent,
     EditProfileComponent,
     PersonalPhotoComponent,
@@ -133,7 +133,7 @@ import { AchievementItemComponent } from './components/profile/users-achievement
     HabitProgressComponent,
     HabitInviteFriendsComponent,
     HabitDurationComponent,
-    HabitEditShoppingListComponent,
+    HabitEditToDoListComponent,
     GradientDirective,
     FriendDashboardComponent,
     AllFriendsComponent,

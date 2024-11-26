@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { HabitDto } from '../../../../../../../model/habit/HabitDto';
-import { HabitStatisticsDto } from '../../../../../../../model/habit/HabitStatisticsDto';
+import { HabitDto } from 'src/app/main/model/habit/HabitDto';
+import { HabitStatisticsDto } from 'src/app/main/model/habit/HabitStatisticsDto';
 
 @Component({
   selector: 'app-habit-estimation',

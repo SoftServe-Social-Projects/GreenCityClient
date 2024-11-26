@@ -6,7 +6,7 @@ import { AddNewHabitComponent } from './add-new-habit.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { ShoppingListService } from './habit-edit-shopping-list/shopping-list.service';
+import { ToDoListService } from './habit-edit-to-do-list/to-do-list.service';
 import { HabitService } from '@global-service/habit/habit.service';
 import { HabitAssignService } from '@global-service/habit-assign/habit-assign.service';
 import { of, Subject } from 'rxjs';
@@ -80,14 +80,14 @@ describe('AddNewHabitComponent', () => {
 
   const matSnackBarMock: MatSnackBarComponent = jasmine.createSpyObj('MatSnackBarComponent', ['openSnackBar']);
 
-  const fakeShoppingListService: ShoppingListService = jasmine.createSpyObj('fakeShoppingListService', [
-    'getHabitAllShopLists',
-    'getHabitShopList',
-    'updateHabitShopList'
+  const fakeToDoListService: ToDoListService = jasmine.createSpyObj('fakeToDoListService', [
+    'getHabitAllToDoLists',
+    'getHabitToDoList',
+    'updateHabitToDoList'
   ]);
-  fakeShoppingListService.getHabitAllShopLists = () => of();
-  fakeShoppingListService.getHabitShopList = () => of();
-  fakeShoppingListService.updateHabitShopList = () => of();
+  fakeToDoListService.getHabitAllToDoLists = () => of();
+  fakeToDoListService.getHabitToDoList = () => of();
+  fakeToDoListService.updateHabitToDoList = () => of();
 
   matSnackBarMock.openSnackBar = (type: string) => type;
 
@@ -115,7 +115,7 @@ describe('AddNewHabitComponent', () => {
         { provide: HabitService, useValue: fakeHabitService },
         { provide: HabitAssignService, useValue: fakeHabitAssignService },
         { provide: EcoNewsService, useValue: ecoNewsServiceMock },
-        { provide: ShoppingListService, useValue: fakeShoppingListService },
+        { provide: ToDoListService, useValue: fakeToDoListService },
         { provide: LocalStorageService, useValue: fakeLocalStorageService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Location, useValue: locationMock },
@@ -144,8 +144,8 @@ describe('AddNewHabitComponent', () => {
   it('should navigate back on onGoBack without call dialog', () => {
     component.initialDuration = 1;
     component.newDuration = 1;
-    component.standardShopList = null;
-    component.customShopList = null;
+    component.standardToDoList = null;
+    component.customToDoList = null;
     const spy = spyOn(locationMock, 'back');
     component.onGoBack();
     expect(spy).toHaveBeenCalled();
@@ -169,22 +169,22 @@ describe('AddNewHabitComponent', () => {
     expect(component.canAcquire).toBeTruthy();
   });
 
-  it('should set standardShopList', () => {
-    component.getList(DEFAULTFULLINFOHABIT.shoppingListItems);
-    expect(component.standardShopList).toEqual([{ id: 6, status: TodoStatus.active, text: 'TEST' }]);
-    expect(component.customShopList).toEqual([]);
+  it('should set standardToDoList', () => {
+    component.getList(DEFAULTFULLINFOHABIT.toDoListItems);
+    expect(component.standardToDoList).toEqual([{ id: 6, status: TodoStatus.active, text: 'TEST' }]);
+    expect(component.customToDoList).toEqual([]);
   });
 
-  it('should set and customShopList', () => {
-    component.getList(CUSTOMFULLINFOHABIT.shoppingListItems);
-    expect(component.customShopList).toEqual([{ id: 6, status: TodoStatus.active, text: 'TEST', custom: true }]);
-    expect(component.standardShopList).toEqual([]);
+  it('should set and customToDoList', () => {
+    component.getList(CUSTOMFULLINFOHABIT.toDoListItems);
+    expect(component.customToDoList).toEqual([{ id: 6, status: TodoStatus.active, text: 'TEST', custom: true }]);
+    expect(component.standardToDoList).toEqual([]);
   });
 
-  it('should set standardShopList and customShopList', () => {
-    const shoppingListItems = DEFAULTFULLINFOHABIT.shoppingListItems.concat(CUSTOMFULLINFOHABIT.shoppingListItems);
-    component.getList(shoppingListItems);
-    expect(component.customShopList).toEqual(shoppingListItems.filter((item) => item.custom));
-    expect(component.standardShopList).toEqual(shoppingListItems.filter((item) => !item.custom));
+  it('should set standardToDoList and customToDoList', () => {
+    const toDoListItems = DEFAULTFULLINFOHABIT.toDoListItems.concat(CUSTOMFULLINFOHABIT.toDoListItems);
+    component.getList(toDoListItems);
+    expect(component.customToDoList).toEqual(toDoListItems.filter((item) => item.custom));
+    expect(component.standardToDoList).toEqual(toDoListItems.filter((item) => !item.custom));
   });
 });

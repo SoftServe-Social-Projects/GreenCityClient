@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { UserNotificationsComponent } from './user-notifications.component';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of, BehaviorSubject, throwError } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { Language } from 'src/app/main/i18n/Language';
 import { PipeTransform, Pipe, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
-import { FilterCriteria, NotificationFilter } from '@global-user/models/notification.model';
+import { FilterCriteria } from '@global-user/models/notification.model';
 import { Router } from '@angular/router';
 import { UserNotificationService } from '@global-user/services/user-notification.service';
 
@@ -15,6 +15,8 @@ import { UserService } from '@global-service/user/user.service';
 import { LocalizedDatePipe } from 'src/app/shared/localized-date-pipe/localized-date.pipe';
 import { RelativeDatePipe } from 'src/app/shared/relative-date.pipe';
 import { By } from '@angular/platform-browser';
+import { UserFriendsService } from '@global-user/services/user-friends.service';
+import { HabitService } from '@global-service/habit/habit.service';
 
 @Pipe({ name: 'translate' })
 class TranslatePipeMock implements PipeTransform {
@@ -30,8 +32,8 @@ describe('UserNotificationsComponent', () => {
 
   const notifications = [
     {
-      actionUserId: 2,
-      actionUserText: 'testUser',
+      actionUserId: [2],
+      actionUserText: ['testUser'],
       bodyText: 'test texts',
       message: 'test message',
       notificationId: 5,
@@ -45,12 +47,12 @@ describe('UserNotificationsComponent', () => {
       viewed: false
     },
     {
-      actionUserId: 1,
-      actionUserText: 'testUser1',
+      actionUserId: [1],
+      actionUserText: ['testUser1'],
       bodyText: 'test texts1',
       message: 'test message1',
       notificationId: 2,
-      notificationType: '',
+      notificationType: 'HABIT_INVITE',
       projectName: 'GreeCity',
       secondMessage: 'secondMessageTest',
       secondMessageId: 5,
@@ -78,6 +80,16 @@ describe('UserNotificationsComponent', () => {
   localStorageServiceMock.getCurrentLanguage = () => 'en' as Language;
   localStorageServiceMock.languageSubject = of('en');
   localStorageServiceMock.getUserId = () => 1;
+
+  const userFriendsServiceMock = {
+    acceptRequest: jasmine.createSpy('acceptRequest').and.returnValue(of(null)),
+    declineRequest: jasmine.createSpy('declineRequest').and.returnValue(of(null))
+  };
+
+  const habitServiceMock = {
+    acceptHabitInvitation: jasmine.createSpy('acceptHabitInvitation').and.returnValue(of(null)),
+    declineHabitInvitation: jasmine.createSpy('declineHabitInvitation').and.returnValue(of(null))
+  };
 
   const routerMock = jasmine.createSpyObj('router', ['navigate']);
 
@@ -113,7 +125,9 @@ describe('UserNotificationsComponent', () => {
         { provide: MatSnackBarComponent, useValue: { openSnackBar: () => {} } },
         { provide: Router, useValue: routerMock },
         { provide: UserNotificationService, useValue: userNotificationServiceMock },
-        { provide: UserService, useValue: { userId: 1 } }
+        { provide: UserService, useValue: { userId: 1 } },
+        { provide: UserFriendsService, useValue: userFriendsServiceMock },
+        { provide: HabitService, useValue: habitServiceMock }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -140,29 +154,103 @@ describe('UserNotificationsComponent', () => {
     expect(component.filterCriteriaOptions.find((el) => el.name === FilterCriteria.ORIGIN).isSelected).toBeTrue();
   });
 
+  it('should navigate to news page when notification type is ECONEWS', waitForAsync(() => {
+    const target = document.createElement('div');
+    target.setAttribute('data-notificationType', 'ECONEWS');
+    target.setAttribute('data-targetid', '5');
+
+    const customEvent = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      composed: true
+    });
+
+    Object.defineProperty(customEvent, 'target', { value: target });
+
+    spyOn(component, 'navigate').and.callThrough();
+
+    component.navigate(customEvent);
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['news', 5]);
+  }));
+
+  it('should navigate to habit editing page when notification type is HABIT', waitForAsync(() => {
+    const target = document.createElement('div');
+    target.setAttribute('data-notificationType', 'HABIT');
+    target.setAttribute('data-targetid', '3');
+
+    const customEvent = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      composed: true
+    });
+
+    Object.defineProperty(customEvent, 'target', { value: target });
+
+    spyOn(component, 'navigate').and.callThrough();
+
+    component.navigate(customEvent);
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['profile', 1, 'allhabits', 'addhabit', 3]);
+  }));
+
   it('should return checkSelectedFilter', () => {
     component.filterCriteriaOptions = filterCriteriaOptions;
     expect(component.checkSelectedFilter(FilterCriteria.TYPE)).toBeFalsy();
   });
 
-  it('should call declineRequest', fakeAsync(() => {
+  it('should call declineRequest', waitForAsync(() => {
     component.notifications = notifications;
     const spy = spyOn(component, 'declineRequest');
     fixture.detectChanges();
     const button = fixture.debugElement.query(By.css('.decline-request'));
     button.triggerEventHandler('click', null);
-    tick();
     expect(spy).toHaveBeenCalled();
   }));
 
-  it('should call  accept request', fakeAsync(() => {
+  it('should call userFriendsService.declineRequest for a friend request', waitForAsync(() => {
+    component.notifications = [notifications[0]];
+    fixture.detectChanges();
+
+    component.declineRequest(notifications[0]);
+
+    expect(userFriendsServiceMock.declineRequest).toHaveBeenCalledWith(notifications[0].actionUserId[0]);
+  }));
+
+  it('should call habitService.declineHabitInvitation for a habit invitation', waitForAsync(() => {
+    component.notifications = [notifications[1]];
+    fixture.detectChanges();
+
+    component.declineRequest(notifications[1]);
+
+    expect(habitServiceMock.declineHabitInvitation).toHaveBeenCalledWith(notifications[1].secondMessageId);
+  }));
+
+  it('should call  accept request', waitForAsync(() => {
     component.notifications = notifications;
     const spy = spyOn(component, 'acceptRequest');
     fixture.detectChanges();
     const button = fixture.debugElement.query(By.css('.accept-request'));
     button.triggerEventHandler('click', null);
-    tick();
     expect(spy).toHaveBeenCalled();
+  }));
+
+  it('should call userFriendsService.acceptRequest for a friend request', waitForAsync(() => {
+    component.notifications = [notifications[0]];
+    fixture.detectChanges();
+
+    component.acceptRequest(notifications[0]);
+
+    expect(userFriendsServiceMock.acceptRequest).toHaveBeenCalledWith(notifications[0].actionUserId[0]);
+  }));
+
+  it('should call habitService.acceptHabitInvitation for a habit invitation', waitForAsync(() => {
+    component.notifications = [notifications[1]];
+    fixture.detectChanges();
+
+    component.acceptRequest(notifications[1]);
+
+    expect(habitServiceMock.acceptHabitInvitation).toHaveBeenCalledWith(notifications[1].secondMessageId);
   }));
 
   it('onScroll', () => {

@@ -8,7 +8,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
 import { IEcoNewsState } from 'src/app/store/state/ecoNews.state';
-import { GetEcoNewsByAuthorAction } from 'src/app/store/actions/ecoNews.actions';
+import { GetEcoNewsAction } from 'src/app/store/actions/ecoNews.actions';
 import { EcoNewsModel } from '@eco-news-models/eco-news-model';
 import { EventResponse, EventResponseDto } from 'src/app/main/component/events/models/events.interface';
 import { EventsService } from 'src/app/main/component/events/services/events.service';
@@ -18,6 +18,9 @@ import { EventType } from 'src/app/ubs/ubs/services/event-type.enum';
 import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
 import { HttpParams } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { FilterModel } from '@shared/components/tag-filter/tag-filter.model';
+import { tagsListEcoNewsData } from '@eco-news-models/eco-news-consts';
+import { EcoNewsService } from '@eco-news-service/eco-news.service';
 
 @Component({
   selector: 'app-profile-dashboard',
@@ -39,26 +42,28 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   isActiveNewsScroll = false;
   isActiveEventsScroll = false;
   userId: number;
-  news: EcoNewsModel[];
+  news: EcoNewsModel[] = [];
   isOnlineChecked = false;
   isOfflineChecked = false;
   eventsList: EventResponse[] = [];
   eventsPerPage = 6;
   eventsPage = 1;
-  favoriteEventsPage = 0;
   totalEvents = 0;
   totalNews = 0;
+  tagsList: Array<string> = [];
+  tagList: FilterModel[] = tagsListEcoNewsData;
   loadingEvents = false;
   eventType = '';
   isFavoriteBtnClicked = false;
+  isNewsFavoriteBtnClicked = false;
   userLatitude = 0;
   userLongitude = 0;
   images = singleNewsImages;
-  authorNews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
+  econews$ = this.store.select((state: IAppState): IEcoNewsState => state.ecoNewsState);
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   private hasNext = true;
   private hasNextPageOfEvents = true;
-  private currentPage: number;
+  private page: number;
   private newsCount = 5;
 
   constructor(
@@ -68,7 +73,8 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     private eventService: EventsService,
     private route: ActivatedRoute,
     private readonly cdr: ChangeDetectorRef,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly ecoNewsService: EcoNewsService
   ) {}
 
   ngOnInit() {
@@ -76,12 +82,12 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.subscribeToLangChange();
     this.getUserId();
 
-    this.authorNews$.subscribe((val: IEcoNewsState) => {
-      this.currentPage = val.authorNewsPage;
-      if (val.ecoNewsByAuthor) {
-        this.totalNews = val.ecoNewsByAuthor.totalElements;
-        this.hasNext = val.ecoNewsByAuthor.hasNext;
-        this.news = val.authorNews;
+    this.econews$.subscribe((val: IEcoNewsState) => {
+      this.page = val.pageNumber;
+      if (val.ecoNews) {
+        this.totalNews = val.ecoNews.totalElements;
+        this.hasNext = val.ecoNews.hasNext;
+        this.news = [...val.pages];
       }
     });
 
@@ -134,15 +140,8 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     this.hasNextPageOfEvents = true;
   }
 
-  escapeFromFavorites(): void {
+  toggleFavorites(): void {
     this.isFavoriteBtnClicked = !this.isFavoriteBtnClicked;
-
-    this.cleanState();
-    this.getUserEvents();
-  }
-
-  goToFavorites(): void {
-    this.isFavoriteBtnClicked = true;
 
     this.cleanState();
     this.getUserEvents();
@@ -187,6 +186,7 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
           next: (res: EventResponseDto) => {
             this.eventsList.push(...res.page);
             this.eventsPage++;
+            this.totalEvents = res.totalElements;
             this.hasNextPageOfEvents = res.hasNext;
             this.isActiveEventsScroll = res.hasNext;
           },
@@ -197,17 +197,45 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  dispatchNews(res: boolean) {
-    if (this.currentPage !== undefined && this.hasNext) {
-      this.store.dispatch(
-        GetEcoNewsByAuthorAction({
-          authorId: this.userId,
-          currentPage: this.currentPage,
-          numberOfNews: this.newsCount,
-          reset: res
-        })
-      );
+  toggleNewsFavorites() {
+    this.isNewsFavoriteBtnClicked = !this.isNewsFavoriteBtnClicked;
+    this.dispatchNews(true);
+  }
+
+  getFilterData(value: Array<string>): void {
+    if (this.tagsList !== value) {
+      this.tagsList = value;
     }
+    this.dispatchNews(true);
+  }
+
+  dispatchNews(res: boolean): void {
+    if (res) {
+      this.hasNext = true;
+      this.page = 0;
+      this.news = [];
+      this.totalNews = 0;
+    }
+
+    if (!this.hasNext || this.loading) {
+      return;
+    }
+
+    this.loading = true;
+    const params = this.ecoNewsService.getNewsHttpParams({
+      page: this.page,
+      size: this.newsCount,
+      authorId: this.userId,
+      favorite: this.isNewsFavoriteBtnClicked,
+      userId: this.userId,
+      tags: this.tagsList
+    });
+
+    const action = GetEcoNewsAction({ params, reset: res });
+    this.store.dispatch(action);
+
+    this.page++;
+    this.loading = false;
   }
 
   changeStatus(habit: HabitAssignInterface) {
@@ -256,6 +284,9 @@ export class ProfileDashboardComponent implements OnInit, OnDestroy {
   }
 
   onScroll(): void {
+    if (!this.news.length) {
+      return;
+    }
     this.dispatchNews(false);
   }
 

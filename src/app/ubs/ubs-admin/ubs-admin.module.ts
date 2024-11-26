@@ -100,6 +100,7 @@ import { UnsavedChangesGuard } from './unsaved-changes-guard.guard';
 import { DeletingProfileReasonPopUpComponent } from 'src/app/ubs/ubs-admin/components/shared/components/deleting-profile-reason-pop-up/deleting-profile-reason-pop-up.component';
 import { UbsAdminEditUserAgreementComponent } from './components/ubs-admin-edit-user-agreement/ubs-admin-edit-user-agreement.component';
 import { QuillModule } from 'ngx-quill';
+import { UbsAdminConfirmStatusChangePopUpComponent } from './components/ubs-admin-confirm-status-change-pop-up/ubs-admin-confirm-status-change-pop-up.component';
 
 @NgModule({
   declarations: [
@@ -168,7 +169,8 @@ import { QuillModule } from 'ngx-quill';
     ConfirmationDialogComponent,
     DeletingProfileReasonPopUpComponent,
     TariffSelectorComponent,
-    UbsAdminEditUserAgreementComponent
+    UbsAdminEditUserAgreementComponent,
+    UbsAdminConfirmStatusChangePopUpComponent
   ],
   imports: [
     CommonModule,

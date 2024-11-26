@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SubscriptionService } from '@global-service/subscription/subscription.service';
 import { take } from 'rxjs';
-import { footerIcons } from './../../../../image-pathes/footer-icons';
+import { footerIcons } from 'src/app/main/image-pathes/footer-icons';
 
 @Component({
   selector: 'app-unsubscribe',

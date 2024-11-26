@@ -11,8 +11,8 @@ export interface NotificationArrayModel {
 }
 
 export interface NotificationModel {
-  actionUserId: number;
-  actionUserText: string;
+  actionUserId: number[];
+  actionUserText: string[];
   bodyText: string;
   message: string;
   notificationId: number;
@@ -52,7 +52,8 @@ export enum NotificationCriteria {
   EVENT_JOINED = 'EVENT_JOINED',
   EVENT_COMMENT = ' EVENT_COMMENT',
   FRIEND_REQUEST_RECEIVED = 'FRIEND_REQUEST_RECEIVED',
-  FRIEND_REQUEST_ACCEPTED = 'FRIEND_REQUEST_ACCEPTED'
+  FRIEND_REQUEST_ACCEPTED = 'FRIEND_REQUEST_ACCEPTED',
+  HABIT_INVITATION = 'HABIT_INVITE'
 }
 
 export const filterCriteriaOptions = [

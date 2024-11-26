@@ -46,7 +46,7 @@
         ></app-habit-progress>
       </div>
       <div class="habit-second-block">
-        <div class="duration-shoping">
+        <div class="duration-to-do">
           <div class="duration">
             <app-habit-duration
               *ngIf="initialDuration"
@@ -58,17 +58,21 @@
               <input type="checkbox" [checked]="isPrivate" (change)="onChange()" /><span class="slider"></span>
             </label>
           </div>
-          <div class="shopping">
-            <app-habit-edit-shopping-list
-              *ngIf="initialShoppingList"
+          <div class="to-do">
+            <app-habit-edit-to-do-list
+              *ngIf="initialToDoList"
               (newList)="getList($event)"
-              [shopList]="initialShoppingList"
+              [toDoList]="initialToDoList"
               [isAcquired]="isAcquired"
-            ></app-habit-edit-shopping-list>
+            ></app-habit-edit-to-do-list>
           </div>
         </div>
         <div class="invite-friends">
-          <app-habit-invite-friends class="invite-friends-container" [habitId]="habitId"></app-habit-invite-friends>
+          <app-habit-invite-friends
+            class="invite-friends-container"
+            [habitId]="habitId"
+            [habitAssignId]="habitAssignId"
+          ></app-habit-invite-friends>
         </div>
       </div>
     </div>

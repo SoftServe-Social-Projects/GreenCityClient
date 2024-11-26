@@ -7,10 +7,10 @@ import { Store } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
 import { IMaskModule } from 'angular-imask';
 import { of } from 'rxjs';
-import { ShowImgsPopUpComponent } from '../../../../../shared/show-imgs-pop-up/show-imgs-pop-up.component';
+import { ShowImgsPopUpComponent } from 'src/app/shared/show-imgs-pop-up/show-imgs-pop-up.component';
 import { UbsAdminEmployeeEditFormComponent } from './ubs-admin-employee-edit-form.component';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
-import { FileHandle } from '../../../models/file-handle.model';
+import { FileHandle } from 'src/app/ubs/ubs-admin/models/file-handle.model';
 
 describe('UbsAdminEmployeeEditFormComponent', () => {
   let component: UbsAdminEmployeeEditFormComponent;

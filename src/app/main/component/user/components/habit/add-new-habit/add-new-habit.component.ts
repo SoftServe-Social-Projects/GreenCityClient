@@ -7,7 +7,7 @@ import { HabitService } from '@global-service/habit/habit.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { ShoppingListService } from './habit-edit-shopping-list/shopping-list.service';
+import { ToDoListService } from './habit-edit-to-do-list/to-do-list.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { WarningPopUpComponent } from '@shared/components';
 import { Location } from '@angular/common';
@@ -20,7 +20,7 @@ import { HabitAcquireConfirm, HabitCongratulation, HabitGiveUp, HabitLeavePage }
 import { WarningDialog } from '@global-user/models/warning-dialog.inteface';
 import { HabitAssignInterface } from '../models/interfaces/habit-assign.interface';
 import { HabitInterface, HabitListInterface } from '../models/interfaces/habit.interface';
-import { AllShoppingLists, HabitUpdateShopList, ShoppingList } from '@user-models/shoppinglist.interface';
+import { AllToDoLists, HabitUpdateToDoList, ToDoList } from '@global-user/models/to-do-list.interface';
 import { UserFriendsService } from '@global-user/services/user-friends.service';
 import { HabitAssignCustomPropertiesDto, HabitAssignPropertiesDto } from '@global-models/goal/HabitAssignCustomPropertiesDto';
 import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
@@ -37,9 +37,9 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
   habitResponse: HabitInterface;
   recommendedHabits: HabitInterface[];
   recommendedNews: EcoNewsModel[];
-  initialShoppingList: ShoppingList[] = [];
-  standardShopList: ShoppingList[] = [];
-  customShopList: ShoppingList[] = [];
+  initialToDoList: ToDoList[] = [];
+  standardToDoList: ToDoList[] = [];
+  customToDoList: ToDoList[] = [];
   friendsIdsList: number[] = [];
   newDuration = 7;
   initialDuration: number;
@@ -73,7 +73,7 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBarComponent,
     private habitAssignService: HabitAssignService,
     private newsService: EcoNewsService,
-    private shopListService: ShoppingListService,
+    private toDoListService: ToDoListService,
     private localStorageService: LocalStorageService,
     private translate: TranslateService,
     private location: Location,
@@ -124,7 +124,7 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
           this.isAcquired = this.assignedHabit.status === HabitStatus.ACQUIRED;
           this.initialDuration = res.duration || res.habit.defaultDuration;
           this.initHabitData(res.habit, res.duration || res.habit.defaultDuration);
-          this.getCustomShopList();
+          this.getCustomToDoList();
         });
     } else {
       this.getDefaultHabit();
@@ -169,10 +169,10 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
         this.initHabitData(data);
         this.isCustomHabit = data.isCustomHabit;
         if (data.isCustomHabit) {
-          data.customShoppingListItems?.forEach((item) => (item.custom = true));
-          this.initialShoppingList = data.customShoppingListItems;
+          data.customToDoListItems?.forEach((item) => (item.custom = true));
+          this.initialToDoList = data.customToDoListItems;
         } else {
-          this.getStandardShopList();
+          this.getStandardToDoList();
         }
       });
   }
@@ -196,7 +196,7 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
   }
 
   onGoBack(): void {
-    const isHabitWasEdited = this.initialDuration !== this.newDuration || this.standardShopList || this.customShopList;
+    const isHabitWasEdited = this.initialDuration !== this.newDuration || this.standardToDoList || this.customToDoList;
     if (isHabitWasEdited) {
       const dialogRef = this.getOpenDialog(HabitLeavePage, false);
       if (!dialogRef) {
@@ -230,28 +230,28 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
     }
   }
 
-  getList(list: ShoppingList[]): void {
-    this.standardShopList = list.filter((item) => !item.custom);
-    this.customShopList = list.filter((item) => item.custom);
+  getList(list: ToDoList[]): void {
+    this.standardToDoList = list.filter((item) => !item.custom);
+    this.customToDoList = list.filter((item) => item.custom);
   }
 
-  private getStandardShopList(): void {
-    this.shopListService
-      .getHabitShopList(this.habitId)
+  private getStandardToDoList(): void {
+    this.toDoListService
+      .getHabitToDoList(this.habitId)
       .pipe(take(1))
       .subscribe((res) => {
-        this.initialShoppingList = res;
+        this.initialToDoList = res;
       });
   }
 
-  private getCustomShopList(): void {
-    this.shopListService
-      .getHabitAllShopLists(this.habitAssignId, this.currentLang)
+  private getCustomToDoList(): void {
+    this.toDoListService
+      .getHabitAllToDoLists(this.habitAssignId, this.currentLang)
       .pipe(take(1))
-      .subscribe((res: AllShoppingLists) => {
-        res.customShoppingListItemDto?.forEach((item) => (item.custom = true));
-        this.initialShoppingList = [...res.customShoppingListItemDto, ...res.userShoppingListItemDto];
-        this.getList(this.initialShoppingList);
+      .subscribe((res: AllToDoLists) => {
+        res.customToDoListItemDto?.forEach((item) => (item.custom = true));
+        this.initialToDoList = [...res.customToDoListItemDto, ...res.userToDoListItemDto];
+        this.getList(this.initialToDoList);
       });
   }
 
@@ -289,14 +289,14 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
   assignCustomHabit(): void {
     this.friendsIdsList = this.userFriendsService.addedFriends?.map((friend) => friend.id);
     const habitAssignPropertiesDto: HabitAssignPropertiesDto = {
-      defaultShoppingListItems: this.standardShopList.filter((item) => item.selected === true).map((item) => item.id),
+      defaultToDoListItems: this.standardToDoList.filter((item) => item.selected === true).map((item) => item.id),
       duration: this.newDuration,
       isPrivate: this.isPrivate
     };
     const body: HabitAssignCustomPropertiesDto = {
       friendsIdsList: this.friendsIdsList,
       habitAssignPropertiesDto,
-      customShoppingListItemList: this.customShopList.map((item) => ({ text: item.text }))
+      customToDoListItemList: this.customToDoList.map((item) => ({ text: item.text }))
     };
 
     this.habitAssignService
@@ -312,9 +312,9 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
       .updateHabitDuration(this.habitAssignId, this.newDuration)
       .pipe(take(1))
       .subscribe(() => {
-        if (this.customShopList || this.standardShopList) {
-          this.convertShopLists();
-          this.shopListService.updateHabitShopList(this.setHabitListForUpdate());
+        if (this.customToDoList || this.standardToDoList) {
+          this.convertToDoLists();
+          this.toDoListService.updateHabitToDoList(this.setHabitListForUpdate());
         }
         this.afterHabitWasChanged('habitUpdated');
       });
@@ -334,12 +334,12 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
       });
   }
 
-  private convertShopLists(): void {
-    this.customShopList?.forEach((el) => {
+  private convertToDoLists(): void {
+    this.customToDoList?.forEach((el) => {
       delete el.custom;
       delete el.selected;
     });
-    this.standardShopList?.forEach((el) => {
+    this.standardToDoList?.forEach((el) => {
       delete el.custom;
       delete el.selected;
     });
@@ -350,11 +350,11 @@ export class AddNewHabitComponent implements OnInit, OnDestroy {
     this.snackBar.openSnackBar(kindOfChanges);
   }
 
-  private setHabitListForUpdate(): HabitUpdateShopList {
+  private setHabitListForUpdate(): HabitUpdateToDoList {
     return {
       habitAssignId: this.habitAssignId,
-      customShopList: this.customShopList,
-      standardShopList: this.standardShopList,
+      customToDoList: this.customToDoList,
+      standardToDoList: this.standardToDoList,
       lang: this.currentLang
     };
   }

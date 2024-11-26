@@ -45,16 +45,27 @@ export class UbsAdminOrderHistoryComponent implements OnDestroy, OnChanges, OnIn
   }
 
   parseEventName(eventName: string, index: number) {
-    const parts = eventName.split('-').map((part) => part.trim());
-    const [status, result] = parts;
+    if (eventName.includes(' - ') && this.isParsableFormat(eventName)) {
+      const parts = eventName.split('-').map((part) => part.trim());
+      const [status, result] = parts;
 
-    this.orderHistory[index].status = status;
-    this.orderHistory[index].result = result;
+      this.orderHistory[index].status = status;
+      this.orderHistory[index].result = result;
+    } else {
+      this.orderHistory[index].status = eventName;
+      this.orderHistory[index].result = null;
+    }
+  }
+
+  private isParsableFormat(eventName: string): boolean {
+    const parsablePatterns = ['Статус Замовлення', 'Order Status'];
+
+    return parsablePatterns.some((pattern) => eventName.startsWith(pattern));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     const orderID = this.orderInfo.generalOrderInfo.id;
-    if (changes.orderInfo) {
+    if (changes.orderInfo && this.currentLanguage) {
       this.getOrderHistory(orderID);
       this.getNotTakenOutReason(orderID);
       this.getOrderCancelReason(orderID);
@@ -65,12 +76,19 @@ export class UbsAdminOrderHistoryComponent implements OnDestroy, OnChanges, OnIn
     this.pageOpen = !this.pageOpen;
   }
 
-  showPopup(orderHistoryId) {
+  showPopup(orderHistoryId: number, event?: KeyboardEvent) {
+    if (event && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+    }
+
     this.orderHistory.forEach((order) => {
-      if (order.id === orderHistoryId && order.result === ordersStatuses.CancelUA) {
+      if (order.id !== orderHistoryId) {
+        return;
+      }
+      if (order.result === ordersStatuses.CancelUA) {
         this.openCancelReason();
       }
-      if (order.id === orderHistoryId && order.result === ordersStatuses.NotTakenOutUA) {
+      if (order.result === ordersStatuses.NotTakenOutUA) {
         this.openNotTakenOutReason(orderHistoryId);
       }
     });

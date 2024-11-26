@@ -13,11 +13,11 @@ import { Store } from '@ngrx/store';
 import { BehaviorSubject, of } from 'rxjs';
 import { SafeHtmlPipe } from '@pipe/safe-html-pipe/safe-html.pipe';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Language } from '../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { FIRSTECONEWS } from '../../mocks/eco-news-mock';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { singleNewsImages } from '../../../../image-pathes/single-news-images';
+import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import { MetaService } from 'src/app/shared/services/meta/meta.service';
 

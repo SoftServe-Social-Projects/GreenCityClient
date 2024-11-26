@@ -5,6 +5,8 @@ import { Message } from '../../model/Message.model';
 import { FormControl } from '@angular/forms';
 import { SocketService } from '../../service/socket/socket.service';
 import { UserService } from '@global-service/user/user.service';
+import { insertEmoji } from 'src/app/main/component/comments/components/add-emoji/add-emoji';
+import { EmojiEvent } from 'src/app/main/component/comments/models/comments-model';
 
 @Component({
   selector: 'app-chat',
@@ -24,9 +26,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   private isChatUpdate = false;
 
   constructor(
-    public chatsService: ChatsService,
-    private socketService: SocketService,
-    public userService: UserService
+    public readonly chatsService: ChatsService,
+    private readonly socketService: SocketService,
+    public readonly userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -74,8 +76,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.showEmojiPicker = !this.showEmojiPicker;
   }
 
-  addEmoji(event) {
-    const newValue = this.messageControl.value ? this.messageControl.value + event.emoji.native : event.emoji.native;
+  addEmoji(event: EmojiEvent): void {
+    const newValue = insertEmoji(this.messageControl.value, event.emoji.native);
     this.messageControl.setValue(newValue);
   }
 }

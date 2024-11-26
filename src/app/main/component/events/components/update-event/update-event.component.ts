@@ -9,7 +9,7 @@ import {
   EventResponse,
   ImagesContainer
 } from '../../models/events.interface';
-import { LanguageService } from '../../../../i18n/language.service';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 import { EventStoreService } from '../../services/event-store.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 
@@ -36,18 +36,23 @@ export class UpdateEventComponent implements OnInit {
 
   ngOnInit() {
     this.eventForm = this.eventStore.getEditorValues();
-    if (this.eventForm.eventInformation) {
-      return;
-    }
+
     const userId = this.localStorageService.getUserId();
+
     this.route.params.subscribe((params) => {
       const isAuthor = this.authorId === userId;
       this.eventId = params['id'];
+
+      if (this.eventForm.eventInformation && Number(this.eventId) === this.eventStore.getEventId()) {
+        return;
+      }
+
       if (isAuthor || !this.authorId) {
         this.isFetching = true;
         this.eventService.getEventById(this.eventId).subscribe({
           next: (response) => {
             this.eventForm = this._transformResponseToForm(response);
+            this.eventStore.setEventId(this.eventId);
             this.eventStore.setEditorValues(this.eventForm);
             this.authorId = response.organizer.id;
             this.isAuthor = this.authorId === userId;
@@ -113,7 +118,8 @@ export class UpdateEventComponent implements OnInit {
 
       const place = this.languageService.getCurrentLanguage() === 'ua' ? coordinates?.formattedAddressUa : coordinates?.formattedAddressEn;
 
-      allPlace &&= address === coordinates?.formattedAddressEn ?? false;
+      allPlace = allPlace && address === (coordinates?.formattedAddressEn ?? false);
+
       allLink &&= link === onlineLink;
       return {
         day: { startTime: formattedStartTime, date: _startDate, endTime: formattedEndTime, allDay: false },

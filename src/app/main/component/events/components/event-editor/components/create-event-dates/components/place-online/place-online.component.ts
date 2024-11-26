@@ -5,7 +5,7 @@ import { GoogleScript } from '@assets/google-script/google-script';
 import { Patterns } from '@assets/patterns/patterns';
 import { GeocoderService } from '@global-service/geocoder/geocoder.service';
 import { Subject, takeUntil } from 'rxjs';
-import { PlaceOnlineGroup } from '../../../../../../models/events.interface';
+import { PlaceOnlineGroup } from 'src/app/main/component/events/models/events.interface';
 
 @Component({
   selector: 'app-place-online',

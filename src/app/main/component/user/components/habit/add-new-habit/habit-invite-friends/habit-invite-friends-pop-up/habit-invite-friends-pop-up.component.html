@@ -24,7 +24,11 @@
 
     <ul>
       <li *ngFor="let friend of inputFriends" [class.disabled]="setFriendDisable(friend.id)">
-        <mat-checkbox [checked]="selectedFriends.includes(friend.id)" (change)="onFriendCheckboxChange(friend.id, $event.checked)">
+        <mat-checkbox
+          [checked]="selectedFriends.includes(friend.id)"
+          (change)="onFriendCheckboxChange(friend.id, $event.checked)"
+          [disabled]="setFriendDisable(friend.id)"
+        >
           <div class="friend">
             <app-user-profile-image
               [imgPath]="friend.profilePicturePath"

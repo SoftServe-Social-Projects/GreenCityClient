@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <span class="filter">{{ header | translate }}</span>
+  <span *ngIf="header" class="filter">{{ header | translate }}</span>
   <div class="ul-eco-buttons" aria-label="filter by items">
     <button *ngFor="let filter of filters" class="tag-button" (click)="toggleFilter(filter.name)">
       <a class="custom-chip global-tag" [ngClass]="{ 'global-tag-clicked': filter.isActive }">

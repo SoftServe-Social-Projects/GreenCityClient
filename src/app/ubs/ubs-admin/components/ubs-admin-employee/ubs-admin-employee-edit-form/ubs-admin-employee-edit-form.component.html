@@ -99,36 +99,40 @@
                     <th class="col-region">{{ 'ubs-employee.tariffs-columns.region' | translate }}</th>
                     <th class="col-city">{{ 'ubs-employee.tariffs-columns.city' | translate }}</th>
                     <th class="col-courier">{{ 'ubs-employee.tariffs-columns.courier' | translate }}</th>
-                    <th class="col-actions">{{ 'ubs-employee.tariffs-columns.chat' | translate }}</th>
                     <th class="col-actions">{{ 'ubs-employee.tariffs-columns.tariff' | translate }}</th>
+                    <th class="col-actions">{{ 'ubs-employee.tariffs-columns.chat' | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let tariff of filteredTariffs">
                     <td>
-                      {{ tariff.region.en }}
+                      {{ langService.getLangValue(tariff.region.ua, tariff.region.en) }}
                     </td>
                     <td>
-                      <span *ngFor="let location of tariff.locations">{{ location.en }}</span>
+                      <span *ngFor="let location of tariff.locations">
+                        {{ langService.getLangValue(location.ua, location.en) }}
+                      </span>
                     </td>
                     <td>
-                      {{ tariff.courier.en }}
-                    </td>
-                    <td>
-                      <mat-checkbox
-                        [(ngModel)]="tariff.hasChat"
-                        [ngModelOptions]="{ standalone: true }"
-                        [disabled]="!tariff.selected"
-                        (change)="isTariffListChange(tariff)"
-                      ></mat-checkbox>
+                      {{ langService.getLangValue(tariff.courier.ua, tariff.courier.en) }}
                     </td>
                     <td>
                       <mat-checkbox
-                        class="tariff-checkbox"
                         [(ngModel)]="tariff.selected"
                         [ngModelOptions]="{ standalone: true }"
                         (change)="isTariffListChange(tariff)"
                       ></mat-checkbox>
+                    </td>
+                    <td>
+                      <span [matTooltip]="!tariff.selected ? ('ubs-employee.chat-hint' | translate) : ''">
+                        <mat-checkbox
+                          [(ngModel)]="tariff.hasChat"
+                          [ngModelOptions]="{ standalone: true }"
+                          (change)="isTariffListChange(tariff)"
+                          [disabled]="!tariff.selected"
+                        >
+                        </mat-checkbox>
+                      </span>
                     </td>
                   </tr>
                 </tbody>
@@ -169,12 +173,7 @@
       <button
         type="submit"
         class="addButton action-buttons"
-        [disabled]="
-          employeeForm.invalid ||
-          !employeePositions.length ||
-          isUploading ||
-          (editMode && !isInitialDataChanged && !isInitialImageChanged && !isInitialPositionsChanged && !isInitialTariffsChanged)
-        "
+        [disabled]="isButtonDisabled()"
         (click)="isUpdatingEmployee ? this.updateEmployee() : this.createEmployee()"
       >
         <span *ngIf="isUploading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> </span>

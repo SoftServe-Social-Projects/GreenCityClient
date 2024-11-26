@@ -1,5 +1,5 @@
 import { HabitStatus } from '@global-models/habit/HabitStatus.enum';
-import { ShoppingList } from '@user-models/shoppinglist.interface';
+import { ToDoList } from '@global-user/models/to-do-list.interface';
 import { HabitInterface } from './habit.interface';
 
 export interface HabitAssignInterface {
@@ -16,7 +16,7 @@ export interface HabitAssignInterface {
   habitStreak: number;
   lastEnrollmentDate: Date;
   habitStatusCalendarDtoList: Array<HabitStatusCalendarListInterface>;
-  shoppingListItems: Array<ShoppingList>;
+  toDoListItems: Array<ToDoList>;
   progressNotificationHasDisplayed?: boolean;
 }
 

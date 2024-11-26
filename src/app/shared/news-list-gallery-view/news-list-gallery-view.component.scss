@@ -14,6 +14,7 @@ div {
   border-radius: 4px;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   .list-image-content {
     object-fit: cover;
@@ -21,6 +22,18 @@ div {
     height: 204px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+  }
+
+  .tag-divider {
+    color: var(--primary-light-green);
+    height: 100%;
+    padding: 0 4px;
+    margin: 0 4px;
+  }
+
+  .divider-small {
+    margin: 0 2px;
+    padding: 0;
   }
 
   .list-gallery-content {
@@ -40,7 +53,6 @@ div {
         font-size: 14px;
         line-height: 20px;
         color: var(--primary-green);
-        margin-right: 16px;
         text-transform: uppercase;
       }
     }

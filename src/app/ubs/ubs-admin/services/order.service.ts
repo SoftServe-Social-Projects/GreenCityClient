@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
@@ -9,7 +9,9 @@ import {
   FormFieldsName,
   ResponsibleEmployee,
   INotTakenOutReason,
-  NotTakenOutReasonImages
+  NotTakenOutReasonImages,
+  IOrderInfo,
+  IBigOrderTableOrderInfo
 } from '../models/ubs-admin.interface';
 import { environment } from '@environment/environment';
 import { IViolation } from '../models/violation.model';
@@ -92,11 +94,16 @@ export class OrderService {
     }
   }
 
-  getOrderInfo(orderId) {
-    return this.http.get(`${this.backend}/management/get-data-for-order/${orderId}`);
+  getOrderInfo(orderId: number): Observable<IOrderInfo> {
+    return this.http.get<IOrderInfo>(`${this.backend}/management/get-data-for-order/${orderId}`);
   }
 
-  updateOrderInfo(orderId: number, lang: string, data: object, images?: NotTakenOutReasonImages[]) {
+  updateOrderInfo(
+    orderId: number,
+    lang: string,
+    data: object,
+    images?: NotTakenOutReasonImages[]
+  ): Observable<HttpResponse<IBigOrderTableOrderInfo>> {
     const formData: FormData = new FormData();
     formData.append('updateOrderPageAdminDto', JSON.stringify(data));
 
@@ -106,9 +113,13 @@ export class OrderService {
       });
     }
 
-    return this.http.patch(`${this.backend}/management/update-order-page-admin-info/${orderId}?language=${lang}`, formData, {
-      observe: 'response'
-    });
+    return this.http.patch<IBigOrderTableOrderInfo>(
+      `${this.backend}/management/update-order-page-admin-info/${orderId}?language=${lang}`,
+      formData,
+      {
+        observe: 'response'
+      }
+    );
   }
 
   getIsOrderCancelledAfterFormed(orderId: number): Observable<boolean> {

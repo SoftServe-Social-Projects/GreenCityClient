@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Chart } from 'chart.js';
 import 'chartjs-plugin-labels';
-import { DayEstimation } from '../../../../../../../model/habit/DayEstimation';
-import { HabitStatisticsDto } from '../../../../../../../model/habit/HabitStatisticsDto';
+import { DayEstimation } from 'src/app/main/model/habit/DayEstimation';
+import { HabitStatisticsDto } from 'src/app/main/model/habit/HabitStatisticsDto';
 
 @Component({
   selector: 'app-habit-chart',

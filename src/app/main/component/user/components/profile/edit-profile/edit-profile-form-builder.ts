@@ -19,7 +19,7 @@ export class EditProfileFormBuilder {
       credo: ['', Validators.maxLength(170)],
       showLocation: [false],
       showEcoPlace: [false],
-      showShoppingList: [false],
+      showToDoList: [false],
       socialNetworks: [''],
       emailPreferences: this.createEmailPreferencesGroup(null)
     });
@@ -37,11 +37,24 @@ export class EditProfileFormBuilder {
       )
     );
 
+    this.setupEmailPreferenceListeners(emailPrefsGroup);
+
     if (preferences) {
       this.initializeEmailPreferences(emailPrefsGroup, preferences);
     }
 
     return emailPrefsGroup;
+  }
+
+  private setupEmailPreferenceListeners(group: FormGroup): void {
+    this.emailPreferences.forEach((pref) => {
+      const periodicityControl = group.get(`periodicity${this.capitalizeFirstLetter(pref)}`);
+      const checkboxControl = group.get(pref);
+
+      periodicityControl?.valueChanges.subscribe((value) => {
+        checkboxControl?.setValue(value !== 'NEVER', { emitEvent: false });
+      });
+    });
   }
 
   initializeEmailPreferences(group: FormGroup, preferences: NotificationPreference[]): void {
@@ -94,7 +107,7 @@ export class EditProfileFormBuilder {
       credo: [editForm.userCredo, Validators.maxLength(170)],
       showLocation: [editForm.showLocation],
       showEcoPlace: [editForm.showEcoPlace],
-      showShoppingList: [editForm.showShoppingList],
+      showToDoList: [editForm.showToDoList],
       socialNetworks: [editForm.socialNetworks],
       emailPreferences: this.createEmailPreferencesGroup(editForm.notificationPreferences)
     });

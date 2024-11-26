@@ -657,7 +657,7 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   editCell(e: IEditCell): void {
     if (this.allChecked) {
       this.editAll(e);
-    } else if (this.idsToChange.length === 0) {
+    } else if (this.idsToChange.length === 1) {
       this.editSingle(e);
     } else {
       this.editGroup(e);
@@ -767,6 +767,7 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   }
 
   openOrder(id: number): void {
+    this.adminTableService.blockOrders([id]).subscribe();
     this.router
       .navigate(['ubs-admin', 'order', `${id}`])
       .then(() => {})

@@ -33,6 +33,7 @@ export class InputGoogleAutocompleteComponent implements OnInit, OnDestroy, Cont
 
   disabled = false;
   touched = false;
+  isCitySelected = false;
   predictionList: GooglePrediction[];
   autocompleteService: GoogleAutoService;
   placeId: string;
@@ -70,11 +71,15 @@ export class InputGoogleAutocompleteComponent implements OnInit, OnDestroy, Cont
   }
 
   onUserChange() {
-    this.inputValue.setValue('');
-    this.onChange('');
-    this.markAsTouched();
-    this.predictionSelected.emit(null);
-    this.selectedPredictionCoordinates.emit({ longitude: null, latitude: null });
+    setTimeout(() => {
+      if (!this.isCitySelected) {
+        this.inputValue.setValue('');
+        this.onChange('');
+        this.markAsTouched();
+        this.predictionSelected.emit(null);
+        this.selectedPredictionCoordinates.emit({ longitude: null, latitude: null });
+      }
+    }, 100);
   }
 
   writeValue(value: any): void {
@@ -130,6 +135,7 @@ export class InputGoogleAutocompleteComponent implements OnInit, OnDestroy, Cont
       this.returnCoordinatesFromPrediction(prediction);
     }
 
+    this.isCitySelected = true;
     this.predictionSelected.emit(prediction);
   }
 

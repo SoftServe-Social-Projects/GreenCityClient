@@ -1,4 +1,4 @@
-import { singleNewsImages } from '../../../../image-pathes/single-news-images';
+import { singleNewsImages } from 'src/app/main/image-pathes/single-news-images';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CreateEcoNewsService } from '@eco-news-service/create-eco-news.service';
 import { Router } from '@angular/router';

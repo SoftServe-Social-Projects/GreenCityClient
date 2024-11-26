@@ -1,8 +1,15 @@
-import { Addresses, EventAttender, EventResponse, EventResponseDto } from '../../../app/main/component/events/models/events.interface';
+import {
+  Addresses,
+  EventAttender,
+  EventForm,
+  EventResponse,
+  EventResponseDto
+} from '../../../app/main/component/events/models/events.interface';
 import { HttpParams } from '@angular/common/http';
 import { HabitAssignInterface } from '@global-user/components/habit/models/interfaces/habit-assign.interface';
 import { HabitStatus } from '@global-models/habit/HabitStatus.enum';
 import { HabitInterface } from '@global-user/components/habit/models/interfaces/habit.interface';
+import { FormBuilder, FormControl } from '@angular/forms';
 
 export const testCases = [
   {
@@ -100,7 +107,7 @@ export const mockHabitAssign: HabitAssignInterface[] = [
     habitStreak: 10,
     lastEnrollmentDate: new Date(),
     habitStatusCalendarDtoList: [],
-    shoppingListItems: []
+    toDoListItems: []
   },
   {
     id: 2,
@@ -115,7 +122,7 @@ export const mockHabitAssign: HabitAssignInterface[] = [
     habitStreak: 10,
     lastEnrollmentDate: new Date(),
     habitStatusCalendarDtoList: [],
-    shoppingListItems: []
+    toDoListItems: []
   }
 ];
 
@@ -457,5 +464,117 @@ export const eventStateMock = {
   pageNumber: 0,
   error: null
 };
+
+export const EVENT_MOCK: EventResponse = {
+  description: 'tralalalal',
+  additionalImages: [],
+  creationDate: '2022-05-31',
+  tags: [
+    { id: 1, nameUa: 'Соціальний', nameEn: 'Social' },
+    { id: 13, nameUa: 'Екологічний', nameEn: 'Environmental' },
+    { id: 14, nameUa: 'Економічний', nameEn: 'Economic' }
+  ],
+  dates: [
+    {
+      coordinates: {
+        latitude: 0,
+        longitude: 0,
+        cityEn: 'Lviv',
+        cityUa: 'Львів',
+        countryEn: 'Ukraine',
+        countryUa: 'Україна',
+        houseNumber: '55',
+        regionEn: 'Lvivska oblast',
+        regionUa: 'Львівська область',
+        streetEn: 'Svobody Ave',
+        streetUa: 'Свободи',
+        formattedAddressEn: 'Свободи, 55, Львів, Львівська область, Україна',
+        formattedAddressUa: 'Svobody Ave, 55, Lviv, Lvivska oblast, Ukraine'
+      },
+      id: null,
+      event: null,
+      startDate: '2022-05-31T00:00:00+03:00',
+      finishDate: '2022-05-31T23:59:00+03:00',
+      onlineLink: null
+    }
+  ],
+  id: 307,
+  organizer: { organizerRating: 0, id: 5, name: 'Mykola Kovalushun' },
+  title: 'dddddddd',
+  titleImage: 'https://-fc27f19b10e0apl',
+  isSubscribed: true,
+  isFavorite: false,
+  isRelevant: true,
+  open: true,
+  likes: 5,
+  countComments: 7,
+  isOrganizedByFriend: false,
+  eventRate: 0
+};
+
+export const EVENT_FORM_MOCK: EventForm = {
+  eventInformation: {
+    title: 'Sample Event Title',
+    duration: 120,
+    description: 'This is a sample event description.',
+    open: true,
+    tags: ['Technology', 'Education'],
+    editorText: 'Detailed editor text for the event.',
+    images: []
+  },
+  dateInformation: [
+    {
+      day: {
+        date: new Date('2024-11-30'),
+        startTime: '10:00 AM',
+        endTime: '12:00 PM',
+        allDay: false
+      },
+      placeOnline: {
+        coordinates: {
+          lat: 40.712776,
+          lng: -74.005974
+        },
+        onlineLink: 'https://example.com/event',
+        place: 'Sample Place',
+        appliedLinkForAll: true,
+        appliedPlaceForAll: false
+      },
+      pastDate: false
+    }
+  ]
+};
+
+const formBuilder = new FormBuilder();
+
+export const MOCK_EVENT_FORM_GROUP = formBuilder.group({
+  eventInformation: formBuilder.group({
+    title: ['Mock Title', []],
+    description: ['Mock description', []],
+    open: [true],
+    images: [[]],
+    duration: [1],
+    tags: [['Mock Tag 1', 'Mock Tag 2'], []]
+  }),
+  dateInformation: formBuilder.array([
+    formBuilder.group({
+      day: formBuilder.group({
+        date: [new Date(), []],
+        startTime: ['09:00 AM', []],
+        endTime: ['05:00 PM', []],
+        allDay: [false],
+        minDate: [new Date(), []],
+        maxDate: [null, []]
+      }),
+      placeOnline: formBuilder.group({
+        coordinates: new FormControl({ lat: 50.4501, lng: 30.5234 }),
+        onlineLink: new FormControl('https://example.com'),
+        place: new FormControl('Mock Place Name'),
+        appliedLinkForAll: [false],
+        appliedPlaceForAll: [true]
+      })
+    })
+  ])
+});
 
 export const mockAttendees: EventAttender[] = [{ name: 'Stetsenka Street', imagePath: 'http://example.com/image.jpg' }];

@@ -5,10 +5,10 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { UbsAdminTariffsAddTariffServicePopUpComponent } from './ubs-admin-tariffs-add-tariff-service-pop-up.component';
-import { ModalTextComponent } from '../../../shared/components/modal-text/modal-text.component';
+import { ModalTextComponent } from 'src/app/ubs/ubs-admin/components/shared/components/modal-text/modal-text.component';
 import { ServerTranslatePipe } from 'src/app/shared/translate-pipe/translate-pipe.pipe';
-import { TariffsService } from '../../../../services/tariffs.service';
-import { Bag } from '../../../../models/tariffs.interface';
+import { TariffsService } from 'src/app/ubs/ubs-admin/services/tariffs.service';
+import { Bag } from 'src/app/ubs/ubs-admin/models/tariffs.interface';
 import { Patterns } from '@assets/patterns/patterns';
 import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
