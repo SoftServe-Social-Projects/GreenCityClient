@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { IEmployee, IResponsiblePersons } from '../../models/ubs-admin.interface';
+import { IEmployee, IResponsiblePersons, IResponsiblePersonsData } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
 import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
 
 @Component({
@@ -21,6 +21,7 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
   public allDrivers: string[];
   public isOrderStatusCancelOrDone = false;
   pageOpen: boolean;
+  responsiblePersonsData: IResponsiblePersonsData[];
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -43,6 +44,7 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
     this.allLogisticians = this.getEmployeesById(employees, 3);
     this.allNavigators = this.getEmployeesById(employees, 4);
     this.allDrivers = this.getEmployeesById(employees, 5);
+    this.getResponsiblePersonsData();
   }
 
   public isFormRequired(): boolean {
@@ -64,6 +66,45 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
       }
     }
     return [];
+  }
+
+  isFieldOptional(controlName: string): boolean {
+    const requiredFields = ['responsibleCaller'];
+
+    if (this.orderStatus !== 'ADJUSTMENT') {
+      return false;
+    }
+
+    if (requiredFields.includes(controlName)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  getResponsiblePersonsData(): void {
+    this.responsiblePersonsData = [
+      {
+        translate: 'responsible-persons.call-manager',
+        formControlName: 'responsibleCaller',
+        responsiblePersonsArray: this.allCallManagers
+      },
+      {
+        translate: 'responsible-persons.logistician',
+        formControlName: 'responsibleLogicMan',
+        responsiblePersonsArray: this.allLogisticians
+      },
+      {
+        translate: 'responsible-persons.navigator',
+        formControlName: 'responsibleNavigator',
+        responsiblePersonsArray: this.allNavigators
+      },
+      {
+        translate: 'responsible-persons.driver',
+        formControlName: 'responsibleDriver',
+        responsiblePersonsArray: this.allDrivers
+      }
+    ];
   }
 
   ngOnDestroy(): void {

@@ -21,54 +21,17 @@
     <div *ngIf="isFormRequired()" class="alert-message">{{ 'responsible-persons.alert-message' | translate }}</div>
   </div>
   <div *ngIf="pageOpen">
-    <div class="form-row">
+    <div class="form-row" *ngFor="let person of responsiblePersonsData">
       <div class="form-group col-md-4">
-        <label class="form__label">{{ 'responsible-persons.call-manager' | translate }}</label>
+        <label class="form__label">
+          {{ person.translate | translate }}
+          <span class="form__label" *ngIf="isFieldOptional(person.formControlName)">({{ 'order-edit.optional-field' | translate }}) </span>
+        </label>
         <select
-          formControlName="responsibleCaller"
-          class="form-control form__select"
+          [formControlName]="person.formControlName"
           [ngClass]="isEmployeeCanEditOrder ? 'form-control form__select' : 'form-control form__select readonly'"
         >
-          <option *ngFor="let employee of allCallManagers" [value]="employee">
-            {{ employee }}
-          </option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-4">
-        <label class="form__label">{{ 'responsible-persons.logistician' | translate }}</label>
-        <select
-          formControlName="responsibleLogicMan"
-          [ngClass]="isEmployeeCanEditOrder ? 'form-control form__select' : 'form-control form__select readonly'"
-        >
-          <option *ngFor="let employee of allLogisticians" [value]="employee">
-            {{ employee }}
-          </option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-4">
-        <label class="form__label">{{ 'responsible-persons.navigator' | translate }}</label>
-        <select
-          formControlName="responsibleNavigator"
-          [ngClass]="isEmployeeCanEditOrder ? 'form-control form__select' : 'form-control form__select readonly'"
-        >
-          <option *ngFor="let employee of allNavigators" [value]="employee">
-            {{ employee }}
-          </option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-4">
-        <label class="form__label">{{ 'responsible-persons.driver' | translate }}</label>
-        <select
-          formControlName="responsibleDriver"
-          [ngClass]="isEmployeeCanEditOrder ? 'form-control form__select' : 'form-control form__select readonly'"
-        >
-          <option *ngFor="let employee of allDrivers" [value]="employee">
+          <option *ngFor="let employee of person.responsiblePersonsArray" [value]="employee">
             {{ employee }}
           </option>
         </select>
