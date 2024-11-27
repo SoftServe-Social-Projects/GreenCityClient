@@ -11,11 +11,18 @@
                   {{ 'profile.dashboard.habits-inprogress' | translate }} <br />
                 </app-set-count>
               </p>
-              <a [routerLink]="['/profile', userId, 'allhabits']">
-                <div id="create-button-new-habit" class="secondary-global-button s-btn">
-                  <span>{{ 'profile.dashboard.add-new-habit' | translate }}</span>
-                </div>
-              </a>
+              <div class="habit-controls">
+                <a [routerLink]="['/profile', userId, 'habit-invitations']">
+                  <div id="create-button-new-habit" class="secondary-global-button s-btn">
+                    <span>Inv</span>
+                  </div>
+                </a>
+                <a [routerLink]="['/profile', userId, 'allhabits']">
+                  <div id="create-button-new-habit" class="secondary-global-button s-btn">
+                    <span>{{ 'profile.dashboard.add-new-habit' | translate }}</span>
+                  </div>
+                </a>
+              </div>
             </div>
             <div class="body" *ngIf="habitAssignService.habitsInProgress">
               <app-one-habit

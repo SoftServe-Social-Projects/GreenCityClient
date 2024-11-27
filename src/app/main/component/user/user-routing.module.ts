@@ -13,6 +13,7 @@ import { FriendRequestsComponent } from './components/profile/users-friends/frie
 import { FriendProfilePageComponent } from './components/profile/users-friends/friend-dashboard/friend-profile-page/friend-profile-page.component';
 import { AddEditCustomHabitComponent } from './components/habit/add-edit-custom-habit/add-edit-custom-habit.component';
 import { UserNotificationsComponent } from './components/profile/user-notifications/user-notifications.component';
+import { HabitInvitationsComponent } from './components/habit/habit-invitations/habit-invitations.component';
 
 export const userRoutes: Routes = [
   {
@@ -29,6 +30,7 @@ export const userRoutes: Routes = [
       { path: ':id/allhabits/addhabit/:habitId/edit-habit', component: AddEditCustomHabitComponent },
       { path: ':id/allhabits/addhabit/:habitId', component: AddNewHabitComponent },
       { path: ':id/allhabits/edithabit/:habitAssignId', component: AddNewHabitComponent },
+      { path: ':id/habit-invitations', component: HabitInvitationsComponent },
       { path: '', component: ProfileComponent },
       {
         path: ':id/friends',

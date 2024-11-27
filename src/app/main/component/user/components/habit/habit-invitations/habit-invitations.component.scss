@@ -1,0 +1,88 @@
+@import 'src/typography/_resp.scss';
+
+.habit-invitations-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+
+  padding: 40px;
+
+  @include responsiveMobileFirst(sm) {
+    flex-direction: column;
+  }
+
+  .requests-box {
+    width: 100%;
+  }
+
+  .cards-box {
+    display: flex;
+    flex-direction: column;
+    gap: 14px 32px;
+
+    @include responsivePCFirst(2xl) {
+      gap: 32px;
+    }
+
+    @include responsiveMobileFirst(xl) {
+      display: grid;
+      max-width: 870px;
+      margin: 0 auto;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include responsiveMobileFirst(2xl) {
+      max-width: 1140px;
+    }
+  }
+
+  .user-card {
+    @media (max-width: 1000px) {
+      width: 100%;
+      margin: 0 auto;
+    }
+  }
+
+  .noRequests-wraper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+
+    .noRequests {
+      font-family: var(--tertiary-font);
+      font-size: 32px;
+      font-weight: 500;
+      font-style: normal;
+      line-height: 48px;
+      text-align: center;
+    }
+  }
+
+  .request-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @include responsiveMobileFirst(sm) {
+      gap: 32px;
+      row-gap: 16px;
+    }
+
+    @include responsiveMobileFirst(xl) {
+      display: grid;
+      max-width: 870px;
+      margin: 0 auto;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include responsiveMobileFirst(2xl) {
+      max-width: 1140px;
+    }
+  }
+}
+
+.img-absent img {
+  max-width: 100%;
+}

@@ -88,6 +88,7 @@ import { CommentsService } from '../comments/services/comments.service';
 import { HabitCommentsService } from '@global-service/habit-comments/habit-comments.service';
 import { AchievementsModalComponent } from './components/profile/users-achievements/achievements-modal/achievements-modal.component';
 import { AchievementItemComponent } from './components/profile/users-achievements/achievement-item/achievement-item.component';
+import { HabitInvitationsComponent } from './components/habit/habit-invitations/habit-invitations.component';
 
 @NgModule({
   declarations: [
@@ -152,7 +153,8 @@ import { AchievementItemComponent } from './components/profile/users-achievement
     NotificContentReplaceDirective,
     FriendshipButtonsComponent,
     AchievementsModalComponent,
-    AchievementItemComponent
+    AchievementItemComponent,
+    HabitInvitationsComponent
   ],
   imports: [
     NgbModule,

@@ -66,6 +66,12 @@ a {
     justify-content: space-between;
   }
 
+  .habit-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
   .column {
     flex-direction: column;
     margin-bottom: 24px;
