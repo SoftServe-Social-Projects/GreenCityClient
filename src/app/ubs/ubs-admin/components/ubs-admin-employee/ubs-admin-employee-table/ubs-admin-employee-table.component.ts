@@ -2,10 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, take } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, take, takeUntil } from 'rxjs/operators';
 
-import { ActivateEmployee, DeleteEmployee, GetEmployees } from 'src/app/store/actions/employee.actions';
+import { ActivateEmployee, DeleteEmployee, GetEmployees, AddEmployeeSuccess } from 'src/app/store/actions/employee.actions';
 import { modifiedEmployee } from 'src/app/store/selectors/employee';
 import { IAppState } from 'src/app/store/state/app.state';
 import { Employees, Page } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
@@ -15,6 +15,7 @@ import { FilterData } from 'src/app/ubs/ubs-admin/models/tariffs.interface';
 import { UbsAdminEmployeeEditFormComponent } from '../ubs-admin-employee-edit-form/ubs-admin-employee-edit-form.component';
 import { UbsAdminEmployeePermissionsFormComponent } from '../ubs-admin-employee-permissions-form/ubs-admin-employee-permissions-form.component';
 import { EmployeeStatus, PopUpsStyles } from './employee-models.enum';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-ubs-admin-employee-table',
@@ -35,12 +36,12 @@ export class UbsAdminEmployeeTableComponent implements OnInit {
   totalPagesForTable: number;
   tableData: Page[];
   employees: Page[];
-  filteredTableData: Page[] = [];
   firstPageLoad = true;
   reset = true;
   filterDatas: FilterData = { positions: [], regions: [], locations: [], couriers: [], employeeStatus: 'ACTIVE' };
   employees$ = this.store.select((state: IAppState): Employees => state.employees.employees);
   employeesData$ = this.store.select(modifiedEmployee);
+  private readonly destroy$: Subject<void> = new Subject();
   isTooltipOpened: boolean;
   isStatusActive = EmployeeStatus.active;
   isStatusInactive = EmployeeStatus.inactive;
@@ -74,9 +75,10 @@ export class UbsAdminEmployeeTableComponent implements OnInit {
   };
 
   constructor(
-    private ubsAdminEmployeeService: UbsAdminEmployeeService,
-    private dialog: MatDialog,
-    private store: Store<IAppState>,
+    private readonly ubsAdminEmployeeService: UbsAdminEmployeeService,
+    private readonly dialog: MatDialog,
+    private readonly store: Store<IAppState>,
+    private readonly actions$: Actions,
     public fb: FormBuilder
   ) {}
 
@@ -86,6 +88,8 @@ export class UbsAdminEmployeeTableComponent implements OnInit {
       this.initSearch();
     });
     this.initSearch();
+
+    this.actions$.pipe(ofType(AddEmployeeSuccess), takeUntil(this.destroy$)).subscribe(() => this.updateTable());
   }
 
   initSearch(): void {
@@ -102,7 +106,7 @@ export class UbsAdminEmployeeTableComponent implements OnInit {
     this.isLoading = true;
     this.getEmployeesPages();
 
-    this.employees$.subscribe((item: Employees) => {
+    this.employees$.pipe(takeUntil(this.destroy$)).subscribe((item: Employees) => {
       if (item) {
         this.totalPagesForTable = item[`totalPages`];
         if (this.firstPageLoad) {
