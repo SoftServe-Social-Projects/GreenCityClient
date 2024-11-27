@@ -64,7 +64,6 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   displayedColumns: string[] = [];
   dataSource: MatTableDataSource<any>;
   selection = new SelectionModel<any>(true, []);
-  previousIndex: number;
   isLoading = true;
   editCellProgressBar: boolean;
   isUpdate = false;
@@ -105,12 +104,10 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   isFiltersOpened = false;
   isTimePickerOpened = false;
   showPopUp: boolean;
-  mouseEvents = MouseEvents;
   cancellationReason: string;
   cancellationComment: string;
   @ViewChild(MatTable, { read: ElementRef }) private matTableRef: ElementRef;
   defaultColumnWidth = 120; // In px
-  minColumnWidth = 100;
   columnsWidthPreference: Map<string, number>;
   restoredFilters = [];
   isRestoredFilters = false;
@@ -867,21 +864,6 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
     this.onDateChange(columnKey);
   }
 
-  clearFilters(): void {
-    this.store.dispatch(ClearFilters({ fetchTable: true }));
-    this.tableData = [];
-    this.isLoading = true;
-    const columnsForFiltering = this.adminTableService.columnsForFiltering;
-    columnsForFiltering.forEach((column) => {
-      column.values.forEach((value) => {
-        value.filtered = false;
-      });
-    });
-    this.setColumnsForFiltering(columnsForFiltering);
-    this.dateForm.reset();
-    this.initDateForm();
-  }
-
   applyFilters(): void {
     const selectedFilters = this.adminTableService.selectedFilters;
     if (selectedFilters) {
@@ -1139,28 +1121,6 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
     }
 
     return !!this.allFilters[columnName.toLowerCase().includes('date') ? `${columnName}From` : columnName];
-  }
-
-  checkIfFilteredBy(columnKey: string): boolean {
-    let key: string;
-    switch (columnKey) {
-      case TableKeys.paymentDate:
-        key = TableKeys.paymentDateFrom;
-        break;
-      case TableKeys.orderDate:
-        key = TableKeys.orderDateFrom;
-        break;
-      case TableKeys.city:
-        key = TableKeys.citiesEn;
-        break;
-      case TableKeys.district:
-        key = TableKeys.districtsEn;
-        break;
-      default:
-        key = columnKey;
-        break;
-    }
-    return this.adminTableService.filters ? this.adminTableService.filters.some((obj) => Object.keys(obj)[0] === key) : false;
   }
 
   checkStatusOfOrders(id: number): boolean {

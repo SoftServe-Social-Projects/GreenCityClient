@@ -83,11 +83,7 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
   }
 
   get isFormRequired(): boolean {
-    const isNotOpen = !this.pageOpen;
-    const isNotValid = !this.exportDetailsDto.valid;
-    const isUneditable = !this.uneditableStatus;
-
-    return isNotOpen && isNotValid && isUneditable;
+    return !this.pageOpen && !this.exportDetailsDto.valid && !this.uneditableStatus;
   }
 
   showTimePickerClick(): void {

@@ -49,7 +49,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() addFromProfile: boolean;
   @Input() isShowCommentInput = true;
   @Input() isFromAdminPage: boolean;
-  @Input() uneditableStatus: boolean;
+  @Input() isUneditableStatus: boolean;
 
   addressForm: FormGroup;
   currentLanguage: string;
@@ -172,7 +172,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   ngAfterViewInit(): void {
-    if (this.uneditableStatus) {
+    if (this.isUneditableStatus) {
       this.disableAllFields();
     }
     this.initializeFieldStates();
@@ -185,7 +185,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
       return;
     }
 
-    if (this.uneditableStatus) {
+    if (this.isUneditableStatus) {
       this.disableAllFields();
     } else {
       this.enableAllFields();
