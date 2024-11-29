@@ -89,6 +89,7 @@ import { HabitCommentsService } from '@global-service/habit-comments/habit-comme
 import { AchievementsModalComponent } from './components/profile/users-achievements/achievements-modal/achievements-modal.component';
 import { AchievementItemComponent } from './components/profile/users-achievements/achievement-item/achievement-item.component';
 import { HabitInvitationsComponent } from './components/habit/habit-invitations/habit-invitations.component';
+import { HabitInvitationItemComponent } from './components/habit/habit-invitations/habit-invitation-item/habit-invitation-item.component';
 
 @NgModule({
   declarations: [
@@ -154,7 +155,8 @@ import { HabitInvitationsComponent } from './components/habit/habit-invitations/
     FriendshipButtonsComponent,
     AchievementsModalComponent,
     AchievementItemComponent,
-    HabitInvitationsComponent
+    HabitInvitationsComponent,
+    HabitInvitationItemComponent
   ],
   imports: [
     NgbModule,

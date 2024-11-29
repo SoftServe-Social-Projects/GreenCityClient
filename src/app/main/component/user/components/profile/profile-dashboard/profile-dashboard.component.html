@@ -4,6 +4,11 @@
       <mat-tab label="{{ 'profile.dashboard.my-habits' | translate }}">
         <hr />
         <div *ngIf="!loading; else spinner">
+          <a [routerLink]="['/profile', userId, 'habit-invitations']" *ngIf="!habitAssignService.habitsInProgress.length">
+            <div id="create-button-new-habit" class="secondary-global-button s-btn">
+              <span>Inv</span>
+            </div>
+          </a>
           <div *ngIf="habitAssignService.habitsInProgress.length || habitsAcquired.length">
             <div class="in-progress header">
               <p>

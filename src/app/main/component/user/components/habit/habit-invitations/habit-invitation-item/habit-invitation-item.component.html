@@ -1,0 +1,99 @@
+<div class="invitation-item-wrapper">
+  <div class="friend-item-left">
+    <div class="photo-column">
+      <app-user-profile-image
+        [imgPath]="friend.profilePicturePath"
+        [firstName]="friend.name"
+        class="friend-img"
+        [additionalImgClass]="'friend-item'"
+        [isOnline]="checkIsOnline(friend.id)"
+      >
+      </app-user-profile-image>
+    </div>
+
+    <div class="friend-info">
+      <div class="main-info friend-with-photo">
+        <a
+          class="friend-name"
+          appCustomTooltip
+          #tooltipFriendName="matTooltip"
+          matTooltip="{{ friend.name }}"
+          [appCustomTooltip]="friend.name"
+          [tooltip]="tooltipFriendName"
+          matTooltipClass="my-custom-tooltip"
+          font="bold 18px Lato, sans-serif"
+          [routerLink]="['/profile', userId, 'users', friend.name, friend.id]"
+        >
+          {{ friend.name }}
+        </a>
+        <p class="friend-rate rate-with-photo">{{ 'profile.rate' | translate }}: {{ friend.rating }}</p>
+      </div>
+      <p>invites you to track habit</p>
+      <a
+        class="friend-name invi"
+        appCustomTooltip
+        #tooltipHabitName="matTooltip"
+        matTooltip="{{ habit.habitTranslation.name }}"
+        [appCustomTooltip]="habit.habitTranslation.name"
+        [tooltip]="tooltipHabitName"
+        matTooltipClass="my-custom-tooltip"
+        font="bold 18px Lato, sans-serif"
+        [routerLink]="['/profile', userId, 'addhabit', habit.id]"
+      >
+        "{{ habit.habitTranslation.name }}"
+      </a>
+    </div>
+  </div>
+  <!-- <app-friendship-buttons [userAsFriend]="userDataAsFriend" *ngIf="friend.id !== currentUserId" class="buttons"></app-friendship-buttons> -->
+</div>
+
+<!-- <div class="friend-item-wrapper" [ngClass]="{ 'no-buttons': friend.id === currentUserId }" (click)="clickHandler($event)">
+  <div class="friend-item-left">
+    <div class="photo-column">
+      <app-user-profile-image
+        [imgPath]="friend.profilePicturePath"
+        [firstName]="friend.name"
+        class="friend-img"
+        [additionalImgClass]="'friend-item'"
+        [isOnline]="checkIsOnline(friend.id)"
+      >
+      </app-user-profile-image>
+    </div>
+
+    <div class="friend-info">
+      <div class="main-info friend-with-photo">
+        <p
+          class="friend-name"
+          appCustomTooltip
+          #tooltipFriendName="matTooltip"
+          matTooltip="{{ friend.name }}"
+          [appCustomTooltip]="friend.name"
+          [tooltip]="tooltipFriendName"
+          matTooltipClass="my-custom-tooltip"
+          font="bold 18px Lato, sans-serif"
+        >
+          {{ friend.name }}
+        </p>
+        <p class="friend-rate rate-with-photo">{{ 'profile.rate' | translate }}: {{ friend.rating }}</p>
+      </div>
+      <p class="friend-mutual">
+        <span class="friend-mutual-link">
+          {{ friend.mutualFriends }} {{ 'profile.friends.mutual-friends' | correctUnit: friend.mutualFriends : currentLang | translate }}
+        </span>
+      </p>
+      <p
+        class="friend-city"
+        appCustomTooltip
+        [appCustomTooltip]="(getFriendCity(friend.userLocationDto) | maxTextLength) || ('profile.friends.no-city' | translate)"
+        #tooltipFriendCity="matTooltip"
+        [tooltip]="tooltipFriendCity"
+        matTooltip="{{ (getFriendCity(friend.userLocationDto) | maxTextLength) || ('profile.friends.no-city' | translate) }}"
+        matTooltipClass="my-custom-tooltip"
+        font="bold 12px Lato, sans-serif"
+      >
+        {{ (getFriendCity(friend.userLocationDto) | maxTextLength) || ('profile.friends.no-city' | translate) }}
+      </p>
+    </div>
+  </div>
+  <app-friendship-buttons [userAsFriend]="userDataAsFriend" *ngIf="friend.id !== currentUserId" class="buttons"></app-friendship-buttons>
+</div> -->

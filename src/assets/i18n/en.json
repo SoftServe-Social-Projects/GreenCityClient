@@ -1167,6 +1167,10 @@
       "no-news-saved": "Welcome to My News. It seems you don’t have any saved news",
       "join-event": "Join Event"
     },
+    "habit-invitations": {
+      "title": "Habit invitations",
+      "zero-invitations": "Unfortunately you don’t have new habit invitations"
+    },
     "habits-in-progress": "habits in progress",
     "my-achievements": "My Achievements",
     "achieved": "achieved",
@@ -1183,7 +1187,6 @@
     "zero-friends": "You don't have any friends yet.",
     "zero-user-friends": "This user has no friends",
     "zero-requests": "Unfortunately you don’t have new friends requests",
-    "zero-invitations": "Unfortunately you don’t have new habit invitations",
     "my-eco-places": "My Eco Places",
     "eco-places-quantity": {
       "plural": "favourites",

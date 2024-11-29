@@ -84,6 +84,10 @@ export class HabitService {
     return this.http.delete<CustomHabitDtoRequest>(`${habitLink}/delete/${id}`);
   }
 
+  getHabitInvitations(page: number, size: number): Observable<any> {
+    return this.http.get(`${habitLink}/invite/requests?lang=${this.language}&page=${page}&size=${size}`);
+  }
+
   acceptHabitInvitation(invitationId: number): Observable<string> {
     return this.http.patch<string>(`${habitLink}/invite/${invitationId}/accept`, {});
   }

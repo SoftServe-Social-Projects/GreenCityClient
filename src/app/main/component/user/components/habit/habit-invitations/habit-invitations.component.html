@@ -1,35 +1,31 @@
-<div class="friend-dashboard">
-  <div class="container friend-dashboard-container">
-    <a class="button-link" [routerLink]="['/profile', userId]">
-      <div class="button-content">
-        <img src="assets/img/icon/econews/arrow_left.svg" alt="arrow image" class="button-arrow" />
-        <div class="button-text">{{ 'profile.friends.link-to-profile' | translate }}</div>
-      </div>
-    </a>
-
-    <div *ngIf="requests !== null" class="habit-invitations-container">
-      <div class="header">
-        <h2>Habit invitations</h2>
-      </div>
-      <div class="requests-box">
-        <div *ngIf="requests?.length === 0">
-          <div class="noRequests-wraper">
-            <div class="img-absent">
-              <img [src]="absent" alt="absent-requests" />
-            </div>
-            <div>
-              <p class="noRequests">{{ 'profile.zero-invitations' | translate }}</p>
-            </div>
-          </div>
+<div *ngIf="requests !== null" class="container habit-invitations-container">
+  <a class="button-link" [routerLink]="['/profile', userId]">
+    <div class="button-content">
+      <img src="assets/img/icon/econews/arrow_left.svg" alt="arrow image" class="button-arrow" />
+      <div class="button-text">{{ 'profile.friends.link-to-profile' | translate }}</div>
+    </div>
+  </a>
+  <div class="header">
+    <h1>{{ 'profile.habit-invitations.title' | translate }}</h1>
+  </div>
+  <div class="requests-box">
+    <div *ngIf="requests?.length === 0">
+      <div class="noRequests-wraper">
+        <div class="img-absent">
+          <img [src]="absent" alt="absent-requests" />
         </div>
-        <div *ngIf="requests?.length" class="request-list">
-          <div *ngFor="let request of requests" class="user-card">
-            <app-friend-item [friend]="request"></app-friend-item>
-          </div>
-          <div infiniteScroll [infiniteScrollThrottle]="500" (scrolled)="onScroll()"></div>
+        <div>
+          <p class="noRequests">{{ 'profile.habit-invitations.zero-invitations' | translate }}</p>
         </div>
       </div>
     </div>
-    <app-spinner *ngIf="scroll"></app-spinner>
+    <div *ngIf="requests?.length" class="request-list">
+      <div *ngFor="let request of requests" class="user-card">
+        <app-habit-invitation-item [invitationDetails]="request"></app-habit-invitation-item>
+        <!-- <app-friend-item [friend]="request"></app-friend-item> -->
+      </div>
+      <div infiniteScroll [infiniteScrollThrottle]="500" (scrolled)="onScroll()"></div>
+    </div>
   </div>
 </div>
+<app-spinner *ngIf="scroll"></app-spinner>
