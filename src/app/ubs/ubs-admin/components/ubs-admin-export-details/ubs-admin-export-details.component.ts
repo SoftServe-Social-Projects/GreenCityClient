@@ -31,10 +31,10 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
   currentDate: string;
   uneditableStatus = false;
   resetFieldImg = './assets/img/ubs-tariff/bigClose.svg';
-  private statuses = [OrderStatus.BROUGHT_IT_HIMSELF, OrderStatus.CANCELED];
+  private readonly statuses = [OrderStatus.BROUGHT_IT_HIMSELF, OrderStatus.CANCELED];
 
   constructor(
-    private cdr: ChangeDetectorRef,
+    private readonly cdr: ChangeDetectorRef,
     public orderService: OrderService
   ) {}
 
@@ -119,6 +119,19 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
 
   isTimeValid(): boolean {
     return this.exportDetailsDto.get('timeDeliveryFrom').invalid || this.exportDetailsDto.get('timeDeliveryTo').invalid;
+  }
+
+  getArrowImageSrc(): string {
+    if (this.isFormRequired) {
+      return 'assets/img/ubs-admin-orders/red_arrow_up.svg';
+    } else if (!this.pageOpen && (this.exportDetailsDto.valid || this.uneditableStatus)) {
+      return 'assets/img/ubs-admin-orders/arrow_up.svg';
+    } else if (this.pageOpen && (this.exportDetailsDto.valid || this.uneditableStatus)) {
+      return 'assets/img/ubs-admin-orders/arrow_down.svg';
+    } else if (this.pageOpen && !this.exportDetailsDto.valid && !this.uneditableStatus) {
+      return 'assets/img/ubs-admin-orders/red_arrow_down.svg';
+    }
+    return '';
   }
 
   ngOnDestroy(): void {
