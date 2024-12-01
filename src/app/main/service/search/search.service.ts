@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { Observable, Subject } from 'rxjs';
-import { SearchDataModel, SearchModel } from '../../model/search/search.model';
+import { SearchDataModel } from '../../model/search/search.model';
 import { SearchDto } from 'src/app/main/component/layout/components/models/search-dto';
+import { SearchCategory } from 'src/app/shared/search-popup/search-consts';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,8 @@ export class SearchService {
   allSearchSubject = new Subject<boolean>();
   allElements: SearchDto;
 
-  getAllResults(searchQuery: string, category, lang: string): Observable<SearchModel> {
-    return this.http.get<SearchModel>(`${this.backEndLink}search/${category}?lang=${lang}&searchQuery=${encodeURI(searchQuery)}`);
+  getAllResults(searchQuery: string, category: SearchCategory, lang: string): Observable<SearchDataModel> {
+    return this.http.get<SearchDataModel>(`${this.backEndLink}search/${category}?lang=${lang}&searchQuery=${encodeURI(searchQuery)}`);
   }
 
   getAllResultsByCat(

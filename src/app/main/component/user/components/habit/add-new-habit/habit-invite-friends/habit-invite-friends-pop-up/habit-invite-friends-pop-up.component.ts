@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { FriendArrayModel, FriendModel } from '@global-user/models/friend.model';
 import { UserFriendsService } from '@global-user/services/user-friends.service';
@@ -26,10 +26,11 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   invitationSent = false;
 
   constructor(
-    private userFriendsService: UserFriendsService,
-    private localStorageService: LocalStorageService,
+    private readonly userFriendsService: UserFriendsService,
+    private readonly localStorageService: LocalStorageService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private snackBar: MatSnackBarComponent
+    private readonly snackBar: MatSnackBarComponent,
+    private readonly dialogRef: MatDialogRef<HabitInviteFriendsPopUpComponent>
   ) {}
 
   get isAnyFriendSelected(): boolean {
@@ -78,20 +79,29 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   inviteFriends(event: Event) {
     event.preventDefault();
     if (this.habitId && this.selectedFriends.length) {
-      this.userFriendsService.inviteFriendsToHabit(this.habitId, this.selectedFriends).subscribe(
-        () => {
+      this.userFriendsService.inviteFriendsToHabit(this.habitId, this.selectedFriends).subscribe({
+        next: () => {
           this.invitationSent = true;
-          this.setAddedFriends();
+          const updatedFriends = [
+            ...this.data.friends,
+            ...this.selectedFriends.map((id) => this.friends.find((friend) => friend.id === id))
+          ];
+
+          this.data.onFriendsUpdated(updatedFriends);
+          this.dialogRef.close();
         },
-        (error) => {
+        error: (error) => {
           this.snackBar.openSnackBar('snack-bar.error.default');
         }
-      );
+      });
     }
   }
 
   setFriendDisable(friendId: number): boolean {
-    return this.userFriendsService.addedFriends?.some((addedFriend) => addedFriend.id === friendId) || this.invitationSent;
+    const isAlreadyAdded = this.data.friends?.some(({ id }) => id === friendId);
+    const isRecentlyAdded = this.userFriendsService.addedFriends?.some(({ id }) => id === friendId);
+
+    return isAlreadyAdded || this.invitationSent || isRecentlyAdded;
   }
 
   setAllFriendsDisable(): boolean {
@@ -128,15 +138,6 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     this.inputValue = input;
     this.allAdd = false;
     this.inputFriends = input ? this.filterFriendsByInput(input) : [...this.friends];
-  }
-
-  setAddedFriends() {
-    this.selectedFriends.forEach((friendId) => {
-      const friend = this.friends.find((f) => f.id === friendId);
-      if (friend) {
-        this.userFriendsService.addedFriends.push(friend);
-      }
-    });
   }
 
   ngOnDestroy() {

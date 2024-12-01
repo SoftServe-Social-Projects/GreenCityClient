@@ -20,13 +20,13 @@ export class EcoEventsComponent implements OnInit {
   }
 
   private loadLatestNews(): void {
-    this.newsService.loadLatestNews().subscribe(
-      (data: NewsDto[]) => {
+    this.newsService.loadLatestNews().subscribe({
+      next: (data: NewsDto[]) => {
         this.latestNews = data;
       },
-      (error) => {
+      error: (error) => {
         throw error;
       }
-    );
+    });
   }
 }

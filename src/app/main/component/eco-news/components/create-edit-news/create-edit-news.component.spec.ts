@@ -24,18 +24,18 @@ import { ACTION_CONFIG, ACTION_TOKEN } from './action.constants';
 import { CreateEditNewsFormBuilder } from './create-edit-news-form-builder';
 import { HomepageComponent } from 'src/app/main/component/home/components';
 import { SearchAllResultsComponent } from 'src/app/main/component/layout/components';
-import { MainComponent } from '../../../../main.component';
-import { UbsBaseSidebarComponent } from '../../../../../shared/ubs-base-sidebar/ubs-base-sidebar.component';
+import { MainComponent } from 'src/app/main/main.component';
+import { UbsBaseSidebarComponent } from 'src/app/shared/ubs-base-sidebar/ubs-base-sidebar.component';
 import { Store, ActionsSubject } from '@ngrx/store';
 import { QuillModule } from 'ngx-quill';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { Language } from '../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FilterModel } from '@shared/components/tag-filter/tag-filter.model';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { FIRSTECONEWS } from '../../mocks/eco-news-mock';
 import { NewsDTO } from '@eco-news-models/create-news-interface';
-import { CreateEcoNewsAction } from '../../../../../store/actions/ecoNews.actions';
+import { CreateEcoNewsAction } from 'src/app/store/actions/ecoNews.actions';
 
 function getEmptyFormGroup() {
   return new FormGroup({

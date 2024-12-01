@@ -1,12 +1,13 @@
 import { createAction, props } from '@ngrx/store';
-import { GetLocations } from 'src/app/store/actions/tariff.actions';
 import {
   IBigOrderTable,
+  IBigOrderTableOrderInfo,
   IBigOrderTableParams,
   IFilter,
   IFilters,
   ILocationDetails,
-  IOrdersViewParameters
+  IOrdersViewParameters,
+  NotTakenOutReasonImages
 } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
 
 export enum BigOrderTableActions {
@@ -21,6 +22,8 @@ export enum BigOrderTableActions {
   ChangingOrderData = '[BigOrderTable] Changing Order Data',
   ChangingOrderPaymentStatus = '[BigOrderTable] Changing Order Payment Status',
   ChangingOrderDataSuccess = '[BigOrderTable] Changing Order Data Success',
+  UpdateOrderInfo = '[BigOrderTable] Update Order Info',
+  UpdateOrderInfoSuccess = '[BigOrderTable] Update Order Info Success',
   ReceivedFailure = '[BigOrderTable] Received Failure',
 
   AddFilters = '[BigOrderTable] Add Filters',
@@ -81,6 +84,21 @@ export const ChangingOrderData = createAction(
 export const ChangingOrderDataSuccess = createAction(
   BigOrderTableActions.ChangingOrderDataSuccess,
   props<{ orderId: number[]; columnName: string; newValue: string }>()
+);
+
+export const UpdateOrderInfo = createAction(
+  BigOrderTableActions.UpdateOrderInfo,
+  props<{
+    orderId: number;
+    updatedOrder: IBigOrderTableOrderInfo;
+    currentLanguage: string;
+    notTakenOutReasonImages?: NotTakenOutReasonImages[];
+  }>()
+);
+
+export const UpdateOrderInfoSuccess = createAction(
+  BigOrderTableActions.UpdateOrderInfoSuccess,
+  props<{ updatedOrder: IBigOrderTableOrderInfo }>()
 );
 
 export const AddFiltersAction = createAction(BigOrderTableActions.AddFilters, props<{ filters: IFilters; fetchTable: boolean }>());

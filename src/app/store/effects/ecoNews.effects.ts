@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { EcoNewsService } from '@eco-news-service/eco-news.service';
 import {
-  GetEcoNewsByTagsAction,
-  GetEcoNewsByTagsSuccessAction,
-  GetEcoNewsByPageAction,
-  GetEcoNewsByPageSuccessAction,
   GetEcoNewsByAuthorAction,
   GetEcoNewsByAuthorSuccessAction,
   EditEcoNewsAction,
@@ -16,13 +12,18 @@ import {
   CreateEcoNewsSuccessAction,
   DeleteEcoNewsSuccessAction,
   DeleteEcoNewsAction,
-  ReceivedEcoNewsFailureAction
+  ReceivedEcoNewsFailureAction,
+  GetEcoNewsAction,
+  GetEcoNewsSuccessAction,
+  ChangeEcoNewsFavoriteStatusAction,
+  ChangeEcoNewsFavoriteStatusSuccessAction
 } from '../actions/ecoNews.actions';
 import { EcoNewsDto } from '@eco-news-models/eco-news-dto';
 import { CreateEcoNewsService } from '@eco-news-service/create-eco-news.service';
 import { NewsDTO } from '@eco-news-models/create-news-interface';
 import { EcoNewsModel } from '@eco-news-models/eco-news-model';
 import { Router } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class NewsEffects {
@@ -33,35 +34,27 @@ export class NewsEffects {
     private router: Router
   ) {}
 
-  getNewsListByTags = createEffect(() =>
+  getEcoNews = createEffect(() =>
     this.actions.pipe(
-      ofType(GetEcoNewsByTagsAction),
-      mergeMap((actions: { currentPage: number; numberOfNews: number; tagsList: string[]; reset: boolean }) =>
-        this.newsService.getNewsListByTags(actions.currentPage, actions.numberOfNews, actions.tagsList).pipe(
-          map((ecoNews: EcoNewsDto) => GetEcoNewsByTagsSuccessAction({ ecoNews, reset: actions.reset })),
-          catchError((error) => of(ReceivedEcoNewsFailureAction(error)))
-        )
-      )
+      ofType(GetEcoNewsAction),
+      switchMap((actions: { params: HttpParams; reset: boolean }) => {
+        return this.newsService.getEcoNewsList(actions.params).pipe(
+          map((ecoNews: EcoNewsDto) => {
+            return GetEcoNewsSuccessAction({ ecoNews, reset: actions.reset });
+          }),
+          catchError((error) => {
+            return of(ReceivedEcoNewsFailureAction({ error }));
+          })
+        );
+      })
     )
   );
 
-  getEcoNewsListByPage = createEffect(() =>
-    this.actions.pipe(
-      ofType(GetEcoNewsByPageAction),
-      mergeMap((actions: { currentPage: number; numberOfNews: number; reset: boolean }) =>
-        this.newsService.getEcoNewsListByPage(actions.currentPage, actions.numberOfNews).pipe(
-          map((ecoNews: EcoNewsDto) => GetEcoNewsByPageSuccessAction({ ecoNews, reset: actions.reset })),
-          catchError((error) => of(ReceivedEcoNewsFailureAction(error)))
-        )
-      )
-    )
-  );
-
-  getEcoNewsListByAutorId = createEffect(() =>
+  getEcoNewsListByAuthorId = createEffect(() =>
     this.actions.pipe(
       ofType(GetEcoNewsByAuthorAction),
       mergeMap((actions: { authorId: number; currentPage: number; numberOfNews: number; reset: boolean }) =>
-        this.newsService.getEcoNewsListByAutorId(actions.authorId, actions.currentPage, actions.numberOfNews).pipe(
+        this.newsService.getEcoNewsListByAuthorId(actions.authorId, actions.currentPage, actions.numberOfNews).pipe(
           map((ecoNews: EcoNewsDto) => GetEcoNewsByAuthorSuccessAction({ ecoNews, reset: actions.reset })),
           catchError((error) => of(ReceivedEcoNewsFailureAction(error)))
         )
@@ -105,6 +98,28 @@ export class NewsEffects {
           catchError((error) => of(ReceivedEcoNewsFailureAction(error)))
         )
       )
+    )
+  );
+
+  changeNewsFavoriteStatus = createEffect(() =>
+    this.actions.pipe(
+      ofType(ChangeEcoNewsFavoriteStatusAction),
+      mergeMap((actions: { id: number; favorite: boolean; isFavoritesPage: boolean }) => {
+        const observable = actions.favorite
+          ? this.newsService.addNewsToFavorites(actions.id)
+          : this.newsService.removeNewsFromFavorites(actions.id);
+
+        return observable.pipe(
+          map(() =>
+            ChangeEcoNewsFavoriteStatusSuccessAction({
+              id: actions.id,
+              favorite: actions.favorite,
+              isFavoritesPage: actions.isFavoritesPage
+            })
+          ),
+          catchError((error) => of(ReceivedEcoNewsFailureAction(error)))
+        );
+      })
     )
   );
 }

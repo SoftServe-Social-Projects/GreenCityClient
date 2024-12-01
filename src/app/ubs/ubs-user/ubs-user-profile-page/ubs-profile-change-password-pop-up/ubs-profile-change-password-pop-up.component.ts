@@ -71,15 +71,15 @@ export class UbsProfileChangePasswordPopUpComponent implements OnInit {
           )
         )
       )
-      .subscribe(
-        (_) => {
+      .subscribe({
+        next: (_) => {
           this.snackBar.openSnackBar('successConfirmPasswordUbs');
           this.dialogRef.close();
         },
-        (error) => {
+        error: (error) => {
           this.initForm();
           this.hasWrongCurrentPassword = true;
         }
-      );
+      });
   }
 }

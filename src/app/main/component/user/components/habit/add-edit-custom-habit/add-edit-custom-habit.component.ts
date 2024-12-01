@@ -13,8 +13,8 @@ import 'quill-emoji/dist/quill-emoji.js';
 import ImageResize from 'quill-image-resize-module';
 import { HabitService } from '@global-service/habit/habit.service';
 import { TagInterface } from '@shared/components/tag-filter/tag-filter.model';
-import { quillConfig } from '../../../../events/components/event-editor/quillEditorFunc';
-import { ShoppingList } from '@global-user/models/shoppinglist.interface';
+import { quillConfig } from 'src/app/main/component/events/components/event-editor/quillEditorFunc';
+import { ToDoList } from '@global-user/models/to-do-list.interface';
 import { FileHandle } from '@eco-news-models/create-news-interface';
 import { UserFriendsService } from '@global-user/services/user-friends.service';
 import { TodoStatus } from '../models/todo-status.enum';
@@ -35,8 +35,8 @@ export class AddEditCustomHabitComponent extends FormBaseComponent implements On
   habitImages = HABIT_IMAGES;
   stars = STAR_IMAGES;
   initialDuration = HABIT_DEFAULT_DURATION;
-  shopList: ShoppingList[] = [];
-  newList: ShoppingList[] = [];
+  toDoList: ToDoList[] = [];
+  newList: ToDoList[] = [];
   tagsList: TagInterface[];
   tagMaxLength = HABIT_TAGS_MAXLENGTH;
   selectedTagsList: number[];
@@ -151,13 +151,13 @@ export class AddEditCustomHabitComponent extends FormBaseComponent implements On
     return value <= complexity ? this.stars.GREEN : this.stars.WHITE;
   }
 
-  getShopList(list: ShoppingList[]): void {
+  getToDoList(list: ToDoList[]): void {
     this.newList = list.map((item) => ({
       id: item.id,
       status: item.status,
       text: item.text
     }));
-    this.habitForm.get('shopList').setValue(this.newList);
+    this.habitForm.get('toDoList').setValue(this.newList);
   }
 
   getTagsList(list: TagInterface[]): void {
@@ -217,7 +217,7 @@ export class AddEditCustomHabitComponent extends FormBaseComponent implements On
       duration: new FormControl(this.initialDuration, [Validators.required, Validators.min(7), Validators.max(56)]),
       tagIds: new FormControl([], Validators.required),
       image: new FormControl(''),
-      shopList: new FormControl([])
+      toDoList: new FormControl([])
     });
   }
 
@@ -230,13 +230,13 @@ export class AddEditCustomHabitComponent extends FormBaseComponent implements On
       duration: this.habit.defaultDuration,
       tagIds: this.habit.tags,
       image: this.habit.image,
-      shopList: this.habit.customShoppingListItems
+      toDoList: this.habit.customToDoListItems
     });
     this.habitId = this.habit.id;
-    this.shopList = this.habit.customShoppingListItems?.length
-      ? [...(this.habit.customShoppingListItems || [])]
-      : [...(this.habit.customShoppingListItems || []), ...this.habit.shoppingListItems];
-    this.shopList = this.shopList.map((el) => ({ ...el, selected: el.status === TodoStatus.inprogress }));
+    this.toDoList = this.habit.customToDoListItems?.length
+      ? [...(this.habit.customToDoListItems || [])]
+      : [...(this.habit.customToDoListItems || []), ...this.habit.ToDoListItems];
+    this.toDoList = this.toDoList.map((el) => ({ ...el, selected: el.status === TodoStatus.inprogress }));
   }
 
   private subscribeToLangChange(): void {

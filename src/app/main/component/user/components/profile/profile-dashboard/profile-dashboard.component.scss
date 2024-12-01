@@ -18,6 +18,7 @@ a {
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.01em;
+    margin: 24px 0;
 
     p {
       color: var(--primary-dark-grey);
@@ -29,9 +30,9 @@ a {
       align-items: center;
 
       .favourites {
-        margin: 0 10px;
-        width: 40px;
-        height: 40px;
+        margin-left: 10px;
+        width: 36px;
+        height: 36px;
         background-color: var(--primary-white);
         border-radius: 5px;
         display: flex;
@@ -48,6 +49,10 @@ a {
           transition: all 0.3s;
         }
 
+        .flag {
+          background: url('/assets/events-icons/bookmark-set.png') no-repeat center;
+        }
+
         .flag-active {
           background: url('/assets/events-icons/bookmark-active.png') no-repeat center;
         }
@@ -57,10 +62,21 @@ a {
 
   .in-progress {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin: 24px 0;
-    height: 48px;
+    justify-content: space-between;
+  }
+
+  .column {
+    flex-direction: column;
+    margin-bottom: 24px;
+  }
+
+  .filters {
+    margin-top: 12px;
+  }
+
+  .justify-end {
+    justify-content: end;
   }
 
   .secondary-global-button {
@@ -100,6 +116,16 @@ a {
     display: flex;
     gap: 10px;
   }
+}
+
+.end-page-txt {
+  font-family: var(--primary-font);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0.2px;
+  text-align: center;
+  margin: 0 auto 2rem;
 }
 
 .news-list {

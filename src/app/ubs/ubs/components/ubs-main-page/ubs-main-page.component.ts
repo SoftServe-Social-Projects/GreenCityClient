@@ -1,19 +1,18 @@
-import { CheckTokenService } from './../../../../main/service/auth/check-token/check-token.service';
+import { CheckTokenService } from 'src/app/main/service/auth/check-token/check-token.service';
 import { Component, OnDestroy, OnInit, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil, finalize, tap, concatMap, switchMap } from 'rxjs/operators';
-import { ubsMainPageImages } from '../../../../main/image-pathes/ubs-main-page-images';
+import { ubsMainPageImages } from 'src/app/main/image-pathes/ubs-main-page-images';
 import {
-  AllLocationsDtos,
-  CourierLocations,
   Bag,
   OrderDetails,
   LocationsDtosList,
   ActiveCourierDto,
-  AllActiveLocationsDtosResponse
+  AllActiveLocationsDtosResponse,
+  ActiveRegionDto
 } from '../../models/ubs.interface';
 import { OrderService } from '../../services/order.service';
 import { UbsOrderLocationPopupComponent } from '../ubs-order-details/ubs-order-location-popup/ubs-order-location-popup.component';
@@ -34,7 +33,7 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
   private subs = new Subscription();
   private destroy: Subject<boolean> = new Subject<boolean>();
   ubsMainPageImages = ubsMainPageImages;
-  locations: CourierLocations;
+  locations: ActiveRegionDto;
   selectedLocationId: number;
   isFetching: boolean;
   currentLocation: string;
@@ -244,8 +243,8 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
           this.isFetching = false;
         })
       )
-      .subscribe(
-        (res: any) => {
+      .subscribe({
+        next: (res: AllActiveLocationsDtosResponse) => {
           if (res.orderIsPresent) {
             this.saveLocation(res);
             this.router.navigate(['ubs', 'order']);
@@ -253,10 +252,10 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
             this.openLocationDialog(res);
           }
         },
-        (e) => {
+        error: (e) => {
           console.error(e);
         }
-      );
+      });
   }
 
   private getActiveLocationsToShow(): Observable<AllActiveLocationsDtosResponse> {
@@ -279,19 +278,17 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
     );
   }
 
-  saveLocation(locationsData: AllLocationsDtos): void {
-    this.locations = locationsData.tariffsForLocationDto;
-    this.selectedLocationId = locationsData.tariffsForLocationDto.locationsDtosList[0].locationId;
-    this.selectedTariffId = locationsData.tariffsForLocationDto.tariffInfoId;
-    this.currentLocation = locationsData.tariffsForLocationDto.locationsDtosList[0].nameEn;
+  saveLocation(locationsData: AllActiveLocationsDtosResponse): void {
+    this.locations = locationsData.allActiveLocationsDtos[0];
+    this.selectedLocationId = locationsData.allActiveLocationsDtos[0].locations[0].locationId;
+    this.selectedTariffId = locationsData.allActiveLocationsDtos[0].locations[0].tariffInfoDto.tariffInfoId;
+    this.currentLocation = locationsData.allActiveLocationsDtos[0].nameEn;
     this.orderService.completedLocation(true);
     this.localStorageService.setLocationId(this.selectedLocationId);
     this.localStorageService.setTariffId(this.selectedTariffId);
-    this.localStorageService.setLocations(this.locations);
-    this.orderService.setLocationData(this.currentLocation);
   }
 
-  openLocationDialog(locationsData: AllLocationsDtos): void {
+  openLocationDialog(locationsData: AllActiveLocationsDtosResponse): void {
     const dialogRef = this.dialog.open(UbsOrderLocationPopupComponent, {
       hasBackdrop: true,
       disableClose: false,
@@ -302,16 +299,16 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this.destroy))
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           if (res?.data) {
             this.router.navigate(['ubs', 'order']);
           }
         },
-        (e) => {
+        error: (e) => {
           console.error(e);
         }
-      );
+      });
   }
 
   getElementDescription(nameUk: string, nameEng: string, capacity: number): string {

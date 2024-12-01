@@ -11,7 +11,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { of, Subject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UbsAdminTariffsAddServicePopUpComponent } from './ubs-admin-tariffs-add-service-pop-up/ubs-admin-tariffs-add-service-pop-up.component';
-import { FilterListByLangPipe } from '../../../../../shared/sort-list-by-lang/filter-list-by-lang.pipe';
+import { FilterListByLangPipe } from 'src/app/shared/sort-list-by-lang/filter-list-by-lang.pipe';
 import { UbsAdminTariffsAddTariffServicePopUpComponent } from './ubs-admin-tariffs-add-tariff-service-pop-up/ubs-admin-tariffs-add-tariff-service-pop-up.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TariffsService } from 'src/app/ubs/ubs-admin/services/tariffs.service';

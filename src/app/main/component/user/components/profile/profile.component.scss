@@ -42,11 +42,14 @@
       order: 1;
       width: 100vw;
       min-height: 323px;
+      background-color: transparent;
     }
 
-    .app-users-friends {
+    .app-users-friends,
+    .app-users-achievements {
       width: 100%;
-      margin-top: 15px;
+      margin-top: 30px;
+      box-shadow: 0 4px 8px 0 var(--quintynary-dark-grey);
     }
 
     .habits-dashboard {
@@ -144,7 +147,7 @@
 
 @include responsivePCFirst(sm) {
   .left-column {
-    height: 430px;
+    gap: 24px;
 
     .app-users-friends {
       width: 100%;
@@ -153,7 +156,8 @@
 
   .profile-wrapper {
     .right-column {
-      app-shopping-list {
+      app-to-do-list {
+        margin: 0;
         display: none;
       }
     }
@@ -174,13 +178,13 @@
         display: flex;
       }
 
-      .app-shopping-list {
+      .app-to-do-list {
         display: none;
       }
     }
 
     .right-column {
-      app-shopping-list {
+      app-to-do-list {
         margin-top: 50px;
         margin-bottom: 24px;
       }
@@ -191,13 +195,13 @@
 @include responsiveRange(md, xl) {
   .profile-wrapper {
     .left-column {
-      .app-shopping-list {
+      .app-to-do-list {
         display: block;
       }
     }
 
     .right-column {
-      .app-shopping-list {
+      .app-to-do-list {
         display: none;
       }
     }
@@ -207,13 +211,13 @@
 @include responsiveMobileFirst(xl) {
   .profile-wrapper {
     .left-column {
-      .app-shopping-list {
+      .app-to-do-list {
         display: none;
       }
     }
 
     .right-column {
-      .app-shopping-list {
+      .app-to-do-list {
         display: block;
         margin-top: 16px;
       }

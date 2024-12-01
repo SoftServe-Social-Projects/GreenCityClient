@@ -6,8 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ProfileStatistics } from '@user-models/profile-statistiscs';
 import { EditProfileModel } from '@user-models/edit-profile.model';
-import { LanguageService } from 'src/app/main/i18n/language.service';
-import { mainLink, mainUserLink } from '../../../../../links';
+import { mainLink, mainUserLink } from 'src/app/main/links';
 import { Patterns } from 'src/assets/patterns/patterns';
 
 @Injectable({
@@ -26,15 +25,13 @@ export class ProfileService {
     facebook: './assets/img/icon/facebook-icon.svg',
     linkedin: './assets/img/icon/linkedin-icon.svg',
     instagram: './assets/img/icon/instagram-icon.svg',
-    twitter: './assets/img/icon/twitter-icon.svg',
     x: './assets/img/icon/twitter-icon.svg',
     youtube: './assets/img/icon/youtube-icon.svg'
   };
 
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService,
-    private languageService: LanguageService
+    private localStorageService: LocalStorageService
   ) {}
 
   setUserId(): void {
@@ -72,7 +69,6 @@ export class ProfileService {
   private getDomainFromUrl(url: string): string | null {
     const regex = Patterns.socialMediaPattern;
     const match = regex.exec(url);
-
     return match?.[1] || null;
   }
 }

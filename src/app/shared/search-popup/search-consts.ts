@@ -1,4 +1,5 @@
 export enum SearchCategory {
-  NEWS = 'econews',
-  EVENTS = 'events'
+  NEWS = 'eco-news',
+  EVENTS = 'events',
+  PLACES = 'places'
 }

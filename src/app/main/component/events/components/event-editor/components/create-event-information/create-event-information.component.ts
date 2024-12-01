@@ -4,8 +4,8 @@ import { ContentChange } from 'ngx-quill';
 
 import { FormGroup } from '@angular/forms';
 import { quillConfig } from '../../quillEditorFunc';
-import { EVENT_LOCALE, EventLocaleKeys } from '../../../../models/event-consts';
-import { ImagesContainer } from '../../../../models/events.interface';
+import { EVENT_LOCALE, EventLocaleKeys } from 'src/app/main/component/events/models/event-consts';
+import { ImagesContainer } from 'src/app/main/component/events/models/events.interface';
 import { Router } from '@angular/router';
 
 @Component({

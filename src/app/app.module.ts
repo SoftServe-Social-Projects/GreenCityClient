@@ -38,17 +38,17 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
 
         const selectedLanguage = languageService.getCurrentLanguage();
 
-        translate.use(selectedLanguage).subscribe(
-          () => {
+        translate.use(selectedLanguage).subscribe({
+          next: () => {
             console.log(`Successfully initialized '${selectedLanguage}' language.`);
           },
-          (err) => {
+          error: (err) => {
             console.error(`Problem with '${selectedLanguage}' language initialization.`, { err });
           },
-          () => {
+          complete: () => {
             resolve(null);
           }
-        );
+        });
       });
     });
 }

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Addresses, EventListResponse, FilterItem } from '../../models/events.interface';
 import { UserOwnAuthService } from '@auth-service/user-own-auth.service';
-import { Observable, ReplaySubject, Subscription } from 'rxjs';
+import { Observable, ReplaySubject, Subscription, take } from 'rxjs';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
@@ -9,13 +9,14 @@ import { IEcoEventsState } from 'src/app/store/state/ecoEvents.state';
 import { statusFiltersData, timeStatusFiltersData, typeFiltersData } from '../../models/event-consts';
 import { Router } from '@angular/router';
 import { AuthModalComponent } from '@global-auth/auth-modal/auth-modal.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
 import { Patterns } from 'src/assets/patterns/patterns';
 import { EventsService } from '../../services/events.service';
 import { MatOption } from '@angular/material/core';
 import { HttpParams } from '@angular/common/http';
+import { EventStoreService } from '../../services/event-store.service';
 
 @Component({
   selector: 'app-events-list',
@@ -35,7 +36,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
   searchEventControl = new FormControl('', [Validators.maxLength(30), Validators.pattern(Patterns.NameInfoPattern)]);
 
   eventsList: EventListResponse[] = [];
-  isLoggedIn: string;
+  isLoggedIn: boolean;
   selectedEventTimeStatusFiltersList: string[] = [];
   selectedLocationFiltersList: string[] = [];
   selectedStatusFiltersList: string[] = [];
@@ -58,14 +59,17 @@ export class EventsListComponent implements OnInit, OnDestroy {
   private page = 0;
   private eventsPerPage = 6;
   private searchResultSubscription: Subscription;
+  private searchQuery: string;
+  private readonly dialogRef: MatDialogRef<unknown>;
 
   constructor(
-    private store: Store,
-    private userOwnAuthService: UserOwnAuthService,
-    private localStorageService: LocalStorageService,
-    private router: Router,
-    private eventService: EventsService,
-    private dialog: MatDialog
+    private readonly store: Store,
+    private readonly userOwnAuthService: UserOwnAuthService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly router: Router,
+    private readonly eventService: EventsService,
+    private readonly eventStoreService: EventStoreService,
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -91,7 +95,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
         this.searchResultSubscription.unsubscribe();
       }
       this.cleanEventList();
-      value.trim() !== '' ? this.searchEventsByTitle(value.trim()) : this.getEvents();
+      this.searchQuery = value.trim();
+      value.trim() !== '' ? this.searchEventsByTitle() : this.getEvents();
     });
   }
 
@@ -99,8 +104,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
     if (this.bookmarkSelected) {
       this.getUserFavoriteEvents();
     } else {
-      const searchTitle = this.searchEventControl.value.trim();
-      this.searchEventsByTitle(searchTitle);
+      this.searchEventsByTitle();
     }
     this.page++;
   }
@@ -114,14 +118,23 @@ export class EventsListComponent implements OnInit, OnDestroy {
   }
 
   showSelectedEvents(): void {
-    this.bookmarkSelected = !this.bookmarkSelected;
-    if (this.bookmarkSelected) {
-      this.cleanEventList();
-      this.getUserFavoriteEvents();
+    if (!this.isLoggedIn) {
+      this.openAuthModalWindow('sign-in');
+      this.dialogRef
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe((result) => {
+          this.isLoggedIn = !!result;
+        });
     } else {
-      this.cleanEventList();
-      this.getEvents();
+      this.toggleEventList();
     }
+  }
+
+  private toggleEventList(): void {
+    this.bookmarkSelected = !this.bookmarkSelected;
+    this.cleanEventList();
+    this.getEvents();
   }
 
   getUniqueLocations(addresses: Array<Addresses>): FilterItem[] {
@@ -306,7 +319,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
   isUserLoggedRedirect(): void {
     this.isLoggedIn ? this.router.navigate(['/events', 'create-event']) : this.openAuthModalWindow('sign-in');
-    this.eventService.setForm(null);
+    this.eventStoreService.setEditorValues(null);
   }
 
   openAuthModalWindow(page: string): void {
@@ -329,12 +342,12 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  private searchEventsByTitle(searchTitle: string): void {
+  private searchEventsByTitle(): void {
     if (this.searchResultSubscription) {
       this.searchResultSubscription.unsubscribe();
     }
 
-    this.searchResultSubscription = this.eventService.getEvents(this.getEventsHttpParams(searchTitle)).subscribe((res) => {
+    this.searchResultSubscription = this.eventService.getEvents(this.getEventsHttpParams()).subscribe((res) => {
       this.isLoading = false;
       if (res.page.length > 0) {
         this.countOfEvents = res.totalElements;
@@ -347,10 +360,9 @@ export class EventsListComponent implements OnInit, OnDestroy {
   }
 
   private getUserFavoriteEvents(): void {
-    this.eventService.getUserFavoriteEvents(this.page, this.eventsPerPage, this.userId).subscribe((res) => {
+    this.eventService.getEvents(this.getEventsHttpParams()).subscribe((res) => {
       this.isLoading = false;
       this.eventsList.push(...res.page);
-      this.page++;
       this.countOfEvents = res.totalElements;
       this.hasNextPage = res.hasNext;
     });
@@ -392,12 +404,12 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.countOfEvents = 0;
   }
 
-  private getEventsHttpParams(title: string): HttpParams {
+  private getEventsHttpParams(): HttpParams {
     let params = new HttpParams().append('page', this.page.toString()).append('size', this.eventsPerPage.toString());
 
     const paramsToAdd = [
       this.appendIfNotEmpty('user-id', this.userId?.toString()),
-      this.appendIfNotEmpty('title', title),
+      this.appendIfNotEmpty('title', this.searchQuery),
       this.appendIfNotEmpty('type', this.getTypeFilter()),
       this.appendIfNotEmpty(
         'cities',
@@ -411,7 +423,9 @@ export class EventsListComponent implements OnInit, OnDestroy {
       ),
       this.appendIfNotEmpty(
         'statuses',
-        this.selectedStatusFiltersList.filter((status) => status !== 'Any status' && status !== 'Будь-який статус')
+        this.selectedStatusFiltersList
+          .filter((status) => status !== 'Any status' && status !== 'Будь-який статус')
+          .concat(this.bookmarkSelected ? ['SAVED'] : [])
       ),
       this.appendIfNotEmpty(
         'tags',
@@ -441,9 +455,13 @@ export class EventsListComponent implements OnInit, OnDestroy {
     return formattedValue ? { key, value: formattedValue } : null;
   }
 
+  isShow(condition: boolean): boolean {
+    return condition && !this.noEventsMatch && !this.isLoading && !this.bookmarkSelected;
+  }
+
   private checkUserSingIn(): void {
     this.userOwnAuthService.credentialDataSubject.subscribe((data) => {
-      this.isLoggedIn = data?.userId;
+      this.isLoggedIn = !!data?.userId;
       this.userId = data.userId;
       this.statusFiltersList = this.userId ? statusFiltersData : statusFiltersData.slice(0, 2);
     });

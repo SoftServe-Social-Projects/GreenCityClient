@@ -1,4 +1,4 @@
-import { Language } from '../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { EventResponse, PagePreviewDTO } from '../../component/events/models/events.interface';

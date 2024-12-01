@@ -423,7 +423,6 @@ body {
 }
 
 .success-snackbar-ubs {
-  padding: 12px 16px !important;
   background-color: var(--ubs-primary-light-green);
   color: var(--ubs-quaternary-dark-grey);
   border-radius: 4px;
@@ -437,6 +436,11 @@ body {
 
   .mdc-snackbar__label {
     color: var(--quaternary-dark-grey) !important;
+  }
+
+  &.below-header {
+    position: relative;
+    top: 80px;
   }
 }
 

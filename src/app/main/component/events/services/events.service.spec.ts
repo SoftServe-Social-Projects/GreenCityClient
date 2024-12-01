@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { EventsService } from 'src/app/main/component/events/services/events.service';
 import { environment } from '@environment/environment';
@@ -13,6 +13,8 @@ import {
   mockParams
 } from '@assets/mocks/events/mock-events';
 import { HttpParams } from '@angular/common/http';
+import { FormBuilder } from '@angular/forms';
+import { EVENT_FORM_MOCK } from '@assets/mocks/events/mock-events';
 
 describe('EventsService', () => {
   let service: EventsService;
@@ -20,22 +22,24 @@ describe('EventsService', () => {
   const url = environment.backendLink;
   const formData = new FormData();
   formData.set('id', '1');
+  let formBuilder: FormBuilder;
 
-  beforeEach(() =>
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [EventsService, { provide: TranslateService, useValue: {} }]
-    })
-  );
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     service = TestBed.inject(EventsService);
+    formBuilder = TestBed.inject(FormBuilder);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => {
+  afterEach(waitForAsync(() => {
     httpTestingController.verify();
-  });
+  }));
 
   it('should be created', () => {
     const serviceNew: EventsService = TestBed.inject(EventsService);
@@ -376,5 +380,156 @@ describe('EventsService', () => {
 
     const req = httpTestingController.expectOne(`${service['backEnd']}events/addresses`);
     req.flush('Failed to load addresses', { status: 500, statusText: 'Server Error' });
+  });
+
+  it('should handle getAddresses when no addresses available', () => {
+    service.getAddresses().subscribe({
+      next: (addresses) => expect(addresses).toEqual([]),
+      error: fail
+    });
+
+    const req = httpTestingController.expectOne(`${url}events/addresses`);
+    req.flush([]);
+  });
+
+  it('should handle getAllAttendees for event with no attendees', () => {
+    const eventId = 9999;
+
+    service.getAllAttendees(eventId).subscribe({
+      next: (attendees) => expect(attendees).toEqual([]),
+      error: fail
+    });
+
+    const req = httpTestingController.expectOne(`${url}events/${eventId}/attenders`);
+    req.flush([]);
+  });
+
+  it('should handle removeEventFromFavourites with non-existent event', () => {
+    const eventId = 9999;
+
+    service.removeEventFromFavourites(eventId).subscribe({
+      next: () => fail('Expected error'),
+      error: (error) => expect(error.status).toBe(404)
+    });
+
+    const req = httpTestingController.expectOne(`${url}events/${eventId}/favorites`);
+    req.flush('Event not found', { status: 404, statusText: 'Not Found' });
+  });
+
+  it('should handle addEventToFavourites with non-existent event', () => {
+    const eventId = 9999;
+
+    service.addEventToFavourites(eventId).subscribe({
+      next: () => fail('Expected error'),
+      error: (error) => expect(error.status).toBe(404)
+    });
+
+    const req = httpTestingController.expectOne(`${url}events/${eventId}/favorites`);
+    req.flush('Event not found', { status: 404, statusText: 'Not Found' });
+  });
+
+  describe('convertEventToFormEvent', () => {
+    it('should convert EventForm to FormGroup with correct values', () => {
+      const formGroup = service.convertEventToFormEvent(EVENT_FORM_MOCK);
+
+      // Check eventInformation values
+      expect(formGroup.get('eventInformation.title').value).toBe(EVENT_FORM_MOCK.eventInformation.title);
+      expect(formGroup.get('eventInformation.description').value).toBe(EVENT_FORM_MOCK.eventInformation.description);
+      expect(formGroup.get('eventInformation.open').value).toBe(EVENT_FORM_MOCK.eventInformation.open);
+      expect(formGroup.get('eventInformation.duration').value).toBe(EVENT_FORM_MOCK.eventInformation.duration);
+      expect(formGroup.get('eventInformation.tags').value).toEqual(EVENT_FORM_MOCK.eventInformation.tags);
+
+      // Check dateInformation values
+      const dateGroup = formGroup.get('dateInformation').value[0];
+      expect(dateGroup.day.date).toEqual(EVENT_FORM_MOCK.dateInformation[0].day.date);
+      expect(dateGroup.day.startTime).toBe(EVENT_FORM_MOCK.dateInformation[0].day.startTime);
+      expect(dateGroup.day.endTime).toBe(EVENT_FORM_MOCK.dateInformation[0].day.endTime);
+      expect(dateGroup.placeOnline.onlineLink).toBe(EVENT_FORM_MOCK.dateInformation[0].placeOnline.onlineLink);
+      expect(dateGroup.placeOnline.place).toBe(EVENT_FORM_MOCK.dateInformation[0].placeOnline.place);
+      expect(dateGroup.placeOnline.coordinates).toEqual(EVENT_FORM_MOCK.dateInformation[0].placeOnline.coordinates);
+    });
+  });
+
+  describe('transformDatesFormToDates', () => {
+    it('should transform valid form data to Dates[]', () => {
+      const result = service.transformDatesFormToDates(EVENT_FORM_MOCK.dateInformation);
+
+      expect(result.length).toBe(1);
+
+      const startDate = new Date(result[0].startDate);
+      const finishDate = new Date(result[0].finishDate);
+
+      expect(startDate.getHours()).toBe(10);
+      expect(startDate.getMinutes()).toBe(0);
+      expect(finishDate.getHours()).toBe(12);
+      expect(finishDate.getMinutes()).toBe(0);
+
+      expect(result[0].onlineLink).toBe('https://example.com/event');
+      expect(result[0].coordinates.latitude).toBe(40.712776);
+      expect(result[0].coordinates.longitude).toBe(-74.005974);
+    });
+
+    it('should filter out invalid dates', () => {
+      const mockFormData = [
+        {
+          day: { date: 'invalid-date', startTime: '10:00', endTime: '12:00', allDay: false },
+          placeOnline: { coordinates: { lat: 50, lng: 50 }, onlineLink: null, place: null }
+        }
+      ];
+
+      const result = service.transformDatesFormToDates(EVENT_FORM_MOCK.dateInformation);
+
+      expect(result.length).toBe(1);
+    });
+  });
+
+  describe('prepareEventForSubmit', () => {
+    it('should prepare FormData for a new event', () => {
+      const result = service.prepareEventForSubmit(EVENT_FORM_MOCK, 0, false);
+
+      const addEventDtoRequest = JSON.parse(result.get('addEventDtoRequest') as string);
+      expect(addEventDtoRequest.title).toBe('Sample Event Title');
+      expect(addEventDtoRequest.description).toBe('This is a sample event description.');
+      expect(addEventDtoRequest.open).toBe(true);
+      expect(addEventDtoRequest.tags).toEqual(['Technology', 'Education']);
+      expect(addEventDtoRequest.datesLocations.length).toBe(1);
+
+      expect(result.getAll('images').length).toBe(0);
+    });
+
+    it('should prepare FormData for updating an event', () => {
+      const result = service.prepareEventForSubmit(EVENT_FORM_MOCK, 1, true);
+
+      const eventDto = JSON.parse(result.get('eventDto') as string);
+      expect(eventDto.title).toBe('Sample Event Title');
+      expect(eventDto.description).toBe('This is a sample event description.');
+      expect(eventDto.open).toBe(true);
+      expect(eventDto.tags).toEqual(['Technology', 'Education']);
+      expect(eventDto.datesLocations.length).toBe(1);
+      expect(eventDto.id).toBe(1);
+
+      expect(result.getAll('images').length).toBe(0);
+    });
+
+    it('should append file images to FormData for a new event', () => {
+      const mockWithFiles = {
+        ...EVENT_FORM_MOCK,
+        eventInformation: {
+          ...EVENT_FORM_MOCK.eventInformation,
+          images: [
+            { file: new File([], 'main-image.jpg'), url: '', main: true },
+            { file: new File([], 'secondary-image.jpg'), url: '', main: false }
+          ]
+        }
+      };
+
+      const result = service.prepareEventForSubmit(mockWithFiles, 0, false);
+
+      // Check for the added files in FormData
+      const images = result.getAll('images') as File[];
+      expect(images.length).toBe(2);
+      expect(images[0].name).toBe('main-image.jpg');
+      expect(images[1].name).toBe('secondary-image.jpg');
+    });
   });
 });

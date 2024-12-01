@@ -198,6 +198,7 @@
       "save": "Save"
     },
     "title": "Choose the time of export",
+    "optional-field": "optional",
     "export-time": {
       "from": "From",
       "to": "To"
@@ -222,6 +223,11 @@
     },
     "date": "Date",
     "added": "Added"
+  },
+  "order-status-confirm": {
+    "confirm-message": "Do you realy want to change order status to",
+    "yes": "Yes",
+    "no": "No"
   },
   "order-not-taken-out": {
     "title": "Add the reason for not taken out order",
@@ -419,7 +425,7 @@
   "responsible-persons": {
     "title": "Responsible persons",
     "service-manager": "Service manager",
-    "call-manager": "Call manager",
+    "call-manager": "Manager",
     "logistician": "Logistician",
     "navigator": "Navigator",
     "driver": "Driver",
@@ -627,6 +633,7 @@
     "email": "Email*",
     "position": "Position*",
     "receiving-station": "Receiving station*",
+    "chat-hint": "Add a tariff first",
     "image-input": "Image",
     "picture-description-1": "Drop your",
     "picture-description-2": "image here or",
@@ -639,7 +646,7 @@
     "update": "Save",
     "filter-reset-all": "Reset all",
     "image-error": "The supported formats of the photo are PNG and JPG. Max size is 10MB",
-    "tariffs": "Tariffs",
+    "tariffs": "Tariffs*",
     "tariffs-columns": {
       "region": "Region",
       "city": "City",

@@ -3,7 +3,7 @@
     <h4>{{ 'several-orders-pop-up.title' | translate }}</h4>
   </div>
 
-  <form class="form_styles" *ngIf="ordersForm" [formGroup]="ordersForm">
+  <form class="form_styles" *ngIf="ordersForm; else spinner" [formGroup]="ordersForm">
     <div class="form_container">
       <div class="form" formGroupName="exportDetailsDto">
         <div class="form-row-container">
@@ -52,7 +52,12 @@
       <div class="form" formGroupName="responsiblePersonsForm">
         <div class="form-row" *ngFor="let person of responsiblePersonsData">
           <div class="form-group">
-            <label for="person" class="form__label">{{ person.translate | translate }}</label>
+            <label for="person" class="form__label">
+              {{ person.translate | translate }}
+              <span class="form__label" *ngIf="isFieldOptional(person.formControlName)"
+                >({{ 'order-edit.optional-field' | translate }})</span
+              >
+            </label>
             <select id="person" formControlName="{{ person.formControlName }}" class="form-control form__select">
               <option *ngFor="let employee of person.responsiblePersonsArray" [value]="employee">
                 {{ employee }}
@@ -73,5 +78,8 @@
       </div>
     </div>
   </form>
+  <ng-template #spinner>
+    <app-spinner></app-spinner>
+  </ng-template>
   <app-time-picker *ngIf="showTimePicker" (timeOfExport)="setExportTime($event)" [exportDate]="getExportDate()"> </app-time-picker>
 </div>

@@ -7,7 +7,7 @@ import { iif, of, Subject } from 'rxjs';
 import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { IPaymentInfoDto, PaymentDetails } from '../../models/ubs-admin.interface';
 import { OrderService } from '../../services/order.service';
-import { ShowImgsPopUpComponent } from '../../../../shared/show-imgs-pop-up/show-imgs-pop-up.component';
+import { ShowImgsPopUpComponent } from 'src/app/shared/show-imgs-pop-up/show-imgs-pop-up.component';
 import { ShowPdfPopUpComponent } from '../shared/components/show-pdf-pop-up/show-pdf-pop-up.component';
 import { DialogPopUpComponent } from 'src/app/shared/dialog-pop-up/dialog-pop-up.component';
 import { Patterns } from 'src/assets/patterns/patterns';
@@ -207,16 +207,16 @@ export class AddPaymentComponent implements OnInit, OnDestroy {
         ),
         takeUntil(this.destroySub)
       )
-      .subscribe(
-        (data: IPaymentInfoDto) => {
+      .subscribe({
+        next: (data: IPaymentInfoDto) => {
           data.amount /= 100;
           this.dialogRef.close(data);
         },
-        (err) => {
+        error: (err) => {
           console.error('error', err);
           this.isUploading = false;
         }
-      );
+      });
   }
 
   filesDropped(files: FileHandle[]): void {
@@ -342,14 +342,14 @@ export class AddPaymentComponent implements OnInit, OnDestroy {
           this.orderService
             .deleteManualPayment(this.payment.id)
             .pipe(takeUntil(this.destroySub))
-            .subscribe(
-              () => {
+            .subscribe({
+              next: () => {
                 this.dialogRef.close(this.payment.id);
               },
-              () => {
+              error: () => {
                 this.isDeleting = false;
               }
-            );
+            });
         }
       });
   }

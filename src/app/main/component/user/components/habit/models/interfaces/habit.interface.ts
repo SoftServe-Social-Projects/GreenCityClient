@@ -1,4 +1,4 @@
-import { ShoppingList } from '@user-models/shoppinglist.interface';
+import { ToDoList } from '@global-user/models/to-do-list.interface';
 
 export interface HabitInterface {
   defaultDuration: number;
@@ -12,8 +12,8 @@ export interface HabitInterface {
   habitAssignStatus?: string;
   isCustomHabit: boolean;
   usersIdWhoCreatedCustomHabit: number;
-  customShoppingListItems?: ShoppingList[];
-  shoppingListItems?: ShoppingList[];
+  customToDoListItems?: ToDoList[];
+  toDoListItems?: ToDoList[];
   tags: Array<string>;
   duration?: number;
 }

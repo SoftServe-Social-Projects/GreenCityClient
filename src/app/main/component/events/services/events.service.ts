@@ -2,10 +2,14 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
 import { environment } from '@environment/environment';
+import { DefaultCoordinates } from '../models/event-consts';
+
 import {
   Addresses,
+  DateInformation,
+  Dates,
   EventAttender,
-  EventFilterCriteriaInterface,
+  EventDTO,
   EventForm,
   EventResponse,
   EventResponseDto,
@@ -13,14 +17,13 @@ import {
   PagePreviewDTO
 } from '../models/events.interface';
 import { LanguageService } from 'src/app/main/i18n/language.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventsService implements OnDestroy {
   currentForm: PagePreviewDTO | EventResponse;
-  private eventPreview: PagePreviewDTO;
-  private event: EventForm;
   private backEnd = environment.backendLink;
   private destroyed$: ReplaySubject<any> = new ReplaySubject<any>(1);
   private divider = `, `;
@@ -28,13 +31,9 @@ export class EventsService implements OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private langService: LanguageService
+    private langService: LanguageService,
+    private fb: FormBuilder
   ) {}
-
-  setEvent(event: EventForm): void {
-    this.event = event;
-    this.eventPreview = this.convertEventToPreview(event);
-  }
 
   setIsFromCreateEvent(value: boolean): void {
     this.isFromCreateEvent = value;
@@ -43,6 +42,7 @@ export class EventsService implements OnDestroy {
   getIsFromCreateEvent(): boolean {
     return this.isFromCreateEvent;
   }
+
   private convertEventToPreview(event: EventForm): PagePreviewDTO {
     const { eventInformation, dateInformation } = event;
 
@@ -83,26 +83,134 @@ export class EventsService implements OnDestroy {
         .join(', ')
     };
   }
-  getEventPriview(): PagePreviewDTO {
-    return this.eventPreview;
+
+  convertEventToFormEvent(event: EventForm): FormGroup {
+    const information = event?.eventInformation;
+    const date = event?.dateInformation ?? [];
+
+    return this.fb.group({
+      eventInformation: this.fb.group({
+        title: [information?.title ?? '', [Validators.required, Validators.maxLength(70)]],
+        description: [information?.description ?? '', [Validators.required, Validators.minLength(20)]],
+        open: [information?.open ?? true, Validators.required],
+        images: [information?.images ?? []],
+        duration: [information?.duration ?? 1, Validators.required],
+        tags: [information?.tags ?? [], [Validators.required, Validators.minLength(1)]]
+      }),
+
+      dateInformation: this.fb.array(date.length > 0 ? date.map((date) => this.createDateFormGroup(date)) : [this.createDateFormGroup()])
+    });
   }
-  getEvent(): EventForm {
-    return this.event;
+
+  private createDateFormGroup(date?: any): FormGroup {
+    return this.fb.group({
+      day: this.fb.group({
+        date: [date?.day.date ? new Date(date.day.date) : new Date(), [Validators.required]],
+        startTime: [date?.day.startTime ?? '', Validators.required],
+        endTime: [date?.day.endTime ?? '', Validators.required],
+        allDay: [date?.day.allDay ?? false],
+        minDate: [date?.day.minDate ? new Date(date.minDate) : new Date()],
+        maxDate: [date?.day.maxDate ? new Date(date.maxDate) : '']
+      }),
+      placeOnline: this.fb.group({
+        coordinates: new FormControl(
+          date?.placeOnline.coordinates ?? { lat: DefaultCoordinates.LATITUDE, lng: DefaultCoordinates.LONGITUDE }
+        ),
+        onlineLink: new FormControl(date?.placeOnline.onlineLink ?? ''),
+        place: new FormControl(date?.placeOnline.place ?? ''),
+        appliedLinkForAll: [date?.placeOnline.appliedLinkForAll ?? false],
+        appliedPlaceForAll: [date?.placeOnline.appliedPlaceForAll ?? false]
+      })
+    });
   }
+
+  transformDatesFormToDates(form: DateInformation[]): Dates[] {
+    return form
+      .map((value) => {
+        const { date, endTime, startTime } = value.day;
+        const { onlineLink, place, coordinates } = value.placeOnline;
+
+        const dateObject = new Date(date);
+
+        if (isNaN(dateObject.getTime())) {
+          return;
+        }
+
+        let [hours, minutes] = startTime.split(':');
+        dateObject.setHours(parseInt(hours, 10));
+        dateObject.setMinutes(parseInt(minutes, 10));
+        const startDate = dateObject.toISOString();
+
+        [hours, minutes] = endTime.split(':');
+        dateObject.setHours(parseInt(hours, 10));
+        dateObject.setMinutes(parseInt(minutes, 10));
+        const finishDate = dateObject.toISOString();
+
+        const dates: Dates = {
+          startDate,
+          finishDate,
+          id: undefined
+        };
+        if (onlineLink) {
+          dates.onlineLink = onlineLink;
+        }
+        if (place) {
+          dates.coordinates = {
+            latitude: coordinates.lat,
+            longitude: coordinates.lng
+          };
+        }
+        return dates;
+      })
+      .filter(Boolean);
+  }
+
+  prepareEventForSubmit(eventForm: EventForm, eventId: number, isUpdating: boolean) {
+    const { eventInformation, dateInformation } = eventForm;
+    const { open, tags, description, title, images } = eventInformation;
+    const dates: Dates[] = this.transformDatesFormToDates(dateInformation);
+    let sendEventDto: EventDTO = {
+      title,
+      description: description,
+      open,
+      tags,
+      datesLocations: dates
+    };
+
+    if (isUpdating) {
+      const currentImages = (eventForm?.eventInformation?.images || []).filter((value) => !value.file).map((value) => value.url);
+      sendEventDto = {
+        ...sendEventDto,
+        additionalImages: currentImages.slice(1),
+        id: eventId,
+        titleImage: currentImages[0]
+      };
+    }
+    const formData: FormData = new FormData();
+    const stringifyDataToSend = JSON.stringify(sendEventDto);
+    const dtoName = isUpdating ? 'eventDto' : 'addEventDtoRequest';
+
+    formData.append(dtoName, stringifyDataToSend);
+
+    images.forEach((item) => {
+      if (item.file) {
+        formData.append('images', item.file);
+      }
+    });
+
+    return formData;
+  }
+
+  getEventPreview(event: EventForm): PagePreviewDTO {
+    return this.convertEventToPreview(event);
+  }
+
   getAddresses(): Observable<Addresses[]> {
     return this.http.get<Addresses[]>(`${this.backEnd}events/addresses`);
   }
 
   getImageAsFile(img: string): Observable<Blob> {
     return this.http.get(img, { responseType: 'blob' });
-  }
-
-  setForm(form: PagePreviewDTO | EventResponse): void {
-    this.currentForm = form;
-  }
-
-  getForm(): PagePreviewDTO | EventResponse {
-    return this.eventPreview;
   }
 
   createEvent(formData: FormData): Observable<EventResponse> {

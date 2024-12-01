@@ -64,3 +64,7 @@ export interface PaginationConfig {
   currentPage: number;
   totalItems: number;
 }
+
+export interface EmojiEvent {
+  emoji: { native: string };
+}

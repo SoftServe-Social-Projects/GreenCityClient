@@ -108,7 +108,14 @@
     width: 100%;
     box-shadow: 0 0 1px 0 var(--primary-grey);
     height: 40px;
-    padding-right: 25px;
+    padding: 0 14px;
+
+    &:active,
+    &:focus,
+    &:hover {
+      border: 1px solid var(--primary-grey);
+      outline: none;
+    }
   }
 }
 

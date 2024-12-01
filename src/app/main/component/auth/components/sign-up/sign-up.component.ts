@@ -1,7 +1,7 @@
-import { Patterns } from './../../../../../../assets/patterns/patterns';
-import { UserSuccessSignIn, SuccessSignUpDto } from './../../../../model/user-success-sign-in';
-import { UserOwnSignUp } from './../../../../model/user-own-sign-up';
-import { authImages } from './../../../../image-pathes/auth-images';
+import { Patterns } from 'src/assets/patterns/patterns';
+import { UserSuccessSignIn, SuccessSignUpDto } from 'src/app/main/model/user-success-sign-in';
+import { UserOwnSignUp } from 'src/app/main/model/user-own-sign-up';
+import { authImages } from 'src/app/main/image-pathes/auth-images';
 import { Component, EventEmitter, OnInit, OnDestroy, Output, OnChanges, Input } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -111,14 +111,14 @@ export class SignUpComponent implements OnInit, OnDestroy, OnChanges {
     this.userOwnSignUpService
       .signUp(userOwnRegister, this.currentLanguage)
       .pipe(takeUntil(this.destroy))
-      .subscribe(
-        (data: SuccessSignUpDto) => {
+      .subscribe({
+        next: (data: SuccessSignUpDto) => {
           this.onSubmitSuccess(data);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.onSubmitError(error);
         }
-      );
+      });
   }
 
   signUpWithGoogle(): void {

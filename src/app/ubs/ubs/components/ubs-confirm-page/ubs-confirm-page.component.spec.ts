@@ -22,7 +22,7 @@ describe('UbsConfirmPageComponent', () => {
   const fakeLocalStorageService = jasmine.createSpyObj('localStorageService', [
     'getFinalSumOfOrder',
     'clearPaymentInfo',
-    'getUbsOrderId',
+    'getUbsPaymentOrderId',
     'setUbsOrderId',
     'getOrderWithoutPayment',
     'removeOrderWithoutPayment',
@@ -97,10 +97,12 @@ describe('UbsConfirmPageComponent', () => {
     component.orderStatusDone = false;
     component.orderResponseError = false;
     component.orderId = '132';
+
     const saveDataOnLocalStorageMock = spyOn(component, 'saveDataOnLocalStorage');
     component.renderView();
+
     expect(saveDataOnLocalStorageMock).toHaveBeenCalled();
-    expect(fakeSnackBar.openSnackBar).toHaveBeenCalledWith('successConfirmSaveOrder', '132');
+    expect(fakeSnackBar.openSnackBar).toHaveBeenCalledWith('successConfirmSaveOrder', '132', 6000, 'below-header');
   });
 
   it('in renderView should saveDataOnLocalStorage when no error occurred', () => {

@@ -124,7 +124,7 @@ export class UBSSubmitOrderComponent extends FormBaseComponent implements OnInit
       )
       .subscribe({
         next: (response: IProcessOrderResponse) => {
-          this.processWayForPay(response);
+          this.processPayment(response);
         },
         error: () => {
           this.isLoadingAnim = false;
@@ -147,7 +147,7 @@ export class UBSSubmitOrderComponent extends FormBaseComponent implements OnInit
       });
   }
 
-  private processWayForPay(response: IProcessOrderResponse): void {
+  private processPayment(response: IProcessOrderResponse): void {
     this.localStorageService.setUbsPaymentOrderId(response.orderId);
     if (response.link && this.isShouldBePaid) {
       this.redirectToExternalUrl(response.link);

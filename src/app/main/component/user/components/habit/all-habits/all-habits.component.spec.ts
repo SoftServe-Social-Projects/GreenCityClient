@@ -13,13 +13,13 @@ import { HabitService } from '@global-service/habit/habit.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { EventEmitter, Injectable } from '@angular/core';
 import { ProfileService } from '@global-user/components/profile/profile-service/profile.service';
-import { Language } from '../../../../../i18n/Language';
+import { Language } from 'src/app/main/i18n/Language';
 import { HABITLIST } from '../mocks/habit-mock';
 import { CUSTOMHABIT, DEFAULTHABIT, HABITSASSIGNEDLIST } from '../mocks/habit-assigned-mock';
 import { FIRSTTAGITEM, SECONDTAGITEM, TAGLIST } from '../mocks/tags-list-mock';
 import { EditProfileModel } from '@global-user/models/edit-profile.model';
 import { HabitsFiltersList } from '@global-user/components/habit/models/habits-filters-list';
-import { FilterOptions, FilterSelect } from '../../../../../interface/filter-select.interface';
+import { FilterOptions, FilterSelect } from 'src/app/main/interface/filter-select.interface';
 
 @Injectable()
 class TranslationServiceStub {
@@ -84,7 +84,7 @@ describe('AllHabitsComponent', () => {
     rating: null,
     showEcoPlace: true,
     showLocation: true,
-    showShoppingList: true,
+    showToDoList: true,
     socialNetworks: [{ id: 1, url: defaultImagePath }]
   } as EditProfileModel;
 
