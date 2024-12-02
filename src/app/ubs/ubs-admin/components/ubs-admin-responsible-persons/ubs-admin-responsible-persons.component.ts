@@ -1,6 +1,5 @@
-import { Component, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
 import { IEmployee, IResponsiblePersons, IResponsiblePersonsData } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
 import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
 
@@ -9,7 +8,7 @@ import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
   templateUrl: './ubs-admin-responsible-persons.component.html',
   styleUrls: ['./ubs-admin-responsible-persons.component.scss']
 })
-export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, OnChanges {
+export class UbsAdminResponsiblePersonsComponent implements OnInit, OnChanges {
   @Input() responsiblePersonInfo: IResponsiblePersons;
   @Input() responsiblePersonsForm: FormGroup;
   @Input() orderStatus: string;
@@ -22,7 +21,6 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
   public isOrderStatusCancelOrDone = false;
   pageOpen: boolean;
   responsiblePersonsData: IResponsiblePersonsData[];
-  private destroy$: Subject<boolean> = new Subject<boolean>();
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.orderStatus?.currentValue === OrderStatus.CANCELED || changes.orderStatus?.currentValue === OrderStatus.DONE) {
@@ -69,17 +67,7 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
   }
 
   isFieldOptional(controlName: string): boolean {
-    const requiredFields = ['responsibleCaller'];
-
-    if (this.orderStatus !== 'ADJUSTMENT') {
-      return false;
-    }
-
-    if (requiredFields.includes(controlName)) {
-      return false;
-    }
-
-    return true;
+    return this.orderStatus === 'ADJUSTMENT' && !['responsibleCaller'].includes(controlName);
   }
 
   getResponsiblePersonsData(): void {
@@ -105,10 +93,5 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
         responsiblePersonsArray: this.allDrivers
       }
     ];
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -6,7 +6,7 @@ import { AdminTableService } from 'src/app/ubs/ubs-admin/services/admin-table.se
 import { IDataForPopUp } from '../../../models/ubs-admin.interface';
 import { OrderService } from '../../../services/order.service';
 import { AddOrderCancellationReasonComponent } from '../../add-order-cancellation-reason/add-order-cancellation-reason.component';
-import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
+import { OrderStatus, OrderStatusNamesEn, OrderStatusNamesUa } from 'src/app/ubs/ubs/order-status.enum';
 import { UbsAdminSeveralOrdersPopUpComponent } from '../../ubs-admin-several-orders-pop-up/ubs-admin-several-orders-pop-up.component';
 import { UbsAdminConfirmStatusChangePopUpComponent } from '../../ubs-admin-confirm-status-change-pop-up/ubs-admin-confirm-status-change-pop-up.component';
 
@@ -115,14 +115,24 @@ export class TableCellSelectComponent implements OnInit {
     });
   }
 
+  private isStatusOption(...options: string[]): boolean {
+    return options.includes(this.newOption);
+  }
+
   saveClick(): void {
     if (this.nameOfColumn !== 'orderStatus') {
       this.save();
       return;
     }
-    const isCancelOption = ['Canceled', 'Скасовано'].includes(this.newOption);
-    const isConfirmOption = ['Сформовано', 'Formed', 'Confirmed', 'Підтверджено', 'Привезе сам', 'Brought by himself'].includes(
-      this.newOption
+
+    const isCancelOption = this.isStatusOption(OrderStatusNamesEn.CANCELED, OrderStatusNamesUa.CANCELED);
+    const isConfirmOption = this.isStatusOption(
+      OrderStatusNamesEn.FORMED,
+      OrderStatusNamesUa.FORMED,
+      OrderStatusNamesEn.CONFIRMED,
+      OrderStatusNamesUa.CONFIRMED,
+      OrderStatusNamesEn.BROUGHT_IT_HIMSELF,
+      OrderStatusNamesUa.BROUGHT_IT_HIMSELF
     );
 
     if (isConfirmOption) {
@@ -130,7 +140,7 @@ export class TableCellSelectComponent implements OnInit {
     } else if (isCancelOption) {
       this.openCancelPopUp();
     } else if (this.checkStatus && this.showPopUp) {
-      this.checkIfStatusConfirmed();
+      this.openPopUp();
     } else {
       this.save();
     }

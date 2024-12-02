@@ -9,6 +9,28 @@ export enum OrderStatus {
   ADJUSTMENT = 'ADJUSTMENT'
 }
 
+export enum OrderStatusNamesEn {
+  CANCELED = 'Canceled',
+  FORMED = 'Formed',
+  CONFIRMED = 'Confirmed',
+  BROUGHT_IT_HIMSELF = 'Brought it himself',
+  ADJUSTMENT = 'Adjustment',
+  ON_THE_ROUTE = 'On the route',
+  NOT_TAKEN_OUT = 'Not taken out',
+  DONE = 'Done'
+}
+
+export enum OrderStatusNamesUa {
+  CANCELED = 'Скасовано',
+  FORMED = 'Сформовано',
+  CONFIRMED = 'Підтверджено',
+  BROUGHT_IT_HIMSELF = 'Привезе сам',
+  ADJUSTMENT = 'Узгодження',
+  ON_THE_ROUTE = 'На маршруті',
+  NOT_TAKEN_OUT = 'Не вивезли',
+  DONE = 'Виконано'
+}
+
 export enum PaymnetStatus {
   PAID = 'PAID',
   HALF_PAID = 'HALF_PAID',

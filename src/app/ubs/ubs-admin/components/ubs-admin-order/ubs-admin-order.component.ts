@@ -46,7 +46,7 @@ import { TableKeys } from '../../services/table-keys.enum';
 export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentChecked {
   deleteNumberOrderFromEcoShop = false;
   currentLanguage: string;
-  private destroy$: Subject<boolean> = new Subject<boolean>();
+  private destroy$: Subject<void> = new Subject<void>();
   orderForm: FormGroup;
   isDataLoaded = false;
   orderId: number;
