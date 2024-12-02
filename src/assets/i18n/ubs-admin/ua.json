@@ -197,7 +197,8 @@
     "export-time": {
       "from": "З",
       "to": "До"
-    }
+    },
+    "optional-field": "необов'язково"
   },
   "order-cancel": {
     "title": "Додати причину скасування замовлення",
@@ -218,6 +219,11 @@
     },
     "date": "Дaта",
     "added": "Додано"
+  },
+  "order-status-confirm": {
+    "confirm-message": "Ви справді хочете змінити статус замовлення на",
+    "yes": "Так",
+    "no": "Ні"
   },
   "order-not-taken-out": {
     "title": "Додайте причину невивезеного замовлення",
@@ -410,7 +416,7 @@
   "responsible-persons": {
     "title": "Відповідальні особи",
     "service-manager": "Менеджер послуги",
-    "call-manager": "Менеджер обдзвону",
+    "call-manager": "Менеджер",
     "logistician": "Логіст",
     "navigator": "Штурман",
     "driver": "Водій",

@@ -5,7 +5,7 @@ import { ADDRESSESMOCK } from 'src/app/ubs/mocks/address-mock';
 
 export const fakeAllPositionsEmployees: Map<string, IEmployee[]> = new Map();
 fakeAllPositionsEmployees.set('PositionDto(id=1, name=Менеджер послуги)', [{ id: 1, name: 'Maria Admin' }]);
-fakeAllPositionsEmployees.set('PositionDto(id=2, name=Менеджер обдзвону)', []);
+fakeAllPositionsEmployees.set('PositionDto(id=2, name=Менеджер)', []);
 fakeAllPositionsEmployees.set('PositionDto(id=3, name=Логіст)', []);
 fakeAllPositionsEmployees.set('PositionDto(id=4, name=Штурман)', []);
 fakeAllPositionsEmployees.set('PositionDto(id=5, name=Водій)', []);

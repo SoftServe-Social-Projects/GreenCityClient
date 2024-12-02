@@ -52,7 +52,12 @@
       <div class="form" formGroupName="responsiblePersonsForm">
         <div class="form-row" *ngFor="let person of responsiblePersonsData">
           <div class="form-group">
-            <label class="form__label">{{ person.translate | translate }}</label>
+            <label class="form__label">
+              {{ person.translate | translate }}
+              <span class="form__label" *ngIf="isFieldOptional(person.formControlName)"
+                >({{ 'order-edit.optional-field' | translate }})</span
+              >
+            </label>
             <select formControlName="{{ person.formControlName }}" class="form-control form__select">
               <option *ngFor="let employee of person.responsiblePersonsArray" [value]="employee">
                 {{ employee }}

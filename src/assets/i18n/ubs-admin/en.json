@@ -198,7 +198,8 @@
     "export-time": {
       "from": "From",
       "to": "To"
-    }
+    },
+    "optional-field": "optional"
   },
   "order-cancel": {
     "title": "Add reason to cancel order",
@@ -219,6 +220,11 @@
     },
     "date": "Date",
     "added": "Added"
+  },
+  "order-status-confirm": {
+    "confirm-message": "Do you realy want to change order status to",
+    "yes": "Yes",
+    "no": "No"
   },
   "order-not-taken-out": {
     "title": "Add the reason for not taken out order",
@@ -411,7 +417,7 @@
   "responsible-persons": {
     "title": "Responsible persons",
     "service-manager": "Service manager",
-    "call-manager": "Call manager",
+    "call-manager": "Manager",
     "logistician": "Logistician",
     "navigator": "Navigator",
     "driver": "Driver",

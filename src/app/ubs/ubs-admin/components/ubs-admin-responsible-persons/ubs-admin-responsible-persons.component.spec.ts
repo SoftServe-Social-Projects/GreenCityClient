@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, ValidatorFn } from '@angular/forms';
 
 import { UbsAdminResponsiblePersonsComponent } from './ubs-admin-responsible-persons.component';
 
@@ -21,13 +21,23 @@ describe('UbsAdminResponsiblePersonsComponent', () => {
     }).compileComponents();
   }));
 
-  const FormGroupMock = new FormGroup({});
-
   beforeEach(() => {
     fixture = TestBed.createComponent(UbsAdminResponsiblePersonsComponent);
     component = fixture.componentInstance;
+
+    const fb = new FormBuilder();
+    const mockControlWithRequired = fb.control('');
+    const mockControlWithoutRequired = fb.control('');
+
+    (mockControlWithRequired as any).hasValidator = (validator: ValidatorFn) => mockControlWithRequired.validator === validator;
+    (mockControlWithoutRequired as any).hasValidator = () => false;
+
+    component.responsiblePersonsForm = fb.group({
+      responsibleCaller: mockControlWithRequired,
+      responsibleDriver: mockControlWithoutRequired
+    });
+
     component.responsiblePersonInfo = ResponsiblePersonInfoFake as any;
-    component.responsiblePersonsForm = FormGroupMock;
     fixture.detectChanges();
   });
 
@@ -62,5 +72,23 @@ describe('UbsAdminResponsiblePersonsComponent', () => {
     component.pageOpen = false;
     component.isOrderStatusCancelOrDone = false;
     expect(component.isFormRequired()).toBeFalsy();
+  });
+
+  it('should return false if orderStatus is not ADJUSTMENT', () => {
+    component.orderStatus = 'CANCELED';
+    const result = component.isFieldOptional('responsibleCaller');
+    expect(result).toBeFalsy();
+  });
+
+  it('should return false if the control has Validators.required and status is ADJUSTMENT', () => {
+    component.orderStatus = 'ADJUSTMENT';
+    const result = component.isFieldOptional('responsibleCaller');
+    expect(result).toBeFalsy();
+  });
+
+  it('should return true if the control does not have Validators.required and status is ADJUSTMENT', () => {
+    component.orderStatus = 'ADJUSTMENT';
+    const result = component.isFieldOptional('responsibleDriver');
+    expect(result).toBeTruthy();
   });
 });

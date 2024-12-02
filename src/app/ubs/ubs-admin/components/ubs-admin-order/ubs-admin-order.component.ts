@@ -5,7 +5,7 @@ import { formatDate } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 import { UbsAdminCancelModalComponent } from '../ubs-admin-cancel-modal/ubs-admin-cancel-modal.component';
@@ -36,7 +36,6 @@ import { GoogleScript } from 'src/assets/google-script/google-script';
 import { PhoneNumberValidator } from 'src/app/shared/phone-validator/phone.validator';
 import { OrderStatus, PaymentEnrollment } from 'src/app/ubs/ubs/order-status.enum';
 import { UbsAdminEmployeeService } from '../../services/ubs-admin-employee.service';
-import { AdminTableService } from '../../services/admin-table.service';
 import { TableKeys } from '../../services/table-keys.enum';
 
 @Component({
@@ -47,7 +46,7 @@ import { TableKeys } from '../../services/table-keys.enum';
 export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentChecked {
   deleteNumberOrderFromEcoShop = false;
   currentLanguage: string;
-  private destroy$: Subject<boolean> = new Subject<boolean>();
+  private destroy$: Subject<void> = new Subject<void>();
   orderForm: FormGroup;
   isDataLoaded = false;
   orderId: number;
@@ -93,7 +92,6 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
   constructor(
     private translate: TranslateService,
     private localStorageService: LocalStorageService,
-    private adminTableService: AdminTableService,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private route: ActivatedRoute,
@@ -703,7 +701,7 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
       this.isFormResetted = true;
     } else {
       exportDetaisFields.forEach((el) => exportDetails.get(el).setValidators([Validators.required]));
-      responsiblePersonNames.forEach((el) => responsiblePersons.get(el).setValidators([Validators.required]));
+      responsiblePersons.get('responsibleCaller')?.setValidators([Validators.required]);
     }
     this.statusCanceledOrDone();
   }

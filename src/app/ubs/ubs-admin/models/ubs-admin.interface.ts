@@ -555,7 +555,7 @@ export interface AdminSideBarMenu {
 
 export enum employeePositionsName {
   ServiceManager = 'Менеджер послуги',
-  CallManager = 'Менеджер обдзвону',
+  CallManager = 'Менеджер',
   Logistician = 'Логіст',
   Navigator = 'Штурман',
   Driver = 'Водій',

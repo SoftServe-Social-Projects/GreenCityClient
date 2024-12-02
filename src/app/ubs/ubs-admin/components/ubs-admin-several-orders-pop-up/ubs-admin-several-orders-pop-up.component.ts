@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import {
   IResponsiblePersonsData,
@@ -60,12 +60,22 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
 
       responsiblePersonsForm: this.fb.group({
         responsibleCaller: [null, [Validators.required]],
-        responsibleLogicMan: [null, [Validators.required]],
-        responsibleNavigator: [null, [Validators.required]],
-        responsibleDriver: [null, [Validators.required]]
+        responsibleLogicMan: [null],
+        responsibleNavigator: [null],
+        responsibleDriver: [null]
       })
     });
     this.setEmployeesByPosition();
+  }
+
+  isFieldOptional(controlName: string): boolean {
+    const control = this.ordersForm.get(['responsiblePersonsForm', controlName]);
+    if (!control || !control.validator) {
+      return true;
+    }
+
+    const validatorFn = control.validator({} as AbstractControl);
+    return !(validatorFn && validatorFn.required === true);
   }
 
   showTimePickerClick(): void {
@@ -116,9 +126,8 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
       employeeId: 0,
       positionId: responiblePersonId
     };
-    const employeeId = this.dataFromTable
-      .find((e) => e.title === positionName)
-      .arrayData.find((element) => element.ua === responsibleEmployee).key;
+    const employeeId =
+      this.dataFromTable.find((e) => e.title === positionName).arrayData.find((element) => element.ua === responsibleEmployee)?.key ?? 0;
     newEmployee.employeeId = Number(employeeId);
     return newEmployee;
   }
