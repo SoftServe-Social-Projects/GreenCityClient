@@ -14,9 +14,10 @@
         </div>
       </div>
       <div class="validMes">
-        <small class="text-danger" *ngIf="orderDetailsForm?.controls.bags.errors as errors">{{
-          errors.message | translate: { value: errors.value }
-        }}</small>
+        <small class="text-danger" *ngIf="orderDetailsForm?.controls.bags.errors as errors">
+          <b>{{ 'order-details.attention' | translate }}</b>
+          {{ errors.message | translate: { value: errors.value } }}
+        </small>
       </div>
     </div>
 
