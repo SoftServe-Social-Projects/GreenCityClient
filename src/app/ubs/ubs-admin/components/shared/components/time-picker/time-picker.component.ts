@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { fromSelect, toSelect } from '../../../ubs-admin-table/table-cell-time/table-cell-time-range';
+import { fromSelect, toSelect, WorkingHours } from '../../../ubs-admin-table/table-cell-time/table-cell-time-range';
 import { formatDate } from '@angular/common';
 
 @Component({
@@ -8,12 +8,12 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./time-picker.component.scss']
 })
 export class TimePickerComponent implements OnInit {
-  public fromSelect: string[];
-  public toSelect: string[];
-  public fromInput: string;
-  public toInput: string;
-  public from: string;
-  public to: string;
+  fromSelect: string[];
+  toSelect: string[];
+  fromInput: string;
+  toInput: string;
+  from: string;
+  to: string;
   currentHour: string;
   currentDate;
 
@@ -22,8 +22,8 @@ export class TimePickerComponent implements OnInit {
   @Input() exportDate;
   @Output() timeOfExport = new EventEmitter<object>();
   ngOnInit(): void {
-    this.fromInput = this.setTimeFrom;
-    this.toInput = this.setTimeTo;
+    this.fromInput = this.setTimeFrom || WorkingHours.FROM;
+    this.toInput = this.setTimeTo || WorkingHours.TO;
     this.fromSelect = fromSelect;
     this.toSelect = toSelect;
     this.initTime();
