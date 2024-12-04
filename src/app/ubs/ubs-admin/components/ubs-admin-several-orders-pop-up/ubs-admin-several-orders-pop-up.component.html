@@ -78,5 +78,12 @@
       </div>
     </div>
   </form>
-  <app-time-picker *ngIf="showTimePicker" (timeOfExport)="setExportTime($event)" [exportDate]="getExportDate()"> </app-time-picker>
+  <app-time-picker
+    *ngIf="showTimePicker"
+    (timeOfExport)="setExportTime($event)"
+    [exportDate]="getExportDate()"
+    [setTimeFrom]="fromInput"
+    [setTimeTo]="toInput"
+  >
+  </app-time-picker>
 </div>
