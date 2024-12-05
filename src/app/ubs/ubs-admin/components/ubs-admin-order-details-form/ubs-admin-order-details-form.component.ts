@@ -58,10 +58,13 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
 
   constructor(private orderService: OrderService) {}
 
+  get customerComment() {
+    return this.orderDetailsForm.get('customerComment');
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     const curStatus = changes.orderStatusInfo?.currentValue;
     const prevStatus = changes.orderStatusInfo?.previousValue;
-
     if (curStatus?.key) {
       this.isOrderCancelled = curStatus?.key === OrderStatus.CANCELED;
       this.isOrderBroughtByHimself = curStatus?.key === OrderStatus.BROUGHT_IT_HIMSELF;

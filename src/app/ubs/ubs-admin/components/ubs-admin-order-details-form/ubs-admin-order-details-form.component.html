@@ -217,12 +217,14 @@
           <label for="customer-comment">{{ 'order-details.client-comment.label' | translate }}</label>
           <textarea
             class="form-control comment"
+            [ngClass]="!isEmployeeCanEditOrder && 'readonly'"
             formControlName="customerComment"
             placeholder="{{ 'order-details.client-comment.placeholder' | translate }}"
             id="customer-comment"
-            [readOnly]="true"
-          >
-          </textarea>
+          ></textarea>
+          <div class="validation" *ngIf="customerComment.invalid && customerComment.touched">
+            <app-ubs-input-error [formElement]="customerComment"> </app-ubs-input-error>
+          </div>
         </div>
       </div>
     </div>
