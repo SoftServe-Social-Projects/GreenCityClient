@@ -174,6 +174,7 @@ export interface EventResponse {
   isSubscribed: boolean;
   isFavorite: boolean;
   isOrganizedByFriend: boolean;
+  currentUserGrade: number | null;
 }
 
 export type EventListResponse = Omit<EventResponse, 'additionalImages' | 'description'>;
