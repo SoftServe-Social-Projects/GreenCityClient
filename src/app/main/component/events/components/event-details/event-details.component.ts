@@ -398,7 +398,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     });
     this.bsModalRef.content.closeBtnName = 'event.btn-close';
     this.bsModalRef.onHidden?.subscribe(() => {
-      this.isUserCanRate = false;
+      this.isUserCanRate = true;
       this.getEventById();
     });
   }
