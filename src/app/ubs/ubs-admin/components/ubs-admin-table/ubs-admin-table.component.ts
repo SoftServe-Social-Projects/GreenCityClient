@@ -110,7 +110,6 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   cancellationComment: string;
   @ViewChild(MatTable, { read: ElementRef }) private matTableRef: ElementRef;
   defaultColumnWidth = 120; // In px
-  minColumnWidth = 100;
   columnsWidthPreference: Map<string, number>;
   restoredFilters = [];
   isRestoredFilters = false;
@@ -657,7 +656,7 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   editCell(e: IEditCell): void {
     if (this.allChecked) {
       this.editAll(e);
-    } else if (this.idsToChange.length === 1) {
+    } else if (this.idsToChange.length === 0) {
       this.editSingle(e);
     } else {
       this.editGroup(e);
