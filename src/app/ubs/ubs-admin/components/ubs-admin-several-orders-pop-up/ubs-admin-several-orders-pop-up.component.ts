@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import {
   IResponsiblePersonsData,
@@ -103,8 +103,13 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
 
   showTimePickerClick(): void {
     this.showTimePicker = true;
-    this.fromInput = this.ordersForm.get('exportDetailsDto').get(FormFieldsName.TimeDeliveryFrom).value;
-    this.toInput = this.ordersForm.get('exportDetailsDto').get(FormFieldsName.TimeDeliveryTo).value;
+    this.fromInput = this.getFormControl('exportDetailsDto', FormFieldsName.TimeDeliveryFrom)?.value || '';
+    this.toInput = this.getFormControl('exportDetailsDto', FormFieldsName.TimeDeliveryTo)?.value || '';
+  }
+
+  private getFormControl(groupName: string, fieldName: string): AbstractControl | null {
+    const group = this.ordersForm.get(groupName);
+    return group ? group.get(fieldName) : null;
   }
 
   formAction(groupName: string, fieldName: string, data?: string): void {
@@ -116,8 +121,8 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
   setExportTime(data: any): void {
     this.formAction('exportDetailsDto', FormFieldsName.TimeDeliveryFrom, data.from);
     this.formAction('exportDetailsDto', FormFieldsName.TimeDeliveryTo, data.to);
-    this.fromInput = this.ordersForm.get('exportDetailsDto').get(FormFieldsName.TimeDeliveryFrom).value;
-    this.toInput = this.ordersForm.get('exportDetailsDto').get(FormFieldsName.TimeDeliveryTo).value;
+    this.fromInput = this.getFormControl('exportDetailsDto', FormFieldsName.TimeDeliveryFrom)?.value || '';
+    this.toInput = this.getFormControl('exportDetailsDto', FormFieldsName.TimeDeliveryTo)?.value || '';
     this.showTimePicker = false;
   }
 
