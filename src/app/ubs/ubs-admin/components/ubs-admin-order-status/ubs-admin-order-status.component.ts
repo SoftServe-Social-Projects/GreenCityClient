@@ -38,6 +38,7 @@ export class UbsAdminOrderStatusComponent implements OnChanges, OnInit, OnDestro
   availablePaymentOrderStatuses: IPaymentStatus[];
   isOrderStatusSelected = true;
   isHistory = false;
+  uneditableStatus: boolean;
 
   get adminComment() {
     return this.generalOrderInfo.get('adminComment');
@@ -59,6 +60,9 @@ export class UbsAdminOrderStatusComponent implements OnChanges, OnInit, OnDestro
         changes.generalInfo.currentValue.orderStatus,
         changes.generalInfo.currentValue.orderStatusesDtos
       );
+      if (changes.generalInfo.currentValue.orderStatus) {
+        this.updateUneditableStatus(changes.generalInfo.currentValue.orderStatus);
+      }
       this.renderOrderStatus();
     }
   }
@@ -84,6 +88,11 @@ export class UbsAdminOrderStatusComponent implements OnChanges, OnInit, OnDestro
     if (statusName === OrderStatus.NOT_TAKEN_OUT) {
       this.notTakenOutOpenPop(this.generalInfo.id);
     }
+    this.updateUneditableStatus(statusName as OrderStatus);
+  }
+
+  private updateUneditableStatus(status: OrderStatus): void {
+    this.uneditableStatus = [OrderStatus.DONE, OrderStatus.CANCELED, OrderStatus.BROUGHT_IT_HIMSELF].includes(status);
   }
 
   openPopup() {

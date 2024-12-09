@@ -25,7 +25,7 @@ export class TableCellSelectComponent implements OnInit {
   @Input() lang: string;
   @Input() ordersToChange: number[];
   @Input() isAllChecked: boolean;
-  @Input() doneOrCanceled: boolean;
+  @Input() uneditableStatus: boolean;
   @Input() showPopUp: boolean;
   @Input() dataForPopUp: IDataForPopUp[];
 
