@@ -3,6 +3,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
 
 import { UbsAdminResponsiblePersonsComponent } from './ubs-admin-responsible-persons.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 describe('UbsAdminResponsiblePersonsComponent', () => {
   let component: UbsAdminResponsiblePersonsComponent;
@@ -17,7 +18,8 @@ describe('UbsAdminResponsiblePersonsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [UbsAdminResponsiblePersonsComponent],
-      imports: [TranslateModule.forRoot(), ReactiveFormsModule]
+      imports: [TranslateModule.forRoot(), ReactiveFormsModule, HttpClientModule],
+      providers: [HttpClient]
     }).compileComponents();
   }));
 
@@ -70,7 +72,7 @@ describe('UbsAdminResponsiblePersonsComponent', () => {
 
   it('should return true when pageOpen is false, responsiblePersonInfo is invalid and orderStatus is not cancel or done', () => {
     component.pageOpen = false;
-    component.uneditableStatus = false;
+    component.isUneditableStatus = false;
     expect(component.isFormRequired()).toBeFalsy();
   });
 

@@ -94,6 +94,39 @@ export class OrderService {
     }
   }
 
+  getArrowImageSrc(
+    isFormRequired: boolean,
+    isPageOpen: boolean,
+    isValid: boolean,
+    isUneditableStatus: boolean
+  ): { imgUrl: string; imgAlt: string } {
+    if (isFormRequired) {
+      return {
+        imgUrl: 'assets/img/ubs-admin-orders/red_arrow_up.svg',
+        imgAlt: 'Red arrow pointing up'
+      };
+    } else if (!isPageOpen && (isValid || isUneditableStatus)) {
+      return {
+        imgUrl: 'assets/img/ubs-admin-orders/arrow_up.svg',
+        imgAlt: 'Arrow pointing up'
+      };
+    } else if (isPageOpen && (isValid || isUneditableStatus)) {
+      return {
+        imgUrl: 'assets/img/ubs-admin-orders/arrow_down.svg',
+        imgAlt: 'Arrow pointing down'
+      };
+    } else if (isPageOpen && !isValid && !isUneditableStatus) {
+      return {
+        imgUrl: 'assets/img/ubs-admin-orders/red_arrow_down.svg',
+        imgAlt: 'Red arrow pointing down'
+      };
+    }
+    return {
+      imgUrl: '',
+      imgAlt: 'No Image'
+    };
+  }
+
   getOrderInfo(orderId: number): Observable<IOrderInfo> {
     return this.http.get<IOrderInfo>(`${this.backend}/management/get-data-for-order/${orderId}`);
   }

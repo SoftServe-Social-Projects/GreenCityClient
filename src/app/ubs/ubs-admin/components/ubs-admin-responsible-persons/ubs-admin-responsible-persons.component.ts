@@ -3,7 +3,7 @@ import { FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { IEmployee, IResponsiblePersons, IResponsiblePersonsData } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
 import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
-
+import { OrderService } from '../../services/order.service';
 @Component({
   selector: 'app-ubs-admin-responsible-persons',
   templateUrl: './ubs-admin-responsible-persons.component.html',
@@ -19,10 +19,12 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
   allLogisticians: string[];
   allNavigators: string[];
   allDrivers: string[];
-  uneditableStatus = false;
+  isUneditableStatus = false;
   pageOpen: boolean;
   responsiblePersonsData: IResponsiblePersonsData[];
   private destroy$: Subject<boolean> = new Subject<boolean>();
+
+  constructor(public orderService: OrderService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
@@ -30,7 +32,7 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
       changes.orderStatus?.currentValue === OrderStatus.DONE ||
       changes.orderStatus?.currentValue === OrderStatus.BROUGHT_IT_HIMSELF
     ) {
-      this.uneditableStatus = true;
+      this.isUneditableStatus = true;
     }
   }
 
@@ -40,6 +42,15 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
 
   openDetails() {
     this.pageOpen = !this.pageOpen;
+  }
+
+  loadArrowImage() {
+    return this.orderService.getArrowImageSrc(
+      this.isFormRequired(),
+      this.pageOpen,
+      this.responsiblePersonsForm.valid,
+      this.isUneditableStatus
+    );
   }
 
   setEmployeesByPosition() {
@@ -54,7 +65,7 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
   isFormRequired(): boolean {
     const isNotOpen = !this.pageOpen;
     const isNotValid = !this.responsiblePersonsForm.valid;
-    const isUneditable = !this.uneditableStatus;
+    const isUneditable = !this.isUneditableStatus;
 
     return isNotOpen && isNotValid && isUneditable;
   }

@@ -1,7 +1,7 @@
 <div class="container mb-3">
   <div class="form" [formGroup]="exportDetailsDto">
     <div class="empty_card" (click)="openDetails()">
-      <img [src]="getArrowImageSrc()" alt="arrow" />
+      <img [src]="loadArrowImage().imgUrl" [alt]="loadArrowImage().imgAlt" />
       <h1 class="form__headline">{{ 'export-details.title' | translate }}</h1>
       <div *ngIf="isFormRequired" class="alert-message">{{ 'export-details.alert-message' | translate }}</div>
     </div>

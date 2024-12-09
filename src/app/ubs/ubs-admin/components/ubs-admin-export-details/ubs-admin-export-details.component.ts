@@ -29,7 +29,7 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
   currentHour: string;
   allReceivingStations: string[];
   currentDate: string;
-  uneditableStatus = false;
+  isUneditableStatus = false;
   resetFieldImg = './assets/img/ubs-tariff/bigClose.svg';
   private readonly statuses = [OrderStatus.BROUGHT_IT_HIMSELF, OrderStatus.CANCELED];
 
@@ -62,7 +62,7 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
       this.orderStatus === OrderStatus.DONE ||
       this.orderStatus === OrderStatus.BROUGHT_IT_HIMSELF
     ) {
-      this.uneditableStatus = true;
+      this.isUneditableStatus = true;
     }
 
     this.cdr.detectChanges();
@@ -74,6 +74,10 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
     this.currentDate = new Date().toISOString().split('T')[0];
   }
 
+  loadArrowImage() {
+    return this.orderService.getArrowImageSrc(this.isFormRequired, this.pageOpen, this.exportDetailsDto.valid, this.isUneditableStatus);
+  }
+
   resetValue(): void {
     this.exportDetailsDto.get('receivingStationId').setValue(null);
   }
@@ -83,7 +87,7 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
   }
 
   get isFormRequired(): boolean {
-    return !this.pageOpen && !this.exportDetailsDto.valid && !this.uneditableStatus;
+    return !this.pageOpen && !this.exportDetailsDto.valid && !this.isUneditableStatus;
   }
 
   showTimePickerClick(): void {
@@ -119,19 +123,6 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
 
   isTimeValid(): boolean {
     return this.exportDetailsDto.get('timeDeliveryFrom').invalid || this.exportDetailsDto.get('timeDeliveryTo').invalid;
-  }
-
-  getArrowImageSrc(): string {
-    if (this.isFormRequired) {
-      return 'assets/img/ubs-admin-orders/red_arrow_up.svg';
-    } else if (!this.pageOpen && (this.exportDetailsDto.valid || this.uneditableStatus)) {
-      return 'assets/img/ubs-admin-orders/arrow_up.svg';
-    } else if (this.pageOpen && (this.exportDetailsDto.valid || this.uneditableStatus)) {
-      return 'assets/img/ubs-admin-orders/arrow_down.svg';
-    } else if (this.pageOpen && !this.exportDetailsDto.valid && !this.uneditableStatus) {
-      return 'assets/img/ubs-admin-orders/red_arrow_down.svg';
-    }
-    return '';
   }
 
   ngOnDestroy(): void {
