@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import {
   IResponsiblePersonsData,
@@ -15,6 +15,7 @@ import {
 import { OrderService } from '../../services/order.service';
 import { take } from 'rxjs';
 import { formatDate } from '@angular/common';
+import { WorkingHours } from '../ubs-admin-table/table-cell-time/table-cell-time-range';
 
 @Component({
   selector: 'app-ubs-admin-several-orders-pop-up',
@@ -80,8 +81,8 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
           this.exportInfo?.dateExport ? formatDate(this.exportInfo.dateExport, 'yyyy-MM-dd', this.currentLang) : '',
           [Validators.required]
         ],
-        timeDeliveryFrom: [this.parseTimeToStr(this.exportInfo?.timeDeliveryFrom), [Validators.required]],
-        timeDeliveryTo: [this.parseTimeToStr(this.exportInfo?.timeDeliveryTo), [Validators.required]],
+        timeDeliveryFrom: [this.parseTimeToStr(this.exportInfo?.timeDeliveryFrom, WorkingHours.FROM), [Validators.required]],
+        timeDeliveryTo: [this.parseTimeToStr(this.exportInfo?.timeDeliveryTo, WorkingHours.TO), [Validators.required]],
         receivingStationId: [this.getReceivingStationById(this.exportInfo?.receivingStationId), [Validators.required]]
       }),
 
@@ -102,6 +103,13 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
 
   showTimePickerClick(): void {
     this.showTimePicker = true;
+    this.fromInput = this.getFormControl('exportDetailsDto', FormFieldsName.TimeDeliveryFrom)?.value || '';
+    this.toInput = this.getFormControl('exportDetailsDto', FormFieldsName.TimeDeliveryTo)?.value || '';
+  }
+
+  private getFormControl(groupName: string, fieldName: string): AbstractControl | null {
+    const group = this.ordersForm.get(groupName);
+    return group ? group.get(fieldName) : null;
   }
 
   formAction(groupName: string, fieldName: string, data?: string): void {
@@ -113,8 +121,8 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
   setExportTime(data: any): void {
     this.formAction('exportDetailsDto', FormFieldsName.TimeDeliveryFrom, data.from);
     this.formAction('exportDetailsDto', FormFieldsName.TimeDeliveryTo, data.to);
-    this.fromInput = this.ordersForm.get('exportDetailsDto').get(FormFieldsName.TimeDeliveryFrom).value;
-    this.toInput = this.ordersForm.get('exportDetailsDto').get(FormFieldsName.TimeDeliveryTo).value;
+    this.fromInput = this.getFormControl('exportDetailsDto', FormFieldsName.TimeDeliveryFrom)?.value || '';
+    this.toInput = this.getFormControl('exportDetailsDto', FormFieldsName.TimeDeliveryTo)?.value || '';
     this.showTimePicker = false;
   }
 
@@ -138,8 +146,8 @@ export class UbsAdminSeveralOrdersPopUpComponent implements OnInit {
     return date ? date.toISOString().split('Z').join('') : '';
   }
 
-  parseTimeToStr(dateStr: string) {
-    return dateStr ? formatDate(dateStr, 'HH:mm', this.currentLang) : '';
+  parseTimeToStr(dateStr: string, defaultTime: WorkingHours) {
+    return dateStr ? formatDate(dateStr, 'HH:mm', this.currentLang) : defaultTime;
   }
 
   getReceivingStationById(receivingStationId: number): string {

@@ -654,7 +654,7 @@ export class UbsAdminTableComponent implements OnInit, AfterViewChecked, OnDestr
   editCell(e: IEditCell): void {
     if (this.allChecked) {
       this.editAll(e);
-    } else if (this.idsToChange.length === 1) {
+    } else if (this.idsToChange.length === 0) {
       this.editSingle(e);
     } else {
       this.editGroup(e);

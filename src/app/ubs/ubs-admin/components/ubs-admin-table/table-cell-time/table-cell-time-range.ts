@@ -59,3 +59,8 @@ export const toSelect: string[] = [
   '21:30',
   '22:00'
 ];
+
+export enum WorkingHours {
+  FROM = '09:30',
+  TO = '17:30'
+}
