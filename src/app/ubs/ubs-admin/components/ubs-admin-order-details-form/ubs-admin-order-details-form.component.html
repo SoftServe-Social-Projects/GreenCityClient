@@ -199,12 +199,25 @@
                     [unmask]="false"
                     placeholder="XXXXXXXXXX"
                     formControlName="{{ i }}"
-                    [readonly]="!isEmployeeCanEditOrder"
+                    [readonly]="isDisabledStatus || !isEmployeeCanEditOrder"
+                    [ngClass]="{ 'disabled-field': isDisabledStatus }"
                   />
-                  <span input-close-button (click)="deleteOrder(i)">&times;</span>
+                  <span
+                    input-close-button
+                    tabindex="0"
+                    role="button"
+                    (click)="deleteOrder(i)"
+                    (keydown.enter)="deleteOrder(i)"
+                    *ngIf="isEmployeeCanEditOrder && !isDisabledStatus"
+                    >&times;</span
+                  >
                 </div>
               </ng-container>
-              <button *ngIf="checkMaxOrdersFromShop() && isEmployeeCanEditOrder" class="add-order-num" (click)="addOrderNumberFromShop()">
+              <button
+                *ngIf="checkMaxOrdersFromShop() && isEmployeeCanEditOrder && !isDisabledStatus"
+                class="add-order-num"
+                (click)="addOrderNumberFromShop()"
+              >
                 {{ 'order-details.additional-orders' | translate }}
               </button>
             </div>

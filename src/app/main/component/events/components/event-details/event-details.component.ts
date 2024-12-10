@@ -84,6 +84,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   attenderError: string;
   isRegistered: boolean;
   isReadonly = false;
+  canGrade = true;
   googleMapLink: string;
   private dialogRef: MatDialogRef<WarningPopUpComponent>;
   private cancelationPopupData = {
@@ -96,7 +97,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   };
   userId: number;
   private destroy: Subject<boolean> = new Subject<boolean>();
-
+  isEventRated = false;
   constructor(
     private readonly route: ActivatedRoute,
     public readonly eventService: EventsService,
@@ -130,7 +131,9 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
 
       this.routedFromProfile = this.localStorageService.getPreviousPage() === '/profile';
       this.backRoute = this.localStorageService.getPreviousPage();
-      this.getIsLiked();
+      if (this.userId) {
+        this.getIsLiked();
+      }
     } else {
       this.isPreview = true;
       this.eventForm = this.eventStoreService.getEditorValues();
@@ -218,6 +221,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       const isOwner = Number(this.userId) === this.event.organizer.id;
       this.isActive = this.event.isRelevant;
       this.isUserCanRate = this.isSubscribed && !this.isActive && !isOwner;
+      this.isEventRated = !!this.event.currentUserGrade;
       this.isUserCanJoin = this.isActive && !isOwner;
       this.role = this.verifyRole();
       this.addAttenderError();
@@ -393,6 +397,10 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       initialState
     });
     this.bsModalRef.content.closeBtnName = 'event.btn-close';
+    this.bsModalRef.onHidden?.subscribe(() => {
+      this.isUserCanRate = true;
+      this.getEventById();
+    });
   }
 
   ngOnDestroy() {

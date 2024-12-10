@@ -32,7 +32,11 @@
           [isEmployeeCanEditOrder]="isEmployeeCanEditOrder"
         >
         </app-ubs-admin-order-client-info>
-        <app-ubs-admin-address-details [address]="addressInfo" [addressExportDetailsDto]="addressExportDetailsDto">
+        <app-ubs-admin-address-details
+          [address]="addressInfo"
+          [addressExportDetailsDto]="addressExportDetailsDto"
+          [orderStatus]="currentOrderStatus"
+        >
         </app-ubs-admin-address-details>
         <app-ubs-admin-order-details-form
           [orderDetailsForm]="getFormGroup('orderDetailsForm')"

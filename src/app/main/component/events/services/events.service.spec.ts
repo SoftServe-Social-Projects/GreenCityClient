@@ -106,7 +106,7 @@ describe('EventsService', () => {
     service.rateEvent(156, 5).subscribe((event: any) => {
       expect(event).toEqual(mockEventResponse);
     });
-    const req = httpTestingController.expectOne(`${url}events/156/rating/5`);
+    const req = httpTestingController.expectOne(`${url}events/156/ratings`);
     expect(req.request.method).toEqual('POST');
     req.flush(mockEventResponse);
   });
@@ -201,7 +201,7 @@ describe('EventsService', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpTestingController.expectOne(`${url}events/156/rating/5`);
+    const req = httpTestingController.expectOne(`${url}events/156/ratings`);
     expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
   });
@@ -276,13 +276,16 @@ describe('EventsService', () => {
   it('should handle rate event error', () => {
     const eventId = 1;
     const grade = 5;
+    const requestBody = 5;
 
     service.rateEvent(eventId, grade).subscribe({
       next: () => fail('Expected error'),
       error: (error) => expect(error.status).toBe(500)
     });
 
-    const req = httpTestingController.expectOne(`${service['backEnd']}events/${eventId}/rating/${grade}`);
+    const req = httpTestingController.expectOne(`${service['backEnd']}events/${eventId}/ratings`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(requestBody);
     req.flush('Rate failed', { status: 500, statusText: 'Server Error' });
   });
 

@@ -43,7 +43,8 @@ describe('EditProfileComponent', () => {
               ];
               callback(predictions, 'OK');
             }
-          }
+          },
+          AutocompleteSessionToken: class {}
         }
       }
     };

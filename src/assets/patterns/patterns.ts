@@ -20,8 +20,8 @@ export const Patterns = {
   orderEcoStorePattern: /^\d{1,8}$/,
 
   // prettier-ignore
-  ubsMailPattern:
-    /^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+  ubsMailPattern: 
+  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
   paymentAmountPattern: '^[0-9]+(.[0-9]{1,2})?$',
   certificateMonthCount: '^[0-9]{1,2}$',
   certificateInitialValue: '^[0-9]{1,4}$',

@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, AfterViewChecked, ChangeDetectorRef, AfterViewInit, OnChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectorRef, OnChanges } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { IExportDetails } from '../../models/ubs-admin.interface';
@@ -29,12 +29,12 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
   currentHour: string;
   allReceivingStations: string[];
   currentDate: string;
-  isOrderStatusCancelOrDone = false;
+  isUneditableStatus = false;
   resetFieldImg = './assets/img/ubs-tariff/bigClose.svg';
-  private statuses = [OrderStatus.BROUGHT_IT_HIMSELF, OrderStatus.CANCELED];
+  private readonly statuses = [OrderStatus.BROUGHT_IT_HIMSELF, OrderStatus.CANCELED];
 
   constructor(
-    private cdr: ChangeDetectorRef,
+    private readonly cdr: ChangeDetectorRef,
     public orderService: OrderService
   ) {}
 
@@ -57,8 +57,12 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
       this.exportDetailsDto.updateValueAndValidity();
     });
 
-    if (this.orderStatus === OrderStatus.CANCELED || this.orderStatus === OrderStatus.DONE) {
-      this.isOrderStatusCancelOrDone = true;
+    if (
+      this.orderStatus === OrderStatus.CANCELED ||
+      this.orderStatus === OrderStatus.DONE ||
+      this.orderStatus === OrderStatus.BROUGHT_IT_HIMSELF
+    ) {
+      this.isUneditableStatus = true;
     }
 
     this.cdr.detectChanges();
@@ -70,6 +74,10 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
     this.currentDate = new Date().toISOString().split('T')[0];
   }
 
+  loadArrowImage() {
+    return this.orderService.getArrowImageSrc(this.isFormRequired, this.pageOpen, this.exportDetailsDto.valid, this.isUneditableStatus);
+  }
+
   resetValue(): void {
     this.exportDetailsDto.get('receivingStationId').setValue(null);
   }
@@ -79,11 +87,7 @@ export class UbsAdminExportDetailsComponent implements OnInit, OnDestroy, OnChan
   }
 
   get isFormRequired(): boolean {
-    const isNotOpen = !this.pageOpen;
-    const isNotValid = !this.exportDetailsDto.valid;
-    const isNotCancelOrDone = !this.isOrderStatusCancelOrDone;
-
-    return isNotOpen && isNotValid && isNotCancelOrDone;
+    return !this.pageOpen && !this.exportDetailsDto.valid && !this.isUneditableStatus;
   }
 
   showTimePickerClick(): void {

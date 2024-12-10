@@ -254,7 +254,7 @@ export class EventsService implements OnDestroy {
   }
 
   rateEvent(eventId: number, grade: number): Observable<any> {
-    return this.http.post<any>(`${this.backEnd}events/${eventId}/rating/${grade}`, null);
+    return this.http.post<any>(`${this.backEnd}events/${eventId}/ratings`, grade);
   }
 
   addAttender(eventId: number): Observable<any> {
