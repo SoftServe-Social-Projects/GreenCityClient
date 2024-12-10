@@ -355,6 +355,19 @@
           (isTimePickerOpened)="setIsTimePickerOpened($event)"
         >
         </app-table-cell-time>
+        <app-table-cell-input
+          *ngIf="column.editType === 'INLINE'"
+          [data]="row[column.title.key]"
+          [column]="column.title"
+          [id]="row.id"
+          [ordersToChange]="idsToChange"
+          [isAllChecked]="allChecked"
+          (cancelEdit)="cancelEditCell($event)"
+          (editCommentCell)="editCell($event)"
+          (showBlockedInfo)="showBlockedMessage($event)"
+          class="column_cell"
+        >
+        </app-table-cell-input>
         <mat-checkbox
           *ngIf="column.editType === 'CHECKBOX'"
           [disabled]="checkStatusOfOrders(row.id)"
