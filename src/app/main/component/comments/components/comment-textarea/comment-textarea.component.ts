@@ -174,7 +174,14 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
 
   updateEmojiPickerWidth(): void {
     const screenWidth = window.innerWidth;
-    this.emojiPickerWidth = screenWidth <= 640 ? '100%' : screenWidth <= 1024 ? '475px' : '506px';
+
+    if (screenWidth <= 640) {
+      this.emojiPickerWidth = '100%';
+    } else if (screenWidth <= 1024) {
+      this.emojiPickerWidth = '475px';
+    } else {
+      this.emojiPickerWidth = '506px';
+    }
   }
 
   onEmojiClick(event: EmojiEvent): void {
