@@ -45,7 +45,9 @@ describe('NotificContentReplaceDirective', () => {
     component.notification = { ...notification, ...{ bodyText: '{user1} and {user2} liked your post' } };
     fixture.detectChanges();
     expect(paragrEl.textContent).toBe('testUser1 and testUser2 liked your post');
-    expect(paragrEl.innerHTML).toBe(`<a data-userid="2">testUser1</a> and <a data-userid="3">testUser2</a> liked your post`);
+    expect(paragrEl.innerHTML).toBe(
+      `<a data-userid="2" style="font-family: var(--tertiary-font);">testUser1</a> and <a data-userid="3" style="font-family: var(--tertiary-font);">testUser2</a> liked your post`
+    );
   });
 
   it('should leave placeholders as is if replacements are missing', () => {
@@ -61,7 +63,9 @@ describe('NotificContentReplaceDirective', () => {
     };
     fixture.detectChanges();
     expect(paragrEl.textContent).toBe('testUser1,testUser2 interacted with your post');
-    expect(paragrEl.innerHTML).toBe('<a data-userid="2">testUser1</a>,<a data-userid="3">testUser2</a> interacted with your post');
+    expect(paragrEl.innerHTML).toBe(
+      '<a data-userid="2" style="font-family: var(--tertiary-font);">testUser1</a>,<a data-userid="3" style="font-family: var(--tertiary-font);">testUser2</a> interacted with your post'
+    );
   });
 
   it('should use body text when there are no property to set', () => {
@@ -74,7 +78,7 @@ describe('NotificContentReplaceDirective', () => {
     component.notification = { ...notification, ...{ bodyText: 'commented event {message}' } };
     fixture.detectChanges();
     expect(paragrEl.textContent).toBe('commented event test message');
-    expect(paragrEl.innerHTML).toBe('commented event test message');
+    expect(paragrEl.innerHTML).toBe('commented event <span style="font-family: var(--tertiary-font);">test message</span>');
   });
 
   it('should add property value to the content and anchor tag', () => {
@@ -84,6 +88,8 @@ describe('NotificContentReplaceDirective', () => {
     };
     fixture.detectChanges();
     expect(paragrEl.textContent).toBe('testUser1,testUser2 commented event test message');
-    expect(paragrEl.innerHTML).toBe('<a data-userid="2">testUser1</a>,<a data-userid="3">testUser2</a> commented event test message');
+    expect(paragrEl.innerHTML).toBe(
+      '<a data-userid="2" style="font-family: var(--tertiary-font);">testUser1</a>,<a data-userid="3" style="font-family: var(--tertiary-font);">testUser2</a> commented event <span style="font-family: var(--tertiary-font);">test message</span>'
+    );
   });
 });

@@ -38,6 +38,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   isImageUploaderOpen = false;
   showImageControls = false;
   isEmojiPickerOpen = false;
+  emojiPickerWidth = '506px';
   uploadedImage: { url: string; file: File }[] = [];
 
   content: FormControl = new FormControl('', [Validators.required, this.innerHtmlMaxLengthValidator(8000)]);
@@ -163,6 +164,17 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   toggleEmojiPickerVisibility(): void {
     this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
     this.isImageUploaderOpen = false;
+    if (this.isEmojiPickerOpen) {
+      this.updateEmojiPickerWidth();
+      window.addEventListener('resize', this.updateEmojiPickerWidth.bind(this));
+    } else {
+      window.removeEventListener('resize', this.updateEmojiPickerWidth.bind(this));
+    }
+  }
+
+  updateEmojiPickerWidth(): void {
+    const screenWidth = window.innerWidth;
+    this.emojiPickerWidth = screenWidth <= 640 ? '100%' : screenWidth <= 1024 ? '475px' : '506px';
   }
 
   onEmojiClick(event: EmojiEvent): void {
@@ -352,5 +364,6 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
+    window.removeEventListener('resize', this.updateEmojiPickerWidth.bind(this));
   }
 }
