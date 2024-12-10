@@ -26,7 +26,8 @@ export class LocalizedCurrencyPipe implements PipeTransform, OnDestroy {
   }
 
   transform(value: any): any {
-    return `${value} ${LOCALIZED_CURRENCY[this.lang]}`;
+    const roundedValue = Math.round((+value + Number.EPSILON) * 100) / 100;
+    return `${roundedValue} ${LOCALIZED_CURRENCY[this.lang]}`;
   }
 
   ngOnDestroy() {
