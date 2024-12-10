@@ -371,6 +371,5 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
-    window.removeEventListener('resize', this.updateEmojiPickerWidth.bind(this));
   }
 }
