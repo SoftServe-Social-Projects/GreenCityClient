@@ -364,6 +364,7 @@
           [id]="row.id"
           [ordersToChange]="idsToChange"
           [isAllChecked]="allChecked"
+          [isUneditableStatus]="checkStatusOfOrders(row.id)"
           (cancelEdit)="cancelEditCell($event)"
           (editCommentCell)="editCell($event)"
           (showBlockedInfo)="showBlockedMessage($event)"

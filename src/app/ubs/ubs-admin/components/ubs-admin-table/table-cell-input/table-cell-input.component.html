@@ -7,6 +7,6 @@
     (mouseleave)="tooltip.hide()"
     >{{ data }}
   </span>
-  <span *ngIf="!isEditable && !isBlocked" class="pointer" (click)="edit()">&#9998;</span>
+  <span *ngIf="!isEditable && !isBlocked && !isUneditableStatus" class="pointer" (click)="edit()">&#9998;</span>
   <mat-spinner class="spinner" *ngIf="isBlocked" strokeWidth="3" diameter="20"></mat-spinner>
 </div>

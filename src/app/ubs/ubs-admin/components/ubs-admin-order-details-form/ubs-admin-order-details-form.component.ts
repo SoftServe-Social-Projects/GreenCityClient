@@ -37,6 +37,7 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
   isOrderNotTakenOut = false;
   isDisabledWriteOffStation = false;
   isDisabledStatus = false;
+  isUneditableStatus: boolean;
 
   @Output() deleteNumberOrderFromEcoShopChanged = new EventEmitter<boolean>();
   @Output() checkMinOrder = new EventEmitter<boolean>();

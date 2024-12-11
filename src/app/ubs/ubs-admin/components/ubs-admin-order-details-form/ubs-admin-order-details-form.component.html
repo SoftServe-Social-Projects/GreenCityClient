@@ -234,6 +234,7 @@
             formControlName="customerComment"
             placeholder="{{ 'order-details.client-comment.placeholder' | translate }}"
             id="customer-comment"
+            [readonly]="isDisabledStatus"
           ></textarea>
           <div class="validation" *ngIf="customerComment.invalid && customerComment.touched">
             <app-ubs-input-error [formElement]="customerComment"> </app-ubs-input-error>

@@ -18,6 +18,7 @@ export class TableCellInputComponent {
   @Input() id: number;
   @Input() ordersToChange: number[];
   @Input() isAllChecked: boolean;
+  @Input() isUneditableStatus: boolean;
   @Input() data;
 
   @Output() cancelEdit = new EventEmitter();
