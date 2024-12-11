@@ -57,7 +57,7 @@ describe('TableCellInputComponent', () => {
     component.data = mockData;
 
     adminTableService.howChangeCell.and.returnValue([1, 2, 3]);
-    adminTableService.blockOrders.and.returnValue(of([{ message: 'Blocked' } as unknown as IAlertInfo])); // Blocked orders
+    adminTableService.blockOrders.and.returnValue(of([{ message: 'Blocked' } as unknown as IAlertInfo]));
 
     spyOn(component.showBlockedInfo, 'emit');
 
