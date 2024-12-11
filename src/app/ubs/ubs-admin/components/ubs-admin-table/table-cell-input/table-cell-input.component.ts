@@ -6,8 +6,6 @@ import { take } from 'rxjs';
 import { CommentPopUpComponent } from '../../shared/components/comment-pop-up/comment-pop-up.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { MouseEvents } from 'src/app/shared/mouse-events';
-
 @Component({
   selector: 'app-table-cell-input',
   templateUrl: './table-cell-input.component.html',
@@ -19,12 +17,11 @@ export class TableCellInputComponent {
   @Input() ordersToChange: number[];
   @Input() isAllChecked: boolean;
   @Input() isUneditableStatus: boolean;
-  @Input() data;
+  @Input() data: string;
 
   @Output() cancelEdit = new EventEmitter();
   @Output() editCommentCell = new EventEmitter();
   @Output() showBlockedInfo = new EventEmitter();
-  @Output() isCommentEditorOpened = new EventEmitter();
 
   isEditable: boolean;
   isBlocked: boolean;
@@ -45,7 +42,6 @@ export class TableCellInputComponent {
     this.isBlocked = true;
 
     this.typeOfChange = this.adminTableService.howChangeCell(this.isAllChecked, this.ordersToChange, this.id);
-
     this.adminTableService
       .blockOrders(this.typeOfChange)
       .pipe(take(1))
