@@ -25,9 +25,10 @@ export class LocalizedCurrencyPipe implements PipeTransform, OnDestroy {
     });
   }
 
-  transform(value: any): any {
-    const roundedValue = Math.round((+value + Number.EPSILON) * 100) / 100;
-    return `${roundedValue} ${LOCALIZED_CURRENCY[this.lang]}`;
+  transform(value: any, fixedDigits: boolean = false): any {
+    const formattedValue = fixedDigits ? (+value).toFixed(2) : Math.round(+value * 100) / 100;
+
+    return `${formattedValue} ${LOCALIZED_CURRENCY[this.lang]}`;
   }
 
   ngOnDestroy() {
