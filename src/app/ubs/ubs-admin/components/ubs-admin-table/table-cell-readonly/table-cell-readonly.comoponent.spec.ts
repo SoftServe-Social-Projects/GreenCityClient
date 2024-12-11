@@ -85,59 +85,6 @@ describe('TableCellReadonlyComponent', () => {
     });
   });
 
-  it('should not show tooltip if textContainerWidth is greater than or equal to textWidth', () => {
-    const event = {
-      target: {
-        offsetWidth: 100,
-        innerText: 'Short text'
-      }
-    };
-    const tooltip = {
-      show: jasmine.createSpy('show')
-    };
-
-    component.calculateTextWidth(event, tooltip);
-
-    expect(tooltip.show).not.toHaveBeenCalled();
-  });
-
-  it('should not show tooltip if the difference between textContainerWidth and textWidth is greater than or equal to maxLength', () => {
-    const event = {
-      target: {
-        offsetWidth: 120,
-        innerText: 'Long text'
-      }
-    };
-    const tooltip = {
-      show: jasmine.createSpy('show')
-    };
-    const maxLength = 20;
-
-    component.calculateTextWidth(event, tooltip, maxLength);
-
-    expect(tooltip.show).not.toHaveBeenCalled();
-  });
-
-  it('should hide tooltip if lengthStr is not greater than maxLength', () => {
-    const event = {
-      stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation'),
-      target: {
-        innerText: 'Short text'
-      }
-    };
-    const tooltip = {
-      toggle: jasmine.createSpy('toggle'),
-      hide: jasmine.createSpy('hide')
-    };
-    const maxLength = 50;
-
-    component.showTooltip(event, tooltip, maxLength);
-
-    expect(event.stopImmediatePropagation).toHaveBeenCalled();
-    expect(tooltip.toggle).not.toHaveBeenCalled();
-    expect(tooltip.hide).toHaveBeenCalled();
-  });
-
   it('should update title and data on changes', () => {
     component.key = TableKeys.generalDiscount;
     component.title = '0.00 UAH';

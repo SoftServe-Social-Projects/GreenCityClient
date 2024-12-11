@@ -8,6 +8,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import moment from 'moment';
 import { Observable } from 'rxjs';
+import { MouseEvents } from 'src/app/shared/mouse-events';
 
 const columnMapping: { [key: string]: string } = {
   dateOfExportFrom: 'deliveryDate.from',
@@ -352,6 +353,27 @@ export class AdminTableService {
       }
     });
     this.filters = this.filters.filter((filteredElem) => !filteredElem[colName]);
+  }
+
+  showTooltip(event: any, tooltip: any, font: string, maxLength = 50): void {
+    event.stopImmediatePropagation();
+    const lengthStr = event.target?.innerText.split('').length;
+    if (lengthStr > maxLength) {
+      tooltip.toggle();
+    }
+
+    event.type === MouseEvents.MouseEnter ? this.calculateTextWidth(event, tooltip, font) : tooltip.hide();
+  }
+
+  calculateTextWidth(event: any, tooltip: any, font: string, maxLength = 40): void {
+    const textContainerWidth = event.target.offsetWidth;
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    context.font = font;
+    const textWidth = Math.round(context.measureText(event.target.innerText).width);
+    if (textContainerWidth < textWidth || Math.abs(textContainerWidth - textWidth) < maxLength) {
+      tooltip.show();
+    }
   }
 
   setUbsAdminOrdersTableColumnsWidthPreference(preference: Map<string, number>) {

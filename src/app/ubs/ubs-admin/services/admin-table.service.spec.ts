@@ -473,4 +473,60 @@ describe('AdminTableService', () => {
     expect(service.setDateFormat('2024-05-21T14:30:00Z')).toEqual('2024-05-21');
     expect(service.setDateFormat('2024-01-01T00:00:00Z')).toEqual('2024-01-01');
   });
+
+  it('should not show tooltip if textContainerWidth is greater than or equal to textWidth', () => {
+    const event = {
+      target: {
+        offsetWidth: 100,
+        innerText: 'Short text'
+      }
+    };
+    const tooltip = {
+      show: jasmine.createSpy('show')
+    };
+    const font = '12px Lato, sans-serif';
+
+    service.calculateTextWidth(event, tooltip, font);
+
+    expect(tooltip.show).not.toHaveBeenCalled();
+  });
+
+  it('should not show tooltip if the difference between textContainerWidth and textWidth is greater than or equal to maxLength', () => {
+    const event = {
+      target: {
+        offsetWidth: 120,
+        innerText: 'Long text'
+      }
+    };
+    const tooltip = {
+      show: jasmine.createSpy('show')
+    };
+    const font = '12px Lato, sans-serif';
+    const maxLength = 20;
+
+    service.calculateTextWidth(event, tooltip, font, maxLength);
+
+    expect(tooltip.show).not.toHaveBeenCalled();
+  });
+
+  it('should hide tooltip if lengthStr is not greater than maxLength', () => {
+    const event = {
+      stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation'),
+      target: {
+        innerText: 'Short text'
+      }
+    };
+    const tooltip = {
+      toggle: jasmine.createSpy('toggle'),
+      hide: jasmine.createSpy('hide')
+    };
+    const font = '12px Lato, sans-serif';
+    const maxLength = 50;
+
+    service.showTooltip(event, tooltip, font, maxLength);
+
+    expect(event.stopImmediatePropagation).toHaveBeenCalled();
+    expect(tooltip.toggle).not.toHaveBeenCalled();
+    expect(tooltip.hide).toHaveBeenCalled();
+  });
 });

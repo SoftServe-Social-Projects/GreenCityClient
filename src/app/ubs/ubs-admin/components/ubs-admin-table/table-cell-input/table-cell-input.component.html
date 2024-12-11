@@ -1,12 +1,11 @@
-<div class="comments">
-  <span
-    #tooltip="matTooltip"
-    matTooltip="{{ data }}"
-    matTooltipClass="my-custom-tooltip"
-    (mouseenter)="showTooltip($event, tooltip)"
-    (mouseleave)="tooltip.hide()"
-    >{{ data }}
-  </span>
+<div
+  class="comments"
+  #tooltip="matTooltip"
+  matTooltip="{{ data }}"
+  (mouseenter)="onMouseEnter($event, tooltip)"
+  (mouseleave)="tooltip.hide()"
+>
+  <span>{{ data }}</span>
   <span *ngIf="!isEditable && !isBlocked && !isUneditableStatus" class="pointer" (click)="edit()">&#9998;</span>
   <mat-spinner class="spinner" *ngIf="isBlocked" strokeWidth="3" diameter="20"></mat-spinner>
 </div>
