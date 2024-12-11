@@ -6,6 +6,7 @@ import { TableCellReadonlyComponent } from './table-cell-readonly.component';
 import { Language } from 'src/app/main/i18n/Language';
 import { TableKeys } from '../../../services/table-keys.enum';
 import { PaymnetStatus } from '../../../../ubs/order-status.enum';
+import { AdminTableService } from '@ubs/ubs-admin/services/admin-table.service';
 
 describe('TableCellReadonlyComponent', () => {
   let component: TableCellReadonlyComponent;
@@ -17,11 +18,13 @@ describe('TableCellReadonlyComponent', () => {
     ua: 'ua',
     en: 'en'
   };
+  const adminTableServiceSpy = jasmine.createSpyObj('AdminTableService', ['howChangeCell', 'blockOrders', 'showTooltip']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [MatTooltipModule],
       declarations: [TableCellReadonlyComponent, ServerTranslatePipe],
+      providers: [{ provide: AdminTableService, useValue: adminTableServiceSpy }],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
