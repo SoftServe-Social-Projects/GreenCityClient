@@ -16,7 +16,7 @@ export const LOCALIZED_CURRENCY = {
 })
 export class LocalizedCurrencyPipe implements PipeTransform, OnDestroy {
   private lang: string;
-  private destroy$: Subject<any> = new Subject();
+  private destroy$: Subject<void> = new Subject();
 
   constructor(translate: TranslateService, localStorageService: LocalStorageService) {
     this.lang = localStorageService.getCurrentLanguage() || translate.defaultLang;
@@ -26,13 +26,16 @@ export class LocalizedCurrencyPipe implements PipeTransform, OnDestroy {
   }
 
   transform(value: any, fixedDigits: boolean = false): any {
-    const formattedValue = fixedDigits ? (+value).toFixed(2) : Math.round(+value * 100) / 100;
+    if (value == null || isNaN(Number(value))) {
+      return null;
+    }
 
+    const formattedValue = fixedDigits ? Number(value).toFixed(2) : Math.round(Number(value) * 100) / 100;
     return `${formattedValue} ${LOCALIZED_CURRENCY[this.lang]}`;
   }
 
   ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
