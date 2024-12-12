@@ -17,33 +17,18 @@ export const ubsNavLinks = [
 
 export const socialLinks = [
   {
-    name: 'Patreon',
-    url: 'https://www.patreon.com/NowasteUkraine',
-    icon: 'assets/admin-header/patreon-icon.svg'
-  },
-  {
-    name: 'TikTok',
-    url: 'https://www.tiktok.com/@nowasteukraine',
-    icon: 'assets/admin-header/tik-tok-icon.svg'
-  },
-  {
     name: 'Facebook',
-    url: 'https://www.facebook.com/NowasteUkraine/',
+    url: 'https://www.facebook.com/pickupcityua',
     icon: 'assets/admin-header/face-icon.svg'
   },
   {
     name: 'Instagram',
-    url: 'https://www.instagram.com/nowasteukraine/',
+    url: 'https://www.instagram.com/pickup_city/',
     icon: 'assets/admin-header/insta-icon.svg'
   },
   {
-    name: 'Telegram',
-    url: 'https://t.me/nowasteukraine',
-    icon: 'assets/admin-header/telegram-icon.svg'
-  },
-  {
-    name: 'YouTube',
-    url: 'https://www.youtube.com/channel/UChFVBZ_HcaQYiF-GcMHiCNA',
-    icon: 'assets/admin-header/you-tube-icon.svg'
+    name: 'Email',
+    url: 'mailto:pickup@nowaste.org.ua',
+    icon: 'assets/admin-header/email-icon.svg'
   }
 ];
