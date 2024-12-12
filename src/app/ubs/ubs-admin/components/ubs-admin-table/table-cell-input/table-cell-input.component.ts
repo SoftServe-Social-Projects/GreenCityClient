@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IAlertInfo, IEditCell } from '@ubs/ubs-admin/models/edit-cell.model';
 import { IColumnBelonging } from '@ubs/ubs-admin/models/ubs-admin.interface';
 import { AdminTableService } from '@ubs/ubs-admin/services/admin-table.service';
-import { take } from 'rxjs';
+import { catchError, of, take } from 'rxjs';
 import { CommentPopUpComponent } from '../../shared/components/comment-pop-up/comment-pop-up.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
@@ -27,7 +27,7 @@ export class TableCellInputComponent {
   isBlocked: boolean;
 
   private typeOfChange: number[];
-  private font = '12px Lato, sans-serif';
+  private readonly font = '12px Lato, sans-serif';
 
   private dialogConfig = new MatDialogConfig();
 
@@ -44,16 +44,21 @@ export class TableCellInputComponent {
     this.typeOfChange = this.adminTableService.howChangeCell(this.isAllChecked, this.ordersToChange, this.id);
     this.adminTableService
       .blockOrders(this.typeOfChange)
-      .pipe(take(1))
-      .subscribe((res: IAlertInfo[]) => {
-        if (res[0] === undefined) {
+      .pipe(
+        take(1),
+        catchError(() => {
           this.isBlocked = false;
           this.isEditable = true;
-          this.openPopUp();
-        } else {
-          this.isEditable = false;
-          this.isBlocked = false;
+          return of([]);
+        })
+      )
+      .subscribe((res: IAlertInfo[]) => {
+        this.isBlocked = false;
+        if (res && res[0]) {
           this.showBlockedInfo.emit(res);
+        } else {
+          this.isEditable = true;
+          this.openPopUp();
         }
       });
   }

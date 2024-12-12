@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { OrderService } from 'src/app/ubs/ubs-admin/services/order.service';
 import { OrderStatus, PaymnetStatus } from 'src/app/ubs/ubs/order-status.enum';
 import { Masks, Patterns } from 'src/assets/patterns/patterns';
@@ -58,7 +58,7 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
 
   constructor(private readonly orderService: OrderService) {}
 
-  get customerComment() {
+  get customerComment(): AbstractControl {
     return this.orderDetailsForm.get('customerComment');
   }
 

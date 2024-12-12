@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TableCellInputComponent } from './table-cell-input.component';
 import { AdminTableService } from '@ubs/ubs-admin/services/admin-table.service';

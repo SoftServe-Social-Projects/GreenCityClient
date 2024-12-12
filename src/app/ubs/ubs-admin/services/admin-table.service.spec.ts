@@ -475,12 +475,13 @@ describe('AdminTableService', () => {
   });
 
   it('should not show tooltip if textContainerWidth is greater than or equal to textWidth', () => {
-    const event = {
-      target: {
-        offsetWidth: 100,
-        innerText: 'Short text'
-      }
-    };
+    const event = new MouseEvent('mouseover');
+    spyOn(event, 'stopImmediatePropagation');
+    Object.defineProperty(event, 'target', {
+      value: { innerText: 'Short text' },
+      writable: true
+    });
+
     const tooltip = {
       show: jasmine.createSpy('show')
     };
@@ -492,12 +493,13 @@ describe('AdminTableService', () => {
   });
 
   it('should not show tooltip if the difference between textContainerWidth and textWidth is greater than or equal to maxLength', () => {
-    const event = {
-      target: {
-        offsetWidth: 120,
-        innerText: 'Long text'
-      }
-    };
+    const event = new MouseEvent('mouseover');
+    spyOn(event, 'stopImmediatePropagation');
+    Object.defineProperty(event, 'target', {
+      value: { innerText: 'Short text' },
+      writable: true
+    });
+
     const tooltip = {
       show: jasmine.createSpy('show')
     };
@@ -510,12 +512,13 @@ describe('AdminTableService', () => {
   });
 
   it('should hide tooltip if lengthStr is not greater than maxLength', () => {
-    const event = {
-      stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation'),
-      target: {
-        innerText: 'Short text'
-      }
-    };
+    const event = new MouseEvent('mouseover');
+    spyOn(event, 'stopImmediatePropagation');
+    Object.defineProperty(event, 'target', {
+      value: { innerText: 'Short text' },
+      writable: true
+    });
+
     const tooltip = {
       toggle: jasmine.createSpy('toggle'),
       hide: jasmine.createSpy('hide')
