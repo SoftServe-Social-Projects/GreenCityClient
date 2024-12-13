@@ -18,7 +18,6 @@ import { OrderService } from 'src/app/ubs/ubs/services/order.service';
   styleUrls: ['./ubs-admin-address-details.component.scss']
 })
 export class UbsAdminAddressDetailsComponent implements OnInit, OnDestroy {
-  @Input() addressComment: string;
   @Input() addressExportDetailsDto: FormGroup;
   @Input() generalInfo: IGeneralOrderInfo;
   @Input() isEmployeeCanEditOrder: boolean;
@@ -91,6 +90,10 @@ export class UbsAdminAddressDetailsComponent implements OnInit, OnDestroy {
 
   get addressDistrictEng() {
     return this.addressExportDetailsDto.get('addressDistrictEng');
+  }
+
+  get addressComment() {
+    return this.addressExportDetailsDto.get('addressComment');
   }
 
   openDetails(): void {
