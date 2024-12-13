@@ -82,7 +82,6 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     if (this.habitId && this.selectedFriends.length) {
       this.userFriendsService.inviteFriendsToHabit(this.habitId, this.selectedFriends).subscribe({
         next: () => {
-          
           this.dialogRef.close();
         },
         error: (error) => {
@@ -98,7 +97,7 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   }
   
   setAllFriendsDisable(): boolean {
-      return this.friends.every((friend) => friend.hasInvitation);
+    return this.friends.every((friend) => friend.hasInvitation);
   }
 
   updateAllAdd() {
@@ -136,5 +135,5 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroyed$.next(true);
     this.destroyed$.complete();
-  }
+  }   
 }
