@@ -11,6 +11,5 @@
     <div #focusLast tabindex="-1" aria-label="Tab To Main"></div>
     <router-outlet (activate)="setFocus()"></router-outlet>
   </div>
-  <app-chat-popup [isSupportChat]="true"></app-chat-popup>
   <app-footer *ngIf="!isUBS"></app-footer>
 </div>
