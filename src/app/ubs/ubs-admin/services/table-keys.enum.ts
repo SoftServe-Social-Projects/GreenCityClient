@@ -1,6 +1,8 @@
 export enum TableKeys {
   generalDiscount = 'generalDiscount',
-  bagsAmount = 'bagsAmount',
+  mixedWaste120L = 'mixedWaste120L',
+  textileWaste60L = 'textileWaste60L',
+  textileWaste20L = 'textileWaste20L',
   amountDue = 'amountDue',
   totalOrderSum = 'totalOrderSum',
   totalPayment = 'totalPayment',

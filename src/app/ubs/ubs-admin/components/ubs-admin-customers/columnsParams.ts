@@ -100,7 +100,9 @@ export const columnsParamsOrders: ColumnParam[] = [
     title: { key: 'commentToAddressForClient', ua: 'Коментар до адреси від клієнта', en: 'Comment to address from the client' },
     width: 100
   },
-  { title: { key: 'bagsAmount', ua: 'К-сть пакетів', en: 'Bags amount' }, width: 100 },
+  { title: { key: 'mixedWaste120L', ua: 'Мікс 120л', en: 'Mix 120l' }, width: 100 },
+  { title: { key: 'textileWaste60L', ua: 'Текстиль 60л', en: 'Textile 60l' }, width: 100 },
+  { title: { key: 'textileWaste20L', ua: 'Текстиль 20л', en: 'Textile 20l' }, width: 100 },
   { title: { key: 'totalOrderSum', ua: 'Сума замовлення', en: 'Total order sum' }, width: 100 },
   { title: { key: 'orderCertificateCode', ua: 'Номер сертифікату', en: 'Order certificate code' }, width: 100 },
   { title: { key: 'generalDiscount', ua: 'Загальна знижка', en: 'General discount' }, width: 100 },

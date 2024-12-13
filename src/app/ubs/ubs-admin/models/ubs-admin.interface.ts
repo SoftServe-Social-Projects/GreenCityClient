@@ -415,7 +415,9 @@ export interface IBigOrderTableOrderInfo {
   district: string;
   address: string;
   commentToAddressForClient: string;
-  bagsAmount: number;
+  mixedWaste120L: number;
+  textileWaste60L: number;
+  textileWaste20L: number;
   totalOrderSum: number;
   orderCertificateCode: string;
   orderCertificatePoints: string;
