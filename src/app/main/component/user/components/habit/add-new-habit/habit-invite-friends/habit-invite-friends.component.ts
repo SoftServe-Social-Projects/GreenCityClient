@@ -46,9 +46,7 @@ export class HabitInviteFriendsComponent implements OnInit, OnDestroy {
       data: {
         habitId: this.habitId,
         friends: [...this.friends],
-        onFriendsUpdated: (newFriends: FriendProfilePicturesArrayModel[]) => {
-          this.friends = newFriends;
-        }
+       
       }
     });
 
