@@ -46,26 +46,6 @@ describe('TableCellReadonlyComponent', () => {
   });
 
   describe('ngOnChanges', () => {
-    it('should translate in en for bagsAmount', () => {
-      component.key = TableKeys.bagsAmount;
-      component.lang = Language.EN;
-      component.title = fakeStrValue;
-
-      component.ngOnChanges();
-
-      expect(component.data).toBe('20L - 0p; 120L - 3p');
-    });
-
-    it('should not translate for bagsAmount in ua', () => {
-      component.key = TableKeys.bagsAmount;
-      component.lang = 'ua';
-      component.title = fakeStrValue;
-
-      component.ngOnChanges();
-
-      expect(component.data).toBe(fakeStrValue);
-    });
-
     it('should add minus sign for generalDiscount when not zero', () => {
       component.key = TableKeys.generalDiscount;
       component.title = '10.00 UAH';

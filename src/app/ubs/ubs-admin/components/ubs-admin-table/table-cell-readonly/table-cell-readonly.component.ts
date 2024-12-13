@@ -45,11 +45,6 @@ export class TableCellReadonlyComponent implements OnInit, OnChanges {
         [Language.UA]: { regex: /[lp]/gi, match: { l: 'л', p: 'шт' } }
       };
 
-      if (this.key === TableKeys.bagsAmount && replaceRules[this.lang]) {
-        const { regex, match } = replaceRules[this.lang];
-        this.title = (this.title as string).toLowerCase().replace(regex, (el) => match[el]);
-      }
-
       this.data = this.title;
 
       this.isStatus();
