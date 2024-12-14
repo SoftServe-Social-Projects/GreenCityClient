@@ -437,7 +437,7 @@
         "first-name-is-required": "User name is required",
         "user-name-error": "User name is required",
         "invalid-user-name": "Username must not contains a dot at the beginning, few dots in a row, special characters, Cyrillic letters",
-        "user-name-size": "The user name must contain 1-30 characters and can contain letters, numbers and a dot. Dot at the start, at the end and consecutive dot is forbidden",
+        "user-name-size": "The user name must be 1-30 characters long and may include letters, numbers, single dots, hyphens, or apostrophes. Dots cannot appear at the beginning or end, nor can they be consecutive. Double hyphens or apostrophes are also not allowed.",
         "first-name-must-be-at-least-1-characters-long": "User name must be at least 1 characters long",
         "last-name": "Last name",
         "last-name-is-required": "Last name is required",
