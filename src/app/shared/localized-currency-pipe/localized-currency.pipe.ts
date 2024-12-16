@@ -25,7 +25,7 @@ export class LocalizedCurrencyPipe implements PipeTransform, OnDestroy {
     });
   }
 
-  transform(value: any, fixedDigits: boolean = false): any {
+  transform(value: number | string | null, fixedDigits: boolean = false): string | null {
     if (value == null || isNaN(Number(value))) {
       return null;
     }
