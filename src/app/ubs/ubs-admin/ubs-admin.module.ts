@@ -101,6 +101,8 @@ import { DeletingProfileReasonPopUpComponent } from 'src/app/ubs/ubs-admin/compo
 import { UbsAdminEditUserAgreementComponent } from './components/ubs-admin-edit-user-agreement/ubs-admin-edit-user-agreement.component';
 import { QuillModule } from 'ngx-quill';
 import { UbsAdminConfirmStatusChangePopUpComponent } from './components/ubs-admin-confirm-status-change-pop-up/ubs-admin-confirm-status-change-pop-up.component';
+import { TableCellInputComponent } from './components/ubs-admin-table/table-cell-input/table-cell-input.component';
+import { CommentPopUpComponent } from './components/shared/components/comment-pop-up/comment-pop-up.component';
 
 @NgModule({
   declarations: [
@@ -170,7 +172,9 @@ import { UbsAdminConfirmStatusChangePopUpComponent } from './components/ubs-admi
     DeletingProfileReasonPopUpComponent,
     TariffSelectorComponent,
     UbsAdminEditUserAgreementComponent,
-    UbsAdminConfirmStatusChangePopUpComponent
+    UbsAdminConfirmStatusChangePopUpComponent,
+    TableCellInputComponent,
+    CommentPopUpComponent
   ],
   imports: [
     CommonModule,

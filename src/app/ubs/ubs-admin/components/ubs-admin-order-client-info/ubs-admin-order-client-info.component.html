@@ -57,7 +57,7 @@
                   class="form-control name-input"
                   type="text"
                   id="recipient-name"
-                  [readonly]="isOrderCanceled || !this.isEmployeeCanEditOrder"
+                  [readonly]="isUneditableStatus || !this.isEmployeeCanEditOrder"
                   formControlName="recipientName"
                 />
                 <div *ngIf="userInfoDto.controls['recipientName'].invalid && userInfoDto.controls['recipientName'].touched">
@@ -69,7 +69,7 @@
               <div>
                 <input
                   class="form-control name-input"
-                  [readonly]="isOrderCanceled || !this.isEmployeeCanEditOrder"
+                  [readonly]="isUneditableStatus || !this.isEmployeeCanEditOrder"
                   type="text"
                   id="recipient-surname"
                   formControlName="recipientSurName"
@@ -88,7 +88,7 @@
             </label>
             <input
               class="form-control"
-              [readonly]="isOrderCanceled || !this.isEmployeeCanEditOrder"
+              [readonly]="isUneditableStatus || !this.isEmployeeCanEditOrder"
               type="tel"
               id="recipient-tel"
               placeholder="{{ 'customer-info.recipient.tel-placeholder' | translate }}"
@@ -108,7 +108,7 @@
             </label>
             <input
               class="form-control"
-              [readonly]="isOrderCanceled || !this.isEmployeeCanEditOrder"
+              [readonly]="isUneditableStatus || !this.isEmployeeCanEditOrder"
               type="email"
               id="recipient-email"
               placeholder="{{ 'customer-info.recipient.email-placeholder' | translate }}"

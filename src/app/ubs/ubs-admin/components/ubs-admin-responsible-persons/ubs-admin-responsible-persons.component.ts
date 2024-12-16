@@ -3,7 +3,7 @@ import { FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { IEmployee, IResponsiblePersons, IResponsiblePersonsData } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
 import { OrderStatus } from 'src/app/ubs/ubs/order-status.enum';
-
+import { OrderService } from '../../services/order.service';
 @Component({
   selector: 'app-ubs-admin-responsible-persons',
   templateUrl: './ubs-admin-responsible-persons.component.html',
@@ -19,14 +19,20 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
   allLogisticians: string[];
   allNavigators: string[];
   allDrivers: string[];
-  isOrderStatusCancelOrDone = false;
+  isUneditableStatus = false;
   pageOpen: boolean;
   responsiblePersonsData: IResponsiblePersonsData[];
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
+  constructor(public orderService: OrderService) {}
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.orderStatus?.currentValue === OrderStatus.CANCELED || changes.orderStatus?.currentValue === OrderStatus.DONE) {
-      this.isOrderStatusCancelOrDone = true;
+    if (
+      changes.orderStatus?.currentValue === OrderStatus.CANCELED ||
+      changes.orderStatus?.currentValue === OrderStatus.DONE ||
+      changes.orderStatus?.currentValue === OrderStatus.BROUGHT_IT_HIMSELF
+    ) {
+      this.isUneditableStatus = true;
     }
   }
 
@@ -36,6 +42,15 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
 
   openDetails() {
     this.pageOpen = !this.pageOpen;
+  }
+
+  loadArrowImage() {
+    return this.orderService.getArrowImageSrc(
+      this.isFormRequired(),
+      this.pageOpen,
+      this.responsiblePersonsForm.valid,
+      this.isUneditableStatus
+    );
   }
 
   setEmployeesByPosition() {
@@ -50,9 +65,9 @@ export class UbsAdminResponsiblePersonsComponent implements OnInit, OnDestroy, O
   isFormRequired(): boolean {
     const isNotOpen = !this.pageOpen;
     const isNotValid = !this.responsiblePersonsForm.valid;
-    const isNotCancelOrDone = !this.isOrderStatusCancelOrDone;
+    const isUneditable = !this.isUneditableStatus;
 
-    return isNotOpen && isNotValid && isNotCancelOrDone;
+    return isNotOpen && isNotValid && isUneditable;
   }
 
   getEmployeesById(employeeObjects: Map<string, IEmployee[]>, id: number): string[] {

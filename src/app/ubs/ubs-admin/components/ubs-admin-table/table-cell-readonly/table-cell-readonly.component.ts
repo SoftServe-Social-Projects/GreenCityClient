@@ -5,6 +5,7 @@ import { Language } from 'src/app/main/i18n/Language';
 import { TableKeys } from '../../../services/table-keys.enum';
 import { Patterns } from 'src/assets/patterns/patterns';
 import { PaymnetStatus } from 'src/app/ubs/ubs/order-status.enum';
+import { AdminTableService } from '@ubs/ubs-admin/services/admin-table.service';
 
 @Component({
   selector: 'app-table-cell-readonly',
@@ -22,8 +23,10 @@ export class TableCellReadonlyComponent implements OnInit, OnChanges {
   halfpaid: boolean;
   dataObj: IColumnBelonging = null;
   data: string | number | { ua: string; en: string } | null;
-  private font = '12px Lato, sans-serif';
+  private readonly font = '12px Lato, sans-serif';
   typeof: any;
+
+  constructor(private adminTableService: AdminTableService) {}
 
   ngOnInit(): void {
     if (this.optional?.length) {
@@ -73,25 +76,7 @@ export class TableCellReadonlyComponent implements OnInit, OnChanges {
     }
   }
 
-  showTooltip(event: any, tooltip: any, maxLength = 50): void {
-    event.stopImmediatePropagation();
-    const lengthStr = event.target?.innerText.split('').length;
-    if (lengthStr > maxLength) {
-      tooltip.toggle();
-    }
-
-    event.type === MouseEvents.MouseEnter ? this.calculateTextWidth(event, tooltip) : tooltip.hide();
-  }
-
-  calculateTextWidth(event: any, tooltip: any, maxLength = 40): void {
-    const textContainerWidth = event.target.offsetWidth;
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    context.font = this.font;
-    const textWidth = Math.round(context.measureText(event.target.innerText).width);
-
-    if (textContainerWidth < textWidth || Math.abs(textContainerWidth - textWidth) < maxLength) {
-      tooltip.show();
-    }
+  onMouseEnter(event: MouseEvent, tooltip: any): void {
+    this.adminTableService.showTooltip(event, tooltip, this.font);
   }
 }

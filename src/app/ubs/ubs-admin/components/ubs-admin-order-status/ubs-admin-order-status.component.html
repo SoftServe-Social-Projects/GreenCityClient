@@ -63,7 +63,7 @@
         <div class="form-group">
           <label for="comment" class="form__label">{{ 'order-edit.comment.label' | translate }}</label>
           <textarea
-            [ngClass]="isEmployeeCanEditOrder ? 'form-control' : 'form-control readonly'"
+            [ngClass]="!uneditableStatus && isEmployeeCanEditOrder ? 'form-control' : 'form-control readonly'"
             class="mw-100"
             id="comment"
             formControlName="adminComment"

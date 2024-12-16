@@ -168,7 +168,9 @@
             >
               {{ (isSubscribed ? 'event.btn-cancel' : 'event.btn-join') | translate }}
             </button>
-            <button (click)="openModal()" *ngIf="isUserCanRate" class="primary-global-button">{{ 'event.btn-rate' | translate }}</button>
+            <button (click)="openModal()" *ngIf="isUserCanRate" [disabled]="isEventRated" class="primary-global-button">
+              {{ 'event.btn-rate' | translate }}
+            </button>
           </div>
         </div>
 

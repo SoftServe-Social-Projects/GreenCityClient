@@ -410,4 +410,56 @@ describe('OrderService', () => {
     const res = service.getAvailableOrderStatuses(OrderStatus.CANCELED, arr);
     expect(res).toEqual([{ key: OrderStatus.CANCELED }]);
   });
+
+  it('should return red arrow up when form is required', () => {
+    const result = service.getArrowImageSrc(true, false, false, false);
+    expect(result).toEqual({
+      imgUrl: 'assets/img/ubs-admin-orders/red_arrow_up.svg',
+      imgAlt: 'Red arrow pointing up'
+    });
+  });
+
+  it('should return arrow up when page is not open and valid or uneditable', () => {
+    const result = service.getArrowImageSrc(false, false, true, false);
+    expect(result).toEqual({
+      imgUrl: 'assets/img/ubs-admin-orders/arrow_up.svg',
+      imgAlt: 'Arrow pointing up'
+    });
+
+    const resultUneditable = service.getArrowImageSrc(false, false, false, true);
+    expect(resultUneditable).toEqual({
+      imgUrl: 'assets/img/ubs-admin-orders/arrow_up.svg',
+      imgAlt: 'Arrow pointing up'
+    });
+  });
+
+  it('should return arrow down when page is open and valid or uneditable', () => {
+    const result = service.getArrowImageSrc(false, true, true, false);
+    expect(result).toEqual({
+      imgUrl: 'assets/img/ubs-admin-orders/arrow_down.svg',
+      imgAlt: 'Arrow pointing down'
+    });
+
+    const resultUneditable = service.getArrowImageSrc(false, true, false, true);
+    expect(resultUneditable).toEqual({
+      imgUrl: 'assets/img/ubs-admin-orders/arrow_down.svg',
+      imgAlt: 'Arrow pointing down'
+    });
+  });
+
+  it('should return red arrow down when page is open, not valid, and not uneditable', () => {
+    const result = service.getArrowImageSrc(false, true, false, false);
+    expect(result).toEqual({
+      imgUrl: 'assets/img/ubs-admin-orders/red_arrow_down.svg',
+      imgAlt: 'Red arrow pointing down'
+    });
+  });
+
+  it('should return no image for undefined conditions', () => {
+    const result = service.getArrowImageSrc(false, false, false, false);
+    expect(result).toEqual({
+      imgUrl: '',
+      imgAlt: 'No Image'
+    });
+  });
 });

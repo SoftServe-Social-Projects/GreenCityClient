@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { OrderService } from 'src/app/ubs/ubs-admin/services/order.service';
 import { OrderStatus, PaymnetStatus } from 'src/app/ubs/ubs/order-status.enum';
 import { Masks, Patterns } from 'src/assets/patterns/patterns';
-import { IOrderDetails, IOrderInfo, IPaymentInfo, orderPaymentInfo } from '../../models/ubs-admin.interface';
+import { IOrderDetails, IOrderInfo, orderPaymentInfo } from '../../models/ubs-admin.interface';
 import { limitStatus } from '../ubs-admin-tariffs/ubs-tariffs.enum';
 
 @Component({
@@ -17,8 +17,6 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
   SHOP_NUMBER_MASK = Masks.ecoStoreMask;
   SHOP_NUMBER_PATTERN = Patterns.ordersPattern;
   amountOfBigBags: number;
-  payMore = true;
-  isInputDisabled = false;
   isVisible: boolean;
   isOrderBroughtByHimself = false;
   bagsInfo;
@@ -38,7 +36,9 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
   isOrderDone = false;
   isOrderNotTakenOut = false;
   isDisabledWriteOffStation = false;
-  sumOrder: number;
+  isDisabledStatus = false;
+  isUneditableStatus: boolean;
+
   @Output() deleteNumberOrderFromEcoShopChanged = new EventEmitter<boolean>();
   @Output() checkMinOrder = new EventEmitter<boolean>();
   @Output() changeCurrentPrice = new EventEmitter<number>();
@@ -56,12 +56,15 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
   @Input() updateBonusAccount: number;
   @Input() paymentInfo: orderPaymentInfo;
 
-  constructor(private orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) {}
+
+  get customerComment(): AbstractControl {
+    return this.orderDetailsForm.get('customerComment');
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     const curStatus = changes.orderStatusInfo?.currentValue;
     const prevStatus = changes.orderStatusInfo?.previousValue;
-
     if (curStatus?.key) {
       this.isOrderCancelled = curStatus?.key === OrderStatus.CANCELED;
       this.isOrderBroughtByHimself = curStatus?.key === OrderStatus.BROUGHT_IT_HIMSELF;
@@ -86,8 +89,8 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
       this.isVisible = !this.isVisible;
     }
 
-    if (!changes?.orderStatusInfo?.firstChange) {
-      this.isDisabledConfirmQuantity();
+    if (changes?.orderStatusInfo) {
+      this.isDisabledOrderDetails();
     }
     this.recalculateSum();
   }
@@ -114,12 +117,23 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
     this.orderDetails = JSON.parse(JSON.stringify(this.orderDetailsOriginal));
   }
 
-  private isDisabledConfirmQuantity() {
-    if (this.isOrderBroughtByHimself || this.isOrderCancelled || this.isOrderNotTakenOut || this.isOrderDone) {
+  private isDisabledOrderDetails() {
+    const shouldDisable = this.isOrderBroughtByHimself || this.isOrderCancelled || this.isOrderNotTakenOut || this.isOrderDone;
+
+    if (shouldDisable) {
       this.orderDetails.bags.forEach((bag) => {
         this.orderDetailsForm.controls[`confirmedQuantity${bag.id}`].disable();
       });
+      this.orderDetailsForm.controls['certificates'].disable();
+      this.orderDetailsForm.controls['storeOrderNumbers'].disable();
+    } else {
+      this.orderDetails.bags.forEach((bag) => {
+        this.orderDetailsForm.controls[`confirmedQuantity${bag.id}`].enable();
+      });
+      this.orderDetailsForm.controls['certificates'].enable();
+      this.orderDetailsForm.controls['storeOrderNumbers'].enable();
     }
+    this.isDisabledStatus = shouldDisable;
   }
 
   recalculateSum() {

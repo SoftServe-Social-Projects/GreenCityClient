@@ -458,6 +458,9 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
 
     if (changedValues.orderDetailsForm) {
       changedValues.orderDetailDto = this.formatBagsValue(changedValues.orderDetailsForm);
+      if (changedValues.orderDetailsForm.customerComment) {
+        changedValues.orderDetailDto.userComment = changedValues.orderDetailsForm.customerComment;
+      }
       const keyEcoNumberFromShop = 'ecoNumberFromShop';
       if (changedValues.orderDetailsForm.storeOrderNumbers || this.deleteNumberOrderFromEcoShop) {
         changedValues[keyEcoNumberFromShop] = {
@@ -618,8 +621,11 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
     const exportDetails = this.orderForm.get('exportDetailsDto').value;
     const allFieldsHaveValue = Object.keys(exportDetails).every((key) => exportDetails[key]);
     const isStatusDoneAndFormFilled = this.currentOrderStatus === OrderStatus.DONE && allFieldsHaveValue;
-
-    if (this.currentOrderStatus === OrderStatus.CANCELED || isStatusDoneAndFormFilled) {
+    if (
+      this.currentOrderStatus === OrderStatus.CANCELED ||
+      this.currentOrderStatus === OrderStatus.BROUGHT_IT_HIMSELF ||
+      isStatusDoneAndFormFilled
+    ) {
       this.orderForm.get('exportDetailsDto').disable();
       this.orderForm.get('responsiblePersonsForm').disable();
     } else {

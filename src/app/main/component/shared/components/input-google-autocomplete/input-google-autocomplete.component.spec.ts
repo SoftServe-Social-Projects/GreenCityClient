@@ -36,7 +36,8 @@ describe('InputGoogleAutocompleteComponent', () => {
             getPlacePredictions(request, callback) {
               return Promise.resolve(callback(predictionList, 'OK'));
             }
-          }
+          },
+          AutocompleteSessionToken: class {}
         },
         Geocoder: class {
           geocode(params) {

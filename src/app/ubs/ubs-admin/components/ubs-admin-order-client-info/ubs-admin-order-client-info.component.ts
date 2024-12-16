@@ -29,7 +29,7 @@ export class UbsAdminOrderClientInfoComponent implements OnInit, OnChanges, OnDe
   totalUserViolations: number;
   isOrderDone: boolean;
   isOrderNotTakenOut: boolean;
-  isOrderCanceled: boolean;
+  isUneditableStatus: boolean;
 
   constructor(private dialog: MatDialog) {}
 
@@ -44,7 +44,10 @@ export class UbsAdminOrderClientInfoComponent implements OnInit, OnChanges, OnDe
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.orderStatus?.currentValue) {
       this.isOrderDone = changes.orderStatus.currentValue === OrderStatus.DONE;
-      this.isOrderCanceled = changes.orderStatus.currentValue === OrderStatus.CANCELED;
+      this.isUneditableStatus =
+        this.isOrderDone ||
+        changes.orderStatus.currentValue === OrderStatus.CANCELED ||
+        changes.orderStatus.currentValue === OrderStatus.BROUGHT_IT_HIMSELF;
       this.isOrderNotTakenOut = changes.orderStatus.currentValue === OrderStatus.NOT_TAKEN_OUT;
     }
   }

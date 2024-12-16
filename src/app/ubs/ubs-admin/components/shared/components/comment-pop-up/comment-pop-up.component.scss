@@ -1,0 +1,56 @@
+* {
+  font-family: var(--ubs-quaternary-font);
+}
+
+.wrapper {
+  .set_comment_container {
+    border-radius: 10px;
+    font-size: 16px;
+
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .comment_btns {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .set_comment {
+    padding-block: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    textarea {
+      padding: 10px;
+      border: 1px solid var(--ubs-tertiary-grey);
+      border-radius: 5px;
+      resize: none;
+      outline: none;
+    }
+
+    textarea:focus {
+      border: 1px solid var(--ubs-tertiary-grey);
+    }
+  }
+}
+
+.cancel {
+  background: white;
+  border-radius: 5px;
+  border: none;
+  color: var(--ubs-primary-black);
+  font-weight: 600;
+}
+
+.save {
+  height: 43px;
+  background: var(--ubs-button-light-green);
+  border-radius: 5px;
+  border: 1px solid var(--ubs-button-light-green);
+  padding: 0 30px;
+  color: var(--ubs-tertiary-dark-grey);
+  font-weight: 600;
+}

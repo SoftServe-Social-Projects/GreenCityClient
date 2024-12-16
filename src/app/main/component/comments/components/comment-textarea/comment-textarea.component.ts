@@ -38,7 +38,13 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   isImageUploaderOpen = false;
   showImageControls = false;
   isEmojiPickerOpen = false;
+  emojiPickerWidth = '506px';
   uploadedImage: { url: string; file: File }[] = [];
+  private widthMap = new Map<number, string>([
+    [0, '100%'],
+    [641, '475px'],
+    [1025, '506px']
+  ]);
 
   content: FormControl = new FormControl('', [Validators.required, this.innerHtmlMaxLengthValidator(8000)]);
   suggestedUsers: TaggedUser[] = [];
@@ -163,6 +169,23 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   toggleEmojiPickerVisibility(): void {
     this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
     this.isImageUploaderOpen = false;
+
+    if (this.isEmojiPickerOpen) {
+      this.updateEmojiPickerWidth();
+      window.addEventListener('resize', this.updateEmojiPickerWidth.bind(this));
+    } else {
+      window.removeEventListener('resize', this.updateEmojiPickerWidth.bind(this));
+    }
+  }
+
+  updateEmojiPickerWidth(): void {
+    const screenWidth = window.innerWidth;
+
+    for (const [breakpoint, width] of this.widthMap) {
+      if (screenWidth >= breakpoint) {
+        this.emojiPickerWidth = width;
+      }
+    }
   }
 
   onEmojiClick(event: EmojiEvent): void {

@@ -107,13 +107,16 @@ export class InputGoogleAutocompleteComponent implements OnInit, OnDestroy, Cont
   }
 
   initPredictList(): void {
+    const sessionToken = new google.maps.places.AutocompleteSessionToken();
+
     this.inputValue.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(400)).subscribe((input: string) => {
       if (input) {
         const regex = new RegExp(Patterns.countriesRestriction);
         const request = {
           ...this.autoCompRequest,
           input: `${this.requestPrefix ?? ''}${input}${this.requestSuffix ?? ''}`,
-          language: this.languageService.getLangValue('uk', 'en')
+          language: this.languageService.getLangValue('uk', 'en'),
+          sessionToken
         };
 
         this.autocompleteService.getPlacePredictions(request, (predictions: google.maps.places.AutocompletePrediction[]) => {
