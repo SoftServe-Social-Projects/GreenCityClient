@@ -99,6 +99,8 @@ import { ClickOutsideDirective } from './derictives/clickOutside.directive';
 import { MatMenuModule } from '@angular/material/menu';
 import { ChatModule } from 'src/app/chat/chat.module';
 import { UbsAdminConfirmStatusChangePopUpComponent } from './components/ubs-admin-confirm-status-change-pop-up/ubs-admin-confirm-status-change-pop-up.component';
+import { CommentPopUpComponent } from './components/shared/components/comment-pop-up/comment-pop-up.component';
+import { TableCellInputComponent } from './components/ubs-admin-table/table-cell-input/table-cell-input.component';
 
 @NgModule({
   declarations: [
@@ -166,7 +168,9 @@ import { UbsAdminConfirmStatusChangePopUpComponent } from './components/ubs-admi
     UbsAdminNotificationSettingsComponent,
     ConfirmationDialogComponent,
     TariffSelectorComponent,
-    UbsAdminConfirmStatusChangePopUpComponent
+    UbsAdminConfirmStatusChangePopUpComponent,
+    CommentPopUpComponent,
+    TableCellInputComponent
   ],
   imports: [
     CommonModule,

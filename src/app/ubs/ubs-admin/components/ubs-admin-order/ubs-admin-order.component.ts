@@ -292,7 +292,8 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
         ],
         addressDistrict: [{ value: this.addressInfo.addressDistrict, disabled: this.isStatus }],
         addressDistrictEng: [{ value: this.addressInfo.addressDistrictEng, disabled: this.isStatus }],
-        addressRegionDistrictList: [this.addressInfo.addressRegionDistrictList]
+        addressRegionDistrictList: [this.addressInfo.addressRegionDistrictList],
+        addressComment: [this.orderInfo.addressComment]
       }),
       exportDetailsDto: this.fb.group({
         dateExport: [this.exportInfo.dateExport ? formatDate(this.exportInfo.dateExport, 'yyyy-MM-dd', this.currentLanguage) : ''],
@@ -483,6 +484,9 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
 
     if (changedValues.orderDetailsForm) {
       changedValues.orderDetailDto = this.formatBagsValue(changedValues.orderDetailsForm);
+      if (changedValues.orderDetailsForm.customerComment) {
+        changedValues.orderDetailDto.userComment = changedValues.orderDetailsForm.customerComment;
+      }
       const keyEcoNumberFromShop = 'ecoNumberFromShop';
       if (changedValues.orderDetailsForm.storeOrderNumbers || this.deleteNumberOrderFromEcoShop) {
         changedValues[keyEcoNumberFromShop] = {

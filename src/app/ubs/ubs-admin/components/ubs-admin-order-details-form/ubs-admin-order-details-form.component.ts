@@ -1,6 +1,6 @@
 import { OrderService } from 'src/app/ubs/ubs-admin/services/order.service';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { IOrderDetails, IOrderInfo } from '../../models/ubs-admin.interface';
 import { Masks, Patterns } from 'src/assets/patterns/patterns';
 import { OrderStatus, PaymnetStatus } from 'src/app/ubs/ubs/order-status.enum';
@@ -59,6 +59,10 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
   @Input() updateBonusAccount: number;
 
   constructor(private fb: FormBuilder, private orderService: OrderService, private langService: LanguageService) {}
+
+  get customerComment(): AbstractControl {
+    return this.orderDetailsForm.get('customerComment');
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     const curStatus = changes.orderStatusInfo?.currentValue;

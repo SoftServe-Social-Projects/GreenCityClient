@@ -5,11 +5,12 @@ import { ServerTranslatePipe } from 'src/app/shared/translate-pipe/translate-pip
 import { TableCellReadonlyComponent } from './table-cell-readonly.component';
 import { Language } from 'src/app/main/i18n/Language';
 import { TableKeys } from '../../../services/table-keys.enum';
-import { MouseEvents } from 'src/app/shared/mouse-events';
+import { AdminTableService } from '../../../services/admin-table.service';
 
 describe('TableCellReadonlyComponent', () => {
   let component: TableCellReadonlyComponent;
   let fixture: ComponentFixture<TableCellReadonlyComponent>;
+  const adminTableServiceSpy = jasmine.createSpyObj('AdminTableService', ['howChangeCell', 'blockOrders', 'showTooltip']);
 
   const fakeStrValue = '20л - 0шт; 120л - 3шт';
   const fakeColumn = {
@@ -22,6 +23,7 @@ describe('TableCellReadonlyComponent', () => {
     TestBed.configureTestingModule({
       imports: [MatTooltipModule],
       declarations: [TableCellReadonlyComponent, ServerTranslatePipe],
+      providers: [{ provide: AdminTableService, useValue: adminTableServiceSpy }],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
@@ -63,58 +65,5 @@ describe('TableCellReadonlyComponent', () => {
 
       expect(component.data).toBe('0.00 UAH');
     });
-  });
-
-  it('should not show tooltip if textContainerWidth is greater than or equal to textWidth', () => {
-    const event = {
-      target: {
-        offsetWidth: 100,
-        innerText: 'Short text'
-      }
-    };
-    const tooltip = {
-      show: jasmine.createSpy('show')
-    };
-
-    component.calculateTextWidth(event, tooltip);
-
-    expect(tooltip.show).not.toHaveBeenCalled();
-  });
-
-  it('should not show tooltip if the difference between textContainerWidth and textWidth is greater than or equal to maxLength', () => {
-    const event = {
-      target: {
-        offsetWidth: 120,
-        innerText: 'Long text'
-      }
-    };
-    const tooltip = {
-      show: jasmine.createSpy('show')
-    };
-    const maxLength = 20;
-
-    component.calculateTextWidth(event, tooltip, maxLength);
-
-    expect(tooltip.show).not.toHaveBeenCalled();
-  });
-
-  it('should hide tooltip if lengthStr is not greater than maxLength', () => {
-    const event = {
-      stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation'),
-      target: {
-        innerText: 'Short text'
-      }
-    };
-    const tooltip = {
-      toggle: jasmine.createSpy('toggle'),
-      hide: jasmine.createSpy('hide')
-    };
-    const maxLength = 50;
-
-    component.showTooltip(event, tooltip, maxLength);
-
-    expect(event.stopImmediatePropagation).toHaveBeenCalled();
-    expect(tooltip.toggle).not.toHaveBeenCalled();
-    expect(tooltip.hide).toHaveBeenCalled();
   });
 });
