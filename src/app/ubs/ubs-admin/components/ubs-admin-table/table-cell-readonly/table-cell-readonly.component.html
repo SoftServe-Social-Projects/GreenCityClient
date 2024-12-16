@@ -8,7 +8,7 @@
     #tooltip="matTooltip"
     matTooltip="{{ title | serverTranslate: lang }}"
     matTooltipClass="my-custom-tooltip"
-    (mouseenter)="showTooltip($event, tooltip)"
+    (mouseenter)="onMouseEnter($event, tooltip)"
     (mouseleave)="tooltip.hide()"
   >
     {{ (dataObj ? dataObj : data) | serverTranslate: lang }}

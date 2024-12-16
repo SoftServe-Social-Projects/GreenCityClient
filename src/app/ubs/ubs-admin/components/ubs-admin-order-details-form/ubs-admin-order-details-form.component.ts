@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { OrderService } from 'src/app/ubs/ubs-admin/services/order.service';
 import { OrderStatus, PaymnetStatus } from 'src/app/ubs/ubs/order-status.enum';
 import { Masks, Patterns } from 'src/assets/patterns/patterns';
@@ -37,6 +37,7 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
   isOrderNotTakenOut = false;
   isDisabledWriteOffStation = false;
   isDisabledStatus = false;
+  isUneditableStatus: boolean;
 
   @Output() deleteNumberOrderFromEcoShopChanged = new EventEmitter<boolean>();
   @Output() checkMinOrder = new EventEmitter<boolean>();
@@ -57,10 +58,13 @@ export class UbsAdminOrderDetailsFormComponent implements OnInit, OnChanges {
 
   constructor(private readonly orderService: OrderService) {}
 
+  get customerComment(): AbstractControl {
+    return this.orderDetailsForm.get('customerComment');
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     const curStatus = changes.orderStatusInfo?.currentValue;
     const prevStatus = changes.orderStatusInfo?.previousValue;
-
     if (curStatus?.key) {
       this.isOrderCancelled = curStatus?.key === OrderStatus.CANCELED;
       this.isOrderBroughtByHimself = curStatus?.key === OrderStatus.BROUGHT_IT_HIMSELF;

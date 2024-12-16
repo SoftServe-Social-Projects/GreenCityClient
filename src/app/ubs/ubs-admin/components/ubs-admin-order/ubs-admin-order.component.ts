@@ -458,6 +458,9 @@ export class UbsAdminOrderComponent implements OnInit, OnDestroy, AfterContentCh
 
     if (changedValues.orderDetailsForm) {
       changedValues.orderDetailDto = this.formatBagsValue(changedValues.orderDetailsForm);
+      if (changedValues.orderDetailsForm.customerComment) {
+        changedValues.orderDetailDto.userComment = changedValues.orderDetailsForm.customerComment;
+      }
       const keyEcoNumberFromShop = 'ecoNumberFromShop';
       if (changedValues.orderDetailsForm.storeOrderNumbers || this.deleteNumberOrderFromEcoShop) {
         changedValues[keyEcoNumberFromShop] = {

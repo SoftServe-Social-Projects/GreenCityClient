@@ -206,7 +206,6 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
     }
 
     if (this.isFromAdminPage) {
-      this.addressComment.disable();
       this.region.disable();
     }
   }
@@ -519,7 +518,6 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   private OnChangeAndTouched(): void {
     if (this.isFromAdminPage) {
-      this.addressComment.disable();
       this.region.disable();
     }
     this.onChange(this.addressData.getValues());

@@ -119,6 +119,7 @@
     <textarea
       id="addressComment"
       class="form-control"
+      [readonly]="isUneditableStatus"
       formControlName="addressComment"
       placeholder="{{ 'personal-info.pop-up-comment-placeholder' | translate }}"
       (change)="onCommentChange()"
