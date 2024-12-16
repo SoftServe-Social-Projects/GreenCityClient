@@ -60,14 +60,16 @@ export class NotificContentReplaceDirective implements OnChanges {
     text: string,
     attributes: Record<string, string | number> | null
   ): string {
+    const style = 'style="font-family: var(--tertiary-font);"';
+
     if (!attributes) {
-      return content.replace(`{${placeholder}}`, text);
+      return content.replace(`{${placeholder}}`, `<span ${style}>${text}</span>`);
     }
 
     const attrString = Object.entries(attributes)
       .map(([key, value]) => `data-${key}="${value}"`)
       .join(' ');
 
-    return content.replace(`{${placeholder}}`, `<a ${attrString}>${text}</a>`);
+    return content.replace(`{${placeholder}}`, `<a ${attrString} ${style}>${text}</a>`);
   }
 }
