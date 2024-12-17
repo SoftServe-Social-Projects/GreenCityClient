@@ -29,19 +29,20 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
   selectedLocationId: number;
   isFetching: boolean;
   currentLocation: string;
-  public isAdmin = false;
-  public boxWidth: number;
-  public lineSize = Array(4).fill(0);
-  public screenWidth: number;
-  public selectedTariffId: number;
+  isAdmin = false;
+  boxWidth: number;
+  lineSize = Array(4).fill(0);
+  screenWidth: number;
+  selectedTariffId: number;
   activeCouriers;
   ubsCourierName = 'UBS';
   private userId: number;
   permissions$ = this.store.select((state: IAppState): Array<string> => state.employees.employeesPermissions);
-  public bags: Bag[];
+  bags: Bag[];
   locationsToShowBags: ActiveLocations[];
   locationToShow: ActiveLocations;
   isTarriffLoading = true;
+  private readonly standaloneCities = ['Kyiv', 'Київ'];
 
   perPackageTitle = 'ubs-homepage.ubs-courier.price.price-title';
 
@@ -280,14 +281,18 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
             ...acc,
             ...region.locations.map((city) => ({
               locationId: city.locationId,
-              nameUk: city.nameUk + ', ' + region.nameUk,
-              nameEn: city.nameEn + ', ' + region.nameEn
+              nameUk: this.getLocationName(city.nameUk, region.nameUk),
+              nameEn: this.getLocationName(city.nameEn, region.nameEn)
             }))
           ],
           []
         );
       })
     );
+  }
+
+  private getLocationName(location: string, region: string): string {
+    return this.standaloneCities.includes(location) ? location : `${location}, ${region}`;
   }
 
   saveLocation(locationsData: AllLocationsDtos): void {
