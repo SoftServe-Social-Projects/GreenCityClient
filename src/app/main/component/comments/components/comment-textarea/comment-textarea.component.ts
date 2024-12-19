@@ -21,6 +21,7 @@ import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { CHAT_ICONS } from 'src/app/chat/chat-icons';
 import { insertEmoji } from '../add-emoji/add-emoji';
+import { Patterns } from '@assets/patterns/patterns';
 
 @Component({
   selector: 'app-comment-textarea',
@@ -115,7 +116,17 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   }
 
   private handleInputChange(): void {
-    this.content.setValue(this.commentTextarea.nativeElement.textContent);
+    const textContent = this.commentTextarea.nativeElement.textContent;
+
+    if (this.content.value !== textContent) {
+      this.content.setValue(textContent);
+    }
+
+    if (Patterns.linkPattern.test(textContent)) {
+      this.commentTextarea.nativeElement.innerHTML = this.renderLinks(textContent);
+      this.initializeLinkClickListeners(this.commentTextarea.nativeElement);
+    }
+
     this.emitComment();
     this.closeDropdownIfNoTag();
   }
@@ -211,6 +222,13 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     selection.addRange(range);
   }
 
+  onCommentTextareaBlur(): void {
+    const strippedText = this.commentTextarea.nativeElement.textContent;
+    this.commentTextarea.nativeElement.textContent = strippedText;
+    this.content.setValue(strippedText);
+    this.emitComment();
+  }
+
   onCommentKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Enter' || event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
@@ -264,6 +282,22 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
       text: this.content.value,
       innerHTML: this.commentTextarea.nativeElement.innerHTML,
       imageFiles: null
+    });
+  }
+
+  renderLinks(text: string): string {
+    return text.replace(Patterns.urlLinkifyPattern, (match) => {
+      return `<a href="${match}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+    });
+  }
+
+  initializeLinkClickListeners(element: HTMLElement): void {
+    const links = element.querySelectorAll('a');
+    links.forEach((link: HTMLAnchorElement) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.open(link.href, '_blank', 'noopener,noreferrer');
+      });
     });
   }
 

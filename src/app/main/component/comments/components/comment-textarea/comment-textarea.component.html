@@ -11,6 +11,7 @@
     (paste)="onPaste($event)"
     tabindex="0"
     [ngClass]="{ invalid: content.errors?.maxlength }"
+    (blur)="onCommentTextareaBlur()"
   ></div>
   <p *ngIf="content.errors?.maxlength" class="error-message">
     {{ 'homepage.eco-news.comment.reply-error-message' | translate }}
