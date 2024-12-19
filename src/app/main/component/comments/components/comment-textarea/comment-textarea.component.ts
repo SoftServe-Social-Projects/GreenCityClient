@@ -222,7 +222,6 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
 
   onCommentTextareaBlur(): void {
     const strippedText = this.commentTextarea.nativeElement.textContent;
-    this.commentTextarea.nativeElement.textContent = strippedText;
     this.content.setValue(strippedText);
     this.emitComment();
   }
@@ -285,24 +284,31 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
 
   private updateLinksInTextarea(currentText: string): void {
     if (Patterns.urlLinkifyPattern.test(currentText)) {
-      this.commentTextarea.nativeElement.innerHTML = this.renderLinks(currentText);
-      this.initializeLinkClickListeners(this.commentTextarea.nativeElement);
+      const sanitizedHtml = this.sanitizer.sanitize(SecurityContext.HTML, this.renderLinks(currentText));
+      if (sanitizedHtml) {
+        this.commentTextarea.nativeElement.innerHTML = sanitizedHtml;
+        this.initializeLinkClickListeners(this.commentTextarea.nativeElement);
+      }
     }
   }
 
   renderLinks(text: string): string {
     return text.replace(Patterns.urlLinkifyPattern, (match) => {
-      return `<a href="${match}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+      const safeUrl = this.sanitizer.sanitize(SecurityContext.URL, match) || '';
+      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${match}</a>`;
     });
   }
 
   initializeLinkClickListeners(element: HTMLElement): void {
-    const links = element.querySelectorAll('a');
-    links.forEach((link: HTMLAnchorElement) => {
-      link.addEventListener('click', (event) => {
+    element.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'A') {
         event.preventDefault();
-        window.open(link.href, '_blank', 'noopener,noreferrer');
-      });
+        const href = target.getAttribute('href');
+        if (href) {
+          window.open(href, '_blank', 'noopener,noreferrer');
+        }
+      }
     });
   }
 
