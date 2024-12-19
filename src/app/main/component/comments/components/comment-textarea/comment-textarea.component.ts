@@ -208,6 +208,9 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
 
   onCommentTextareaFocus(): void {
     const currentText = this.commentTextarea.nativeElement.textContent.trim();
+    if (currentText === 'Add a comment' || currentText === '') {
+      this.commentTextarea.nativeElement.textContent = '';
+    }
     if (Patterns.urlLinkifyPattern.test(currentText)) {
       this.commentTextarea.nativeElement.innerHTML = this.renderLinks(currentText);
       this.initializeLinkClickListeners(this.commentTextarea.nativeElement);
