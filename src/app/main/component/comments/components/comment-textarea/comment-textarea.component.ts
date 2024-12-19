@@ -266,7 +266,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   }
 
   private clearPlaceholderIfNeeded(): void {
-    const currentText = this.commentTextarea.nativeElement.textContent.trim();
+    const currentText = this.commentTextarea?.nativeElement?.textContent?.trim() || '';
     if (this.isPlaceholderText(currentText)) {
       this.commentTextarea.nativeElement.textContent = '';
       this.content.setValue('');
