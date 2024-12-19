@@ -122,10 +122,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
       this.content.setValue(textContent);
     }
 
-    if (Patterns.linkPattern.test(textContent)) {
-      this.commentTextarea.nativeElement.innerHTML = this.renderLinks(textContent);
-      this.initializeLinkClickListeners(this.commentTextarea.nativeElement);
-    }
+    this.updateLinksInTextarea(textContent);
 
     this.emitComment();
     this.closeDropdownIfNoTag();
@@ -211,11 +208,8 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     if (currentText === 'Add a comment' || currentText === '') {
       this.commentTextarea.nativeElement.textContent = '';
     }
-    if (Patterns.urlLinkifyPattern.test(currentText)) {
-      this.commentTextarea.nativeElement.innerHTML = this.renderLinks(currentText);
-      this.initializeLinkClickListeners(this.commentTextarea.nativeElement);
-    }
 
+    this.updateLinksInTextarea(currentText);
     const range = document.createRange();
     const nodeAmount = this.commentTextarea.nativeElement.childNodes.length;
     range.setStartAfter(this.commentTextarea.nativeElement.childNodes[nodeAmount - 1]);
@@ -287,6 +281,13 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
       innerHTML: this.commentTextarea.nativeElement.innerHTML,
       imageFiles: null
     });
+  }
+
+  private updateLinksInTextarea(currentText: string): void {
+    if (Patterns.urlLinkifyPattern.test(currentText)) {
+      this.commentTextarea.nativeElement.innerHTML = this.renderLinks(currentText);
+      this.initializeLinkClickListeners(this.commentTextarea.nativeElement);
+    }
   }
 
   renderLinks(text: string): string {
