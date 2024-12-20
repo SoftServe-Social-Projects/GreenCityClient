@@ -5,17 +5,19 @@ import { SocketService } from '@global-service/socket/socket.service';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
-import { By } from '@angular/platform-browser';
+import { By, DomSanitizer } from '@angular/platform-browser';
 import { PlaceholderForDivDirective } from 'src/app/main/component/comments/directives/placeholder-for-div.directive';
 import { MatSelectModule } from '@angular/material/select';
 import { UserProfileImageComponent } from '@global-user/components/shared/components/user-profile-image/user-profile-image.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ElementRef } from '@angular/core';
 
 describe('CommentTextareaComponent', () => {
   let component: CommentTextareaComponent;
   let fixture: ComponentFixture<CommentTextareaComponent>;
+  let mockSanitizer: jasmine.SpyObj<DomSanitizer>;
 
   const socketServiceMock: SocketService = jasmine.createSpyObj('SocketService', ['onMessage', 'send', 'initiateConnection']);
   socketServiceMock.onMessage = () => new Observable();
@@ -45,12 +47,14 @@ describe('CommentTextareaComponent', () => {
   ];
 
   beforeEach(waitForAsync(() => {
+    mockSanitizer = jasmine.createSpyObj('DomSanitizer', ['sanitize']);
     TestBed.configureTestingModule({
       declarations: [CommentTextareaComponent, PlaceholderForDivDirective, UserProfileImageComponent],
       providers: [
         { provide: Router, useValue: {} },
         { provide: SocketService, useValue: socketServiceMock },
-        { provide: LocalStorageService, useValue: localStorageServiceMock }
+        { provide: LocalStorageService, useValue: localStorageServiceMock },
+        { provide: DomSanitizer, useValue: mockSanitizer }
       ],
       imports: [MatSelectModule, TranslateModule.forRoot(), BrowserAnimationsModule, MatMenuModule, MatIconModule]
     }).compileComponents();
@@ -64,6 +68,7 @@ describe('CommentTextareaComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CommentTextareaComponent);
     component = fixture.componentInstance;
+    component.commentTextarea = new ElementRef(document.createElement('div'));
     fixture.detectChanges();
   });
 
@@ -251,6 +256,84 @@ describe('CommentTextareaComponent', () => {
       text: component.content.value,
       innerHTML: '',
       imageFiles: null
+    });
+  });
+
+  describe('handleInputChange', () => {
+    it('should update the content value if the text content changes', () => {
+      component.commentTextarea.nativeElement.textContent = 'New content';
+      component.content.setValue('Old content');
+
+      component['handleInputChange']();
+
+      expect(component.content.value).toBe('New content');
+    });
+
+    it('should call updateLinksInTextarea with the new text content', () => {
+      const updateLinksSpy = spyOn<any>(component, 'updateLinksInTextarea');
+      component.commentTextarea.nativeElement.textContent = 'New content';
+
+      component['handleInputChange']();
+
+      expect(updateLinksSpy).toHaveBeenCalledWith('New content');
+    });
+  });
+
+  describe('onCommentTextareaFocus', () => {
+    it('should call updateLinksInTextarea with trimmed current text', () => {
+      const updateLinksSpy = spyOn<any>(component, 'updateLinksInTextarea');
+      component.commentTextarea.nativeElement.textContent = ' Current text ';
+      component.onCommentTextareaFocus();
+
+      expect(updateLinksSpy).toHaveBeenCalledWith('Current text');
+    });
+  });
+
+  describe('onCommentTextareaBlur', () => {
+    it('should set the stripped text to the content value', () => {
+      component.commentTextarea.nativeElement.textContent = 'Blur text';
+      component.onCommentTextareaBlur();
+
+      expect(component.content.value).toBe('Blur text');
+    });
+
+    it('should call emitComment', () => {
+      const emitCommentSpy = spyOn<any>(component, 'emitComment');
+      component.onCommentTextareaBlur();
+
+      expect(emitCommentSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateLinksInTextarea', () => {
+    it('should sanitize and set innerHTML if a URL pattern is found', () => {
+      const renderLinksSpy = spyOn(component, 'renderLinks').and.returnValue('<a href="http://example.com">http://example.com</a>');
+      mockSanitizer.sanitize.and.returnValue('<a href="http://example.com">http://example.com</a>');
+      const initializeLinksSpy = spyOn<any>(component, 'initializeLinkClickListeners');
+      const testText = 'Check this link http://example.com';
+
+      component['updateLinksInTextarea'](testText);
+
+      expect(renderLinksSpy).toHaveBeenCalledWith(testText);
+      expect(component.commentTextarea.nativeElement.innerHTML).toBe('<a href="http://example.com">http://example.com</a>');
+      expect(initializeLinksSpy).toHaveBeenCalledWith(component.commentTextarea.nativeElement);
+    });
+
+    describe('initializeLinkClickListeners', () => {
+      it('should open links in a new tab on click', () => {
+        const element = document.createElement('div');
+        const link = document.createElement('a');
+        link.href = 'http://example.com';
+        link.textContent = 'example';
+        element.appendChild(link);
+
+        const openSpy = spyOn(window, 'open');
+        component['initializeLinkClickListeners'](element);
+
+        link.click();
+
+        expect(openSpy).toHaveBeenCalledWith('http://example.com', '_blank', 'noopener,noreferrer');
+      });
     });
   });
 });
