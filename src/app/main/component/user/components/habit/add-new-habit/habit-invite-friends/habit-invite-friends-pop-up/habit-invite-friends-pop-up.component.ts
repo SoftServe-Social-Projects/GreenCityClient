@@ -24,7 +24,7 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   allAdd = false;
   searchIcon = searchIcon;
   habitId: number;
-  
+
   constructor(
     private readonly userFriendsService: UserFriendsService,
     private readonly localStorageService: LocalStorageService,
@@ -60,7 +60,7 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
 
   onFriendCheckboxChange(friendId: number, isChecked: boolean) {
     const friend = this.friends.find((f) => f.id === friendId);
-    if (friend && !friend.hasInvitation) { 
+    if (friend && !friend.hasInvitation) {
       friend.added = isChecked;
       this.toggleFriendSelection(friendId, isChecked);
       this.updateAllAdd();
@@ -93,9 +93,9 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
 
   setFriendDisable(friendId: number): boolean {
     const friend = this.friends.find((f) => f.id === friendId);
-    return friend ? friend.hasInvitation : false; 
+    return friend ? friend.hasInvitation : false;
   }
-  
+
   setAllFriendsDisable(): boolean {
     return this.friends.every((friend) => friend.hasInvitation);
   }
@@ -112,6 +112,7 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     this.allAdd = added;
     this.friends.forEach((friend) => {
       if (!this.isFriendAddedAlready(friend.id) && !friend.hasInvitation) {
+        friend.added = added;
         this.toggleFriendSelection(friend.id, added);
       }
     });
@@ -135,5 +136,5 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroyed$.next(true);
     this.destroyed$.complete();
-  }   
+  }
 }

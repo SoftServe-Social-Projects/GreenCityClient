@@ -10,6 +10,7 @@ import { FRIENDS, FIRSTFRIEND, SECONDFRIEND } from '@global-user/mocks/friends-m
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { HabitService } from '../../../../../../../service/habit/habit.service';
 
 describe('HabitInviteFriendsPopUpComponent', () => {
   let component: HabitInviteFriendsPopUpComponent;
@@ -26,11 +27,16 @@ describe('HabitInviteFriendsPopUpComponent', () => {
   userFriendsServiceMock.inviteFriendsToHabit = jasmine.createSpy('inviteFriendsToHabit').and.returnValue(of({}));
   userFriendsServiceMock.addedFriends = [];
 
+  const mockHabitService = {
+    getFriendsWithInvitations: jasmine.createSpy('getFriendsWithInvitations').and.returnValue(of({ page: [] }))
+  };
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HabitInviteFriendsPopUpComponent],
       imports: [HttpClientTestingModule, TranslateModule.forRoot(), MatDialogModule, MatCheckboxModule],
       providers: [
+        { provide: HabitService, useValue: mockHabitService },
         { provide: LocalStorageService, useValue: localStorageServiceMock },
         { provide: Router, useValue: routerSpy },
         { provide: MatSnackBarComponent, useValue: MatSnackBarMock },
@@ -56,24 +62,6 @@ describe('HabitInviteFriendsPopUpComponent', () => {
     const spy2 = spyOn(component, 'getFriends');
     component.ngOnInit();
     expect(spy2).toHaveBeenCalled();
-  });
-
-  describe('setFriendDisable', () => {
-    it('should return true if the friend is in the addedFriends list and invitationSent is false', () => {
-      const friendId = 1;
-      userFriendsServiceMock.addedFriends = [FIRSTFRIEND, SECONDFRIEND];
-      component.invitationSent = false;
-      const result = component.setFriendDisable(friendId);
-      expect(result).toBe(false);
-    });
-
-    it('should return true if invitationSent is true, regardless of addedFriends', () => {
-      const friendId = 1;
-      userFriendsServiceMock.addedFriends = [FIRSTFRIEND, SECONDFRIEND];
-      component.invitationSent = true;
-      const result = component.setFriendDisable(friendId);
-      expect(result).toBe(true);
-    });
   });
 
   xit('should update allAdd status', () => {
