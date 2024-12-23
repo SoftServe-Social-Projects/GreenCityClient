@@ -196,11 +196,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   }
 
   onCommentTextareaFocus(): void {
-    const currentText = this.commentTextarea.nativeElement.textContent.trim();
-    if (currentText === 'Add a comment' || currentText === '') {
-      this.commentTextarea.nativeElement.textContent = '';
-    }
-
+    this.clearPlaceholderIfNeeded();
     const range = document.createRange();
     const nodeAmount = this.commentTextarea.nativeElement.childNodes.length;
     range.setStartAfter(this.commentTextarea.nativeElement.childNodes[nodeAmount - 1]);
@@ -246,6 +242,8 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
         file: fileHandle.file
       });
     }
+
+    this.clearPlaceholderIfNeeded();
     this.isImageUploaderOpen = false;
     this.showImageControls = true;
     this.emitComment();
@@ -265,6 +263,18 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
       innerHTML: this.commentTextarea.nativeElement.innerHTML,
       imageFiles: null
     });
+  }
+
+  private clearPlaceholderIfNeeded(): void {
+    const currentText = this.commentTextarea?.nativeElement?.textContent?.trim() || '';
+    if (this.isPlaceholderText(currentText)) {
+      this.commentTextarea.nativeElement.textContent = '';
+      this.content.setValue('');
+    }
+  }
+
+  private isPlaceholderText(text: string): boolean {
+    return text === 'Add a comment' || text === '';
   }
 
   private insertTextAtCursor(text: string): void {
