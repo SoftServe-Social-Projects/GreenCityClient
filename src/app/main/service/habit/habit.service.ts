@@ -11,6 +11,7 @@ import { ToDoList } from '@global-user/models/to-do-list.interface';
 import { CustomHabitDtoRequest, CustomHabit } from '@global-user/components/habit/models/interfaces/custom-habit.interface';
 import { FriendProfilePicturesArrayModel } from '@global-user/models/friend.model';
 import { FileHandle } from '@eco-news-models/create-news-interface';
+import { FriendArrayModel } from '../../component/user/models/friend.model';
 
 @Injectable({
   providedIn: 'root'
@@ -78,6 +79,12 @@ export class HabitService {
 
   getFriendsTrakingSameHabitByHabitAssignId(assignId: number): Observable<FriendProfilePicturesArrayModel[]> {
     return this.http.get<FriendProfilePicturesArrayModel[]>(`${habitLink}/${assignId}/friends/profile-pictures`);
+  }
+
+  getFriendsWithInvitations(habitId: number, page: number, size: number): Observable<FriendArrayModel> {
+    return this.http.get<FriendArrayModel>(
+      `${habitLink}/friends?habitId=${habitId}&page=${page}&size=${size}`
+    );
   }
 
   deleteCustomHabit(id: number): Observable<CustomHabitDtoRequest> {

@@ -14,6 +14,7 @@ export interface FriendModel {
   chatId?: number;
   isOnline?: boolean;
   friendsChatDto?: { chatId?: number };
+  hasInvitation?:boolean;
 }
 
 export type FriendStatus = 'FRIEND' | 'REQUEST' | 'REJECTED' | null;
