@@ -30,7 +30,12 @@
           </li>
           <li>
             <a [routerLink]="['/profile', getUserId()]" (click)="ubsSetRegValue()" class="footer_link-item">
-              {{ 'footer.my-habits' | translate }}
+              {{ 'footer.my-space' | translate }}
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/']" class="footer_link-item">
+              {{ 'footer.ubs-courier' | translate }}
             </a>
           </li>
         </ul>

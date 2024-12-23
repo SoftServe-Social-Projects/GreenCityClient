@@ -1347,12 +1347,13 @@
     }
   },
   "footer": {
-    "about-us": "Про нас",
+    "about-us": "Про Нас",
     "eco-events": "Еко новини",
     "map": "Місця",
-    "my-habits": "Мої звички",
+    "my-space": "Мій Кабінет",
     "follow-us": "Приєднуйтесь до нас",
-    "events": "Події"
+    "events": "Події",
+    "ubs-courier":"UBS Кур'єр"
   },
   "accessibility": {
     "skip-to-the-main-content": "перейти до основного контенту"
