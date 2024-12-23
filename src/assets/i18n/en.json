@@ -1311,12 +1311,13 @@
     "skip-to-the-main-content": "skip to the main content"
   },
   "footer": {
-    "about-us": "About us",
+    "about-us": "About Us",
     "eco-events": "Eco news",
     "map": "Places",
-    "my-habits": "My habits",
+    "my-space": "My Space",
     "follow-us": "Follow us",
-    "events": "Events"
+    "events": "Events",
+    "ubs-courier":"UBS Courier"
   },
   "event": {
     "btn-top": "More",
