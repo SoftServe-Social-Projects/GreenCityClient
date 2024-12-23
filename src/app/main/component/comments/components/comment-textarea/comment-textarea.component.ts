@@ -207,7 +207,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     const currentText = this.commentTextarea.nativeElement.textContent.trim();
     this.updateLinksInTextarea(currentText);
     this.clearPlaceholderIfNeeded();
-    
+
     const range = document.createRange();
     const nodeAmount = this.commentTextarea.nativeElement.childNodes.length;
     range.setStartAfter(this.commentTextarea.nativeElement.childNodes[nodeAmount - 1]);
@@ -310,6 +310,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
         }
       }
     });
+  }
 
   private clearPlaceholderIfNeeded(): void {
     const currentText = this.commentTextarea?.nativeElement?.textContent?.trim() || '';
