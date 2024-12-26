@@ -390,7 +390,9 @@
     "no-orders-found": "За даними критеріями замовлень не знайдено",
     "default-reset": "Вирівнювання",
     "orders-number": "Кількість замовлень",
-    "search": "Пошук"
+    "search": "Пошук",
+    "link-placeholder": "Надайте посилання на чат із клієнтом",
+    "go-to-chat": "В чат"
   },
   "ubs-customer-filters": {
     "total-customers": "Кількість користувачів:",

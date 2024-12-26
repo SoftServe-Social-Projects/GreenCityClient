@@ -13,7 +13,7 @@ export const columnsParams = [
       ua: 'Телефон',
       en: 'Phone'
     },
-    width: 60
+    width: 80
   },
   {
     title: {
@@ -45,7 +45,7 @@ export const columnsParams = [
       ua: 'К-сть замовлень',
       en: 'Orders'
     },
-    width: 50
+    width: 60
   },
   {
     title: {
@@ -53,7 +53,7 @@ export const columnsParams = [
       ua: 'Порушення',
       en: 'Violations'
     },
-    width: 50
+    width: 60
   },
   {
     title: {
@@ -61,7 +61,15 @@ export const columnsParams = [
       ua: 'Баланс бонусного рахунку',
       en: 'Bonuses'
     },
-    width: 50
+    width: 60
+  },
+  {
+    title: {
+      key: 'chatLink',
+      ua: 'Чат з клієнтом',
+      en: 'Client chat'
+    },
+    width: 60
   }
 ];
 
