@@ -41,4 +41,55 @@ describe('AdminCustomersService', () => {
     expect(req.request.method).toBe('GET');
     req.flush(fakeResponse);
   });
+
+  it('should call http.patch with the correct URL and payload', () => {
+    const userId = '123';
+    const link = 'https://my.binotel.ua';
+
+    service.addChatLink(userId, link).subscribe();
+
+    const req = httpMock.expectOne(`${urlMock}/addChatLink`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ userId, link });
+
+    req.flush(null);
+  });
+
+  it('should return an observable that emits void on success', (done) => {
+    const userId = '123';
+    const link = 'https://my.binotel.ua';
+
+    service.addChatLink(userId, link).subscribe({
+      next: (response) => {
+        expect(response).toBeNull();
+        done();
+      },
+      error: () => {
+        fail('The observable should not have errored.');
+      }
+    });
+
+    const req = httpMock.expectOne(`${urlMock}/addChatLink`);
+    req.flush(null);
+  });
+
+  it('should handle errors and pass them to the caller', (done) => {
+    const userId = '123';
+    const link = 'https://my.binotel.ua';
+    const errorMessage = 'Failed to add chat link';
+
+    service.addChatLink(userId, link).subscribe({
+      next: () => {
+        fail('The observable should have errored out.');
+      },
+      error: (error) => {
+        expect(error.status).toBe(500);
+        expect(error.error).toBe(errorMessage);
+        done();
+      }
+    });
+
+    const req = httpMock.expectOne(`${urlMock}/addChatLink`);
+    req.flush(errorMessage, { status: 500, statusText: 'Internal Server Error' });
+  });
 });

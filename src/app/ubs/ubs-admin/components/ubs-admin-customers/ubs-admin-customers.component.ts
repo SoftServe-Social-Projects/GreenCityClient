@@ -22,7 +22,7 @@ import { nonSortableColumns } from '../../models/non-sortable-columns.model';
 import { AdminCustomersService } from '../../services/admin-customers.service';
 import { TableHeightService } from '../../services/table-height.service';
 import { UbsAdminTableExcelPopupComponent } from '../ubs-admin-table/ubs-admin-table-excel-popup/ubs-admin-table-excel-popup.component';
-import { columnsParams } from './columnsParams';
+import { ColumnParam, columnsParams } from './columnsParams';
 import { Filters } from './filters.interface';
 import { ConvertFromDateToStringService } from 'src/app/shared/convert-from-date-to-string/convert-from-date-to-string.service';
 import { DateAdapter } from '@angular/material/core';
@@ -42,7 +42,7 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
   isLoading = false;
   isUpdate = false;
   nonSortableColumns = nonSortableColumns;
-  columns = [];
+  columns: ColumnParam[] = [];
   arrowDirection: string;
   currentLang: string;
   displayedColumns: string[] = [];
@@ -58,7 +58,7 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
   modelChanged: Subject<string> = new Subject<string>();
   pageSize = 10;
 
-  private tableData: any[];
+  tableData: any[];
   private sortType: string;
   private sortingColumn: string;
   private pressed = false;
@@ -364,14 +364,14 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
     }
   }
 
-  private setColumnWidth(column: any) {
+  private setColumnWidth(column: ColumnParam) {
     const columnEls = Array.from(document.getElementsByClassName('mat-column-' + column.title.key));
     columnEls.forEach((el: any) => {
       el.style.width = column.width + 'px';
     });
   }
 
-  openPopUp(column, data: string, userId: string): void {
+  openPopUp(column: ColumnParam, data: string, userId: string): void {
     this.dialogConfig.disableClose = true;
     const modalRef = this.dialog.open(CommentPopUpComponent, this.dialogConfig);
 
@@ -410,7 +410,7 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
   }
 
   openChat(chatUrl: string) {
-    window.open(chatUrl, '_blank');
+    chatUrl && window.open(chatUrl, '_blank');
   }
 
   private openCustomer(row, username): void {
