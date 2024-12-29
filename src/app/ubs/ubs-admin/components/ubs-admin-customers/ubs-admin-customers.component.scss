@@ -7,7 +7,6 @@ mat-footer-cell {
 }
 
 mat-header-cell {
-  // width: 200px;
   background-color: var(--ubs-primary-grey);
   color: var(--ubs-primary-white);
   font-family: var(--primary-font);
@@ -15,7 +14,7 @@ mat-header-cell {
   text-align: center;
   font-size: 14px;
   min-height: 39px;
-  min-width: 120px;
+  min-width: 48px;
   overflow: hidden;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -35,7 +34,6 @@ mat-cell {
   color: var(--ubs-primary-grey);
   font-size: 14px;
   font-family: var(--primary-font);
-  min-width: 120px;
 }
 
 mat-header-row {
@@ -48,7 +46,8 @@ mat-header-row {
   background-color: var(--ubs-primary-grey);
 }
 
-mat-header-cell:first-of-type {
+mat-header-cell:first-of-type,
+mat-cell:first-of-type {
   padding-left: 0;
 }
 
@@ -351,6 +350,7 @@ mat-spinner {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding: 0 20px;
 }
 
 .search_total_wr {

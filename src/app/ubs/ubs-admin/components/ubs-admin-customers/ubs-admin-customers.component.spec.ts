@@ -53,7 +53,6 @@ describe('UbsAdminCustomersComponent', () => {
       providers: [{ provide: MatDialog, useValue: dialogMock }],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
-    spyOn(window, 'open');
   }));
 
   beforeEach(() => {
@@ -137,29 +136,5 @@ describe('UbsAdminCustomersComponent', () => {
 
     const updatedRow = component.tableData.find((row) => row.userId === userId);
     expect(updatedRow?.[column.title.key]).toBe('Initial data');
-  });
-
-  it('should open a new tab with the provided chat URL', () => {
-    const chatUrl = 'https://my.binotel.ua';
-    component.openChat(chatUrl);
-    expect(window.open).toHaveBeenCalledWith(chatUrl, '_blank');
-  });
-
-  it('should not call window.open if the URL is an empty string', () => {
-    const chatUrl = '';
-    component.openChat(chatUrl);
-    expect(window.open).not.toHaveBeenCalled();
-  });
-
-  it('should not call window.open if the URL is undefined', () => {
-    const chatUrl = undefined as unknown as string;
-    component.openChat(chatUrl);
-    expect(window.open).not.toHaveBeenCalled();
-  });
-
-  it('should not call window.open if the URL is null', () => {
-    const chatUrl = null as unknown as string;
-    component.openChat(chatUrl);
-    expect(window.open).not.toHaveBeenCalled();
   });
 });

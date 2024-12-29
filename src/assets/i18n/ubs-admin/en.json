@@ -303,6 +303,7 @@
     "contacts": "Contacts",
     "email": "Email",
     "phone": "Phone",
+    "client-chat": "Chat with client",
     "additionalInfo": "Additional information",
     "number_of_orders": "Number of orders",
     "orderDate": "Date of order",

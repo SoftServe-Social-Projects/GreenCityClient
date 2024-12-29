@@ -36,4 +36,8 @@ export class AdminCustomersService {
   addChatLink(userId: string, link: string): Observable<void> {
     return this.http.patch<void>(`${this.url}/addChatLink`, { userId, link });
   }
+
+  openChat(chatUrl: string) {
+    chatUrl && window.open(chatUrl, '_blank');
+  }
 }

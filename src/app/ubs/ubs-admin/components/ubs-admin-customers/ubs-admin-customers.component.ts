@@ -409,8 +409,8 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
     }
   }
 
-  openChat(chatUrl: string) {
-    chatUrl && window.open(chatUrl, '_blank');
+  onOpenChat(chatUrl: string) {
+    this.adminCustomerService.openChat(chatUrl);
   }
 
   private openCustomer(row, username): void {
