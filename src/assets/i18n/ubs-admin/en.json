@@ -1237,8 +1237,10 @@
   },
   "snack-bar": {
     "save-employee-permissons": "Your changes have been saved",
+    "update-chat-link": "Link was updated successfully",
     "error": {
-      "exist-address": "This address has already been added"
+      "exist-address": "This address has already been added",
+      "fail-update-chat-link": "Something went wrong while updating the link. Please try again"
     }
   },
   "add-new-certificate": {

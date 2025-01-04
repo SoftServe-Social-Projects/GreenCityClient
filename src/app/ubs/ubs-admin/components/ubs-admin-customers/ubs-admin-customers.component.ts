@@ -10,13 +10,13 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { Subject } from 'rxjs';
-import { debounceTime, take, takeUntil } from 'rxjs/operators';
+import { EMPTY, Subject } from 'rxjs';
+import { debounceTime, mergeMap, take, takeUntil, tap } from 'rxjs/operators';
 import { ICustomersTable } from '../../models/customers-table.model';
 import { nonSortableColumns } from '../../models/non-sortable-columns.model';
 import { AdminCustomersService } from '../../services/admin-customers.service';
@@ -27,6 +27,7 @@ import { Filters } from './filters.interface';
 import { ConvertFromDateToStringService } from 'src/app/shared/convert-from-date-to-string/convert-from-date-to-string.service';
 import { DateAdapter } from '@angular/material/core';
 import { CommentPopUpComponent } from '../shared/components/comment-pop-up/comment-pop-up.component';
+import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 
 @Component({
   selector: 'app-ubs-admin-customers',
@@ -37,7 +38,7 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
   private readonly convertFromDateToStringService: ConvertFromDateToStringService;
   private readonly localStorageService: LocalStorageService;
   private readonly tableHeightService: TableHeightService;
-  private readonly adminCustomerService: AdminCustomersService;
+  adminCustomerService: AdminCustomersService;
 
   isLoading = false;
   isUpdate = false;
@@ -84,7 +85,8 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
     private readonly fb: FormBuilder,
     private readonly cdr: ChangeDetectorRef,
     private readonly renderer: Renderer2,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly snackBar: MatSnackBarComponent
   ) {
     this.convertFromDateToStringService = injector.get(ConvertFromDateToStringService);
     this.localStorageService = injector.get(LocalStorageService);
@@ -371,27 +373,55 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
     });
   }
 
-  openPopUp(column: ColumnParam, data: string, userId: string): void {
+  openPopUp(column: ColumnParam, chatLink: string, userId: string): void {
+    if (!userId) {
+      return;
+    }
+
     this.dialogConfig.disableClose = true;
     const modalRef = this.dialog.open(CommentPopUpComponent, this.dialogConfig);
+    if (!modalRef.componentInstance) {
+      return;
+    }
 
-    modalRef.componentInstance.header = this.localStorageService.getCurrentLanguage() === 'ua' ? column.title.ua : column.title.en;
-    modalRef.componentInstance.comment = data;
+    this.setDialogHeader(modalRef, column);
+    modalRef.componentInstance.comment = chatLink;
     modalRef.componentInstance.isLink = true;
 
-    modalRef.afterClosed().subscribe((updatedData: string | null) => {
-      if (updatedData !== null && updatedData !== data) {
-        this.adminCustomerService
-          .addChatLink(userId, updatedData)
-          .pipe(take(1))
-          .subscribe(() => {
-            const rowIndex = this.tableData.findIndex((row) => row.userId === userId);
-            if (rowIndex !== -1) {
-              this.tableData[rowIndex][column.title.key] = updatedData;
-            }
-          });
+    modalRef
+      .afterClosed()
+      .pipe(
+        take(1),
+        mergeMap((updatedData: string | null) => {
+          if (updatedData === null || updatedData === chatLink) {
+            return EMPTY;
+          }
+          return this.adminCustomerService
+            .addChatLink(userId, updatedData)
+            .pipe(tap(() => this.updateTableRow(column, userId, updatedData)));
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.snackBar.openSnackBar('successUpdateLink');
+        },
+        error: () => {
+          this.snackBar.openSnackBar('failUpdateLink');
+        }
+      });
+  }
+
+  private setDialogHeader(modalRef: MatDialogRef<CommentPopUpComponent>, column: ColumnParam): void {
+    modalRef.componentInstance.header = this.localStorageService.getCurrentLanguage() === 'ua' ? column.title.ua : column.title.en;
+  }
+
+  private updateTableRow(column: ColumnParam, userId: string, updatedData: string): void {
+    for (const row of this.tableData) {
+      if (row.userId === userId) {
+        row[column.title.key] = updatedData;
+        break;
       }
-    });
+    }
   }
 
   @HostListener('window:resize', ['$event'])
