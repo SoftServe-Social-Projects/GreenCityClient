@@ -75,6 +75,7 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
   private resizableMouseup: () => void;
   private readonly destroy$: Subject<boolean> = new Subject<boolean>();
   private readonly dialogConfig = new MatDialogConfig();
+  private readonly pointerColumns: string[] = ['clientName', 'number_of_orders', 'violations'];
 
   @ViewChild(MatTable, { read: ElementRef }) private readonly matTableRef: ElementRef;
 
@@ -139,6 +140,10 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
       this.submitFilterForm();
     }
     this.display = this.display === 'none' ? 'block' : 'none';
+  }
+
+  isPointerColumn(column: ColumnParam): boolean {
+    return this.pointerColumns.includes(column.title.key);
   }
 
   private initFilterForm() {
@@ -241,6 +246,13 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
     if (!this.isUpdate && this.currentPage < this.totalPages) {
       this.currentPage++;
       this.updateTableData();
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent, columnKey: string, row) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openPages(columnKey, row);
     }
   }
 
