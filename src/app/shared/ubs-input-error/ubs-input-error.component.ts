@@ -53,7 +53,8 @@ export class UBSInputErrorComponent implements OnInit {
     newPasswordMatchesOld: 'input-error.newPassword-MatchesOld',
     confirmPasswordMistmatch: 'ubs-client-profile.password-error-confirm',
     requiredFromDropdown: 'personal-info.required-from-dropdown',
-    emailExist: 'input-error.email-exist'
+    emailExist: 'input-error.email-exist',
+    invalidBinotelLink: 'input-error.binotel-link'
   };
 
   ngOnInit() {
@@ -129,6 +130,8 @@ export class UBSInputErrorComponent implements OnInit {
         return this.validationErrors.wrongNumber;
       case Patterns.regexpPass.toString():
         return this.validationErrors.passwordRequirements;
+      case Patterns.binotelLinkPattern.toString():
+        return this.validationErrors.invalidBinotelLink;
       default:
         return this.validationErrors.pattern;
     }

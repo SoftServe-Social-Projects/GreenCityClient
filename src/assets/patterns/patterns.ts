@@ -1,5 +1,6 @@
 export const Patterns = {
   linkPattern: /^$|^https?:\/\//,
+  binotelLinkPattern: /^https:\/\/my\.binotel\.ua.*/,
 
   NamePattern: /^(?!.[ъыёэЪЫЁЭ])[ґҐіІєЄїЇА-Яа-яa-zA-Z](?!.*\.$)(?!.*?\.\.)(?!.*?--)(?!.*?'')[-'ʼ’ ґҐіІєЄїЇА-Яа-я+\w.]{0,29}$/,
   ServiceNamePattern: /^[ґҐіІєЄїЇА-Яа-яa-zA-Z](?!.*\.$)(?!.*?\.\.)(?!.*?--)(?!.*?'')[-'ʼ’ ґҐіІєЄїЇА-Яа-я+\w.]{0,255}$/,

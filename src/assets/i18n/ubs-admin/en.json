@@ -300,6 +300,7 @@
     "contacts": "Contacts",
     "email": "Email",
     "phone": "Phone",
+    "client-chat": "Chat with client",
     "additionalInfo": "Additional information",
     "number_of_orders": "Number of orders",
     "orderDate": "Date of order",
@@ -383,7 +384,9 @@
     "filters": "Filters",
     "placeholder": "Search by name or contacts",
     "no-orders-found": "According to these criteria, no orders were found",
-    "orders-number": "Number of orders"
+    "orders-number": "Number of orders",
+    "link-placeholder": "Provide a link to the chat with client",
+    "go-to-chat": "To chat"
   },
   "ubs-customer-filters": {
     "total-customers": "Total customers:",
@@ -1008,7 +1011,8 @@
     "password-requirements": "Password must contain: minimum 8 symbols, 1 special symbol, 1 digit, 1 upper and lower cased characters. No spaces.",
     "newPassword-MatchesOld": "Enter the new password!",
     "password-error-confirm": "Passwords do not match!",
-    "email-exist": "Active employee with this email already exists"
+    "email-exist": "Active employee with this email already exists",
+    "binotel-link": "Please enter a valid link in the format: https://my.binotel.ua"
   },
   "ubs-notifications": {
     "page-title": "Notifications",
@@ -1217,8 +1221,10 @@
   },
   "snack-bar": {
     "save-employee-permissons": "Your changes have been saved",
+    "update-chat-link": "Link was updated successfully",
     "error": {
-      "exist-address": "This address has already been added"
+      "exist-address": "This address has already been added",
+      "fail-update-chat-link": "Something went wrong while updating the link. Please try again"
     }
   },
   "add-new-certificate": {

@@ -62,6 +62,22 @@
       margin-bottom: 0;
     }
   }
+
+  .button-wrapper {
+    display: flex;
+    width: 100%;
+  }
+
+  .action {
+    background-color: var(--ubs-button-dark-green);
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 28px;
+    padding: 5px 10px;
+    margin-right: 20px;
+    border-radius: 5px;
+    border: none;
+  }
 }
 
 @media (max-width: 1439px) {

@@ -167,10 +167,18 @@ export class MatSnackBarComponent {
     ratedEvent: () => {
       this.className = 'success-snackbar';
       this.getSnackBarMessage('snack-bar.success.rating-send');
+    },
+    successUpdateLink: () => {
+      this.className = 'success-snackbar';
+      this.getSnackBarMessage('snack-bar.update-chat-link');
+    },
+    failUpdateLink: () => {
+      this.className = 'error-snackbar';
+      this.getSnackBarMessage('snack-bar.update-chat-link');
     }
   };
 
-  constructor(public snackBar: MatSnackBar, private translate: TranslateService) {}
+  constructor(public snackBar: MatSnackBar, private readonly translate: TranslateService) {}
 
   public openSnackBar(type: string, additionalValue?: string) {
     const isInclude = type.includes('400') ? this.snackType.error() : this.snackType.errorMessage(type);
