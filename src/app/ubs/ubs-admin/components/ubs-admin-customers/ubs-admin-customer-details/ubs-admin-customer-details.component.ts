@@ -35,7 +35,7 @@ export class UbsAdminCustomerDetailsComponent implements OnInit {
     this.location.back();
   }
 
-  openPopUp(column: string, chatLink: string | null, userId: string | null): void {
+  openDialog(header: string, chatLink: string | null, userId: string | null): void {
     if (!userId) {
       return;
     }
@@ -46,7 +46,7 @@ export class UbsAdminCustomerDetailsComponent implements OnInit {
       return;
     }
 
-    this.setDialogHeader(modalRef, column);
+    this.setDialogHeader(modalRef, header);
 
     modalRef.componentInstance.comment = chatLink;
     modalRef.componentInstance.isLink = true;
@@ -72,14 +72,16 @@ export class UbsAdminCustomerDetailsComponent implements OnInit {
       });
   }
 
-  private setDialogHeader(modalRef: MatDialogRef<CommentPopUpComponent>, column: string): void {
+  private setDialogHeader(modalRef: MatDialogRef<CommentPopUpComponent>, header: string): void {
     this.translate
-      .get(column)
+      .get(header)
       .pipe(take(1))
       .subscribe({
-        next: (translatedText) => (modalRef.componentInstance.header = translatedText),
+        next: (translatedText) => {
+          modalRef.componentInstance.header = translatedText;
+        },
         error: () => {
-          modalRef.componentInstance.header = column;
+          modalRef.componentInstance.header = header;
         }
       });
   }
@@ -92,6 +94,8 @@ export class UbsAdminCustomerDetailsComponent implements OnInit {
   }
 
   onOpenChat(chatUrl: string) {
-    chatUrl && this.adminCustomerService.openChat(chatUrl);
+    if (chatUrl) {
+      this.adminCustomerService.openChat(chatUrl);
+    }
   }
 }

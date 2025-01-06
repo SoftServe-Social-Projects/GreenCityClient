@@ -79,13 +79,13 @@ describe('UbsAdminCustomerDetailsComponent', () => {
   });
 
   it('should return early if userId is null', () => {
-    component.openPopUp('column', 'chatLink', null);
+    component.openDialog('column', 'chatLink', null);
 
     expect(matDialogMock.open).not.toHaveBeenCalled();
   });
 
   it('should open the dialog with correct configuration', () => {
-    component.openPopUp('column', 'chatLink', 'userId');
+    component.openDialog('column', 'chatLink', 'userId');
 
     expect(matDialogMock.open).toHaveBeenCalledWith(CommentPopUpComponent, (component as any).dialogConfig);
     expect(dialogRefMock.componentInstance.comment).toBe('chatLink');
@@ -95,7 +95,7 @@ describe('UbsAdminCustomerDetailsComponent', () => {
   it('should do nothing if dialog closes without changes', () => {
     dialogRefMock.afterClosed.and.returnValue(of(null));
 
-    component.openPopUp('column', 'chatLink', 'userId');
+    component.openDialog('column', 'chatLink', 'userId');
 
     expect(adminCustomerServiceMock.addChatLink).not.toHaveBeenCalled();
     expect(snackBarSpy.openSnackBar).not.toHaveBeenCalled();
@@ -107,7 +107,7 @@ describe('UbsAdminCustomerDetailsComponent', () => {
     dialogRefMock.afterClosed.and.returnValue(of(updatedData));
     adminCustomerServiceMock.addChatLink.and.returnValue(of(void 0));
 
-    component.openPopUp('column', 'chatLink', 'userId');
+    component.openDialog('column', 'chatLink', 'userId');
 
     expect(adminCustomerServiceMock.addChatLink).toHaveBeenCalledWith('userId', updatedData);
     expect(snackBarSpy.openSnackBar).toHaveBeenCalledWith('successUpdateLink');
@@ -118,7 +118,7 @@ describe('UbsAdminCustomerDetailsComponent', () => {
     dialogRefMock.afterClosed.and.returnValue(of(updatedData));
     adminCustomerServiceMock.addChatLink.and.returnValue(throwError(() => 'error'));
 
-    component.openPopUp('column', 'chatLink', 'userId');
+    component.openDialog('column', 'chatLink', 'userId');
 
     expect(snackBarSpy.openSnackBar).toHaveBeenCalledWith('failUpdateLink');
   });

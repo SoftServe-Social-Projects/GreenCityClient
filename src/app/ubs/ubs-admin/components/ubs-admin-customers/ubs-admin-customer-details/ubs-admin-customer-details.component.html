@@ -28,7 +28,7 @@
           <div class="form-group col-sm-12">
             <label for="recipientPhone" class="form-label">{{ 'customer-details.client-chat' | translate }}</label>
             <div class="button-wrapper">
-              <button class="action" (click)="openPopUp('customer-details.client-chat', customer?.chatLink, customer?.userId)">
+              <button class="action" (click)="openDialog('customer-details.client-chat', customer?.chatLink, customer?.userId)">
                 {{ customer.chatLink ? '&#9998;' : '&#43;' }}
               </button>
               <button *ngIf="customer?.chatLink" class="action" (click)="onOpenChat(customer?.chatLink)">

@@ -15,6 +15,7 @@ export class CommentPopUpComponent implements OnInit {
   @Input() isLink = false;
 
   commentForm: FormGroup;
+  isSubmitting: false;
 
   constructor(
     public fb: FormBuilder,
@@ -28,7 +29,7 @@ export class CommentPopUpComponent implements OnInit {
   initForm(): void {
     this.commentForm = this.fb.group({
       comment: [
-        this.comment,
+        this.comment?.trim(),
         this.isLink ? [Validators.maxLength(255), Validators.pattern(Patterns.binotelLinkPattern)] : [Validators.maxLength(255)]
       ]
     });

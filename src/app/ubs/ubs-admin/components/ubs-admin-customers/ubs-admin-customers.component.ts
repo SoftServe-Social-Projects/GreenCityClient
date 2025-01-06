@@ -385,7 +385,7 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
     });
   }
 
-  openPopUp(column: ColumnParam, chatLink: string, userId: string): void {
+  openPopUp(column: ColumnParam, chatLink: string | null, userId: string | null): void {
     if (!userId) {
       return;
     }
@@ -428,11 +428,9 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
   }
 
   private updateTableRow(column: ColumnParam, userId: string, updatedData: string): void {
-    for (const row of this.tableData) {
-      if (row.userId === userId) {
-        row[column.title.key] = updatedData;
-        break;
-      }
+    const row = this.tableData.find((r) => r.userId === userId);
+    if (row) {
+      row[column.title.key] = updatedData;
     }
   }
 
