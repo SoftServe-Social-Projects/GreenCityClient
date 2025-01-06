@@ -549,7 +549,8 @@
       "habit-added-success": "Запрошення прийнято",
       "habit-decline-success": "Запрошення відхилено",
       "friend-added-success": "Запит на дружбу прийнято",
-      "friend-declined-success": "Запит на дружбу відхилено"
+      "friend-declined-success": "Запит на дружбу відхилено",
+      "habit-invite-success": "Запит на запрошення надіслано"
     }
   },
   "user": {
@@ -1353,7 +1354,7 @@
     "my-space": "Мій Кабінет",
     "follow-us": "Приєднуйтесь до нас",
     "events": "Події",
-    "ubs-courier":"UBS Кур'єр"
+    "ubs-courier": "UBS Кур'єр"
   },
   "accessibility": {
     "skip-to-the-main-content": "перейти до основного контенту"

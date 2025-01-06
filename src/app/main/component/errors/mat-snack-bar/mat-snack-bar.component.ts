@@ -20,6 +20,7 @@ export class MatSnackBarComponent {
       classname: SnackbarClassName.attention,
       key: 'snack-bar.attention.exit-confirm-restore-password'
     },
+
     successRestorePassword: { classname: SnackbarClassName.success, key: 'snack-bar.success.restore-password' },
     successRestorePasswordUbs: { classname: SnackbarClassName.successUbs, key: 'snack-bar.success.restore-password' },
     exitConfirmUnblockAccount: {
@@ -68,6 +69,7 @@ export class MatSnackBarComponent {
     updatedNotification: { classname: SnackbarClassName.success, key: 'snack-bar.success.update-notification' },
     deletedNotification: { classname: SnackbarClassName.success, key: 'snack-bar.success.delete-notification' },
     joinedEvent: { classname: SnackbarClassName.success, key: 'snack-bar.success.joined-event' },
+    successInviteFriend: { classname: SnackbarClassName.success, key: 'snack-bar.success.habit-invite-success' },
     errorJoinEvent: { classname: SnackbarClassName.error, key: 'snack-bar.success.error-joined-event' },
     tooLongInput: { classname: SnackbarClassName.error, key: 'user.habit.to-do.too-long-input' },
     ratedEvent: { classname: SnackbarClassName.success, key: 'snack-bar.success.rating-send' },
