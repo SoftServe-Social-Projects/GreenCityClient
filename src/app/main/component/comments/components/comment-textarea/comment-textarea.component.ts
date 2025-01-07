@@ -221,6 +221,7 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   onCommentTextareaBlur(): void {
     const strippedText = this.commentTextarea.nativeElement.textContent;
     this.content.setValue(strippedText);
+    this.clearPlaceholderIfNeeded();
     this.emitComment();
   }
 
