@@ -300,7 +300,11 @@ export class UBSOrderDetailsComponent extends FormBaseComponent implements OnIni
 
     const region = this.locations.regionDto;
     this.currentLocation =
-      this.langService.getLangValue(location.nameUk, location.nameEn) + ', ' + this.langService.getLangValue(region.nameUk, region.nameEn);
+      location.nameEn === 'Kyiv'
+        ? this.langService.getLangValue(location.nameUk, location.nameEn)
+        : this.langService.getLangValue(location.nameUk, location.nameEn) +
+          ', ' +
+          this.langService.getLangValue(region.nameUk, region.nameEn);
   }
 
   changeQuantity(id: number, value: number): void {

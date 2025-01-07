@@ -50,6 +50,7 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
   locationsToShowBags: LocationsDtosList[];
   locationToShow: LocationsDtosList;
   isTarriffLoading = true;
+  private readonly standaloneCities = ['Kyiv', 'Київ'];
 
   perPackageTitle = 'ubs-homepage.ubs-courier.price.price-title';
 
@@ -268,14 +269,18 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
             ...acc,
             ...region.locations.map((city) => ({
               locationId: city.locationId,
-              nameUk: city.nameUk + ', ' + region.nameUk,
-              nameEn: city.nameEn + ', ' + region.nameEn
+              nameUk: this.getLocationName(city.nameUk, region.nameUk),
+              nameEn: this.getLocationName(city.nameEn, region.nameEn)
             }))
           ],
           []
         );
       })
     );
+  }
+
+  private getLocationName(location: string, region: string): string {
+    return this.standaloneCities.includes(location) ? location : `${location}, ${region}`;
   }
 
   saveLocation(locationsData: AllActiveLocationsDtosResponse): void {
