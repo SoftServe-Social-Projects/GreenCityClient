@@ -119,9 +119,9 @@ export class UBSSubmitOrderComponent extends FormBaseComponent implements OnInit
     return this.personalData?.senderPhoneNumber ? this.formatPhoneNumber(this.personalData.senderPhoneNumber) : '';
   }
 
-  private formatPhoneNumber(phone: string): string {
-    const lastNineDigits = phone.slice(-9);
-    return this.phoneNumberTreat.transform(lastNineDigits, '380') as string;
+  private formatPhoneNumber(phone: string, sliceLength: number = -9, countryCode: string = '380'): string {
+    const lastDigits = phone.slice(sliceLength);
+    return this.phoneNumberTreat.transform(lastDigits, countryCode) as string;
   }
 
   processOrder(shouldBePaid: boolean = true): void {

@@ -75,13 +75,7 @@
           <ng-template #defaultCase>
             <ul class="order-list">
               <li class="order-list-item">{{ personalData.firstName }} {{ personalData.lastName }}</li>
-              <!-- <li class="order-list-item">
-                {{ personalData.phoneNumber ? (personalData.phoneNumber | slice: -9 | phoneNumberTreat: '380') : '' }}
-              </li> -->
-              <li class="order-list-item">
-                {{ formattedPhoneNumber }}
-              </li>
-
+              <li class="order-list-item">{{ formattedPhoneNumber }}</li>
               <li class="order-list-item">{{ personalData.email }}</li>
             </ul>
           </ng-template>
