@@ -25,6 +25,17 @@
             <label for="recipientPhone" class="form-label">{{ 'customer-details.phone' | translate }}</label>
             <p>{{ customer?.recipientPhone }}</p>
           </div>
+          <div class="form-group col-sm-12">
+            <label for="recipientPhone" class="form-label">{{ 'customer-details.client-chat' | translate }}</label>
+            <div class="button-wrapper">
+              <button class="action" (click)="openDialog('customer-details.client-chat', customer?.chatLink, customer?.userId)">
+                {{ customer.chatLink ? '&#9998;' : '&#43;' }}
+              </button>
+              <button *ngIf="customer?.chatLink" class="action" (click)="onOpenChat(customer?.chatLink)">
+                {{ 'ubs-tables.go-to-chat' | translate }}
+              </button>
+            </div>
+          </div>
           <h5>{{ 'customer-details.additionalInfo' | translate }}</h5>
           <div class="form-group col-sm-3">
             <label for="dateOfRegistration" class="form-label">{{ 'customer-details.dateOfRegistration' | translate }}</label>

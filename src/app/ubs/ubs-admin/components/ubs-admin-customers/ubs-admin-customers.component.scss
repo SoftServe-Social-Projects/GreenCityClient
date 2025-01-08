@@ -380,3 +380,17 @@
   align-items: center;
   margin-right: 20px;
 }
+
+.action {
+  background: var(--ubs-button-light-green);
+  border-radius: 5px;
+  border: 1px solid var(--ubs-button-light-green);
+  color: var(--ubs-tertiary-dark-grey);
+  margin-left: 5px;
+  min-width: 25px;
+  height: 25px;
+}
+
+.chat-buttons {
+  display: flex;
+}

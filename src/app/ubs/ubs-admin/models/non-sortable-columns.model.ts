@@ -22,5 +22,6 @@ export const nonSortableColumns = [
   'id_order_from_shop',
   'recipientEmail',
   'orderId',
-  'points'
+  'points',
+  'chatLink'
 ];

@@ -65,12 +65,12 @@ export class TableCellInputComponent {
     const modalRef = this.dialog.open(CommentPopUpComponent, this.dialogConfig);
     modalRef.componentInstance.header = this.localStorageService.getCurrentLanguage() === 'ua' ? this.column.ua : this.column.en;
     modalRef.componentInstance.comment = this.data;
-    modalRef.afterClosed().subscribe((data) => {
-      if (data) {
+    modalRef.afterClosed().subscribe((updatedData) => {
+      if (updatedData !== null && updatedData !== this.data) {
         const newCommentValue: IEditCell = {
           id: this.id,
           nameOfColumn: this.column.key,
-          newValue: data
+          newValue: updatedData
         };
         this.editCommentCell.emit(newCommentValue);
       }

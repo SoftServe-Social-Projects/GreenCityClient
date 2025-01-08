@@ -12,7 +12,7 @@ import { environment } from '@environment/environment.js';
 export class AdminCustomersService {
   url = environment.ubsAdmin.backendUbsAdminLink + '/management';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   getCustomers(clmn: string, page?: number, fltr?: string, search?: string, size?: number, sortType?: string): Observable<ICustomersTable> {
     return this.http.get<ICustomersTable>(
@@ -31,5 +31,13 @@ export class AdminCustomersService {
   getCustomerViolations(id: string, page: number, column: string, sortingType: string): Observable<ICustomerViolationTable> {
     const query = `?page=${page}&size=10&columnName=${column}&sortingOrder=${sortingType}`;
     return this.http.get<ICustomerViolationTable>(`${this.url}/${id}/violationsAll${query}`);
+  }
+
+  addChatLink(userId: string, link: string): Observable<void> {
+    return this.http.patch<void>(`${this.url}/addChatLink`, { userId, link });
+  }
+
+  openChat(chatUrl: string) {
+    chatUrl && window.open(chatUrl, '_blank');
   }
 }

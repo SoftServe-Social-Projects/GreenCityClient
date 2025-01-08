@@ -341,18 +341,27 @@
         </div>
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <div
-          class="column_cell"
-          [matTooltip]="row[column.title.key]"
-          matTooltipShowDelay="700"
-          matTooltipClass="tooltip_style"
-          [class.pointer]="
-            column.title.key === 'clientName' || column.title.key === 'number_of_orders' || column.title.key === 'violations'
-          "
-          (click)="openPages(column.title.key, row)"
-        >
-          {{ row[column.title.key] }}
+        <div class="chat-buttons" *ngIf="column.title.key === 'chatLink'; else readonly">
+          <button class="action" (click)="openPopUp(column, row[column.title.key], row.userId)">
+            {{ row[column.title.key] ? '&#9998;' : '&#43;' }}
+          </button>
+          <button *ngIf="row[column.title.key]" class="action" (click)="onOpenChat(row[column.title.key])">
+            {{ 'ubs-tables.go-to-chat' | translate }}
+          </button>
         </div>
+        <ng-template #readonly>
+          <div
+            class="column_cell"
+            [matTooltip]="row[column.title.key]"
+            matTooltipShowDelay="700"
+            matTooltipClass="tooltip_style"
+            [class.pointer]="isPointerColumn(column)"
+            (click)="openPages(column.title.key, row)"
+            (keydown)="onKeyDown($event, column.title.key, row)"
+          >
+            {{ row[column.title.key] }}
+          </div>
+        </ng-template>
       </mat-cell>
     </ng-container>
 
