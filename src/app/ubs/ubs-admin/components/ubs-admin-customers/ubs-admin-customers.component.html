@@ -341,7 +341,7 @@
         </div>
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <div *ngIf="column.title.key === 'chatLink'; else readonly">
+        <div class="chat-buttons" *ngIf="column.title.key === 'chatLink'; else readonly">
           <button class="action" (click)="openPopUp(column, row[column.title.key], row.userId)">
             {{ row[column.title.key] ? '&#9998;' : '&#43;' }}
           </button>

@@ -386,6 +386,11 @@
   border-radius: 5px;
   border: 1px solid var(--ubs-button-light-green);
   color: var(--ubs-tertiary-dark-grey);
-  margin-right: 5px;
+  margin-left: 5px;
   min-width: 25px;
+  height: 25px;
+}
+
+.chat-buttons {
+  display: flex;
 }
