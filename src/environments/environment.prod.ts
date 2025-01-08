@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   apiKeys: 'AIzaSyAkfqpSGHVE28AjQoPcZFZd8AaPB_RU39k',
-  apiMapKey: 'AIzaSyCU0ArzZlZ3n0pLq4o9MJy29LPT5DBMk4Y',
+  apiMapKey: 'AIzaSyDaqjlemyxH1pLvF1EWfBDW2IPlgwJYXnU',
   backendLink: 'https://greencity.pick-up.city/',
   backendChatLink: 'https://greencity-chat.pick-up.city/',
   backendUserLink: 'https://greencity-user.pick-up.city/',
