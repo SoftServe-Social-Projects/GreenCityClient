@@ -216,22 +216,31 @@ export class UbsUserProfilePageComponent implements OnInit, OnDestroy {
       if (!submitData.alternateEmail?.length) {
         delete submitData.alternateEmail;
       }
+
       this.userProfile.addressDto.forEach((address, i) => {
-        const updatedAddres = {
-          ...this.userForm.value.address[i],
-          id: this.userProfile.addressDto[i].id,
-          actual: this.userProfile.addressDto[i].actual,
-          coordinates: this.userProfile.addressDto[i].coordinates
-        };
-        if (!updatedAddres.houseCorpus) {
-          delete updatedAddres.houseCorpus;
+        const formAddress = this.userForm.value.address[i];
+        const originalAddress = this.userProfile.addressDto[i];
+
+        const isUpdated = Object.keys(formAddress).some((key) => formAddress[key] !== originalAddress[key]);
+
+        if (isUpdated) {
+          const updatedAddress = {
+            ...formAddress,
+            id: originalAddress.id,
+            actual: originalAddress.actual
+          };
+
+          if (!updatedAddress.houseCorpus) {
+            delete updatedAddress.houseCorpus;
+          }
+          if (!updatedAddress.entranceNumber) {
+            delete updatedAddress.entranceNumber;
+          }
+          delete updatedAddress.searchAddress;
+          delete updatedAddress.isHouseSelected;
+
+          submitData.addressDto.push(updatedAddress);
         }
-        if (!updatedAddres.entranceNumber) {
-          delete updatedAddres.entranceNumber;
-        }
-        delete updatedAddres.searchAddress;
-        delete updatedAddres.isHouseSelected;
-        submitData.addressDto.push(updatedAddres);
       });
 
       this.clientProfileService
