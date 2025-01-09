@@ -89,10 +89,10 @@ export class CAddressData {
   private addressComment = '';
   private coordinates: google.maps.LatLng | Coordinates;
 
-  private placeIdChange: Subject<string> = new Subject();
-  private addressChange: Subject<AddressData> = new Subject();
+  private readonly placeIdChange: Subject<string> = new Subject();
+  private readonly addressChange: Subject<AddressData> = new Subject();
 
-  constructor(private languageService: LanguageService) {}
+  constructor(private readonly languageService: LanguageService) {}
 
   initAddressData(address: Address): void {
     this.region = address.region;
@@ -113,7 +113,6 @@ export class CAddressData {
 
   setCoordinates(coordinates: google.maps.LatLng, opts?: { fetch: boolean }): void {
     this.coordinates = coordinates;
-
     if (!opts?.fetch) {
       return;
     }
@@ -125,9 +124,13 @@ export class CAddressData {
     return this.languageService.getCurrentLanguage() === Language.EN ? this.regionEn : this.region;
   }
 
-  setRegion(place_id: string): void {
-    this.setProperties('region', place_id, 'administrative_area_level_1');
-    this.resetPlaceId();
+  async setRegion(place_id: string): Promise<void> {
+    try {
+      this.setProperties('region', place_id, 'administrative_area_level_1');
+      this.resetPlaceId();
+    } catch (error) {
+      console.error('Error during setting region:', error);
+    }
   }
 
   setRegionWithTranslation(region: string, regionEn: string): void {
@@ -213,6 +216,7 @@ export class CAddressData {
 
   setHouseNumber(value: any) {
     this.houseNumber = value;
+    this.addressChange.next(this.getValues());
   }
 
   resetHouseInfo() {
@@ -297,19 +301,25 @@ export class CAddressData {
   }
 
   //Tries to fetch address by selected coordinates
-  private fetchAddress(coordinates: google.maps.LatLng) {
-    new google.maps.Geocoder().geocode({ location: coordinates }).then((response) => {
+  private async fetchAddress(coordinates: google.maps.LatLng): Promise<void> {
+    const geocoder = new google.maps.Geocoder();
+    try {
+      const response = await geocoder.geocode({ location: coordinates });
+
       const place_id = response.results[0]?.place_id;
       if (place_id) {
-        this.setRegion(place_id);
-        this.setCity(place_id);
-        this.setStreet(place_id);
+        await this.setCity(place_id);
+        await this.setRegion(place_id);
+        await this.setStreet(place_id);
 
         this.setHouseNumber(this.findValue(response.results[0], 'street_number')?.long_name ?? '');
+
         this.placeId = place_id;
         this.placeIdChange.next(this.placeId);
       }
-    });
+    } catch (error) {
+      console.error('Error during address fetching:', error);
+    }
   }
 
   //Translates values to achieve consistent view of address in different languages
@@ -317,7 +327,6 @@ export class CAddressData {
     try {
       await this.translateProperty(propertyName, place_id, Language.UK, ...googleLocalityType);
       await this.translateProperty(propertyName + 'En', place_id, Language.EN, ...googleLocalityType);
-
       this.addressChange.next(this.getValues());
     } catch (error) {
       console.error('Error during setting properties:', error);
