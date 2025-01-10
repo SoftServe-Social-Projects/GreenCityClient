@@ -293,7 +293,7 @@ describe('UBSOrderDetailsComponent', () => {
     component.locationId = 1;
     component.initLocation();
 
-    expect(component.currentLocation).toBe('Kyiv, Kyiv Region');
+    expect(component.currentLocation).toBe('Kyiv');
   });
 
   it('should dispatch additional orders', () => {
@@ -314,7 +314,7 @@ describe('UBSOrderDetailsComponent', () => {
     component.locationId = 1;
     component.initLocation();
 
-    expect(component.currentLocation).toBe('Kyiv, Kyiv Region');
+    expect(component.currentLocation).toBe('Kyiv');
   });
 
   it('should have correct popupConfig', () => {
