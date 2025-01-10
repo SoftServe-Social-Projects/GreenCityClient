@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { EditProfileModel } from '@global-user/models/edit-profile.model';
+import { EditProfileModel, PrivacyState } from '@global-user/models/edit-profile.model';
 import { ProfileStatistics } from '@global-user/models/profile-statistiscs';
 import { UserFriendsService } from '@global-user/services/user-friends.service';
 import { UserDataAsFriend, FriendStatusValues } from '@global-user/models/friend.model';
@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ProfileService } from '@global-user/components/profile/profile-service/profile.service';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
 
 @Component({
   selector: 'app-friend-profile-page',
@@ -73,7 +74,10 @@ export class FriendProfilePageComponent implements OnInit, OnDestroy {
       });
   }
 
-  isContentVisible(privacySetting: string): boolean {
+  isContentVisible(privacySetting: PrivacyState): boolean {
+    if (!privacySetting) {
+      return false;
+    }
     return this.profileService.isContentVisible(privacySetting, this.loggedInUserId === this.profileUserId, this.userAsFriend);
   }
 

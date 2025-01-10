@@ -119,4 +119,18 @@ describe('ProfileHeaderComponent', () => {
     expect(languageServiceMock.getUserCity).toHaveBeenCalledWith(userLocationDto);
     expect(result).toEqual('Kyiv, Країна');
   });
+
+  it('should display city only to friends when showLocation is FRIENDS_ONLY', () => {
+    component.userInfo.showLocation = 'FRIENDS_ONLY';
+    spyOn(component, 'isContentVisible').and.returnValue(true);
+    const result = component.getUserCity(userLocationDto);
+    expect(result).toBe('Місто, Країна');
+  });
+
+  it('should display city when showLocation is PUBLIC', () => {
+    component.userInfo.showLocation = 'PUBLIC';
+    spyOn(component, 'isContentVisible').and.returnValue(true);
+    const result = component.getUserCity(userLocationDto);
+    expect(result).toBe('Місто, Країна');
+  });
 });

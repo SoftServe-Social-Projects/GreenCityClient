@@ -175,6 +175,16 @@ h2 {
       gap: 55px;
       margin-bottom: 9px;
 
+      @media screen and (max-width: 576px) {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+
+        .input-blocks {
+          width: 100%;
+        }
+      }
+
       &:last-child {
         margin-bottom: 0;
       }

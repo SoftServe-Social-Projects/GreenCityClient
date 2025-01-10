@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { EditProfileModel, UserLocationDto } from '@user-models/edit-profile.model';
+import { EditProfileModel, PrivacyState, UserLocationDto } from '@user-models/edit-profile.model';
 import { ProfileStatistics } from '@global-user/models/profile-statistiscs';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { LanguageService } from 'src/app/main/i18n/language.service';
 import { UserOnlineStatusService } from '@global-user/services/user-online-status.service';
 import { UserDataAsFriend, UsersCategOnlineStatus } from '@global-user/models/friend.model';
 import { UserFriendsService } from '@global-user/services/user-friends.service';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
 
 @Component({
   selector: 'app-profile-header',
@@ -111,7 +112,10 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
     }));
   }
 
-  isContentVisible(privacySetting: string): boolean {
+  isContentVisible(privacySetting: PrivacyState): boolean {
+    if (!privacySetting) {
+      return false;
+    }
     return this.profileService.isContentVisible(privacySetting, this.isCurrentUserProfile, this.userAsFriend);
   }
 

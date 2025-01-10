@@ -4,9 +4,9 @@ export class EditProfileModel {
   userCredo: string;
   profilePicturePath: string;
   rating: number | null;
-  showEcoPlace: string;
-  showLocation: string;
-  showToDoList: string;
+  showEcoPlace: PrivacyState;
+  showLocation: PrivacyState;
+  showToDoList: PrivacyState;
   socialNetworks: Array<{ id: number; url: string }>;
   notificationPreferences: NotificationPreference[];
 }
@@ -15,9 +15,9 @@ export class EditProfileDto {
   coordinates: Coordinates;
   name: string;
   userCredo: string;
-  showEcoPlace: string;
-  showLocation: string;
-  showToDoList: string;
+  showEcoPlace: PrivacyState;
+  showLocation: PrivacyState;
+  showToDoList: PrivacyState;
   socialNetworks: Array<string>;
   emailPreferences: NotificationPreference[];
 }
@@ -43,3 +43,5 @@ export interface NotificationPreference {
   emailPreference: string;
   periodicity: string;
 }
+
+export type PrivacyState = 'PUBLIC' | 'PRIVATE' | 'FRIENDS_ONLY';

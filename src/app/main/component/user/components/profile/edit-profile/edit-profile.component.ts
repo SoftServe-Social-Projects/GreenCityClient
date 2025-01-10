@@ -20,7 +20,13 @@ import { FormBaseComponent } from '@shared/components/form-base/form-base.compon
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Patterns } from 'src/assets/patterns/patterns';
-import { emailPreferencesList, periodicityOptions, privacyOptions, privacySettingsList } from '@global-user/models/edit-profile-const';
+import {
+  ProfilePrivacyPolicy,
+  emailPreferencesList,
+  periodicityOptions,
+  privacyOptions,
+  privacySettingsList
+} from '@global-user/models/edit-profile-const';
 
 @Component({
   selector: 'app-edit-profile',
@@ -195,9 +201,9 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
       coordinates: { longitude: this.coordinates.longitude, latitude: this.coordinates.latitude },
       name: form.value.name,
       userCredo: form.value.credo,
-      showLocation: this.editProfileForm.value.showLocation || 'PUBLIC',
-      showEcoPlace: this.editProfileForm.value.showEcoPlace || 'PUBLIC',
-      showToDoList: this.editProfileForm.value.showToDoList || 'PUBLIC',
+      showLocation: this.editProfileForm.value.showLocation || ProfilePrivacyPolicy.PRIVATE,
+      showEcoPlace: this.editProfileForm.value.showEcoPlace || ProfilePrivacyPolicy.PRIVATE,
+      showToDoList: this.editProfileForm.value.showToDoList || ProfilePrivacyPolicy.PRIVATE,
       socialNetworks: this.socialNetworksToServer,
       emailPreferences: emailPreferences.length > 0 ? emailPreferences : null
     };

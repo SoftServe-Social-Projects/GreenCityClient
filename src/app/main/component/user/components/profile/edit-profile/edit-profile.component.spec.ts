@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 import { SharedMainModule } from '@shared/shared-main.module';
 import { InputGoogleAutocompleteComponent } from '@shared/components/input-google-autocomplete/input-google-autocomplete.component';
 import { MatSelectModule } from '@angular/material/select';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
 
 class Test {}
 
@@ -281,6 +282,20 @@ describe('EditProfileComponent', () => {
       const spy = spyOn(editProfileService, 'postDataUserProfile').and.returnValue(of(mockUserInfo));
       component.onSubmit();
       expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Privacy Settings Tests', () => {
+    it('should validate all privacy levels', () => {
+      const privacyLevels = ['PUBLIC', 'PRIVATE', 'FRIENDS_ONLY'];
+      privacyLevels.forEach((level) => {
+        component.editProfileForm.patchValue({
+          showLocation: level,
+          showEcoPlace: level,
+          showToDoList: level
+        });
+        expect(component.editProfileForm.valid).toBeTrue();
+      });
     });
   });
 });
