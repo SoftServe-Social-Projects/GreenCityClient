@@ -82,9 +82,9 @@ describe('AllHabitsComponent', () => {
     userCredo: 'string',
     profilePicturePath: defaultImagePath,
     rating: null,
-    showEcoPlace: true,
-    showLocation: true,
-    showToDoList: true,
+    showEcoPlace: 'PUBLIC',
+    showLocation: 'PUBLIC',
+    showToDoList: 'PUBLIC',
     socialNetworks: [{ id: 1, url: defaultImagePath }]
   } as EditProfileModel;
 

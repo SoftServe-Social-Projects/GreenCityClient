@@ -8,7 +8,8 @@ import { takeUntil } from 'rxjs/operators';
 import { ProfileService } from '../../profile-service/profile.service';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { UserOnlineStatusService } from '@global-user/services/user-online-status.service';
-import { UsersCategOnlineStatus } from '@global-user/models/friend.model';
+import { UserDataAsFriend, UsersCategOnlineStatus } from '@global-user/models/friend.model';
+import { UserFriendsService } from '@global-user/services/user-friends.service';
 
 @Component({
   selector: 'app-profile-header',
@@ -30,6 +31,7 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
   private isCurrentUserProfile: boolean;
   icons: Record<string, string> = {};
   private userId$: Subscription;
+  userAsFriend: UserDataAsFriend;
 
   @Input() public progress: ProfileStatistics;
   @Input() public userInfo: EditProfileModel;
@@ -41,7 +43,8 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private profileService: ProfileService,
     private langService: LanguageService,
-    private userOnlineStatusService: UserOnlineStatusService
+    private userOnlineStatusService: UserOnlineStatusService,
+    private userFriendsService: UserFriendsService
   ) {}
 
   ngOnInit() {
@@ -56,6 +59,15 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
 
     if (!this.isCurrentUserProfile) {
       this.userOnlineStatusService.addUsersId(UsersCategOnlineStatus.profile, [+this.route.snapshot.params.userId]);
+    }
+
+    if (this.profileUserId) {
+      this.userFriendsService
+        .getUserDataAsFriend(this.profileUserId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((data) => {
+          this.userAsFriend = data;
+        });
     }
   }
 
@@ -97,6 +109,10 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
       link: item.url,
       name: this.findNetwork(item.url)
     }));
+  }
+
+  isContentVisible(privacySetting: string): boolean {
+    return this.profileService.isContentVisible(privacySetting, this.isCurrentUserProfile, this.userAsFriend);
   }
 
   ngOnDestroy() {

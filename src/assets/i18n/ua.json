@@ -851,6 +851,11 @@
         "weekly": "щотижня",
         "never": "ніколи"
       },
+      "privacy-options": {
+        "private": "Показувати тільки мені",
+        "friends_only": "Показувати мені та друзям",
+        "public": "Показувати всім"
+      },
       "btn": {
         "cancel": "Скасувати",
         "save": "Зберегти",
@@ -1353,7 +1358,7 @@
     "my-space": "Мій Кабінет",
     "follow-us": "Приєднуйтесь до нас",
     "events": "Події",
-    "ubs-courier":"UBS Кур'єр"
+    "ubs-courier": "UBS Кур'єр"
   },
   "accessibility": {
     "skip-to-the-main-content": "перейти до основного контенту"

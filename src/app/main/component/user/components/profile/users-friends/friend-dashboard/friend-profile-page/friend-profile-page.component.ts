@@ -8,6 +8,7 @@ import { UserDataAsFriend, FriendStatusValues } from '@global-user/models/friend
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ProfileService } from '@global-user/components/profile/profile-service/profile.service';
 
 @Component({
   selector: 'app-friend-profile-page',
@@ -28,7 +29,8 @@ export class FriendProfilePageComponent implements OnInit, OnDestroy {
     private userFriendsService: UserFriendsService,
     private route: ActivatedRoute,
     private translate: TranslateService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private profileService: ProfileService
   ) {}
 
   ngOnInit() {
@@ -69,6 +71,10 @@ export class FriendProfilePageComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.progress = data;
       });
+  }
+
+  isContentVisible(privacySetting: string): boolean {
+    return this.profileService.isContentVisible(privacySetting, this.loggedInUserId === this.profileUserId, this.userAsFriend);
   }
 
   ngOnDestroy() {

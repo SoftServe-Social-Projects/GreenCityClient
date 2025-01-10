@@ -842,6 +842,11 @@
         "weekly": "weekly",
         "never": "never"
       },
+      "privacy-options": {
+        "private": "Show only me",
+        "friends_only": "Show me and friends",
+        "public": "Show everyone"
+      },
       "btn": {
         "cancel": "Cancel",
         "save": "Save",
@@ -1317,7 +1322,7 @@
     "my-space": "My Space",
     "follow-us": "Follow us",
     "events": "Events",
-    "ubs-courier":"UBS Courier"
+    "ubs-courier": "UBS Courier"
   },
   "event": {
     "btn-top": "More",

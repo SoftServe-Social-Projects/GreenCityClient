@@ -264,9 +264,9 @@ describe('EditProfileComponent', () => {
         userCredo: 'My Credo is to make small steps that leads to huge impact. Let’s change the world together.',
         profilePicturePath: './assets/img/profileAvatarBig.png',
         rating: 658,
-        showEcoPlace: true,
-        showLocation: true,
-        showToDoList: true,
+        showEcoPlace: 'PUBLIC',
+        showLocation: 'PUBLIC',
+        showToDoList: 'PUBLIC',
         socialNetworks: [{ id: 220, url: 'http://instagram.com/profile' }]
       } as EditProfileModel;
     });

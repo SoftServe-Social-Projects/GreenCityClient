@@ -8,6 +8,8 @@ import { ProfileStatistics } from '@user-models/profile-statistiscs';
 import { EditProfileModel } from '@user-models/edit-profile.model';
 import { mainLink, mainUserLink } from 'src/app/main/links';
 import { Patterns } from 'src/assets/patterns/patterns';
+import { FriendStatusValues, UserDataAsFriend } from '@global-user/models/friend.model';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
 
 @Injectable({
   providedIn: 'root'
@@ -70,5 +72,18 @@ export class ProfileService {
     const regex = Patterns.socialMediaPattern;
     const match = regex.exec(url);
     return match?.[1] || null;
+  }
+
+  isContentVisible(privacySetting: string, isCurrentUser: boolean, userAsFriend?: UserDataAsFriend): boolean {
+    switch (privacySetting) {
+      case ProfilePrivacyPolicy.PRIVATE:
+        return isCurrentUser;
+      case ProfilePrivacyPolicy.FRIENDS_ONLY:
+        return isCurrentUser || userAsFriend?.friendStatus === FriendStatusValues.FRIEND;
+      case ProfilePrivacyPolicy.PUBLIC:
+        return true;
+      default:
+        return false;
+    }
   }
 }

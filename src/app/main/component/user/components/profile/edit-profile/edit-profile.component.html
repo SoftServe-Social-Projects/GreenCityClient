@@ -51,26 +51,19 @@
         <div class="privacy-wrapper">
           <p class="title">{{ 'user.edit-profile.privacy' | translate }}</p>
           <ul>
-            <li>
+            <li *ngFor="let setting of privacySettingsList">
               <label class="label-wrapper">
-                <input type="checkbox" formControlName="showLocation" />
-                <span class="checkmark"></span>
-                {{ 'user.edit-profile.location' | translate }}
+                {{ setting.label | translate }}
               </label>
-            </li>
-            <li>
-              <label class="label-wrapper">
-                <input type="checkbox" formControlName="showEcoPlace" />
-                <span class="checkmark"></span>
-                {{ 'user.edit-profile.eco-place' | translate }}
-              </label>
-            </li>
-            <li>
-              <label class="label-wrapper">
-                <input type="checkbox" formControlName="showToDoList" />
-                <span class="checkmark"></span>
-                {{ 'user.edit-profile.to-do-list' | translate }}
-              </label>
+              <div class="input-blocks">
+                <div class="input-wrapper">
+                  <mat-select class="state-select" [formControlName]="setting.formControlName">
+                    <mat-option class="option-state" *ngFor="let option of privacyOptions" [value]="option.value">
+                      {{ option.translationKey | translate }}
+                    </mat-option>
+                  </mat-select>
+                </div>
+              </div>
             </li>
           </ul>
         </div>

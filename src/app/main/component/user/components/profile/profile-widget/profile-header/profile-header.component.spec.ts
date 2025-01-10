@@ -56,9 +56,9 @@ describe('ProfileHeaderComponent', () => {
       userCredo: 'credo',
       profilePicturePath: '',
       rating: 2,
-      showEcoPlace: false,
-      showLocation: false,
-      showToDoList: false,
+      showEcoPlace: 'PUBLIC',
+      showLocation: 'PUBLIC',
+      showToDoList: 'PUBLIC',
       socialNetworks: [{ id: 220, url: 'http://instagram' }]
     } as EditProfileModel;
     fixture.detectChanges();

@@ -4,9 +4,9 @@ export class EditProfileModel {
   userCredo: string;
   profilePicturePath: string;
   rating: number | null;
-  showEcoPlace: boolean;
-  showLocation: boolean;
-  showToDoList: boolean;
+  showEcoPlace: string;
+  showLocation: string;
+  showToDoList: string;
   socialNetworks: Array<{ id: number; url: string }>;
   notificationPreferences: NotificationPreference[];
 }
@@ -15,9 +15,9 @@ export class EditProfileDto {
   coordinates: Coordinates;
   name: string;
   userCredo: string;
-  showEcoPlace: boolean;
-  showLocation: boolean;
-  showToDoList: boolean;
+  showEcoPlace: string;
+  showLocation: string;
+  showToDoList: string;
   socialNetworks: Array<string>;
   emailPreferences: NotificationPreference[];
 }
