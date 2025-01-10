@@ -96,12 +96,12 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  setFriendDisable(friendId: number): boolean {
+  isFriendDisabled(friendId: number): boolean {
     const friend = this.friends.find((f) => f.id === friendId);
     return friend ? friend.hasAcceptedInvitation || friend.hasInvitation : false;
   }
 
-  setAllFriendsDisable(): boolean {
+  areAllFriendsDisabled(): boolean {
     return this.friends.every((friend) => friend.hasInvitation);
   }
 

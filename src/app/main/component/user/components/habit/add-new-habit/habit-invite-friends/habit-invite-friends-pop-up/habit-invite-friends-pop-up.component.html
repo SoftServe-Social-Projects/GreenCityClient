@@ -21,17 +21,17 @@
         [checked]="allAdd"
         [indeterminate]="someAdd()"
         (change)="setAll($event.checked)"
-        [class.disabled]="setAllFriendsDisable()"
+        [class.disabled]="areAllFriendsDisabled()"
       >
         {{ 'user.habit.invite.all' | translate }}
       </mat-checkbox>
 
       <ul>
-        <li *ngFor="let friend of inputFriends" [class.disabled]="setFriendDisable(friend.id)">
+        <li *ngFor="let friend of inputFriends" [class.disabled]="isFriendDisabled(friend.id)">
           <mat-checkbox
             [checked]="friend.added"
             (change)="onFriendCheckboxChange(friend.id, $event.checked)"
-            [disabled]="setFriendDisable(friend.id)"
+            [disabled]="isFriendDisabled(friend.id)"
           >
             <div class="friend">
               <app-user-profile-image
