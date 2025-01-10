@@ -1,5 +1,3 @@
-@import 'src/typography/_resp.scss';
-
 .checkbox-container {
   .checkmark {
     border: 1px solid var(--quaternary-grey);
@@ -177,7 +175,7 @@ h2 {
       gap: 55px;
       margin-bottom: 9px;
 
-      @include responsiveMobileFirst(sm) {
+      @media screen and (max-width: 576px) {
         flex-direction: column;
         gap: 15px;
         align-items: stretch;
