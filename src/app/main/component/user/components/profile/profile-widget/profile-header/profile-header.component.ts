@@ -10,7 +10,6 @@ import { LanguageService } from 'src/app/main/i18n/language.service';
 import { UserOnlineStatusService } from '@global-user/services/user-online-status.service';
 import { UserDataAsFriend, UsersCategOnlineStatus } from '@global-user/models/friend.model';
 import { UserFriendsService } from '@global-user/services/user-friends.service';
-import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
 
 @Component({
   selector: 'app-profile-header',
@@ -40,12 +39,12 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
   showEditButton: boolean;
 
   constructor(
-    private localStorageService: LocalStorageService,
-    private route: ActivatedRoute,
-    private profileService: ProfileService,
-    private langService: LanguageService,
-    private userOnlineStatusService: UserOnlineStatusService,
-    private userFriendsService: UserFriendsService
+    private readonly localStorageService: LocalStorageService,
+    private readonly route: ActivatedRoute,
+    private readonly profileService: ProfileService,
+    private readonly langService: LanguageService,
+    private readonly userOnlineStatusService: UserOnlineStatusService,
+    private readonly userFriendsService: UserFriendsService
   ) {}
 
   ngOnInit() {

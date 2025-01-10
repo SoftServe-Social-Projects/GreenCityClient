@@ -1,3 +1,5 @@
+@import 'src/typography/_resp.scss';
+
 .checkbox-container {
   .checkmark {
     border: 1px solid var(--quaternary-grey);
@@ -175,7 +177,7 @@ h2 {
       gap: 55px;
       margin-bottom: 9px;
 
-      @media screen and (max-width: 576px) {
+      @include responsiveMobileFirst(sm) {
         flex-direction: column;
         gap: 15px;
         align-items: stretch;
@@ -189,7 +191,7 @@ h2 {
         margin-bottom: 0;
       }
 
-      .label-wrapper {
+      .text-wrapper {
         font-family: var(--tertiary-font);
         font-size: 14px;
         color: var(--quaternary-dark-grey);
@@ -354,7 +356,7 @@ h2 {
         li {
           margin-bottom: 26px;
 
-          .label-wrapper {
+          .text-wrapper {
             font-size: 14px;
           }
 

@@ -52,9 +52,9 @@
           <p class="title">{{ 'user.edit-profile.privacy' | translate }}</p>
           <ul>
             <li *ngFor="let setting of privacySettingsList">
-              <label class="label-wrapper">
+              <div class="text-wrapper">
                 {{ setting.label | translate }}
-              </label>
+              </div>
               <div class="input-blocks">
                 <div class="input-wrapper">
                   <mat-select class="state-select" [formControlName]="setting.formControlName">
