@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 import { ProfileService } from 'src/app/main/component/user/components/profile/profile-service/profile.service';
-import { EditProfileModel, UserLocationDto } from '@global-user/models/edit-profile.model';
+import { UserLocationDto } from '@global-user/models/edit-profile.model';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { Language } from 'src/app/main/i18n/Language';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -15,6 +15,8 @@ import { UserProfileImageComponent } from '@global-user/components/shared/compon
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UserOnlineStatusService } from '@global-user/services/user-online-status.service';
 import { routes } from 'src/app/app-routing.module';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
+import { mockUserData } from '@global-user/mocks/edit-profile-mock';
 
 describe('ProfileHeaderComponent', () => {
   let component: ProfileHeaderComponent;
@@ -48,19 +50,7 @@ describe('ProfileHeaderComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ProfileHeaderComponent);
     component = fixture.componentInstance;
-    component.userInfo = {
-      userLocationDto: {
-        cityEn: 'City'
-      },
-      name: 'name',
-      userCredo: 'credo',
-      profilePicturePath: '',
-      rating: 2,
-      showEcoPlace: 'PUBLIC',
-      showLocation: 'PUBLIC',
-      showToDoList: 'PUBLIC',
-      socialNetworks: [{ id: 220, url: 'http://instagram' }]
-    } as EditProfileModel;
+    component.userInfo = { ...mockUserData, name: 'John' };
     fixture.detectChanges();
     profileService = TestBed.inject(ProfileService);
     profileService.icons = {
@@ -121,14 +111,14 @@ describe('ProfileHeaderComponent', () => {
   });
 
   it('should display city only to friends when showLocation is FRIENDS_ONLY', () => {
-    component.userInfo.showLocation = 'FRIENDS_ONLY';
+    component.userInfo.showLocation = ProfilePrivacyPolicy.FRIENDS_ONLY;
     spyOn(component, 'isContentVisible').and.returnValue(true);
     const result = component.getUserCity(userLocationDto);
     expect(result).toBe('Місто, Країна');
   });
 
   it('should display city when showLocation is PUBLIC', () => {
-    component.userInfo.showLocation = 'PUBLIC';
+    component.userInfo.showLocation = ProfilePrivacyPolicy.PUBLIC;
     spyOn(component, 'isContentVisible').and.returnValue(true);
     const result = component.getUserCity(userLocationDto);
     expect(result).toBe('Місто, Країна');

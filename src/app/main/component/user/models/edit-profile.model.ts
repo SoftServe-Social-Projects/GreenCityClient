@@ -1,12 +1,14 @@
+import { ProfilePrivacyPolicy } from './edit-profile-const';
+
 export class EditProfileModel {
   userLocationDto: UserLocationDto | null;
   name: string;
   userCredo: string;
   profilePicturePath: string;
   rating: number | null;
-  showEcoPlace: PrivacyState;
-  showLocation: PrivacyState;
-  showToDoList: PrivacyState;
+  showEcoPlace: ProfilePrivacyPolicy;
+  showLocation: ProfilePrivacyPolicy;
+  showToDoList: ProfilePrivacyPolicy;
   socialNetworks: Array<{ id: number; url: string }>;
   notificationPreferences: NotificationPreference[];
 }
@@ -15,9 +17,9 @@ export class EditProfileDto {
   coordinates: Coordinates;
   name: string;
   userCredo: string;
-  showEcoPlace: PrivacyState;
-  showLocation: PrivacyState;
-  showToDoList: PrivacyState;
+  showEcoPlace: ProfilePrivacyPolicy;
+  showLocation: ProfilePrivacyPolicy;
+  showToDoList: ProfilePrivacyPolicy;
   socialNetworks: Array<string>;
   emailPreferences: NotificationPreference[];
 }
@@ -43,5 +45,3 @@ export interface NotificationPreference {
   emailPreference: string;
   periodicity: string;
 }
-
-export type PrivacyState = 'PUBLIC' | 'PRIVATE' | 'FRIENDS_ONLY';

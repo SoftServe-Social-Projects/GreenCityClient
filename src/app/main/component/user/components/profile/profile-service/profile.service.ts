@@ -5,7 +5,7 @@ import { FactOfTheDay } from '@global-user/models/factOfTheDay';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
 import { ProfileStatistics } from '@user-models/profile-statistiscs';
-import { EditProfileModel, PrivacyState } from '@user-models/edit-profile.model';
+import { EditProfileModel } from '@user-models/edit-profile.model';
 import { mainLink, mainUserLink } from 'src/app/main/links';
 import { Patterns } from 'src/assets/patterns/patterns';
 import { FriendStatusValues, UserDataAsFriend } from '@global-user/models/friend.model';
@@ -74,7 +74,7 @@ export class ProfileService {
     return match?.[1] || null;
   }
 
-  isContentVisible(privacySetting: PrivacyState, isCurrentUser: boolean, userAsFriend?: UserDataAsFriend): boolean {
+  isContentVisible(privacySetting: ProfilePrivacyPolicy, isCurrentUser: boolean, userAsFriend?: UserDataAsFriend): boolean {
     switch (privacySetting) {
       case ProfilePrivacyPolicy.PRIVATE:
         return isCurrentUser;

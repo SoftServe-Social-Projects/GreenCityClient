@@ -21,6 +21,7 @@ import { SharedMainModule } from '@shared/shared-main.module';
 import { InputGoogleAutocompleteComponent } from '@shared/components/input-google-autocomplete/input-google-autocomplete.component';
 import { MatSelectModule } from '@angular/material/select';
 import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
+import { mockUserData } from '@global-user/mocks/edit-profile-mock';
 
 class Test {}
 
@@ -259,17 +260,7 @@ describe('EditProfileComponent', () => {
     beforeEach(() => {
       editProfileService = fixture.debugElement.injector.get(EditProfileService);
       profileService = fixture.debugElement.injector.get(ProfileService);
-      mockUserInfo = {
-        userLocationDto: { cityEn: 'Lviv' },
-        name: 'John',
-        userCredo: 'My Credo is to make small steps that leads to huge impact. Let’s change the world together.',
-        profilePicturePath: './assets/img/profileAvatarBig.png',
-        rating: 658,
-        showEcoPlace: 'PUBLIC',
-        showLocation: 'PUBLIC',
-        showToDoList: 'PUBLIC',
-        socialNetworks: [{ id: 220, url: 'http://instagram.com/profile' }]
-      } as EditProfileModel;
+      mockUserInfo = { ...mockUserData, name: 'John' };
     });
 
     it('getInitialValue should call ProfileService', () => {
@@ -287,7 +278,8 @@ describe('EditProfileComponent', () => {
 
   describe('Privacy Settings Tests', () => {
     it('should validate all privacy levels', () => {
-      const privacyLevels = ['PUBLIC', 'PRIVATE', 'FRIENDS_ONLY'];
+      const privacyLevels = Object.values(ProfilePrivacyPolicy);
+
       privacyLevels.forEach((level) => {
         component.editProfileForm.patchValue({
           showLocation: level,

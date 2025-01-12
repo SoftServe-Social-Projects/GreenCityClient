@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { EditProfileModel, PrivacyState, UserLocationDto } from '@user-models/edit-profile.model';
+import { EditProfileModel, UserLocationDto } from '@user-models/edit-profile.model';
 import { ProfileStatistics } from '@global-user/models/profile-statistiscs';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { LanguageService } from 'src/app/main/i18n/language.service';
 import { UserOnlineStatusService } from '@global-user/services/user-online-status.service';
 import { UserDataAsFriend, UsersCategOnlineStatus } from '@global-user/models/friend.model';
 import { UserFriendsService } from '@global-user/services/user-friends.service';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
 
 @Component({
   selector: 'app-profile-header',
@@ -35,7 +36,6 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
 
   @Input() public progress: ProfileStatistics;
   @Input() public userInfo: EditProfileModel;
-  isUserOnline: boolean;
   showEditButton: boolean;
 
   constructor(
@@ -48,19 +48,41 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.initializeUserId();
+    this.buildSocialNetworksChart();
+    this.checkEditButtonVisibility();
+    this.setProfileUserId();
+    this.checkCurrentUserProfile();
+    this.handleUserOnlineStatus();
+    this.fetchUserDataAsFriend();
+  }
+
+  private initializeUserId() {
     this.userId$ = this.localStorageService.userIdBehaviourSubject.pipe(takeUntil(this.destroy$)).subscribe((userId) => {
       this.userId = userId;
     });
-    this.buildSocialNetworksChart();
+  }
+
+  private checkEditButtonVisibility() {
     this.showEditButton = this.route.snapshot.params.userName === this.userInfo.name;
     this.icons = this.profileService.icons;
-    this.profileUserId = +this.route.snapshot.params.userId;
-    this.isCurrentUserProfile = !this.profileUserId || this.profileUserId === this.userId;
+  }
 
+  private setProfileUserId() {
+    this.profileUserId = +this.route.snapshot.params.userId;
+  }
+
+  private checkCurrentUserProfile() {
+    this.isCurrentUserProfile = !this.profileUserId || this.profileUserId === this.userId;
+  }
+
+  private handleUserOnlineStatus() {
     if (!this.isCurrentUserProfile) {
       this.userOnlineStatusService.addUsersId(UsersCategOnlineStatus.profile, [+this.route.snapshot.params.userId]);
     }
+  }
 
+  private fetchUserDataAsFriend() {
     if (this.profileUserId) {
       this.userFriendsService
         .getUserDataAsFriend(this.profileUserId)
@@ -111,7 +133,7 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
     }));
   }
 
-  isContentVisible(privacySetting: PrivacyState): boolean {
+  isContentVisible(privacySetting: ProfilePrivacyPolicy): boolean {
     if (!privacySetting) {
       return false;
     }

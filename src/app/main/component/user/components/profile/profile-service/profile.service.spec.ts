@@ -7,6 +7,7 @@ import { TestBed } from '@angular/core/testing';
 import { ProfileService } from './profile.service';
 import { environment } from '@environment/environment';
 import { FactOfTheDay } from '@global-user/models/factOfTheDay';
+import { mockUserData } from '@global-user/mocks/edit-profile-mock';
 
 describe('ProfileService', () => {
   const backUserLink = environment.backendUserLink;
@@ -75,17 +76,7 @@ describe('ProfileService', () => {
 
   describe('test for method which get info about user', () => {
     it('should return user info', () => {
-      const userInfo = {
-        city: 'Lviv',
-        firstName: 'Anton',
-        userCredo: 'Eco',
-        profilePicturePath: 'somepath',
-        rating: 1999,
-        showEcoPlace: true,
-        showLocation: false,
-        showToDoList: true,
-        socialNetworks: []
-      };
+      const userInfo = { ...mockUserData, name: 'John', rating: 1999 };
 
       profileService.getUserInfo().subscribe((info) => {
         expect(info.rating).toBe(1999);
