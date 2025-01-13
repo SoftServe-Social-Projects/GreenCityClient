@@ -302,6 +302,7 @@
     "contacts": "Контакти",
     "email": "Електронна скринька",
     "phone": "№ телефону",
+    "client-chat": "Чат з клієнтом",
     "additionalInfo": "Додаткова інформація",
     "number_of_orders": "Кількість замовлень",
     "orderDate": "Дата замовлення",
@@ -390,7 +391,9 @@
     "no-orders-found": "За даними критеріями замовлень не знайдено",
     "default-reset": "Вирівнювання",
     "orders-number": "Кількість замовлень",
-    "search": "Пошук"
+    "search": "Пошук",
+    "link-placeholder": "Надайте посилання на чат із клієнтом",
+    "go-to-chat": "В чат"
   },
   "ubs-customer-filters": {
     "total-customers": "Кількість користувачів:",
@@ -1019,7 +1022,8 @@
     "newPassword-MatchesOld": "Введіть новий пароль!",
     "password-error-confirm": "Паролі не співпадають!",
     "capacity": "Поле повинно містити більше, ніж 0",
-    "email-exist": "Працівник з такою електронною поштою вже існує."
+    "email-exist": "Працівник з такою електронною поштою вже існує.",
+    "binotel-link": "Введіть посилання у форматі: https://my.binotel.ua"
   },
   "ubs-notifications": {
     "page-title": "Повідомлення",
@@ -1231,8 +1235,10 @@
   },
   "snack-bar": {
     "save-employee-permissons": "Внесені зміни збережено",
+    "update-chat-link": "Посилання успішно оновлено",
     "error": {
-      "exist-address": "Ця адреса вже додана"
+      "exist-address": "Ця адреса вже додана",
+      "fail-update-chat-link": "Щось пішло не так при оновленні посилання. Спробуйте, будь ласка, ще раз"
     }
   },
   "add-new-certificate": {

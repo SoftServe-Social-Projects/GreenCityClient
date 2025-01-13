@@ -14,6 +14,7 @@ import { Store } from '@ngrx/store';
 import { orderDetailsSelector, orderSelectors, personalDataSelector } from 'src/app/store/selectors/order.selectors';
 import { WarningPopUpComponent } from '@shared/components';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PhoneNumberTreatPipe } from 'src/app/shared/phone-number-treat/phone-number-treat.pipe';
 
 describe('UBSSubmitOrderComponent', () => {
   let component: UBSSubmitOrderComponent;
@@ -50,7 +51,7 @@ describe('UBSSubmitOrderComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      declarations: [UBSSubmitOrderComponent],
+      declarations: [UBSSubmitOrderComponent, PhoneNumberTreatPipe],
       imports: [RouterTestingModule],
       providers: [
         FormBuilder,
@@ -61,7 +62,8 @@ describe('UBSSubmitOrderComponent', () => {
         { provide: LocalStorageService, useValue: localStorageServiceSpy },
         { provide: LanguageService, useValue: langServiceSpy },
         { provide: MatDialog, useValue: dialogSpy },
-        { provide: Router, useValue: spyRouter }
+        { provide: Router, useValue: spyRouter },
+        PhoneNumberTreatPipe
       ]
     }).compileComponents();
 

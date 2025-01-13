@@ -91,12 +91,14 @@ export class MatSnackBarComponent {
     errorLiked: { classname: SnackbarClassName.error, key: 'homepage.eco-news.likes' },
     errorNotFound: { classname: SnackbarClassName.error, key: 'homepage.eco-news.not-found' },
     subscribedToNewsletter: { classname: SnackbarClassName.success, key: 'homepage.subscription.subscription-success' },
-    errorAlreadySubscribed: { classname: SnackbarClassName.error, key: 'homepage.subscription.already-subscribed' }
+    errorAlreadySubscribed: { classname: SnackbarClassName.error, key: 'homepage.subscription.already-subscribed' },
+    successUpdateLink: { classname: SnackbarClassName.success, key: 'snack-bar.update-chat-link' },
+    failUpdateLink: { classname: SnackbarClassName.error, key: 'snack-bar.error.fail-update-chat-link' }
   };
 
   constructor(
     public snackBar: MatSnackBar,
-    private translate: TranslateService
+    private readonly translate: TranslateService
   ) {}
 
   openSnackBar(type: string, additionalValue?: string, duration: number = 3000, customPositioning?: string) {

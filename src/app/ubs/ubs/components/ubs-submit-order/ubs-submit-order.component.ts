@@ -12,6 +12,7 @@ import { LocalStorageService } from '@global-service/localstorage/local-storage.
 import { select, Store } from '@ngrx/store';
 import { orderDetailsSelector, orderSelectors, personalDataSelector } from 'src/app/store/selectors/order.selectors';
 import { WarningPopUpComponent } from '@shared/components';
+import { PhoneNumberTreatPipe } from 'src/app/shared/phone-number-treat/phone-number-treat.pipe';
 
 @Component({
   selector: 'app-ubs-submit-order',
@@ -65,10 +66,11 @@ export class UBSSubmitOrderComponent extends FormBaseComponent implements OnInit
   constructor(
     public orderService: OrderService,
     public ubsOrderFormService: UBSOrderFormService,
-    private route: ActivatedRoute,
-    private localStorageService: LocalStorageService,
-    private store: Store,
-    private cdr: ChangeDetectorRef,
+    private readonly route: ActivatedRoute,
+    private readonly localStorageService: LocalStorageService,
+    private readonly store: Store,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly phoneNumberTreat: PhoneNumberTreatPipe,
     router: Router,
     dialog: MatDialog
   ) {
@@ -107,6 +109,19 @@ export class UBSSubmitOrderComponent extends FormBaseComponent implements OnInit
       this.personalData = personalData;
       this.cdr.detectChanges();
     });
+  }
+
+  get formattedPhoneNumber(): string {
+    return this.personalData?.phoneNumber ? this.formatPhoneNumber(this.personalData.phoneNumber) : '';
+  }
+
+  get formattedSenderPhoneNumber(): string {
+    return this.personalData?.senderPhoneNumber ? this.formatPhoneNumber(this.personalData.senderPhoneNumber) : '';
+  }
+
+  private formatPhoneNumber(phone: string, sliceLength: number = -9, countryCode: string = '380'): string {
+    const lastDigits = phone.slice(sliceLength);
+    return this.phoneNumberTreat.transform(lastDigits, countryCode) as string;
   }
 
   processOrder(shouldBePaid: boolean = true): void {
