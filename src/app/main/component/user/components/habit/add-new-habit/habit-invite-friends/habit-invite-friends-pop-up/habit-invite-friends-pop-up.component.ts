@@ -24,6 +24,7 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   allAdd = false;
   searchIcon = searchIcon;
   habitId: number;
+  closeButton = './assets/img/profile/icons/cancel.svg';
 
   constructor(
     private readonly userFriendsService: UserFriendsService,
@@ -53,14 +54,17 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
       .getFriendsWithInvitations(this.habitId, 0, 10)
       .pipe(takeUntil(this.destroyed$))
       .subscribe((data: FriendArrayModel) => {
-        this.friends = data.page;
+        this.friends = data.page.map((friend: FriendModel) => ({
+          ...friend,
+          added: friend.hasAcceptedInvitation ?? false
+        }));
         this.inputFriends = [...this.friends];
       });
   }
 
   onFriendCheckboxChange(friendId: number, isChecked: boolean) {
     const friend = this.friends.find((f) => f.id === friendId);
-    if (friend && !friend.hasInvitation) {
+    if (friend && !friend.hasAcceptedInvitation && !friend.hasInvitation) {
       friend.added = isChecked;
       this.toggleFriendSelection(friendId, isChecked);
       this.updateAllAdd();
@@ -82,6 +86,7 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     if (this.habitId && this.selectedFriends.length) {
       this.userFriendsService.inviteFriendsToHabit(this.habitId, this.selectedFriends).subscribe({
         next: () => {
+          this.snackBar.openSnackBar('successInviteFriend');
           this.dialogRef.close();
         },
         error: (error) => {
@@ -91,12 +96,12 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  setFriendDisable(friendId: number): boolean {
+  isFriendDisabled(friendId: number): boolean {
     const friend = this.friends.find((f) => f.id === friendId);
-    return friend ? friend.hasInvitation : false;
+    return friend ? friend.hasAcceptedInvitation || friend.hasInvitation : false;
   }
 
-  setAllFriendsDisable(): boolean {
+  areAllFriendsDisabled(): boolean {
     return this.friends.every((friend) => friend.hasInvitation);
   }
 
@@ -131,6 +136,10 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     this.inputValue = input;
     this.allAdd = false;
     this.inputFriends = input ? this.filterFriendsByInput(input) : [...this.friends];
+  }
+
+  onClose(): void {
+    this.dialogRef.close();
   }
 
   ngOnDestroy() {

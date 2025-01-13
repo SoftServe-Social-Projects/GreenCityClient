@@ -540,7 +540,8 @@
       "habit-added-success": "Habit invitation was accepted",
       "habit-decline-success": "Habit invitation was declined",
       "friend-added-success": "Friend invitation accepted",
-      "friend-declined-success": "Friend invitation declined"
+      "friend-declined-success": "Friend invitation declined",
+      "habit-invite-success": "Invite request sent"
     }
   },
   "user": {

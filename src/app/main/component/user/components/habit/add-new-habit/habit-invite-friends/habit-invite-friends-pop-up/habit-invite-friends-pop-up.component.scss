@@ -1,3 +1,21 @@
+.dialog-container {
+  position: relative;
+
+  .close-btn {
+    position: absolute;
+    top: -20px;
+    right: -15px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+
+    img {
+      width: 12px;
+      height: 12px;
+    }
+  }
+}
+
 .friends-images {
   width: 380px;
   display: flex;
