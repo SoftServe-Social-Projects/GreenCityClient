@@ -7,7 +7,8 @@ import { JwtService } from '@global-service/jwt/jwt.service';
 import { Title } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
-import { UserService } from '@global-service/user/user.service';
+import { TranslateService, TranslateStore } from '@ngx-translate/core';
+import { of } from 'rxjs';
 
 describe('SocketService', () => {
   let service: SocketService;
@@ -17,6 +18,10 @@ describe('SocketService', () => {
   JwtServiceMock.getUserRole = () => {
     'USER';
   };
+  const mockTranslateService = {
+    get: jasmine.createSpy('get').and.returnValue(of('mockTranslation')),
+    instant: jasmine.createSpy('instant').and.returnValue('mockTranslation')
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -24,8 +29,10 @@ describe('SocketService', () => {
         ChatsService,
         JwtService,
         Title,
+        { provide: TranslateStore, useClass: TranslateStore },
         { provide: LocalStorageService, useValue: LocalStorageServiceMock },
-        { provide: JwtService, useValue: JwtServiceMock }
+        { provide: JwtService, useValue: JwtServiceMock },
+        { provide: TranslateService, useValue: mockTranslateService }
       ],
       imports: [HttpClientModule, StoreModule.forRoot({})]
     });
