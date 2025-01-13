@@ -843,6 +843,11 @@
         "weekly": "weekly",
         "never": "never"
       },
+      "privacy-options": {
+        "private": "Show only me",
+        "friends_only": "Show me and friends",
+        "public": "Show everyone"
+      },
       "btn": {
         "cancel": "Cancel",
         "save": "Save",

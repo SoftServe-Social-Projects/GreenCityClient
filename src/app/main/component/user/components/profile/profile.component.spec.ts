@@ -7,22 +7,19 @@ import { of } from 'rxjs';
 import { ProfileService } from './profile-service/profile.service';
 
 import { ProfileComponent } from './profile.component';
+import { mockUserData } from '@global-user/mocks/edit-profile-mock';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
   let fixture: ComponentFixture<ProfileComponent>;
 
-  const fakeItem = {
-    city: 'fakeCity',
-    showToDoList: false
-  };
   const liveAnnouncerMock = jasmine.createSpyObj('announcer', ['announce']);
   const localStorageServiceMock = jasmine.createSpyObj('localStorageService', ['getCurrentLanguage', 'setCurentPage']);
   localStorageServiceMock.getCurrentLanguage.and.returnValue('ua');
   localStorageServiceMock.languageSubject = of('en');
   const profileServiceMock = jasmine.createSpyObj('profileService', ['getUserInfo', 'getUserProfileStatistics']);
   profileServiceMock.getUserProfileStatistics.and.returnValue(of('fakeStatistics' as any));
-  profileServiceMock.getUserInfo.and.returnValue(of(fakeItem as any));
+  profileServiceMock.getUserInfo.and.returnValue(of(mockUserData));
   const translateServiceMock = jasmine.createSpyObj('translate', ['setDefaultLang']);
 
   beforeEach(waitForAsync(() => {
@@ -71,6 +68,6 @@ describe('ProfileComponent', () => {
 
   it('showUserInfo makes expected calls', () => {
     component.showUserInfo();
-    expect(component.userInfo).toEqual(fakeItem as any);
+    expect(component.userInfo).toEqual(mockUserData);
   });
 });

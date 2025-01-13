@@ -20,6 +20,8 @@ import { Router } from '@angular/router';
 import { SharedMainModule } from '@shared/shared-main.module';
 import { InputGoogleAutocompleteComponent } from '@shared/components/input-google-autocomplete/input-google-autocomplete.component';
 import { MatSelectModule } from '@angular/material/select';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
+import { mockUserData } from '@global-user/mocks/edit-profile-mock';
 
 class Test {}
 
@@ -258,17 +260,7 @@ describe('EditProfileComponent', () => {
     beforeEach(() => {
       editProfileService = fixture.debugElement.injector.get(EditProfileService);
       profileService = fixture.debugElement.injector.get(ProfileService);
-      mockUserInfo = {
-        userLocationDto: { cityEn: 'Lviv' },
-        name: 'John',
-        userCredo: 'My Credo is to make small steps that leads to huge impact. Let’s change the world together.',
-        profilePicturePath: './assets/img/profileAvatarBig.png',
-        rating: 658,
-        showEcoPlace: true,
-        showLocation: true,
-        showToDoList: true,
-        socialNetworks: [{ id: 220, url: 'http://instagram.com/profile' }]
-      } as EditProfileModel;
+      mockUserInfo = { ...mockUserData, name: 'John' };
     });
 
     it('getInitialValue should call ProfileService', () => {
@@ -281,6 +273,21 @@ describe('EditProfileComponent', () => {
       const spy = spyOn(editProfileService, 'postDataUserProfile').and.returnValue(of(mockUserInfo));
       component.onSubmit();
       expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Privacy Settings Tests', () => {
+    it('should validate all privacy levels', () => {
+      const privacyLevels = Object.values(ProfilePrivacyPolicy);
+
+      privacyLevels.forEach((level) => {
+        component.editProfileForm.patchValue({
+          showLocation: level,
+          showEcoPlace: level,
+          showToDoList: level
+        });
+        expect(component.editProfileForm.valid).toBeTrue();
+      });
     });
   });
 });

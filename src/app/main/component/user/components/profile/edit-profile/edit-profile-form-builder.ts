@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
 import { EditProfileModel, NotificationPreference, UserLocationDto } from '@global-user/models/edit-profile.model';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 
@@ -17,9 +18,9 @@ export class EditProfileFormBuilder {
       name: ['', Validators.maxLength(30)],
       city: ['', Validators.maxLength(85)],
       credo: ['', Validators.maxLength(170)],
-      showLocation: [false],
-      showEcoPlace: [false],
-      showToDoList: [false],
+      showLocation: [ProfilePrivacyPolicy.PRIVATE],
+      showEcoPlace: [ProfilePrivacyPolicy.PRIVATE],
+      showToDoList: [ProfilePrivacyPolicy.PRIVATE],
       socialNetworks: [''],
       emailPreferences: this.createEmailPreferencesGroup(null)
     });

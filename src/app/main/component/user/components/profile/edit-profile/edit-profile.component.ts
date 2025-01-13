@@ -20,7 +20,13 @@ import { FormBaseComponent } from '@shared/components/form-base/form-base.compon
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Patterns } from 'src/assets/patterns/patterns';
-import { emailPreferencesList, periodicityOptions } from '@global-user/models/edit-profile-const';
+import {
+  ProfilePrivacyPolicy,
+  emailPreferencesList,
+  periodicityOptions,
+  privacyOptions,
+  privacySettingsList
+} from '@global-user/models/edit-profile-const';
 
 @Component({
   selector: 'app-edit-profile',
@@ -39,6 +45,8 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
   placeService: PlaceService;
   emailPreferencesList = emailPreferencesList;
   periodicityOptions = periodicityOptions;
+  privacyOptions = privacyOptions;
+  privacySettingsList = privacySettingsList;
   private editProfileService: EditProfileService;
   private profileService: ProfileService;
   private snackBar: MatSnackBarComponent;
@@ -193,9 +201,9 @@ export class EditProfileComponent extends FormBaseComponent implements OnInit, O
       coordinates: { longitude: this.coordinates.longitude, latitude: this.coordinates.latitude },
       name: form.value.name,
       userCredo: form.value.credo,
-      showLocation: !!form.value.showLocation,
-      showEcoPlace: !!form.value.showEcoPlace,
-      showToDoList: !!form.value.showToDoList,
+      showLocation: this.editProfileForm.value.showLocation || ProfilePrivacyPolicy.PRIVATE,
+      showEcoPlace: this.editProfileForm.value.showEcoPlace || ProfilePrivacyPolicy.PRIVATE,
+      showToDoList: this.editProfileForm.value.showToDoList || ProfilePrivacyPolicy.PRIVATE,
       socialNetworks: this.socialNetworksToServer,
       emailPreferences: emailPreferences.length > 0 ? emailPreferences : null
     };

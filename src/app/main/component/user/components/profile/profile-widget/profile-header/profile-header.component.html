@@ -26,6 +26,7 @@
     </p>
     <p
       class="location"
+      *ngIf="isContentVisible(userInfo?.showLocation)"
       appCustomTooltip
       #tooltipLocation="matTooltip"
       [appCustomTooltip]="getUserCity(userInfo.userLocationDto)"

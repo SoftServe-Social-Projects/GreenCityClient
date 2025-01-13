@@ -7,6 +7,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { FriendProfilePageComponent } from './friend-profile-page.component';
 import { FRIENDS, UserAsFriend } from '@global-user/mocks/friends-mock';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('FriendProfilePageComponent', () => {
   let component: FriendProfilePageComponent;
@@ -50,9 +51,9 @@ describe('FriendProfilePageComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: Router, useValue: {} },
         { provide: LocalStorageService, useValue: localStorageServiceMock },
-        { privide: TranslateService, useValue: translateServiseMock }
+        { provide: TranslateService, useValue: translateServiseMock }
       ],
-      imports: [TranslateModule.forRoot()],
+      imports: [HttpClientModule, TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   });
