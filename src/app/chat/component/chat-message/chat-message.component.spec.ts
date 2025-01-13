@@ -5,16 +5,22 @@ import { UserService } from '@global-service/user/user.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { StoreModule } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
 
 describe('ChatMessageComponent', () => {
   let component: ChatMessageComponent;
   let fixture: ComponentFixture<ChatMessageComponent>;
+  const mockTranslateService = {
+    get: jasmine.createSpy('get').and.returnValue(of('mockTranslation')),
+    instant: jasmine.createSpy('instant').and.returnValue('mockTranslation')
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ChatMessageComponent],
       imports: [HttpClientTestingModule, MatDialogModule, StoreModule.forRoot({})],
-      providers: [{ provide: UserService, useValue: {} }, MatDialog]
+      providers: [{ provide: UserService, useValue: {} }, { provide: TranslateService, useValue: mockTranslateService }, MatDialog]
     });
     fixture = TestBed.createComponent(ChatMessageComponent);
     component = fixture.componentInstance;

@@ -11,7 +11,6 @@ import { Bag, CourierLocations, OrderDetails } from '../../models/ubs.interface'
 import { UbsOrderLocationPopupComponent } from './ubs-order-location-popup/ubs-order-location-popup.component';
 import { ExtraPackagesPopUpComponent } from './extra-packages-pop-up/extra-packages-pop-up.component';
 import { Masks, Patterns } from 'src/assets/patterns/patterns';
-import { LanguageService } from 'src/app/main/i18n/language.service';
 import { Store, select } from '@ngrx/store';
 import {
   GetCourierLocations,
@@ -72,7 +71,7 @@ export class UBSOrderDetailsComponent extends FormBaseComponent implements OnIni
   servicesMask = Masks.servicesMask;
   commentPattern = Patterns.ubsCommentPattern;
   additionalOrdersPattern = Patterns.orderEcoStorePattern;
-  private $destroy: Subject<void> = new Subject<void>();
+  private readonly $destroy: Subject<void> = new Subject<void>();
 
   popupConfig = {
     hasBackdrop: true,
@@ -108,12 +107,11 @@ export class UBSOrderDetailsComponent extends FormBaseComponent implements OnIni
   }
 
   constructor(
-    private fb: FormBuilder,
-    private localStorageService: LocalStorageService,
-    private langService: LanguageService,
+    private readonly fb: FormBuilder,
+    private readonly localStorageService: LocalStorageService,
     public orderService: OrderService,
-    private route: ActivatedRoute,
-    private store: Store,
+    private readonly route: ActivatedRoute,
+    private readonly store: Store,
     router: Router,
     dialog: MatDialog
   ) {
@@ -299,8 +297,8 @@ export class UBSOrderDetailsComponent extends FormBaseComponent implements OnIni
     }
 
     const region = this.locations.regionDto;
-    this.currentLocation =
-      this.langService.getLangValue(location.nameUk, location.nameEn) + ', ' + this.langService.getLangValue(region.nameUk, region.nameEn);
+
+    this.currentLocation = this.orderService.getLocationName(location, region);
   }
 
   changeQuantity(id: number, value: number): void {
