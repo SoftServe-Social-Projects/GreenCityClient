@@ -11,7 +11,8 @@ import {
   DistrictsDtos,
   IProcessOrderResponse,
   Order,
-  AllActiveLocationsDtosResponse
+  AllActiveLocationsDtosResponse,
+  KyivNamesEnum
 } from '../models/ubs.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -24,22 +25,25 @@ import { ResponceOrderFondyModel } from '@ubs/ubs-user/ubs-user-orders-list/mode
 import { Store } from '@ngrx/store';
 import { ClearOrderDetails, ClearPersonalData } from 'src/app/store/actions/order.actions';
 import { IUserOrderInfo } from 'src/app/ubs/ubs-user/ubs-user-orders-list/models/UserOrder.interface';
+import { LanguageService } from 'src/app/main/i18n/language.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  private url = environment.ubsAdmin.backendUbsAdminLink;
+  private readonly url = environment.ubsAdmin.backendUbsAdminLink;
+  private readonly standaloneCities = [KyivNamesEnum.KyivEn.toString(), KyivNamesEnum.KyivUa.toString()];
   locationSubject = new Subject();
   locationSub = new Subject();
   currentAddress = new Subject();
   stateOrderDetails: OrderDetails;
 
   constructor(
-    private http: HttpClient,
-    private shareFormService: UBSOrderFormService,
-    private localStorageService: LocalStorageService,
-    private store: Store
+    private readonly http: HttpClient,
+    private readonly shareFormService: UBSOrderFormService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly langService: LanguageService,
+    private readonly store: Store
   ) {}
 
   getOrderDetails(locationId: number, tariffId: number): Observable<OrderDetails> {
@@ -60,6 +64,17 @@ export class OrderService {
     return locationId
       ? of(locationId)
       : this.getLocations(courierId, false).pipe(map((allLocations) => allLocations[0].locations[0].locationId));
+  }
+
+  getLocationName(location: { nameUk: string; nameEn: string } | string, region: { nameUk: string; nameEn: string } | string): string {
+    const locationName = this.getName(location);
+    const regionName = this.getName(region);
+
+    return this.standaloneCities.includes(locationName) ? locationName : `${locationName}, ${regionName}`;
+  }
+
+  private getName(input: { nameUk: string; nameEn: string } | string): string {
+    return typeof input === 'string' ? input : this.langService.getLangValue(input.nameUk, input.nameEn);
   }
 
   getExistingOrderDetails(orderId: number): Observable<OrderDetails> {

@@ -9,6 +9,7 @@ import { ResponceOrderFondyModel } from '../../ubs-user/ubs-user-orders-list/mod
 import { DistrictsDtos, KyivNamesEnum } from '../models/ubs.interface';
 import { ADDRESSESMOCK } from '../../mocks/address-mock';
 import { Store, StoreModule } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('OrderService', () => {
   const bagMock = {
@@ -63,6 +64,10 @@ describe('OrderService', () => {
     certificateStatus: 'string'
   };
 
+  const mockTranslateService = {
+    get: jasmine.createSpy('get').and.returnValue('mockTranslation')
+  };
+
   const address = {
     actual: true,
     id: 100500,
@@ -110,7 +115,8 @@ describe('OrderService', () => {
         OrderService,
         { provide: UBSOrderFormService, useValue: ubsOrderServiseMock },
         { provide: Subject, useValue: subjectMock },
-        { provide: Store, useValue: storeMock }
+        { provide: Store, useValue: storeMock },
+        { provide: TranslateService, useValue: mockTranslateService }
       ],
       imports: [HttpClientTestingModule, StoreModule.forRoot({})]
     });
@@ -242,5 +248,26 @@ describe('OrderService', () => {
     const req = httpMock.expectOne(`${baseLink}/get-all-districts?city=${cityMock}&region=${encodeURIComponent(regionMock)}`);
     expect(req.request.method).toBe('GET');
     req.flush(districtsMock);
+  });
+
+  it('should return locationName when it is in standaloneCities', () => {
+    const location = 'Kyiv';
+    const region = 'Ukraine';
+    const result = service.getLocationName(location, region);
+    expect(result).toBe('Kyiv');
+  });
+
+  it('should return "locationName, regionName" when locationName is not in standaloneCities', () => {
+    const location = 'Lviv';
+    const region = 'Ukraine';
+    const result = service.getLocationName(location, region);
+    expect(result).toBe('Lviv, Ukraine');
+  });
+
+  it('should handle object input for location and region', () => {
+    const location = { nameUk: 'Львів', nameEn: 'Lviv' };
+    const region = { nameUk: 'Україна', nameEn: 'Ukraine' };
+    const result = service.getLocationName(location, region);
+    expect(result).toBe('Lviv, Ukraine');
   });
 });

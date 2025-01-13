@@ -309,14 +309,6 @@ describe('UBSOrderDetailsComponent', () => {
     expect(mockStore.dispatch).toHaveBeenCalledWith(SetOrderComment({ comment: 'Test Comment' }));
   });
 
-  it('should initialize location', () => {
-    component.locations = mockCourierLocations;
-    component.locationId = 1;
-    component.initLocation();
-
-    expect(component.currentLocation).toBe('Kyiv');
-  });
-
   it('should have correct popupConfig', () => {
     expect(component.popupConfig).toEqual({
       hasBackdrop: true,

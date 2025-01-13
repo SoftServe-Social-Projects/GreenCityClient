@@ -30,8 +30,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./ubs-main-page.component.scss']
 })
 export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked {
-  private subs = new Subscription();
-  private destroy: Subject<boolean> = new Subject<boolean>();
+  private readonly subs = new Subscription();
+  private readonly destroy: Subject<boolean> = new Subject<boolean>();
   ubsMainPageImages = ubsMainPageImages;
   locations: ActiveRegionDto;
   selectedLocationId: number;
@@ -50,7 +50,6 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
   locationsToShowBags: LocationsDtosList[];
   locationToShow: LocationsDtosList;
   isTarriffLoading = true;
-  private readonly standaloneCities = ['Kyiv', 'Київ'];
 
   perPackageTitle = 'ubs-homepage.ubs-courier.price.price-title';
 
@@ -110,14 +109,14 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
   ];
 
   constructor(
-    private store: Store,
-    private router: Router,
-    private dialog: MatDialog,
-    private checkTokenservice: CheckTokenService,
-    private localStorageService: LocalStorageService,
-    private orderService: OrderService,
-    private jwtService: JwtService,
-    private cdref: ChangeDetectorRef,
+    private readonly store: Store,
+    private readonly router: Router,
+    private readonly dialog: MatDialog,
+    private readonly checkTokenservice: CheckTokenService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly orderService: OrderService,
+    private readonly jwtService: JwtService,
+    private readonly cdref: ChangeDetectorRef,
     public languageService: LanguageService
   ) {}
 
@@ -269,18 +268,14 @@ export class UbsMainPageComponent implements OnInit, OnDestroy, AfterViewChecked
             ...acc,
             ...region.locations.map((city) => ({
               locationId: city.locationId,
-              nameUk: this.getLocationName(city.nameUk, region.nameUk),
-              nameEn: this.getLocationName(city.nameEn, region.nameEn)
+              nameUk: this.orderService.getLocationName(city.nameUk, region.nameUk),
+              nameEn: this.orderService.getLocationName(city.nameEn, region.nameEn)
             }))
           ],
           []
         );
       })
     );
-  }
-
-  private getLocationName(location: string, region: string): string {
-    return this.standaloneCities.includes(location) ? location : `${location}, ${region}`;
   }
 
   saveLocation(locationsData: AllActiveLocationsDtosResponse): void {

@@ -9,8 +9,6 @@ import { OrderService } from '../../../services/order.service';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Store } from '@ngrx/store';
 import { GetCourierLocations, GetOrderDetails } from 'src/app/store/actions/order.actions';
-import { LanguageService } from 'src/app/main/i18n/language.service';
-
 @Component({
   selector: 'app-ubs-order-location-popup',
   templateUrl: './ubs-order-location-popup.component.html',
@@ -36,7 +34,6 @@ export class UbsOrderLocationPopupComponent implements OnInit, OnDestroy {
     private readonly dialogRef: MatDialogRef<UbsOrderLocationPopupComponent>,
     private readonly localStorageService: LocalStorageService,
     private readonly store: Store,
-    private readonly langService: LanguageService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.currentLanguage = this.localStorageService.getCurrentLanguage();
@@ -93,7 +90,7 @@ export class UbsOrderLocationPopupComponent implements OnInit, OnDestroy {
             ...acc,
             ...region.locations.map((city) => ({
               locationId: city.locationId,
-              locationName: this.getLocationName(city, region)
+              locationName: this.orderService.getLocationName(city, region)
             }))
           ],
           []
@@ -106,16 +103,6 @@ export class UbsOrderLocationPopupComponent implements OnInit, OnDestroy {
           }
         });
       });
-  }
-
-  private getLocationName(location: { nameUk: string; nameEn: string }, region: { nameUk: string; nameEn: string }): string {
-    return location.nameEn === 'Kyiv'
-      ? this.getLangValue(location.nameUk, location.nameEn)
-      : this.getLangValue(location.nameUk, location.nameEn) + ', ' + this.getLangValue(region.nameUk, region.nameEn);
-  }
-
-  private getLangValue(uaValue: string, enValue: string): string {
-    return this.langService.getLangValue(uaValue, enValue);
   }
 
   saveLocation(): void {
