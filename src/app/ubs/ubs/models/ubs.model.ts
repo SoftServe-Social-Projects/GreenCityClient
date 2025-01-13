@@ -126,7 +126,7 @@ export class CAddressData {
 
   async setRegion(place_id: string): Promise<void> {
     try {
-      this.setProperties('region', place_id, 'administrative_area_level_1');
+      await this.setProperties('region', place_id, 'administrative_area_level_1');
       this.resetPlaceId();
     } catch (error) {
       console.error('Error during setting region:', error);
