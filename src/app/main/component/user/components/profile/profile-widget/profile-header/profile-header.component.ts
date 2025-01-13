@@ -48,32 +48,25 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.initializeUserId();
+    this.setupUserDetails();
     this.buildSocialNetworksChart();
     this.checkEditButtonVisibility();
-    this.setProfileUserId();
-    this.checkCurrentUserProfile();
-    this.handleUserOnlineStatus();
-    this.fetchUserDataAsFriend();
+    this.icons = this.profileService.icons;
   }
 
-  private initializeUserId() {
+  private setupUserDetails() {
     this.userId$ = this.localStorageService.userIdBehaviourSubject.pipe(takeUntil(this.destroy$)).subscribe((userId) => {
       this.userId = userId;
+      this.profileUserId = +this.route.snapshot.params.userId;
+      this.isCurrentUserProfile = !this.profileUserId || this.profileUserId === this.userId;
+
+      this.handleUserOnlineStatus();
+      this.fetchUserDataAsFriend();
     });
   }
 
   private checkEditButtonVisibility() {
     this.showEditButton = this.route.snapshot.params.userName === this.userInfo.name;
-    this.icons = this.profileService.icons;
-  }
-
-  private setProfileUserId() {
-    this.profileUserId = +this.route.snapshot.params.userId;
-  }
-
-  private checkCurrentUserProfile() {
-    this.isCurrentUserProfile = !this.profileUserId || this.profileUserId === this.userId;
   }
 
   private handleUserOnlineStatus() {
@@ -134,9 +127,6 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
   }
 
   isContentVisible(privacySetting: ProfilePrivacyPolicy): boolean {
-    if (!privacySetting) {
-      return false;
-    }
     return this.profileService.isContentVisible(privacySetting, this.isCurrentUserProfile, this.userAsFriend);
   }
 

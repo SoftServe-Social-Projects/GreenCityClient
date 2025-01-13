@@ -75,9 +75,6 @@ export class FriendProfilePageComponent implements OnInit, OnDestroy {
   }
 
   isContentVisible(privacySetting: ProfilePrivacyPolicy): boolean {
-    if (!privacySetting) {
-      return false;
-    }
     return this.profileService.isContentVisible(privacySetting, this.loggedInUserId === this.profileUserId, this.userAsFriend);
   }
 

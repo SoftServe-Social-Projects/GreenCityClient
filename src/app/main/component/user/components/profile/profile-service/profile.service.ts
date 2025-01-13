@@ -75,6 +75,10 @@ export class ProfileService {
   }
 
   isContentVisible(privacySetting: ProfilePrivacyPolicy, isCurrentUser: boolean, userAsFriend?: UserDataAsFriend): boolean {
+    if (!privacySetting) {
+      return false;
+    }
+
     switch (privacySetting) {
       case ProfilePrivacyPolicy.PRIVATE:
         return isCurrentUser;
