@@ -1042,7 +1042,8 @@
         "good-day": "day in a row",
         "good-days": "days in a row. You're good!",
         "done": "Mark as done",
-        "great": "Great! You've got a habit!"
+        "great": "Great! You've got a habit!",
+        "friend-done-habit": "Done!"
       },
       "habit-widget": {
         "title": "More habits from ",
@@ -1317,7 +1318,7 @@
     "my-space": "My Space",
     "follow-us": "Follow us",
     "events": "Events",
-    "ubs-courier":"UBS Courier"
+    "ubs-courier": "UBS Courier"
   },
   "event": {
     "btn-top": "More",
