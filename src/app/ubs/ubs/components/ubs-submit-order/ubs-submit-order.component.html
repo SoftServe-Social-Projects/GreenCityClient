@@ -68,7 +68,6 @@
           <p class="order-header">{{ 'order-details.recipient' | translate }}</p>
           <ul class="order-list" *ngIf="personalData.senderFirstName; else defaultCase">
             <li class="order-list-item">{{ personalData.senderFirstName }} {{ personalData.senderLastName }}</li>
-            <li class="order-list-item">{{ personalData.senderPhoneNumber | slice: -9 | phoneNumberTreat: '380' }}</li>
             <li class="order-list-item">{{ formattedSenderPhoneNumber }}</li>
             <li class="order-list-item">{{ personalData.senderEmail }}</li>
           </ul>

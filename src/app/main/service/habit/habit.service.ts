@@ -82,9 +82,7 @@ export class HabitService {
   }
 
   getFriendsWithInvitations(habitId: number, page: number, size: number): Observable<FriendArrayModel> {
-    return this.http.get<FriendArrayModel>(
-      `${habitLink}/friends?habitId=${habitId}&page=${page}&size=${size}`
-    );
+    return this.http.get<FriendArrayModel>(`${habitLink}/friends?habitId=${habitId}&page=${page}&size=${size}`);
   }
 
   deleteCustomHabit(id: number): Observable<CustomHabitDtoRequest> {
