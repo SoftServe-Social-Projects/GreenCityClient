@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
+import { ScannedActionsSubject, Store } from '@ngrx/store';
 import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
@@ -15,6 +15,7 @@ import { LanguageService } from 'src/app/main/i18n/language.service';
 import { UbsAdminEmployeeTableComponent } from './ubs-admin-employee-table.component';
 import { UbsAdminEmployeeEditFormComponent } from '../ubs-admin-employee-edit-form/ubs-admin-employee-edit-form.component';
 import { DialogPopUpComponent } from 'src/app/shared/dialog-pop-up/dialog-pop-up.component';
+import { Actions } from '@ngrx/effects';
 
 describe('UbsAdminEmployeeTableComponent', () => {
   let component: UbsAdminEmployeeTableComponent;
@@ -158,7 +159,9 @@ describe('UbsAdminEmployeeTableComponent', () => {
         { provide: MatDialog, useValue: matDialogMock },
         { provide: Store, useValue: storeMock },
         { provide: UbsAdminEmployeeService, useValue: ubsAdminEmployeeServiceMock },
-        { provide: LanguageService, useValue: languageServiceMock }
+        { provide: LanguageService, useValue: languageServiceMock },
+        { provide: Actions, useValue: of() },
+        { provide: ScannedActionsSubject, useValue: of() }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

@@ -10,22 +10,24 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '@global-service/localstorage/local-storage.service';
-import { Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { EMPTY, Subject } from 'rxjs';
+import { debounceTime, mergeMap, take, takeUntil, tap } from 'rxjs/operators';
 import { ICustomersTable } from '../../models/customers-table.model';
 import { nonSortableColumns } from '../../models/non-sortable-columns.model';
 import { AdminCustomersService } from '../../services/admin-customers.service';
 import { TableHeightService } from '../../services/table-height.service';
 import { UbsAdminTableExcelPopupComponent } from '../ubs-admin-table/ubs-admin-table-excel-popup/ubs-admin-table-excel-popup.component';
-import { columnsParams } from './columnsParams';
+import { ColumnParam, columnsParams } from './columnsParams';
 import { Filters } from './filters.interface';
 import { ConvertFromDateToStringService } from 'src/app/shared/convert-from-date-to-string/convert-from-date-to-string.service';
 import { DateAdapter } from '@angular/material/core';
+import { CommentPopUpComponent } from '../shared/components/comment-pop-up/comment-pop-up.component';
+import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
 
 @Component({
   selector: 'app-ubs-admin-customers',
@@ -33,15 +35,15 @@ import { DateAdapter } from '@angular/material/core';
   styleUrls: ['./ubs-admin-customers.component.scss']
 })
 export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnDestroy {
-  private convertFromDateToStringService: ConvertFromDateToStringService;
-  private localStorageService: LocalStorageService;
-  private tableHeightService: TableHeightService;
-  private adminCustomerService: AdminCustomersService;
+  private readonly convertFromDateToStringService: ConvertFromDateToStringService;
+  private readonly localStorageService: LocalStorageService;
+  private readonly tableHeightService: TableHeightService;
+  adminCustomerService: AdminCustomersService;
 
   isLoading = false;
   isUpdate = false;
   nonSortableColumns = nonSortableColumns;
-  columns = [];
+  columns: ColumnParam[] = [];
   arrowDirection: string;
   currentLang: string;
   displayedColumns: string[] = [];
@@ -57,7 +59,7 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
   modelChanged: Subject<string> = new Subject<string>();
   pageSize = 10;
 
-  private tableData: any[];
+  tableData: any[];
   private sortType: string;
   private sortingColumn: string;
   private pressed = false;
@@ -71,18 +73,21 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
   private queryString = '';
   private resizableMousemove: () => void;
   private resizableMouseup: () => void;
-  private destroy$: Subject<boolean> = new Subject<boolean>();
+  private readonly destroy$: Subject<boolean> = new Subject<boolean>();
+  private readonly dialogConfig = new MatDialogConfig();
+  private readonly pointerColumns: string[] = ['clientName', 'number_of_orders', 'violations'];
 
-  @ViewChild(MatTable, { read: ElementRef }) private matTableRef: ElementRef;
+  @ViewChild(MatTable, { read: ElementRef }) private readonly matTableRef: ElementRef;
 
   constructor(
-    private injector: Injector,
-    private adapter: DateAdapter<any>,
+    private readonly injector: Injector,
+    private readonly adapter: DateAdapter<any>,
     public dialog: MatDialog,
-    private fb: FormBuilder,
-    private cdr: ChangeDetectorRef,
-    private renderer: Renderer2,
-    private router: Router
+    private readonly fb: FormBuilder,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly renderer: Renderer2,
+    private readonly router: Router,
+    private readonly snackBar: MatSnackBarComponent
   ) {
     this.convertFromDateToStringService = injector.get(ConvertFromDateToStringService);
     this.localStorageService = injector.get(LocalStorageService);
@@ -135,6 +140,10 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
       this.submitFilterForm();
     }
     this.display = this.display === 'none' ? 'block' : 'none';
+  }
+
+  isPointerColumn(column: ColumnParam): boolean {
+    return this.pointerColumns.includes(column.title.key);
   }
 
   private initFilterForm() {
@@ -237,6 +246,13 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
     if (!this.isUpdate && this.currentPage < this.totalPages) {
       this.currentPage++;
       this.updateTableData();
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent, columnKey: string, row) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openPages(columnKey, row);
     }
   }
 
@@ -362,11 +378,60 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
     }
   }
 
-  private setColumnWidth(column: any) {
+  private setColumnWidth(column: ColumnParam) {
     const columnEls = Array.from(document.getElementsByClassName('mat-column-' + column.title.key));
     columnEls.forEach((el: any) => {
       el.style.width = column.width + 'px';
     });
+  }
+
+  openPopUp(column: ColumnParam, chatLink: string | null, userId: string | null): void {
+    if (!userId) {
+      return;
+    }
+
+    this.dialogConfig.disableClose = true;
+    const modalRef = this.dialog.open(CommentPopUpComponent, this.dialogConfig);
+    if (!modalRef.componentInstance) {
+      return;
+    }
+
+    this.setDialogHeader(modalRef, column);
+    modalRef.componentInstance.comment = chatLink;
+    modalRef.componentInstance.isLink = true;
+
+    modalRef
+      .afterClosed()
+      .pipe(
+        take(1),
+        mergeMap((updatedData: string | null) => {
+          if (updatedData === null || updatedData === chatLink) {
+            return EMPTY;
+          }
+          return this.adminCustomerService
+            .addChatLink(userId, updatedData)
+            .pipe(tap(() => this.updateTableRow(column, userId, updatedData)));
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.snackBar.openSnackBar('successUpdateLink');
+        },
+        error: () => {
+          this.snackBar.openSnackBar('failUpdateLink');
+        }
+      });
+  }
+
+  private setDialogHeader(modalRef: MatDialogRef<CommentPopUpComponent>, column: ColumnParam): void {
+    modalRef.componentInstance.header = this.localStorageService.getCurrentLanguage() === 'ua' ? column.title.ua : column.title.en;
+  }
+
+  private updateTableRow(column: ColumnParam, userId: string, updatedData: string): void {
+    const row = this.tableData.find((r) => r.userId === userId);
+    if (row) {
+      row[column.title.key] = updatedData;
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -382,6 +447,10 @@ export class UbsAdminCustomersComponent implements OnInit, AfterViewChecked, OnD
     } else if (columnName === 'violations') {
       this.openViolations(row);
     }
+  }
+
+  onOpenChat(chatUrl: string) {
+    this.adminCustomerService.openChat(chatUrl);
   }
 
   private openCustomer(row, username): void {

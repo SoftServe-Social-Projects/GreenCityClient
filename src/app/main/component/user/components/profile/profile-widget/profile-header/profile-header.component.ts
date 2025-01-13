@@ -8,7 +8,9 @@ import { takeUntil } from 'rxjs/operators';
 import { ProfileService } from '../../profile-service/profile.service';
 import { LanguageService } from 'src/app/main/i18n/language.service';
 import { UserOnlineStatusService } from '@global-user/services/user-online-status.service';
-import { UsersCategOnlineStatus } from '@global-user/models/friend.model';
+import { UserDataAsFriend, UsersCategOnlineStatus } from '@global-user/models/friend.model';
+import { UserFriendsService } from '@global-user/services/user-friends.service';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
 
 @Component({
   selector: 'app-profile-header',
@@ -30,32 +32,57 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
   private isCurrentUserProfile: boolean;
   icons: Record<string, string> = {};
   private userId$: Subscription;
+  userAsFriend: UserDataAsFriend;
 
   @Input() public progress: ProfileStatistics;
   @Input() public userInfo: EditProfileModel;
-  isUserOnline: boolean;
   showEditButton: boolean;
 
   constructor(
-    private localStorageService: LocalStorageService,
-    private route: ActivatedRoute,
-    private profileService: ProfileService,
-    private langService: LanguageService,
-    private userOnlineStatusService: UserOnlineStatusService
+    private readonly localStorageService: LocalStorageService,
+    private readonly route: ActivatedRoute,
+    private readonly profileService: ProfileService,
+    private readonly langService: LanguageService,
+    private readonly userOnlineStatusService: UserOnlineStatusService,
+    private readonly userFriendsService: UserFriendsService
   ) {}
 
   ngOnInit() {
+    this.setupUserDetails();
+    this.buildSocialNetworksChart();
+    this.checkEditButtonVisibility();
+    this.icons = this.profileService.icons;
+  }
+
+  private setupUserDetails() {
     this.userId$ = this.localStorageService.userIdBehaviourSubject.pipe(takeUntil(this.destroy$)).subscribe((userId) => {
       this.userId = userId;
-    });
-    this.buildSocialNetworksChart();
-    this.showEditButton = this.route.snapshot.params.userName === this.userInfo.name;
-    this.icons = this.profileService.icons;
-    this.profileUserId = +this.route.snapshot.params.userId;
-    this.isCurrentUserProfile = !this.profileUserId || this.profileUserId === this.userId;
+      this.profileUserId = +this.route.snapshot.params.userId;
+      this.isCurrentUserProfile = !this.profileUserId || this.profileUserId === this.userId;
 
+      this.handleUserOnlineStatus();
+      this.fetchUserDataAsFriend();
+    });
+  }
+
+  private checkEditButtonVisibility() {
+    this.showEditButton = this.route.snapshot.params.userName === this.userInfo.name;
+  }
+
+  private handleUserOnlineStatus() {
     if (!this.isCurrentUserProfile) {
       this.userOnlineStatusService.addUsersId(UsersCategOnlineStatus.profile, [+this.route.snapshot.params.userId]);
+    }
+  }
+
+  private fetchUserDataAsFriend() {
+    if (this.profileUserId) {
+      this.userFriendsService
+        .getUserDataAsFriend(this.profileUserId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((data) => {
+          this.userAsFriend = data;
+        });
     }
   }
 
@@ -97,6 +124,10 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
       link: item.url,
       name: this.findNetwork(item.url)
     }));
+  }
+
+  isContentVisible(privacySetting: ProfilePrivacyPolicy): boolean {
+    return this.profileService.isContentVisible(privacySetting, this.isCurrentUserProfile, this.userAsFriend);
   }
 
   ngOnDestroy() {

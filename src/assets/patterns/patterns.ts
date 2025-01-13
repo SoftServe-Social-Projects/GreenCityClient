@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 export const Patterns = {
   linkPattern: /^$|^https?:\/\//,
-
+  binotelLinkPattern: /^https:\/\/my\.binotel\.ua.*/,
   NamePattern: /^[ґҐіІєЄїЇА-Яа-яa-zA-Z](?!.*\.$)(?!.*?\.\.)(?!.*?--)(?!.*?'')[-'ʼ’ ґҐіІєЄїЇА-Яа-я\w.]{0,29}$/,
   ServiceNamePattern: /^[ґҐіІєЄїЇА-Яа-яa-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\s]{1,30}$/,
   TarifNamePattern: /^[ґҐіІєЄїЇА-Яа-яa-zA-Z](?!.*\.$)(?!.*?\.\.)(?!.*?)(?!.*?)[-'ʼ’ ґҐіІєЄїЇА-Яа-я+\w.]{0,255}$/,

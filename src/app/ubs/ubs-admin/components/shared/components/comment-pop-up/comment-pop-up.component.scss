@@ -54,3 +54,16 @@
   color: var(--ubs-tertiary-dark-grey);
   font-weight: 600;
 }
+
+.save:disabled {
+  background-color: var(--ubs-quintynary-light-grey);
+  border: var(--ubs-quintynary-light-grey);
+  color: var(--ubs-secondary-light-grey);
+}
+
+.validation {
+  color: var(--error-red);
+  font-size: 10px;
+  margin-top: -25px;
+  padding: 8px 0;
+}

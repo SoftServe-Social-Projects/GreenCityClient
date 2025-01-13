@@ -100,7 +100,7 @@
         padding: 10px 0;
 
         @include responsivePCFirst(sm) {
-          min-width: 250px;
+          min-width: 320px;
           font-size: 20px;
         }
       }
@@ -119,7 +119,7 @@
       }
 
       @include responsivePCFirst(md) {
-        font-size: 20px;
+        font-size: 17px;
       }
     }
 

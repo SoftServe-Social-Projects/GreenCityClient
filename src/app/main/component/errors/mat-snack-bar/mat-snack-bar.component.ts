@@ -20,6 +20,7 @@ export class MatSnackBarComponent {
       classname: SnackbarClassName.attention,
       key: 'snack-bar.attention.exit-confirm-restore-password'
     },
+
     successRestorePassword: { classname: SnackbarClassName.success, key: 'snack-bar.success.restore-password' },
     successRestorePasswordUbs: { classname: SnackbarClassName.successUbs, key: 'snack-bar.success.restore-password' },
     exitConfirmUnblockAccount: {
@@ -68,6 +69,7 @@ export class MatSnackBarComponent {
     updatedNotification: { classname: SnackbarClassName.success, key: 'snack-bar.success.update-notification' },
     deletedNotification: { classname: SnackbarClassName.success, key: 'snack-bar.success.delete-notification' },
     joinedEvent: { classname: SnackbarClassName.success, key: 'snack-bar.success.joined-event' },
+    successInviteFriend: { classname: SnackbarClassName.success, key: 'snack-bar.success.habit-invite-success' },
     errorJoinEvent: { classname: SnackbarClassName.error, key: 'snack-bar.success.error-joined-event' },
     tooLongInput: { classname: SnackbarClassName.error, key: 'user.habit.to-do.too-long-input' },
     ratedEvent: { classname: SnackbarClassName.success, key: 'snack-bar.success.rating-send' },
@@ -91,12 +93,14 @@ export class MatSnackBarComponent {
     errorLiked: { classname: SnackbarClassName.error, key: 'homepage.eco-news.likes' },
     errorNotFound: { classname: SnackbarClassName.error, key: 'homepage.eco-news.not-found' },
     subscribedToNewsletter: { classname: SnackbarClassName.success, key: 'homepage.subscription.subscription-success' },
-    errorAlreadySubscribed: { classname: SnackbarClassName.error, key: 'homepage.subscription.already-subscribed' }
+    errorAlreadySubscribed: { classname: SnackbarClassName.error, key: 'homepage.subscription.already-subscribed' },
+    successUpdateLink: { classname: SnackbarClassName.success, key: 'snack-bar.update-chat-link' },
+    failUpdateLink: { classname: SnackbarClassName.error, key: 'snack-bar.error.fail-update-chat-link' }
   };
 
   constructor(
     public snackBar: MatSnackBar,
-    private translate: TranslateService
+    private readonly translate: TranslateService
   ) {}
 
   openSnackBar(type: string, additionalValue?: string, duration: number = 3000, customPositioning?: string) {

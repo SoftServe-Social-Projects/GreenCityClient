@@ -7,7 +7,6 @@ mat-footer-cell {
 }
 
 mat-header-cell {
-  width: 200px;
   background-color: var(--ubs-primary-grey);
   color: var(--ubs-primary-white);
   font-family: var(--primary-font);
@@ -381,4 +380,13 @@ mat-spinner {
   justify-content: flex-end;
   align-items: center;
   margin-right: 20px;
+}
+
+.action {
+  background: var(--ubs-button-light-green);
+  border-radius: 5px;
+  border: 1px solid var(--ubs-button-light-green);
+  color: var(--ubs-tertiary-dark-grey);
+  margin-right: 5px;
+  min-width: 25px;
 }

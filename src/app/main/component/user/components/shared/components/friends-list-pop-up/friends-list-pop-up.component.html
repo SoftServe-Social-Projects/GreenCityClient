@@ -7,7 +7,12 @@
     <div>
       <div class="habit-progress">
         <img class="calendar" [src]="calendarGreen" alt="calendar" />
-        <p>{{ friend.habitProgress.workingDays }} / {{ friend.habitProgress.duration }}</p>
+        <p>
+          {{ friend.habitProgress.workingDays }} / {{ friend.habitProgress.duration }}
+          <span *ngIf="friend.habitProgress.workingDays === friend.habitProgress.duration" class="status-done">{{
+            'user.habit.one-habit.friend-done-habit' | translate
+          }}</span>
+        </p>
       </div>
       <a (click)="navigateToFriendsPage(friend.id, friend.name)">{{ friend.name }}</a>
     </div>

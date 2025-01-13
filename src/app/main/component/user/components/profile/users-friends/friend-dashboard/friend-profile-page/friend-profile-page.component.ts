@@ -8,6 +8,8 @@ import { UserDataAsFriend, FriendStatusValues } from '@global-user/models/friend
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ProfileService } from '@global-user/components/profile/profile-service/profile.service';
+import { ProfilePrivacyPolicy } from '@global-user/models/edit-profile-const';
 
 @Component({
   selector: 'app-friend-profile-page',
@@ -25,10 +27,11 @@ export class FriendProfilePageComponent implements OnInit, OnDestroy {
   friendStatus = FriendStatusValues;
 
   constructor(
-    private userFriendsService: UserFriendsService,
-    private route: ActivatedRoute,
-    private translate: TranslateService,
-    private localStorageService: LocalStorageService
+    private readonly userFriendsService: UserFriendsService,
+    private readonly route: ActivatedRoute,
+    private readonly translate: TranslateService,
+    private readonly localStorageService: LocalStorageService,
+    private readonly profileService: ProfileService
   ) {}
 
   ngOnInit() {
@@ -69,6 +72,10 @@ export class FriendProfilePageComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.progress = data;
       });
+  }
+
+  isContentVisible(privacySetting: ProfilePrivacyPolicy): boolean {
+    return this.profileService.isContentVisible(privacySetting, this.loggedInUserId === this.profileUserId, this.userAsFriend);
   }
 
   ngOnDestroy() {

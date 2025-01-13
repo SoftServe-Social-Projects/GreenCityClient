@@ -15,11 +15,11 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { ProfileService } from '@global-user/components/profile/profile-service/profile.service';
 import { Language } from 'src/app/main/i18n/Language';
 import { HABITLIST } from '../mocks/habit-mock';
-import { CUSTOMHABIT, DEFAULTHABIT, HABITSASSIGNEDLIST } from '../mocks/habit-assigned-mock';
-import { FIRSTTAGITEM, SECONDTAGITEM, TAGLIST } from '../mocks/tags-list-mock';
-import { EditProfileModel } from '@global-user/models/edit-profile.model';
+import { HABITSASSIGNEDLIST } from '../mocks/habit-assigned-mock';
+import { TAGLIST } from '../mocks/tags-list-mock';
 import { HabitsFiltersList } from '@global-user/components/habit/models/habits-filters-list';
 import { FilterOptions, FilterSelect } from 'src/app/main/interface/filter-select.interface';
+import { mockUserData } from '@global-user/mocks/edit-profile-mock';
 
 @Injectable()
 class TranslationServiceStub {
@@ -50,8 +50,6 @@ class TranslationServiceStub {
 describe('AllHabitsComponent', () => {
   let component: AllHabitsComponent;
   let fixture: ComponentFixture<AllHabitsComponent>;
-  const defaultImagePath =
-    'https://csb10032000a548f571.blob.core.windows.net/allfiles/90370622-3311-4ff1-9462-20cc98a64d1ddefault_image.jpg';
 
   const localStorageServiceMock: LocalStorageService = jasmine.createSpyObj('LocalStorageService', [
     'userIdBehaviourSubject',
@@ -74,22 +72,8 @@ describe('AllHabitsComponent', () => {
   habitServiceMock.getHabitsByFilters = () => of(HABITLIST);
   habitServiceMock.getAllTags = () => of(TAGLIST);
 
-  const userData = {
-    userLocationDto: {
-      cityUa: 'string'
-    },
-    name: 'string',
-    userCredo: 'string',
-    profilePicturePath: defaultImagePath,
-    rating: null,
-    showEcoPlace: true,
-    showLocation: true,
-    showToDoList: true,
-    socialNetworks: [{ id: 1, url: defaultImagePath }]
-  } as EditProfileModel;
-
   const profileServiceMock: ProfileService = jasmine.createSpyObj('ProfileService', ['getUserInfo']);
-  profileServiceMock.getUserInfo = () => of(userData);
+  profileServiceMock.getUserInfo = () => of(mockUserData);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

@@ -1,4 +1,4 @@
-export const columnsParams = [
+export const columnsParams: ColumnParam[] = [
   {
     title: {
       key: 'clientName',
@@ -13,7 +13,7 @@ export const columnsParams = [
       ua: 'Телефон',
       en: 'Phone'
     },
-    width: 60
+    width: 80
   },
   {
     title: {
@@ -45,7 +45,7 @@ export const columnsParams = [
       ua: 'К-сть замовлень',
       en: 'Orders'
     },
-    width: 50
+    width: 60
   },
   {
     title: {
@@ -53,7 +53,7 @@ export const columnsParams = [
       ua: 'Порушення',
       en: 'Violations'
     },
-    width: 50
+    width: 60
   },
   {
     title: {
@@ -61,11 +61,19 @@ export const columnsParams = [
       ua: 'Баланс бонусного рахунку',
       en: 'Bonuses'
     },
-    width: 50
+    width: 60
+  },
+  {
+    title: {
+      key: 'chatLink',
+      ua: 'Чат з клієнтом',
+      en: 'Client chat'
+    },
+    width: 60
   }
 ];
 
-export const columnsParamsOrders = [
+export const columnsParamsOrders: ColumnParam[] = [
   {
     title: {
       key: 'orderDate',
@@ -108,7 +116,7 @@ export const columnsParamsOrders = [
   }
 ];
 
-export const columnsParamsViolations = [
+export const columnsParamsViolations: ColumnParam[] = [
   {
     title: {
       key: 'violationDate',
@@ -135,7 +143,7 @@ export const columnsParamsViolations = [
   }
 ];
 
-export const columnsParamsCertificates = [
+export const columnsParamsCertificates: ColumnParam[] = [
   {
     title: {
       key: 'select',
@@ -201,3 +209,15 @@ export const columnsParamsCertificates = [
     width: 164
   }
 ];
+
+export interface ColumnTitle {
+  key: string;
+  ua: string;
+  en: string;
+}
+
+export interface ColumnParam {
+  title: ColumnTitle;
+  width: number;
+  index?: number;
+}

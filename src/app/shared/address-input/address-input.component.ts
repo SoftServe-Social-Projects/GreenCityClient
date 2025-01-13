@@ -62,7 +62,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
   allowDistrictEdit = false;
 
   mapOptions: google.maps.MapOptions = {
-    center: { lat: 49.8397, lng: 24.0297 },
+    center: { lat: 50.4501, lng: 30.5234 },
     zoom: 8,
     minZoom: 4,
     maxZoom: 20

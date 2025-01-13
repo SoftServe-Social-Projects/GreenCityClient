@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { searchIcon } from 'src/app/main/image-pathes/places-icons';
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBarComponent } from '@global-errors/mat-snack-bar/mat-snack-bar.component';
+import { HabitService } from '@global-service/habit/habit.service';
 
 @Component({
   selector: 'app-habit-invite-friends-pop-up',
@@ -23,11 +24,12 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   allAdd = false;
   searchIcon = searchIcon;
   habitId: number;
-  invitationSent = false;
+  closeButton = './assets/img/profile/icons/cancel.svg';
 
   constructor(
     private readonly userFriendsService: UserFriendsService,
     private readonly localStorageService: LocalStorageService,
+    private readonly habitService: HabitService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private readonly snackBar: MatSnackBarComponent,
     private readonly dialogRef: MatDialogRef<HabitInviteFriendsPopUpComponent>
@@ -48,18 +50,21 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   }
 
   getFriends() {
-    this.userFriendsService
-      .getAllFriends()
+    this.habitService
+      .getFriendsWithInvitations(this.habitId, 0, 10)
       .pipe(takeUntil(this.destroyed$))
       .subscribe((data: FriendArrayModel) => {
-        this.friends = data.page;
+        this.friends = data.page.map((friend: FriendModel) => ({
+          ...friend,
+          added: friend.hasAcceptedInvitation ?? false
+        }));
         this.inputFriends = [...this.friends];
       });
   }
 
   onFriendCheckboxChange(friendId: number, isChecked: boolean) {
     const friend = this.friends.find((f) => f.id === friendId);
-    if (friend) {
+    if (friend && !friend.hasAcceptedInvitation && !friend.hasInvitation) {
       friend.added = isChecked;
       this.toggleFriendSelection(friendId, isChecked);
       this.updateAllAdd();
@@ -81,13 +86,7 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     if (this.habitId && this.selectedFriends.length) {
       this.userFriendsService.inviteFriendsToHabit(this.habitId, this.selectedFriends).subscribe({
         next: () => {
-          this.invitationSent = true;
-          const updatedFriends = [
-            ...this.data.friends,
-            ...this.selectedFriends.map((id) => this.friends.find((friend) => friend.id === id))
-          ];
-
-          this.data.onFriendsUpdated(updatedFriends);
+          this.snackBar.openSnackBar('successInviteFriend');
           this.dialogRef.close();
         },
         error: (error) => {
@@ -97,15 +96,13 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  setFriendDisable(friendId: number): boolean {
-    const isAlreadyAdded = this.data.friends?.some(({ id }) => id === friendId);
-    const isRecentlyAdded = this.userFriendsService.addedFriends?.some(({ id }) => id === friendId);
-
-    return isAlreadyAdded || this.invitationSent || isRecentlyAdded;
+  isFriendDisabled(friendId: number): boolean {
+    const friend = this.friends.find((f) => f.id === friendId);
+    return friend ? friend.hasAcceptedInvitation || friend.hasInvitation : false;
   }
 
-  setAllFriendsDisable(): boolean {
-    return this.invitationSent || this.userFriendsService.addedFriends?.length === this.friends?.length;
+  areAllFriendsDisabled(): boolean {
+    return this.friends.every((friend) => friend.hasInvitation);
   }
 
   updateAllAdd() {
@@ -119,7 +116,8 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
   setAll(added: boolean) {
     this.allAdd = added;
     this.friends.forEach((friend) => {
-      if (!this.isFriendAddedAlready(friend.id)) {
+      if (!this.isFriendAddedAlready(friend.id) && !friend.hasInvitation) {
+        friend.added = added;
         this.toggleFriendSelection(friend.id, added);
       }
     });
@@ -138,6 +136,10 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
     this.inputValue = input;
     this.allAdd = false;
     this.inputFriends = input ? this.filterFriendsByInput(input) : [...this.friends];
+  }
+
+  onClose(): void {
+    this.dialogRef.close();
   }
 
   ngOnDestroy() {

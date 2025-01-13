@@ -45,10 +45,7 @@ export class HabitInviteFriendsComponent implements OnInit, OnDestroy {
       hasBackdrop: true,
       data: {
         habitId: this.habitId,
-        friends: [...this.friends],
-        onFriendsUpdated: (newFriends: FriendProfilePicturesArrayModel[]) => {
-          this.friends = newFriends;
-        }
+        friends: [...this.friends]
       }
     });
 

@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { LocalizedCurrencyPipe } from 'src/app/shared/localized-currency-pipe/localized-currency.pipe';
 import { UbsOrderLocationPopupComponent } from '../ubs-order-location-popup/ubs-order-location-popup.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -27,7 +27,12 @@ describe('UbsOrderCertificateComponent', () => {
   ]);
   shareFormService.addCert = of(false);
 
-  const localStorageService = jasmine.createSpyObj('localStorageService', ['getCurrentLanguage', 'languageSubject', 'getUbsOrderData']);
+  const localStorageService = jasmine.createSpyObj('localStorageService', [
+    'getCurrentLanguage',
+    'languageSubject',
+    'getUbsOrderData',
+    'getUserId'
+  ]);
 
   const storeMock = jasmine.createSpyObj('Store', ['select', 'dispatch']);
   storeMock.select.and.returnValue(of({ order: ubsOrderServiseMock }));
@@ -49,6 +54,7 @@ describe('UbsOrderCertificateComponent', () => {
         { provide: MatDialogRef, useValue: {} },
         { provide: UBSOrderFormService, useValue: shareFormService },
         { provide: LocalStorageService, useValue: localStorageService },
+        { provide: TranslateStore, useClass: TranslateStore },
         {
           provide: Store,
           useValue: {

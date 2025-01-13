@@ -9,7 +9,6 @@ import { OrderService } from '../../../services/order.service';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Store } from '@ngrx/store';
 import { GetCourierLocations, GetOrderDetails } from 'src/app/store/actions/order.actions';
-
 @Component({
   selector: 'app-ubs-order-location-popup',
   templateUrl: './ubs-order-location-popup.component.html',
@@ -31,10 +30,10 @@ export class UbsOrderLocationPopupComponent implements OnInit, OnDestroy {
   courierUBSName = 'UBS';
 
   constructor(
-    private orderService: OrderService,
-    private dialogRef: MatDialogRef<UbsOrderLocationPopupComponent>,
-    private localStorageService: LocalStorageService,
-    private store: Store,
+    private readonly orderService: OrderService,
+    private readonly dialogRef: MatDialogRef<UbsOrderLocationPopupComponent>,
+    private readonly localStorageService: LocalStorageService,
+    private readonly store: Store,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.currentLanguage = this.localStorageService.getCurrentLanguage();
@@ -91,7 +90,7 @@ export class UbsOrderLocationPopupComponent implements OnInit, OnDestroy {
             ...acc,
             ...region.locations.map((city) => ({
               locationId: city.locationId,
-              locationName: this.currentLanguage === 'ua' ? `${city.nameUk}, ${region.nameUk}` : `${city.nameEn}, ${region.nameEn}`
+              locationName: this.orderService.getLocationName(city, region)
             }))
           ],
           []

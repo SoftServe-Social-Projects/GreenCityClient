@@ -21,6 +21,7 @@ import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { CHAT_ICONS } from 'src/app/chat/chat-icons';
 import { insertEmoji } from '../add-emoji/add-emoji';
+import { Patterns } from '@assets/patterns/patterns';
 
 @Component({
   selector: 'app-comment-textarea',
@@ -115,7 +116,14 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
   }
 
   private handleInputChange(): void {
-    this.content.setValue(this.commentTextarea.nativeElement.textContent);
+    const textContent = this.commentTextarea.nativeElement.textContent;
+
+    if (this.content.value !== textContent) {
+      this.content.setValue(textContent);
+    }
+
+    this.updateLinksInTextarea(textContent);
+
     this.emitComment();
     this.closeDropdownIfNoTag();
   }
@@ -197,9 +205,8 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
 
   onCommentTextareaFocus(): void {
     const currentText = this.commentTextarea.nativeElement.textContent.trim();
-    if (currentText === 'Add a comment' || currentText === '') {
-      this.commentTextarea.nativeElement.textContent = '';
-    }
+    this.updateLinksInTextarea(currentText);
+    this.clearPlaceholderIfNeeded();
 
     const range = document.createRange();
     const nodeAmount = this.commentTextarea.nativeElement.childNodes.length;
@@ -209,6 +216,13 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
     const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
+  }
+
+  onCommentTextareaBlur(): void {
+    const strippedText = this.commentTextarea.nativeElement.textContent;
+    this.content.setValue(strippedText);
+    this.clearPlaceholderIfNeeded();
+    this.emitComment();
   }
 
   onCommentKeyDown(event: KeyboardEvent): void {
@@ -246,6 +260,8 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
         file: fileHandle.file
       });
     }
+
+    this.clearPlaceholderIfNeeded();
     this.isImageUploaderOpen = false;
     this.showImageControls = true;
     this.emitComment();
@@ -265,6 +281,48 @@ export class CommentTextareaComponent implements OnInit, AfterViewInit, OnChange
       innerHTML: this.commentTextarea.nativeElement.innerHTML,
       imageFiles: null
     });
+  }
+
+  private updateLinksInTextarea(currentText: string): void {
+    if (Patterns.urlLinkifyPattern.test(currentText)) {
+      const sanitizedHtml = this.sanitizer.sanitize(SecurityContext.HTML, this.renderLinks(currentText));
+      if (sanitizedHtml) {
+        this.commentTextarea.nativeElement.innerHTML = sanitizedHtml;
+        this.initializeLinkClickListeners(this.commentTextarea.nativeElement);
+      }
+    }
+  }
+
+  renderLinks(text: string): string {
+    return text.replace(Patterns.urlLinkifyPattern, (match) => {
+      const safeUrl = this.sanitizer.sanitize(SecurityContext.URL, match) || '';
+      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+    });
+  }
+
+  initializeLinkClickListeners(element: HTMLElement): void {
+    element.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'A') {
+        event.preventDefault();
+        const href = target.getAttribute('href');
+        if (href) {
+          window.open(href, '_blank', 'noopener,noreferrer');
+        }
+      }
+    });
+  }
+
+  private clearPlaceholderIfNeeded(): void {
+    const currentText = this.commentTextarea?.nativeElement?.textContent?.trim() || '';
+    if (this.isPlaceholderText(currentText)) {
+      this.commentTextarea.nativeElement.textContent = '';
+      this.content.setValue('');
+    }
+  }
+
+  private isPlaceholderText(text: string): boolean {
+    return text === 'Add a comment' || text === '';
   }
 
   private insertTextAtCursor(text: string): void {

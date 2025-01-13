@@ -20,6 +20,7 @@ export class UbsUserBonusesComponent implements OnInit, OnDestroy {
   totalBonuses: number;
   isLoading = true;
   bonusesList: BonusModel[] = [];
+  currentLang: string;
   destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -33,6 +34,8 @@ export class UbsUserBonusesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getBonusesData();
     this.dataSource.sort = this.sort;
+    this.subscribeToLangChange();
+    this.currentLang = this.localStorage.getCurrentLanguage();
   }
 
   getBonusesData() {
@@ -78,6 +81,12 @@ export class UbsUserBonusesComponent implements OnInit, OnDestroy {
 
   passOrderIdToRedirect(orderId: number): void {
     this.localStorage.setOrderIdToRedirect(orderId);
+  }
+
+  subscribeToLangChange() {
+    this.localStorage.languageSubject.pipe(takeUntil(this.destroy)).subscribe((lang: string) => {
+      this.currentLang = lang;
+    });
   }
 
   ngOnDestroy() {

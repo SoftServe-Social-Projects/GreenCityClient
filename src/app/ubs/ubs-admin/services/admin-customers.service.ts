@@ -32,4 +32,12 @@ export class AdminCustomersService {
     const query = `?page=${page}&size=10&columnName=${column}&sortingOrder=${sortingType}`;
     return this.http.get<ICustomerViolationTable>(`${this.url}/${id}/violationsAll${query}`);
   }
+
+  addChatLink(userId: string, link: string): Observable<void> {
+    return this.http.patch<void>(`${this.url}/addChatLink`, { userId, link });
+  }
+
+  openChat(chatUrl: string) {
+    chatUrl && window.open(chatUrl, '_blank');
+  }
 }

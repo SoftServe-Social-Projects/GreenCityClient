@@ -1,3 +1,5 @@
+@import 'src/typography/_resp.scss';
+
 .calendar {
   display: block;
   background: var(--primary-white);
@@ -210,17 +212,19 @@
   border-radius: 4px;
 }
 
-@media (min-width: 1024px) and (max-width: 1199px) {
+@include responsiveRange(xl, 3xl) {
   .calendar {
-    .top {
-      .days {
-        grid-template-columns: repeat(7, 30px);
+    &.habit {
+      .top {
+        .days {
+          grid-template-columns: repeat(7, 46px);
+        }
       }
     }
   }
 }
 
-@media (max-width: 1023px) {
+@include responsivePCFirst(xl) {
   .calendar {
     .top {
       .days {

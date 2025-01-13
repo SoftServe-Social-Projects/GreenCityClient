@@ -1,57 +1,62 @@
-<div class="friends-images">
-  <form name="searchForm" class="searchField">
-    <img [src]="searchIcon" alt="search-friend" />
-    <input
-      class="search"
-      type="text"
-      #search
-      [placeholder]="'search.search-popup.placeholder' | translate"
-      (input)="onInput($event)"
-      maxlength="30"
-    />
-  </form>
-  <section class="popup-section">
-    <mat-checkbox
-      *ngIf="!inputValue"
-      class="all-friends"
-      [checked]="allAdd"
-      [indeterminate]="someAdd()"
-      (change)="setAll($event.checked)"
-      [class.disabled]="setAllFriendsDisable()"
-    >
-      {{ 'user.habit.invite.all' | translate }}
-    </mat-checkbox>
+<div class="dialog-container">
+  <button (click)="onClose()" class="close-btn" aria-label="Close">
+    <img [src]="closeButton" alt="Close dialog" />
+  </button>
+  <div class="friends-images">
+    <form name="searchForm" class="searchField">
+      <img [src]="searchIcon" alt="search-friend" />
+      <input
+        class="search"
+        type="text"
+        #search
+        [placeholder]="'search.search-popup.placeholder' | translate"
+        (input)="onInput($event)"
+        maxlength="30"
+      />
+    </form>
+    <section class="popup-section">
+      <mat-checkbox
+        *ngIf="!inputValue"
+        class="all-friends"
+        [checked]="allAdd"
+        [indeterminate]="someAdd()"
+        (change)="setAll($event.checked)"
+        [class.disabled]="areAllFriendsDisabled()"
+      >
+        {{ 'user.habit.invite.all' | translate }}
+      </mat-checkbox>
 
-    <ul>
-      <li *ngFor="let friend of inputFriends" [class.disabled]="setFriendDisable(friend.id)">
-        <mat-checkbox
-          [checked]="selectedFriends.includes(friend.id)"
-          (change)="onFriendCheckboxChange(friend.id, $event.checked)"
-          [disabled]="setFriendDisable(friend.id)"
-        >
-          <div class="friend">
-            <app-user-profile-image
-              [imgPath]="friend.profilePicturePath"
-              [firstName]="friend.name"
-              class="friend-img"
-              [additionalImgClass]="'friend-user-profile'"
-            >
-            </app-user-profile-image>
-            <div class="friend-details">
-              <p class="friend-name">{{ friend.name }}</p>
-              <p class="friend-email">{{ friend.email }}</p>
+      <ul>
+        <li *ngFor="let friend of inputFriends" [class.disabled]="isFriendDisabled(friend.id)">
+          <mat-checkbox
+            [checked]="friend.added"
+            (change)="onFriendCheckboxChange(friend.id, $event.checked)"
+            [disabled]="isFriendDisabled(friend.id)"
+          >
+            <div class="friend">
+              <app-user-profile-image
+                [imgPath]="friend.profilePicturePath"
+                [firstName]="friend.name"
+                class="friend-img"
+                [additionalImgClass]="'friend-user-profile'"
+              >
+              </app-user-profile-image>
+              <div class="friend-details">
+                <p class="friend-name">{{ friend.name }}</p>
+                <p class="friend-email">{{ friend.email }}</p>
+              </div>
             </div>
-          </div>
-        </mat-checkbox>
-      </li>
-    </ul>
-  </section>
-  <mat-dialog-actions class="invite-popup-footer">
-    <button class="btn btn-outline-success" mat-dialog-close>
-      {{ 'user.habit.invite.btn.cancel' | translate }}
-    </button>
-    <button class="btn btn-success" [mat-dialog-close]="true" (click)="inviteFriends($event)" [disabled]="!isAnyFriendSelected">
-      {{ 'user.habit.invite.btn.invite' | translate }}
-    </button>
-  </mat-dialog-actions>
+          </mat-checkbox>
+        </li>
+      </ul>
+    </section>
+    <mat-dialog-actions class="invite-popup-footer">
+      <button class="btn btn-outline-success" mat-dialog-close>
+        {{ 'user.habit.invite.btn.cancel' | translate }}
+      </button>
+      <button class="btn btn-success" [mat-dialog-close]="true" (click)="inviteFriends($event)" [disabled]="!isAnyFriendSelected">
+        {{ 'user.habit.invite.btn.invite' | translate }}
+      </button>
+    </mat-dialog-actions>
+  </div>
 </div>

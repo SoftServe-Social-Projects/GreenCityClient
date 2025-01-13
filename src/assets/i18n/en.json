@@ -540,7 +540,8 @@
       "habit-added-success": "Habit invitation was accepted",
       "habit-decline-success": "Habit invitation was declined",
       "friend-added-success": "Friend invitation accepted",
-      "friend-declined-success": "Friend invitation declined"
+      "friend-declined-success": "Friend invitation declined",
+      "habit-invite-success": "Invite request sent"
     }
   },
   "user": {
@@ -591,7 +592,7 @@
         "first-name-is-required": "User name is required",
         "user-name-error": "User name is required",
         "invalid-user-name": "Username must not contains a dot at the beginning, few dots in a row, special characters, Cyrillic letters",
-        "user-name-size": "The user name must contain 1-30 characters and can contain letters, numbers and a dot. Dot at the start, at the end and consecutive dot is forbidden.",
+        "user-name-size": "The user name must be 1-30 characters long and may include letters, numbers, single dots, hyphens, or apostrophes. Dots cannot appear at the beginning or end, nor can they be consecutive. Double hyphens or apostrophes are also not allowed.",
         "first-name-must-be-at-least-1-characters-long": "User name must be at least 1 characters long",
         "last-name": "Last name",
         "last-name-is-required": "Last name is required",
@@ -842,6 +843,11 @@
         "weekly": "weekly",
         "never": "never"
       },
+      "privacy-options": {
+        "private": "Show only me",
+        "friends_only": "Show me and friends",
+        "public": "Show everyone"
+      },
       "btn": {
         "cancel": "Cancel",
         "save": "Save",
@@ -1042,7 +1048,8 @@
         "good-day": "day in a row",
         "good-days": "days in a row. You're good!",
         "done": "Mark as done",
-        "great": "Great! You've got a habit!"
+        "great": "Great! You've got a habit!",
+        "friend-done-habit": "Done!"
       },
       "habit-widget": {
         "title": "More habits from ",
@@ -1311,12 +1318,13 @@
     "skip-to-the-main-content": "skip to the main content"
   },
   "footer": {
-    "about-us": "About us",
+    "about-us": "About Us",
     "eco-events": "Eco news",
     "map": "Places",
-    "my-habits": "My habits",
+    "my-space": "My Space",
     "follow-us": "Follow us",
-    "events": "Events"
+    "events": "Events",
+    "ubs-courier": "UBS Courier"
   },
   "event": {
     "btn-top": "More",

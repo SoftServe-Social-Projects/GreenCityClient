@@ -6,8 +6,8 @@
       <app-friendship-buttons [userAsFriend]="userAsFriend"></app-friendship-buttons>
     </div>
     <app-users-achievements class="app-users-achivements"></app-users-achievements>
-    <app-eco-places class="app-eco-places" *ngIf="userInfo.showEcoPlace"></app-eco-places>
-    <app-to-do-list class="app-to-do-list" *ngIf="userInfo.showToDoList"></app-to-do-list>
+    <app-eco-places class="app-eco-places" *ngIf="isContentVisible(userInfo?.showEcoPlace)"></app-eco-places>
+    <app-to-do-list class="app-to-do-list" *ngIf="isContentVisible(userInfo?.showToDoList)"></app-to-do-list>
   </div>
   <div class="container">
     <div class="content">

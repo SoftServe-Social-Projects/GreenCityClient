@@ -293,7 +293,7 @@ describe('UBSOrderDetailsComponent', () => {
     component.locationId = 1;
     component.initLocation();
 
-    expect(component.currentLocation).toBe('Kyiv, Kyiv Region');
+    expect(component.currentLocation).toBe('Kyiv');
   });
 
   it('should dispatch additional orders', () => {
@@ -307,14 +307,6 @@ describe('UBSOrderDetailsComponent', () => {
     component.orderComment.setValue('Test Comment');
     component.dispatchOrderComment();
     expect(mockStore.dispatch).toHaveBeenCalledWith(SetOrderComment({ comment: 'Test Comment' }));
-  });
-
-  it('should initialize location', () => {
-    component.locations = mockCourierLocations;
-    component.locationId = 1;
-    component.initLocation();
-
-    expect(component.currentLocation).toBe('Kyiv, Kyiv Region');
   });
 
   it('should have correct popupConfig', () => {

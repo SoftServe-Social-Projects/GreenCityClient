@@ -10,7 +10,9 @@ export const nonSortableColumns = [
   'commentForOrderByClient',
   'orderCertificateCode',
   'idOrderFromShop',
-  'bagsAmount',
+  'mixedWaste120L',
+  'textileWaste60L',
+  'textileWaste20L',
   'phone_number',
   'recipient_phone',
   'comment_to_address_for_client',
@@ -20,5 +22,6 @@ export const nonSortableColumns = [
   'id_order_from_shop',
   'recipientEmail',
   'orderId',
-  'points'
+  'points',
+  'chatLink'
 ];

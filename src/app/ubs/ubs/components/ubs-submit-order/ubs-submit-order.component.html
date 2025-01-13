@@ -68,17 +68,13 @@
           <p class="order-header">{{ 'order-details.recipient' | translate }}</p>
           <ul class="order-list" *ngIf="personalData.senderFirstName; else defaultCase">
             <li class="order-list-item">{{ personalData.senderFirstName }} {{ personalData.senderLastName }}</li>
-            <li class="order-list-item">
-              {{ personalData.senderPhoneNumber ? (personalData.phoneNumber | slice: -9 | phoneNumberTreat: '380') : '' }}
-            </li>
+            <li class="order-list-item">{{ formattedSenderPhoneNumber }}</li>
             <li class="order-list-item">{{ personalData.senderEmail }}</li>
           </ul>
           <ng-template #defaultCase>
             <ul class="order-list">
               <li class="order-list-item">{{ personalData.firstName }} {{ personalData.lastName }}</li>
-              <li class="order-list-item">
-                {{ personalData.phoneNumber ? (personalData.phoneNumber | slice: -9 | phoneNumberTreat: '380') : '' }}
-              </li>
+              <li class="order-list-item">{{ formattedPhoneNumber }}</li>
               <li class="order-list-item">{{ personalData.email }}</li>
             </ul>
           </ng-template>
