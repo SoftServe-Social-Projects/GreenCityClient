@@ -54,9 +54,9 @@ export class HabitInviteFriendsPopUpComponent implements OnInit, OnDestroy {
       .getFriendsWithInvitations(this.habitId, 0, 10)
       .pipe(takeUntil(this.destroyed$))
       .subscribe((data: FriendArrayModel) => {
-        this.friends = data.page.map((friend) => ({
+        this.friends = data.page.map((friend: FriendModel) => ({
           ...friend,
-          added: friend.hasAcceptedInvitation
+          added: friend.hasAcceptedInvitation ?? false
         }));
         this.inputFriends = [...this.friends];
       });
