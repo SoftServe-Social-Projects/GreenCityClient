@@ -17,11 +17,11 @@ export function uniqueArrayValidator(): ValidatorFn {
   };
 }
 
-export function courierLimitValidator(bags: Bag[], courierInfo: ICourierInfo): ValidatorFn {
+export function courierLimitValidator(bags: Bag[], courierInfo: ICourierInfo, currentLang: string, isKyiv: boolean): ValidatorFn {
   return (group: FormGroup): ValidationErrors | null => {
     const filtredBags = bags.filter((el) => el.limitedIncluded);
     if (courierInfo.courierLimit === 'LIMIT_BY_AMOUNT_OF_BAG') {
-      return validateAmountLimit(filtredBags, group, courierInfo);
+      return validateAmountLimit(filtredBags, group, courierInfo, currentLang, isKyiv);
     } else if (courierInfo.courierLimit === 'LIMIT_BY_SUM_OF_ORDER') {
       return validateSumLimit(filtredBags, group, courierInfo);
     }
@@ -30,7 +30,13 @@ export function courierLimitValidator(bags: Bag[], courierInfo: ICourierInfo): V
   };
 }
 
-function validateAmountLimit(filtredBags: Bag[], group, courierInfo: ICourierInfo): ValidationErrors | null {
+function validateAmountLimit(
+  filtredBags: Bag[],
+  group,
+  courierInfo: ICourierInfo,
+  currentLang: string,
+  isKyiv: boolean
+): ValidationErrors | null {
   const orderBagAmount = filtredBags.reduce((amount, bag) => {
     if (group.get(`quantity${bag.id}`)) {
       const quantity = +group.get(`quantity${bag.id}`)?.value;
@@ -38,8 +44,26 @@ function validateAmountLimit(filtredBags: Bag[], group, courierInfo: ICourierInf
     }
     return amount;
   }, 0);
-  const message = { min: 'order-details.min-big-bags', max: 'order-details.max-big-bags' };
-  return setErrors(filtredBags, courierInfo, orderBagAmount, message);
+
+  const message = {
+    min: `order-details.min-big-bags${isKyiv ? '-kyiv' : ''}`,
+    max: `order-details.max-big-bags${isKyiv ? '-kyiv' : ''}`
+  };
+
+  return setErrors(filtredBags, courierInfo, orderBagAmount, message, currentLang);
+}
+
+function getPackageWord(amount: number, lang: string): string {
+  if (lang === 'en') {
+    return amount === 1 ? 'packege' : 'packeges';
+  }
+  if (amount % 10 === 1 && amount % 100 !== 11) {
+    return 'пакет';
+  } else if ([2, 3, 4].includes(amount % 10) && ![12, 13, 14].includes(amount % 100)) {
+    return 'пакети';
+  } else {
+    return 'пакетів';
+  }
 }
 
 function validateSumLimit(filtredBags: Bag[], group, courierInfo: ICourierInfo): ValidationErrors | null {
@@ -55,13 +79,29 @@ function validateSumLimit(filtredBags: Bag[], group, courierInfo: ICourierInfo):
   return setErrors(filtredBags, courierInfo, orderSum, message);
 }
 
-function setErrors(filtredBags: Bag[], courierInfo: ICourierInfo, limitValue: number, message): ValidationErrors | null {
+function setErrors(
+  filtredBags: Bag[],
+  courierInfo: ICourierInfo,
+  limitValue: number,
+  message,
+  currentLang?: string
+): ValidationErrors | null {
   const bagsList = filtredBags.map((el) => el.capacity).join(', ');
-  if (courierInfo.min && limitValue < courierInfo.min) {
-    return { courierLimitError: true, message: message.min, value: { totalLimit: courierInfo.min, bags: bagsList } };
-  } else if (courierInfo.max && limitValue > courierInfo.max) {
-    return { courierLimitError: true, message: message.max, value: { totalLimit: courierInfo.max, bags: bagsList } };
-  }
 
+  if (courierInfo.min && limitValue < courierInfo.min) {
+    const bagsWord = currentLang ? getPackageWord(courierInfo.min, currentLang) : undefined;
+    return {
+      courierLimitError: true,
+      message: message.min,
+      value: { totalLimit: courierInfo.min, bags: bagsList, ...(bagsWord && { bagsWord }) }
+    };
+  } else if (courierInfo.max && limitValue > courierInfo.max) {
+    const bagsWord = currentLang ? getPackageWord(courierInfo.max, currentLang) : undefined;
+    return {
+      courierLimitError: true,
+      message: message.max,
+      value: { totalLimit: courierInfo.max, bags: bagsList, ...(bagsWord && { bagsWord }) }
+    };
+  }
   return null;
 }
