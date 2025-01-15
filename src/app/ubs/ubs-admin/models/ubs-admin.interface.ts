@@ -153,6 +153,12 @@ export interface ICourierInfo {
   max: number;
 }
 
+export interface IValidationConfig {
+  courierInfo: ICourierInfo;
+  isKyiv: boolean;
+  currentLang: string;
+}
+
 export interface IOrderDetails {
   bags: IBags[];
   courierInfo: ICourierInfo;
