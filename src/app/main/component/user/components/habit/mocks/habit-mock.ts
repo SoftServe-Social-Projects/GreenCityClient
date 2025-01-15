@@ -11,7 +11,7 @@ import { HttpParams } from '@angular/common/http';
 import { AddedCommentDTO, CommentsModel } from 'src/app/main/component/comments/models/comments-model';
 
 export const MOCK_HABIT_ADDED_COMMENT: AddedCommentDTO = {
-  author: { id: 1, name: 'User', userProfilePicturePath: null },
+  author: { id: 1, name: 'User', profilePicturePath: null },
   id: 2,
   text: 'Test comment',
   modifiedDate: new Date().toISOString()
@@ -21,7 +21,7 @@ export const MOCK_HABIT_COMMENTS_MODEL: CommentsModel = {
   currentPage: 0,
   page: [
     {
-      author: { id: 1, name: 'User', userProfilePicturePath: null },
+      author: { id: 1, name: 'User', profilePicturePath: null },
       id: 1,
       text: 'Test comment',
       likes: 10,

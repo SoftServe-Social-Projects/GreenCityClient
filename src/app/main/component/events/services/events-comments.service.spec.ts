@@ -37,7 +37,7 @@ describe('EventsCommentsService', () => {
       author: {
         id: 1,
         name: 'Some Cool Person',
-        userProfilePicturePath: 'path to cool persons img'
+        profilePicturePath: 'path to cool persons img'
       },
       id: 2,
       modifiedDate: new Date('2021-05-27T15:37:15.661Z'),
@@ -63,7 +63,7 @@ describe('EventsCommentsService', () => {
       author: {
         id: 1,
         name: 'Some Cool Person',
-        userProfilePicturePath: 'path to cool persons img'
+        profilePicturePath: 'path to cool persons img'
       },
       id: 0,
       modifiedDate: new Date('2021-05-27T15:37:15.661Z'),
@@ -90,7 +90,7 @@ describe('EventsCommentsService', () => {
       author: {
         id: 1,
         name: 'Some Cool Person',
-        userProfilePicturePath: 'path to cool persons img'
+        profilePicturePath: 'path to cool persons img'
       },
       id: 2,
       modifiedDate: new Date('2021-05-27T15:37:15.661Z'),
@@ -126,7 +126,7 @@ describe('EventsCommentsService', () => {
           author: {
             id: 1,
             name: 'Some Cool Person',
-            userProfilePicturePath: 'path to cool persons img'
+            profilePicturePath: 'path to cool persons img'
           },
           currentUserLiked: true,
           id: 0,

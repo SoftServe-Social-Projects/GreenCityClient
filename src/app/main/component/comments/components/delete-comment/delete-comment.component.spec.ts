@@ -9,6 +9,7 @@ import { DeleteCommentComponent } from './delete-comment.component';
 import { of } from 'rxjs';
 import { CommentsService } from '../../services/comments.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MOCK_COMMENTS_DTO } from '../../mocks/comments-mock';
 
 class MatDialogMock {
   open() {
@@ -42,18 +43,7 @@ describe('DeleteCommentComponent', () => {
     fixture.detectChanges();
 
     component.element = {
-      author: {
-        id: 1,
-        name: 'Test',
-        userProfilePicturePath: null
-      },
-      currentUserLiked: true,
-      id: 1,
-      likes: 0,
-      modifiedDate: '111',
-      replies: 1,
-      status: 'string',
-      text: 'string'
+      ...MOCK_COMMENTS_DTO
     };
   });
 

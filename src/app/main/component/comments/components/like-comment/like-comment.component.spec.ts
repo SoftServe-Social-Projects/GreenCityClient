@@ -7,6 +7,7 @@ import { CommentsService } from '../../services/comments.service';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { LikeCommentComponent } from './like-comment.component';
 import { Router } from '@angular/router';
+import { MOCK_COMMENTS_DTO } from '../../mocks/comments-mock';
 
 describe('LikeCommentComponent', () => {
   let component: LikeCommentComponent;
@@ -29,21 +30,6 @@ describe('LikeCommentComponent', () => {
 
   const routerMock = { url: '' };
 
-  const commentData = {
-    author: {
-      id: 1,
-      name: 'Test',
-      userProfilePicturePath: null
-    },
-    currentUserLiked: true,
-    id: 1,
-    likes: 0,
-    modifiedDate: '111',
-    replies: 1,
-    status: 'EDITED',
-    text: 'string'
-  };
-
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [LikeCommentComponent],
@@ -60,7 +46,7 @@ describe('LikeCommentComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LikeCommentComponent);
     component = fixture.componentInstance;
-    (component as any).comment = commentData;
+    (component as any).comment = MOCK_COMMENTS_DTO;
     fixture.detectChanges();
   });
 

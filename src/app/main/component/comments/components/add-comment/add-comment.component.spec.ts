@@ -15,17 +15,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { CommentFormData } from '../../models/comments-model';
 import { mockUserData } from '@global-user/mocks/edit-profile-mock';
-
-const COMMENT_MOCK = {
-  author: {
-    name: 'username',
-    id: 1,
-    userProfilePicturePath: null
-  },
-  id: 1,
-  modifiedDate: '01.12.2022',
-  text: 'some text'
-};
+import { MOCK_COMMENTS_DTO } from '../../mocks/comments-mock';
 
 describe('AddCommentComponent', () => {
   let component: AddCommentComponent;
@@ -35,7 +25,7 @@ describe('AddCommentComponent', () => {
   profileServiceMock.getUserInfo = () => of(mockUserData);
 
   const commentsServiceMock: jasmine.SpyObj<CommentsService> = jasmine.createSpyObj('CommentsService', ['addComment']);
-  commentsServiceMock.addComment.and.returnValue(of(COMMENT_MOCK));
+  commentsServiceMock.addComment.and.returnValue(of(MOCK_COMMENTS_DTO));
 
   const socketServiceMock: SocketService = jasmine.createSpyObj('SocketService', ['onMessage', 'send', 'initiateConnection']);
   socketServiceMock.onMessage = () => new Observable();
@@ -107,7 +97,7 @@ describe('AddCommentComponent', () => {
 
     flush();
     expect(commentsServiceMock.addComment).toHaveBeenCalledWith(commentData);
-    expect(updateListSpy).toHaveBeenCalledWith(COMMENT_MOCK);
+    expect(updateListSpy).toHaveBeenCalledWith(MOCK_COMMENTS_DTO);
     expect(component.addCommentForm.value.content).toBe('');
   }));
 
