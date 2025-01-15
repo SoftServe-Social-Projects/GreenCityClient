@@ -37,7 +37,7 @@ import {
   tariffIdIdSelector
 } from 'src/app/store/selectors/order.selectors';
 import { courierLimitValidator, uniqueArrayValidator } from 'src/app/ubs/ubs/services/order-validators';
-import { ICourierInfo } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
+import { ICourierInfo, IValidationConfig } from 'src/app/ubs/ubs-admin/models/ubs-admin.interface';
 import { IUserOrderInfo } from 'src/app/ubs/ubs-user/ubs-user-orders-list/models/UserOrder.interface';
 import { WarningPopUpComponent } from '@shared/components';
 import { emptyOrValid } from 'src/app/shared/validators/empthy-or-valid.validator';
@@ -278,12 +278,13 @@ export class UBSOrderDetailsComponent extends FormBaseComponent implements OnIni
   }
 
   private updateValidator() {
-    const isKyiv = this.getLocationById().nameEn === KyivNamesEnum.KyivEn;
+    const validationConfig: IValidationConfig = {
+      courierInfo: this.courierLimits,
+      currentLang: this.langService.getCurrentLanguage(),
+      isKyiv: this.getLocationById().nameEn === KyivNamesEnum.KyivEn
+    };
 
-    const newBagsGroup = this.fb.group(
-      {},
-      { validators: courierLimitValidator(this.bags, this.courierLimits, this.langService.getCurrentLanguage(), isKyiv) }
-    );
+    const newBagsGroup = this.fb.group({}, { validators: courierLimitValidator(this.bags, validationConfig) });
 
     this.bags.forEach((bag: Bag) => {
       newBagsGroup.addControl(`quantity${bag.id}`, new FormControl(String(bag.quantity ?? 0), [Validators.min(0), Validators.max(999)]));
