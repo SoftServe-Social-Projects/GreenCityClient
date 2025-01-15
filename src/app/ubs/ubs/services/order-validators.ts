@@ -54,16 +54,30 @@ function validateAmountLimit(
 }
 
 function getPackageWord(amount: number, lang: string): string {
+  const pluralForms = {
+    en: {
+      singular: 'package',
+      plural: 'packages'
+    },
+    ua: {
+      one: 'пакет',
+      few: 'пакети',
+      many: 'пакетів'
+    }
+  };
   if (lang === 'en') {
-    return amount === 1 ? 'packege' : 'packeges';
+    return amount === 1 ? pluralForms.en.singular : pluralForms.en.plural;
   }
-  if (amount % 10 === 1 && amount % 100 !== 11) {
-    return 'пакет';
-  } else if ([2, 3, 4].includes(amount % 10) && ![12, 13, 14].includes(amount % 100)) {
-    return 'пакети';
-  } else {
-    return 'пакетів';
+
+  const lastDigit = amount % 10;
+  const lastTwoDigits = amount % 100;
+  if (lastDigit === 1 && lastTwoDigits !== 11) {
+    return pluralForms.ua.one;
   }
+  if ([2, 3, 4].includes(lastDigit) && ![12, 13, 14].includes(lastTwoDigits)) {
+    return pluralForms.ua.few;
+  }
+  return pluralForms.ua.many;
 }
 
 function validateSumLimit(filtredBags: Bag[], group, courierInfo: ICourierInfo): ValidationErrors | null {
