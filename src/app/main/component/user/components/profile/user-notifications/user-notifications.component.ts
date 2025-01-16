@@ -61,6 +61,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     this.localStorageService.languageBehaviourSubject.pipe(takeUntil(this.destroy$)).subscribe((lang) => {
       this.currentLang = lang;
       this.translate.use(lang);
+      this.reloadNotifications();
     });
     this.filterChangeSubs$.pipe(debounceTime(300), takeUntil(this.destroy$)).subscribe(() => {
       this.notifications = [];
@@ -152,7 +153,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   private fetchUBSNotifications(page: number): void {
-    const params = new HttpParams().set('lang', 'en').set('page', page.toString()).set('size', this.itemsPerPage.toString());
+    const params = new HttpParams().set('lang', this.currentLang).set('page', page.toString()).set('size', this.itemsPerPage.toString());
     this.userNotificationService
       .getUBSNotification(params)
       .pipe(take(1))
@@ -164,7 +165,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   }
 
   private fetchAllNotifications(page: number, filters: any): void {
-    let params = new HttpParams().set('page', page.toString()).set('size', this.itemsPerPage.toString());
+    let params = new HttpParams().set('lang', this.currentLang).set('page', page.toString()).set('size', this.itemsPerPage.toString());
 
     if (filters && filters.projectName) {
       filters.projectName.forEach((project: string) => {
@@ -376,6 +377,14 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
 
   getFormattedNotificationTime(notification: NotificationModel): string {
     return formatNotificationDate(notification.time, this.translate);
+  }
+
+  private reloadNotifications(): void {
+    this.notifications = [];
+    this.currentPage = 0;
+    this.hasNextPage = false;
+    this.isLoading = true;
+    this.getNotification(this.currentPage);
   }
 
   ngOnDestroy() {

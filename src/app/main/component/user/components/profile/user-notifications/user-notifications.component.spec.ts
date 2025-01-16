@@ -137,6 +137,15 @@ describe('UserNotificationsComponent', () => {
     matSnackBarMock = jasmine.createSpyObj('MatSnackBarComponent', ['openSnackBar']);
     fixture = TestBed.createComponent(UserNotificationsComponent);
     component = fixture.componentInstance;
+    component.currentLang = 'en';
+    component.notifications = [];
+    userNotificationServiceMock.getAllNotifications = jasmine.createSpy('getAllNotifications').and.returnValue(
+      of({
+        page: notifications,
+        currentPage: 1,
+        hasNext: true
+      })
+    );
     fixture.detectChanges();
   });
 
