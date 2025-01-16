@@ -6,8 +6,10 @@
   <mat-spinner *ngIf="isBlocked" strokeWidth="3" diameter="20"></mat-spinner>
 </div>
 
-<mat-form-field *ngIf="isEditable && !uneditableStatus" appearance="fill">
-  <input matInput [matDatepicker]="picker1" [min]="current" [value]="date" (dateChange)="changeData($event)" id="date-input" />
-  <mat-datepicker-toggle matSuffix [for]="picker1" color="accent"></mat-datepicker-toggle>
-  <mat-datepicker #picker1></mat-datepicker>
-</mat-form-field>
+<div class="editable-date" *ngIf="isEditable && !uneditableStatus">
+  <mat-form-field appearance="fill" class="date-form-field">
+    <input matInput [matDatepicker]="picker1" [min]="current" [value]="date" (dateChange)="changeData($event)" id="date-input" />
+    <mat-datepicker-toggle matSuffix [for]="picker1" color="accent"></mat-datepicker-toggle>
+    <mat-datepicker #picker1></mat-datepicker>
+  </mat-form-field>
+</div>
