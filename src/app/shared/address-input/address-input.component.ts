@@ -275,7 +275,7 @@ export class AddressInputComponent implements OnInit, AfterViewInit, OnDestroy, 
         emptyOrValid([Validators.maxLength(2), Validators.pattern(this.buildingPattern)])
       ],
       placeId: [this.address?.placeId ?? ''],
-      addressComment: [this.address?.addressComment ?? '']
+      addressComment: [this.address?.addressComment ?? '', Validators.maxLength(255)]
     });
 
     if (!this.edit) {
