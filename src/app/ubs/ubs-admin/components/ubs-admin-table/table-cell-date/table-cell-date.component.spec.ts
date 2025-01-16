@@ -17,11 +17,6 @@ describe('TableCellDateComponent', () => {
     { orderId: 1, userName: 'userName1' },
     { orderId: 2, userName: 'userName2' }
   ];
-  const iEditCell: IEditCell = {
-    id: 1,
-    nameOfColumn: 'name-of-column',
-    newValue: 'newDate'
-  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -59,7 +54,8 @@ describe('TableCellDateComponent', () => {
       component.isEditable = true;
       fixture.detectChanges();
       const inputElem = fixture.debugElement.nativeElement.querySelector('#date-input');
-      expect(inputElem.min).toEqual(new Date().toISOString().split('T')[0]);
+      const actualMinDate = inputElem.min.split('T')[0];
+      expect(actualMinDate).toEqual(new Date().toISOString().split('T')[0]);
     });
 
     it('Test if edit() calls blockOrders() from AdminTableService with []', () => {
@@ -125,15 +121,18 @@ describe('TableCellDateComponent', () => {
     it('Test changeData() calls editDateCell.emit() ', () => {
       const spy = spyOn(component.editDateCell, 'emit');
       const dateEvent: any = { value: new Date() };
-      const parseDate = Date.parse(dateEvent.value);
-      const diff = dateEvent.value.getTimezoneOffset();
-      const newDate = new Date(parseDate + -diff * 60 * 1000).toISOString();
-      iEditCell.newValue = newDate;
+      const isoDate = dateEvent.value.toISOString();
+
+      const iEditCell: IEditCell = {
+        id: 1,
+        nameOfColumn: 'name-of-column',
+        newValue: isoDate
+      };
+
       component.id = 1;
       component.nameOfColumn = 'name-of-column';
       fixture.detectChanges();
       component.changeData(dateEvent);
-
       expect(spy).toHaveBeenCalledWith(iEditCell);
     });
   });
@@ -148,13 +147,13 @@ describe('TableCellDateComponent', () => {
       fixture.detectChanges();
     });
 
-    it('changeData() should set nameOfColumn to newValue field of iEditCell and call editDateCell.emit with it ', () => {
+    it('changeData() should set nameOfColumn to newValue field of iEditCell and call editDateCell.emit with it', () => {
       const spy = spyOn(component.editDateCell, 'emit');
       const dateEvent: any = { value: new Date() };
-      const parseDate = Date.parse(dateEvent.value);
-      const diff = dateEvent.value.getTimezoneOffset();
-      const newDate = new Date(parseDate + -diff * 60 * 1000).toISOString();
+      const newDate = dateEvent.value.toISOString();
+
       component.id = 1;
+      component.nameOfColumn = 'name-of-column-for-testing';
       fixture.detectChanges();
       component.changeData(dateEvent);
 
@@ -168,9 +167,7 @@ describe('TableCellDateComponent', () => {
     it('changeData() should set id to id field of iEditCell and call editDateCell.emit with it ', () => {
       const spy = spyOn(component.editDateCell, 'emit');
       const dateEvent: any = { value: new Date() };
-      const parseDate = Date.parse(dateEvent.value);
-      const diff = dateEvent.value.getTimezoneOffset();
-      const newDate = new Date(parseDate + -diff * 60 * 1000).toISOString();
+      const newDate = dateEvent.value.toISOString();
       component.nameOfColumn = 'name-of-column';
       fixture.detectChanges();
       component.changeData(dateEvent);

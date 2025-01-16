@@ -30,3 +30,24 @@
 ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
   background-color: white;
 }
+
+::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input {
+  font-size: 12px;
+  font-weight: 500;
+  padding-left: 5px;
+}
+
+::ng-deep .mdc-text-field--no-label:not(.mdc-text-field--outlined, .mdc-text-field--textarea) .mat-mdc-form-field-infix {
+  padding-top: 8px;
+}
+
+.editable-date {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.date-form-field {
+  width: 100%;
+  margin: 0;
+}
