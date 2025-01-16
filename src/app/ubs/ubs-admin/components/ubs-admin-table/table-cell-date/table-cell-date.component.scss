@@ -37,7 +37,7 @@
   padding-left: 5px;
 }
 
-::ng-deep .mdc-text-field--no-label:not(.mdc-text-field--outlined):not(.mdc-text-field--textarea) .mat-mdc-form-field-infix {
+::ng-deep .mdc-text-field--no-label:not(.mdc-text-field--outlined, .mdc-text-field--textarea) .mat-mdc-form-field-infix {
   padding-top: 8px;
 }
 
