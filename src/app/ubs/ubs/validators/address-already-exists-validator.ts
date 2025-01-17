@@ -15,6 +15,7 @@ export function addressAlreadyExistsValidator(
         address.houseNumber === group.controls?.houseNumber.value &&
         compareIfExist(group.controls?.houseCorpus.value, address.houseCorpus) &&
         compareIfExist(group.controls?.entranceNumber.value, address.entranceNumber) &&
+        compareIfExist(group.controls?.addressComment.value, address.addressComment) &&
         (address.district === group.controls?.district.value?.nameUa ||
           address.districtEn === group.controls?.district.value?.nameEn ||
           address.district === group.controls?.district.value ||
@@ -30,7 +31,7 @@ function getLangValue(valUA: any, valEN: any, currentLanguage: Language): any {
 }
 
 function compareIfExist(value: any, compareTo: any): boolean {
-  if (!value) {
+  if (value == null && compareTo == null) {
     return true;
   }
 
