@@ -6,6 +6,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { FriendArrayModel, FriendModel } from '@global-user/models/friend.model';
 import { calendarImage } from '@shared/components/calendar-base/calendar-image';
+import { UserOnlineStatusService } from '@global-user/services/user-online-status.service';
 
 @Component({
   selector: 'app-users-friends',
@@ -32,7 +33,8 @@ export class UsersFriendsComponent implements OnInit, OnDestroy {
     private userFriendsService: UserFriendsService,
     private localStorageService: LocalStorageService,
     private router: Router,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private userOnlineStatusService: UserOnlineStatusService
   ) {}
 
   ngOnInit() {
@@ -52,6 +54,9 @@ export class UsersFriendsComponent implements OnInit, OnDestroy {
         next: (item: FriendArrayModel) => {
           this.totalPages = item.totalPages;
           this.usersFriends = item.page;
+          const friendIds = this.usersFriends.map((friend) => friend.id);
+          this.userOnlineStatusService.addUsersId('usersFriends', friendIds);
+
           this.amountOfFriends = item.totalElements;
           this.updateArrowsVisibility();
         },
@@ -110,6 +115,10 @@ export class UsersFriendsComponent implements OnInit, OnDestroy {
     const show = this.friendsToShow < this.amountOfFriends && window.innerWidth < 768 ? 'visible' : 'hidden';
     this.renderer.setStyle(this.nextArrow.nativeElement, 'visibility', show);
     this.renderer.setStyle(this.previousArrow.nativeElement, 'visibility', show);
+  }
+
+  isFriendOnline(friendId: number): boolean {
+    return this.userOnlineStatusService.checkIsOnline(friendId);
   }
 
   ngOnDestroy() {
