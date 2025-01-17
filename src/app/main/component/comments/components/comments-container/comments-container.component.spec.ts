@@ -12,26 +12,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CommentsContainerComponent } from './comments-container.component';
 import { CommentsDTO, CommentsModel } from '../../models/comments-model';
 import { of } from 'rxjs';
+import { MOCK_COMMENTS_DTO } from '../../mocks/comments-mock';
 
 const MOCK_COMMENTS_MODEL: CommentsModel = {
   currentPage: 0,
   page: [{ id: 1 } as CommentsDTO],
   totalElements: 0
-};
-
-const MOCK_COMMENTS_DTO: CommentsDTO = {
-  author: {
-    id: 0,
-    name: 'fake_author',
-    userProfilePicturePath: null
-  },
-  currentUserLiked: false,
-  id: 0,
-  likes: 0,
-  modifiedDate: '',
-  replies: 0,
-  status: 'ORIGINAL',
-  text: 'fake_text'
 };
 
 describe('CommentsContainerComponent', () => {

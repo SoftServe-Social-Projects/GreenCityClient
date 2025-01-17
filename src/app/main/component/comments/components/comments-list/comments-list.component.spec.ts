@@ -24,7 +24,7 @@ describe('CommentsListComponent', () => {
         currentPage: 1,
         page: [
           {
-            author: { id: 1, name: 'Test', userProfilePicturePath: null },
+            author: { id: 1, name: 'Test', profilePicturePath: null },
             currentUserLiked: false,
             id: 1,
             likes: 5,
@@ -55,7 +55,7 @@ describe('CommentsListComponent', () => {
     author: {
       id: 1,
       name: 'Test',
-      userProfilePicturePath: null
+      profilePicturePath: null
     },
     currentUserLiked: true,
     id: 1,
