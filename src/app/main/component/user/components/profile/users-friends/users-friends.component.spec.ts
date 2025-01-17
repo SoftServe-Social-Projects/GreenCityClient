@@ -15,6 +15,7 @@ import { Language } from 'src/app/main/i18n/Language';
 import { FriendModel } from '@user-models/friend.model';
 import { Router } from '@angular/router';
 import { FriendStatusValues } from '@user-models/friend.model';
+import { UserOnlineStatusService } from '@global-user/services/user-online-status.service';
 
 describe('UsersFriendsComponent', () => {
   let renderer: Renderer2;
@@ -39,6 +40,11 @@ describe('UsersFriendsComponent', () => {
 
   const userFriendsServiceMock: UserFriendsService = jasmine.createSpyObj('UserFriendsService', ['getAllFriends']);
   userFriendsServiceMock.getAllFriends = () => of(FRIENDS);
+  const userOnlineStatusServiceMock = {
+    addUsersId: jasmine.createSpy('addUsersId'),
+    checkIsOnline: jasmine.createSpy('checkIsOnline').and.returnValue(true),
+    usersOnlineStatus$: new BehaviorSubject([])
+  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -48,7 +54,8 @@ describe('UsersFriendsComponent', () => {
       providers: [
         Renderer2,
         { provide: LocalStorageService, useValue: localStorageServiceMock },
-        { provide: UserFriendsService, useValue: userFriendsServiceMock }
+        { provide: UserFriendsService, useValue: userFriendsServiceMock },
+        { provide: UserOnlineStatusService, useValue: userOnlineStatusServiceMock }
       ]
     }).compileComponents();
   }));
@@ -152,5 +159,14 @@ describe('UsersFriendsComponent', () => {
     window.dispatchEvent(new Event('resize'));
     fixture.detectChanges();
     expect(calculateFriendsToShowSpy).toHaveBeenCalled();
+  });
+
+  it('should return online status for a friend', () => {
+    userOnlineStatusServiceMock.usersOnlineStatus$.next([
+      { id: 1, onlineStatus: true },
+      { id: 2, onlineStatus: false }
+    ]);
+    const result = component.isFriendOnline(1);
+    expect(result).toBeTrue();
   });
 });

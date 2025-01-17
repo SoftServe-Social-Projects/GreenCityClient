@@ -24,6 +24,7 @@
             [firstName]="friend.name"
             class="friend-img"
             [additionalImgClass]="'friend-user-profile'"
+            [isOnline]="isFriendOnline(friend.id)"
           >
           </app-user-profile-image>
           <p class="friend-name">{{ friend.name | firststringword | maxTextLength: 10 }}</p>
