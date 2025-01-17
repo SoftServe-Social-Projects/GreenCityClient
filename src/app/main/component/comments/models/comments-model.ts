@@ -7,7 +7,7 @@ export interface CommentsModel {
 export interface AuthorDTO {
   id: number;
   name: string;
-  profilePicturePath: null;
+  profilePicturePath: string | null;
 }
 
 export interface CommentsDTO {
